@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>math·logic — Изучай через практику</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="max-w-5xl mx-auto px-6">
+
+  <!-- ШАПКА -->
+  <div class="flex items-center justify-between py-6">
+    <a href="index.html" class="fd font-bold text-xl tracking-tight" style="color:#1D4ED8">
+      math<span style="color:#0EA5E9">·</span>logic
+    </a>
+    
+    <div class="hidden md:flex items-center gap-7">
+      <a href="dashboard.html" class="navlink" data-i18n="nav_dashboard">Тапсырмалар</a>
+      <a href="#subject-tabs" class="navlink" data-i18n="nav_subjects">Тақырыптар</a>
+    </div>
+
+    <div class="flex items-center gap-3 md:gap-4">
+      <!-- Переключатель языка -->
+      <div class="flex gap-1 rounded-full p-1 bg-white text-xs fd font-medium border shadow-sm" style="border-color:#D3E3FA">
+        <button id="btn-kz" onclick="setLang('kz')" class="px-3 py-1 rounded-full transition-all duration-300 text-white bg-blue-700 font-semibold">KZ</button>
+        <button id="btn-ru" onclick="setLang('ru')" class="px-3 py-1 rounded-full transition-all duration-300 text-blue-700 font-semibold hover:bg-blue-50">RU</button>
+      </div>
+
+      <!-- Кнопка Вход (Кіру) -->
+      <a href="login.html" class="navlink font-semibold transition-colors px-2 py-1" style="color:#1D4ED8" data-i18n="nav_login">
+        Кіру
+      </a>
+
+      <!-- Кнопка Регистрация (Тіркелу) -->
+      <a href="onboarding.html" class="btn fd text-xs font-semibold px-4 py-2" data-i18n="nav_register">
+        Тіркелу
+      </a>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="text-center pt-10 pb-16">
+    <p class="fd text-3xl md:text-5xl font-extrabold leading-tight max-w-2xl mx-auto tracking-tight" data-i18n="hero_title">
+      Математика мен логиканы <span style="color:#1D4ED8">шешу арқылы</span> үйрен
+    </p>
+    <p class="text-base mt-5 max-w-lg mx-auto leading-relaxed" style="color:#5b6472" data-i18n="hero_desc">
+      Дайын жауап жоқ — тек есептер, деңгейлер және өз қарқының. Ойлауыңды нақты тапсырмалармен жаттықтыр.
+    </p>
+    <div class="flex flex-wrap gap-3 justify-center mt-8">
+      <a href="dashboard.html" class="btn fd text-sm font-semibold px-9 py-4 shadow-xl shadow-blue-600/20" data-i18n="btn_start">
+        Бастау →
+      </a>
+    </div>
+  </div>
+
+  <!-- ИЛЛЮСТРАЦИЯ HERO -->
+  <div class="illus illus-card p-10 mb-20">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 font-mono text-xl md:text-2xl font-semibold text-center items-center justify-center" style="color:#1D4ED8">
+      <span class="float-elem bg-white/70 backdrop-blur-sm py-3 px-4 rounded-2xl shadow-sm border border-blue-100">x² + y² = r²</span>
+      <span class="float-elem-delayed bg-white/70 backdrop-blur-sm py-3 px-4 rounded-2xl shadow-sm border border-blue-100" style="color:#0EA5E9">3x + 7 = 22</span>
+      <span class="float-elem bg-white/70 backdrop-blur-sm py-3 px-4 rounded-2xl shadow-sm border border-blue-100">x₁ + x₂ = -b</span>
+      <span class="float-elem-delayed bg-white/70 backdrop-blur-sm py-3 px-4 rounded-2xl shadow-sm border border-blue-100" style="color:#0EA5E9">a² + b² = c²</span>
+    </div>
+  </div>
+
+  <!-- БЛОК 1: ШЕШУ АРҚЫЛЫ ҮЙРЕН -->
+  <div class="grid md:grid-cols-2 gap-10 items-center mb-20">
+    <div class="illus illus-card p-8 flex items-center justify-center h-56 md:order-1 order-2">
+      <svg viewBox="0 0 200 120" class="w-44 transition-transform duration-300 hover:scale-105">
+        <rect x="20" y="20" width="160" height="80" rx="14" fill="#fff" stroke="#D3E3FA" stroke-width="2" class="shadow-sm"/>
+        <text x="100" y="55" text-anchor="middle" font-family="JetBrains Mono" font-size="16" fill="#1D4ED8" font-weight="600">S = ½ah</text>
+        <text x="100" y="80" text-anchor="middle" font-family="JetBrains Mono" font-size="13" fill="#0EA5E9">a=8, h=5 → S=20</text>
+      </svg>
+    </div>
+    <div class="order-1 md:order-2">
+      <p class="sec-title text-2xl mb-3" data-i18n="b1_title">Шешу арқылы үйрен</p>
+      <p class="text-sm leading-relaxed" style="color:#5b6472" data-i18n="b1_desc">Әр тапсырма — есептеу жаттығуы. Формуланы жаттамайсың, оны қолдану арқылы түсінесің. Қате жіберсең — қайта көресің, дайын жауапты көрсетпейміз.</p>
+    </div>
+  </div>
+
+  <!-- БЛОК 2: АДАПТИВНОСТЬ -->
+  <div class="grid md:grid-cols-2 gap-10 items-center mb-20">
+    <div>
+      <p class="sec-title text-2xl mb-3" data-i18n="b2_title">Дәл деңгейіңе бейімделеді</p>
+      <p class="text-sm leading-relaxed" style="color:#5b6472" data-i18n="b2_desc">Жүйе әр жауабыңды бақылайды: дұрыс шешсең — қиындайды, қиналсаң — жеңілдейді. Тым оңай да, тым қиын да болмайды.</p>
+    </div>
+    <div class="illus illus-card p-8 h-56 flex items-center justify-center">
+      <svg viewBox="0 0 200 100" class="w-48 transition-transform duration-300 hover:scale-105">
+        <circle cx="20" cy="80" r="10" fill="#0EA5E9"/>
+        <circle cx="70" cy="55" r="10" fill="#0EA5E9"/>
+        <circle cx="120" cy="65" r="12" fill="#1D4ED8"/>
+        <circle cx="170" cy="30" r="11" fill="#fff" stroke="#1D4ED8" stroke-width="3"/>
+        <path d="M20,80 L70,55 L120,65 L170,30" stroke="#D3E3FA" stroke-width="3" fill="none" stroke-dasharray="4 4"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- БЛОК 3: ЛОГИКА -->
+  <div class="grid md:grid-cols-2 gap-10 items-center mb-20">
+    <div class="illus illus-card p-8 flex items-center justify-center h-56 md:order-1 order-2">
+      <svg viewBox="0 0 160 100" class="w-40 transition-transform duration-300 hover:scale-105">
+        <rect x="10" y="10" width="35" height="35" rx="8" fill="#1D4ED8"/>
+        <rect x="62" y="10" width="35" height="35" rx="8" fill="#0EA5E9"/>
+        <rect x="114" y="10" width="35" height="35" rx="8" fill="#D3E3FA"/>
+        <text x="80" y="80" text-anchor="middle" font-family="JetBrains Mono" font-size="22" fill="#1D4ED8" font-weight="700">?</text>
+      </svg>
+    </div>
+    <div class="order-1 md:order-2">
+      <p class="sec-title text-2xl mb-3" data-i18n="b3_title">Тек формула емес — ойлау да</p>
+      <p class="text-sm leading-relaxed" style="color:#5b6472" data-i18n="b3_desc">Логикалық тізбектер, заңдылықтар, кеңістіктік есептер — есептеу дағдысымен қатар нақты ойлауды дамытады.</p>
+    </div>
+  </div>
+
+  <!-- БЛОК 4: РЕЖИМ / ТАЙМЕР -->
+  <div class="grid md:grid-cols-2 gap-10 items-center mb-24">
+    <div>
+      <p class="sec-title text-2xl mb-3" data-i18n="b4_title">Шаршатпайтындай құрылған</p>
+      <p class="text-sm leading-relaxed" style="color:#5b6472" data-i18n="b4_desc">Ұзақ отырсаң, жүйе демалуды ұсынады. Қысқа үзіліс — келесі есепті басынан анық ойлау үшін.</p>
+    </div>
+    <div class="illus illus-card p-8 h-56 flex items-center justify-center">
+      <svg width="95" height="95" viewBox="0 0 90 90" class="transition-transform duration-300 hover:rotate-6">
+        <circle cx="45" cy="45" r="36" fill="none" stroke="#D3E3FA" stroke-width="7"/>
+        <circle cx="45" cy="45" r="36" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round" stroke-dasharray="226" class="timer-ring" transform="rotate(-90 45 45)"/>
+        <text x="45" y="51" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="600" fill="#1D4ED8">02:14</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ТАБЫ (ПЕДАГОГИЧЕСКИЕ НАПРАВЛЕНИЯ) -->
+  <div class="mb-24" id="subject-tabs">
+    <p class="sec-title text-2xl text-center mb-8" data-i18n="subj_title">5-сыныптан ересекке дейін</p>
+    
+    <div class="flex flex-wrap justify-center gap-3 mb-8">
+      <button onclick="switchTab('algebra')" id="tab-algebra" class="tab-btn fd text-sm font-semibold px-6 py-2.5 rounded-full text-white bg-blue-700 transition-all duration-200 shadow-sm">Алгебра</button>
+      <button onclick="switchTab('geometry')" id="tab-geometry" class="tab-btn fd text-sm font-semibold px-6 py-2.5 rounded-full border border-blue-200 text-slate-600 hover:bg-blue-50 transition-all duration-200">Геометрия</button>
+      <button onclick="switchTab('logic')" id="tab-logic" class="tab-btn fd text-sm font-semibold px-6 py-2.5 rounded-full border border-blue-200 text-slate-600 hover:bg-blue-50 transition-all duration-200">Логика</button>
+      <button onclick="switchTab('numbers')" id="tab-numbers" class="tab-btn fd text-sm font-semibold px-6 py-2.5 rounded-full border border-blue-200 text-slate-600 hover:bg-blue-50 transition-all duration-200">Сандар</button>
+    </div>
+
+    <div class="illus p-8 max-w-lg mx-auto shadow-sm">
+      <p class="fd font-semibold text-sm mb-4 text-blue-700" data-i18n="topics_header">Қамтылған тақырыптар</p>
+      <div id="topics-grid" class="grid grid-cols-2 gap-3 text-sm font-medium text-slate-700"></div>
+    </div>
+  </div>
+
+  <!-- ФИНАЛЬНЫЙ CTA -->
+  <div class="text-center py-16 border-t" style="border-color:#D3E3FA">
+    <p class="fd text-2xl md:text-3xl font-extrabold mb-2" data-i18n="cta_title">Бастауға дайынсың ба?</p>
+    <p class="text-sm mb-7" style="color:#5b6472" data-i18n="cta_desc">Тіркеу қажет емес — бірден бірінші есепке өтесің</p>
+    <a href="dashboard.html" class="btn fd text-sm font-semibold px-10 py-4 shadow-xl shadow-blue-600/20" data-i18n="btn_start">
+      Бастау →
+    </a>
+  </div>
+
+  <!-- ФУТЕР -->
+  <div class="py-7 border-t flex flex-wrap justify-between items-center gap-3 text-xs text-slate-400" style="border-color:#D3E3FA">
+    <p>© math·logic 2026</p>
+    <div class="flex gap-5">
+      <a href="#" class="hover:text-blue-700 transition-colors" data-i18n="f_contact">Байланыс</a>
+      <a href="#" class="hover:text-blue-700 transition-colors" data-i18n="f_privacy">Құпиялылық</a>
+      <span class="text-slate-300">|</span>
+      <span class="font-semibold text-slate-500">KZ / RU</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- СКРИПТЫ -->
+<script src="js/data.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/app.js"></script>
+<script>
+  let activeTab = 'algebra';
+
+  function switchTab(tabKey) {
+    activeTab = tabKey;
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.className = "tab-btn fd text-sm font-semibold px-6 py-2.5 rounded-full border border-blue-200 text-slate-600 hover:bg-blue-50 transition-all duration-200";
+    });
+    
+    const activeBtn = document.getElementById(`tab-${tabKey}`);
+    if (activeBtn) {
+      activeBtn.className = "tab-btn fd text-sm font-semibold px-6 py-2.5 rounded-full text-white bg-blue-700 transition-all duration-200 shadow-sm";
+    }
+    renderLandingTopics();
+  }
+
+  function renderLandingTopics() {
+    const grid = document.getElementById('topics-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    const currentLang = getLang();
+    const list = TOPICS_LANDING[activeTab][currentLang];
+    list.forEach(item => {
+      const p = document.createElement('p');
+      p.className = "transition-all duration-200 hover:text-blue-600 cursor-default";
+      p.innerText = item;
+      grid.appendChild(p);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderLandingTopics();
+  });
+</script>
+</body>
+</html>

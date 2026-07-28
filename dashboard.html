@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тақырыптар — math·logic</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="pt-24 min-h-screen relative overflow-x-hidden">
+
+  <!-- АМБИЕНТНЫЙ ФОН -->
+  <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none opacity-60">
+    <div class="absolute top-[-10%] left-[-5%] w-[500px] h-[500px] bg-blue-200/50 rounded-full blur-[120px]"></div>
+    <div class="absolute top-[30%] right-[-10%] w-[600px] h-[600px] bg-emerald-100/60 rounded-full blur-[130px]"></div>
+    <div class="absolute bottom-[-10%] left-[20%] w-[500px] h-[500px] bg-purple-100/60 rounded-full blur-[110px]"></div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="fixed top-0 left-0 w-full z-40 bg-white/80 backdrop-blur-md border-b border-slate-200/60 shadow-xs">
+    <div class="h-1.5 w-full bg-gradient-to-r from-blue-500 via-emerald-500 to-purple-500"></div>
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-600/20">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+        </div>
+        <span class="font-head font-extrabold text-2xl text-slate-900 tracking-tight">
+          math<span class="text-blue-600">·</span>logic
+        </span>
+      </a>
+
+      <div class="flex items-center gap-3">
+        <button onclick="resetSubtopicsProgress()" title="Сбросить прогресс" class="p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6">
+    <!-- HERO / ОБЩИЙ ПРОГРЕСС -->
+    <div class="mb-8 bg-white/80 backdrop-blur-md border border-slate-200/80 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-sm">
+      <div>
+        <span class="text-xs font-extrabold uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-md mb-3 inline-block">Оқу Картасы</span>
+        <h1 class="font-head font-extrabold text-2xl sm:text-3xl text-slate-900 tracking-tight">
+          Модульдік оқу бағдарламасы
+        </h1>
+        <p class="text-slate-600 text-sm mt-1.5 font-medium">
+          Әр ірі модульдің ішінде теория мен практикалық микро-қадамдар бар.
+        </p>
+      </div>
+
+      <div class="w-full md:w-72 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-inner">
+        <div class="flex items-center justify-between text-xs font-mono font-bold text-slate-700 mb-2">
+          <span>ЖАЛПЫ ПРОГРЕСС</span>
+          <span id="overall-percentage" class="text-blue-600 font-black text-sm">0%</span>
+        </div>
+        <div class="h-3 w-full bg-slate-200/80 rounded-full overflow-hidden p-0.5">
+          <div id="overall-bar" class="h-full bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- КАРТОЧКИ ПРЕДМЕТОВ -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8" id="subject-cards"></div>
+
+    <!-- СПИСОК РАЗДЕЛОВ И МОДУЛЕЙ -->
+    <div id="sections-wrap" class="space-y-6 fade-in"></div>
+  </main>
+
+  <!-- НИЖНЯЯ ПАНЕЛЬ -->
+  <nav class="bottom-bar">
+    <div class="max-w-5xl mx-auto w-full px-4 flex items-center justify-center gap-2 overflow-x-auto no-scrollbar" id="bottom-nav-items"></div>
+  </nav>
+
+  <!-- МОДАЛЬНОЕ ОКНО БОЛЬШОГО МОДУЛЯ (С МЕЛКИМИ ТЕМАМИ ИЗНУТРИ) -->
+  <div id="topic-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-200">
+    <div class="bg-white border border-slate-200 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl transform scale-95 transition-transform duration-200 max-h-[90vh] overflow-y-auto" id="modal-card">
+      
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <div>
+          <span id="modal-level-badge" class="px-2.5 py-1 rounded-md font-mono text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-100">Жеңіл</span>
+          <h3 id="modal-title" class="font-head font-extrabold text-2xl text-slate-900 mt-2 tracking-tight">Алгебралық өрнектер</h3>
+          <p id="modal-subj-name" class="text-xs font-semibold text-slate-400 mt-1">Алгебра • Негіздер</p>
+        </div>
+        <button onclick="closeModal()" class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <p class="text-xs font-medium text-slate-500 mb-4">
+        Бұл модуль толықтай меңгерілуі үшін ішіндегі барлық микро-тақырыптарды аяқтау қажет:
+      </p>
+
+      <div id="modal-lesson-link-wrap" class="mb-5 hidden">
+        <a id="modal-lesson-link" href="#" class="btn w-full py-3 text-xs font-bold gap-2">
+          🚀 Сабақты бастау / Перейти к уроку →
+        </a>
+      </div>
+
+      <!-- ВНУТРЕННИЕ МЕЛКИЕ ТЕМЫ МОДУЛЯ -->
+      <div class="space-y-3 mb-6" id="modal-subtopics-list"></div>
+
+      <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+        <button id="modal-toggle-all-btn" onclick="toggleAllSubtopics()" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors">
+          Барлығын белгілеу
+        </button>
+        <button onclick="closeModal()" class="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold font-head shadow-md shadow-blue-600/20 transition-all hover:-translate-y-0.5">
+          Дайын
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- СКРИПТЫ -->
+  <script src="js/data.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let activeSubject = 'algebra';
+    let currentActiveModule = null;
+
+    function updateOverallProgress() {
+      let total = 0, done = 0;
+      Object.keys(DATA).forEach(sKey => {
+        DATA[sKey].forEach(sec => {
+          sec.modules.forEach(mod => {
+            mod.subtopics.forEach(st => {
+              total++;
+              if (completedSubtopics[st]) done++;
+            });
+          });
+        });
+      });
+      const percent = total > 0 ? Math.round((done / total) * 100) : 0;
+      const pctEl = document.getElementById('overall-percentage');
+      const barEl = document.getElementById('overall-bar');
+      if (pctEl) pctEl.innerText = percent + '%';
+      if (barEl) barEl.style.width = percent + '%';
+    }
+
+    function renderSubjects() {
+      const cardsEl = document.getElementById('subject-cards');
+      if (!cardsEl) return;
+      cardsEl.innerHTML = SUBJECTS.map(s => {
+        const isActive = s.key === activeSubject;
+        return `
+          <div class="subj-card p-4 sm:p-5 flex items-center gap-3.5 ${isActive ? 'active' : ''}" 
+               style="--active-color: ${s.mainColor}; --active-bg: ${s.bgActive};"
+               onclick="selectSubject('${s.key}')">
+            <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 transition-transform ${isActive ? 'scale-105' : ''}" 
+                 style="background: ${isActive ? s.bgActive : '#F1F5F9'}; color: ${isActive ? s.mainColor : '#64748B'};">
+              ${s.icon}
+            </div>
+            <span class="font-head font-extrabold text-sm text-slate-900 leading-tight">${s.name}</span>
+          </div>`;
+      }).join('');
+
+      const navEl = document.getElementById('bottom-nav-items');
+      if (navEl) {
+        navEl.innerHTML = SUBJECTS.map(s => {
+          const isActive = s.key === activeSubject;
+          return `
+            <button onclick="selectSubject('${s.key}')" class="bottom-item ${isActive ? 'active' : ''}">
+              ${s.name}
+            </button>`;
+        }).join('');
+      }
+    }
+
+    function renderSections() {
+      const wrap = document.getElementById('sections-wrap');
+      if (!wrap) return;
+      wrap.classList.remove('fade-in');
+      wrap.classList.add('fade-out');
+
+      setTimeout(() => {
+        const colors = THEME_COLORS[activeSubject];
+        const sections = DATA[activeSubject];
+
+        wrap.innerHTML = sections.map((sec, index) => {
+          const currentTone = colors[index % colors.length];
+          const currentIcon = MATHIGON_ICONS[index % MATHIGON_ICONS.length];
+
+          let secTotal = 0, secDone = 0;
+          sec.modules.forEach(m => {
+            m.subtopics.forEach(st => {
+              secTotal++;
+              if (completedSubtopics[st]) secDone++;
+            });
+          });
+          const secProgress = secTotal > 0 ? Math.round((secDone / secTotal) * 100) : 0;
+
+          return `
+            <div class="section-block p-6 sm:p-8">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div class="flex items-center gap-4">
+                  <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-sm" 
+                       style="background:${currentTone}15; color:${currentTone}">
+                    ${currentIcon}
+                  </div>
+                  <div>
+                    <h3 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">${sec.title}</h3>
+                    <span class="px-2.5 py-0.5 rounded-md font-mono text-[11px] font-bold" style="background:${currentTone}15; color:${currentTone}">
+                      ${sec.level}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="w-full sm:w-52">
+                  <div class="flex justify-between text-[11px] font-mono font-bold mb-1.5" style="color:${currentTone}">
+                    <span>БӨЛІМ ПРОГРЕСІ</span>
+                    <span>${secProgress}%</span>
+                  </div>
+                  <div class="h-2.5 rounded-full overflow-hidden bg-slate-100 p-0.5 border border-slate-200/50">
+                    <div class="h-full rounded-full transition-all duration-500" style="background:${currentTone}; width:${secProgress}%"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ЧИПЫ МОДУЛЕЙ -->
+              <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-5 border-t border-slate-200/60">
+                ${sec.modules.map(mod => {
+                  let modDoneCount = 0;
+                  mod.subtopics.forEach(st => { if (completedSubtopics[st]) modDoneCount++; });
+                  const isModFullyDone = modDoneCount === mod.subtopics.length && mod.subtopics.length > 0;
+                  
+                  return `
+                  <div onclick="openModuleModal('${mod.name}', '${sec.title}', '${sec.level}')" 
+                       class="topic-chip p-4 flex flex-col justify-between cursor-pointer ${isModFullyDone ? 'completed' : ''}"
+                       style="--chip-bg: ${currentTone}08; --chip-border: ${currentTone}30;">
+                    
+                    <div class="flex items-start justify-between gap-3 mb-3">
+                      <span class="font-head text-sm font-extrabold ${isModFullyDone ? 'text-slate-400 line-through opacity-80' : 'text-slate-900'}">
+                        ${mod.name}
+                      </span>
+                      
+                      <div class="w-6 h-6 rounded-lg flex items-center justify-center shrink-0" 
+                           style="background:${isModFullyDone ? currentTone : '#F1F5F9'}; border: 1.5px solid ${isModFullyDone ? currentTone : '#CBD5E1'}">
+                        ${isModFullyDone ? `<svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>` : ''}
+                      </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 font-semibold pt-2 border-t border-slate-100">
+                      <span>${mod.subtopics.length} микро-тақырып</span>
+                      <span style="color:${currentTone}">${modDoneCount}/${mod.subtopics.length}</span>
+                    </div>
+                  </div>`;
+                }).join('')}
+              </div>
+            </div>`;
+        }).join('');
+
+        wrap.classList.remove('fade-out');
+        wrap.classList.add('fade-in');
+      }, 120);
+    }
+
+    function selectSubject(key) {
+      if (activeSubject === key) return;
+      activeSubject = key;
+      renderSubjects();
+      renderSections();
+    }
+
+    /* МОДАЛЬНОЕ ОКНО */
+    function openModuleModal(modName, secTitle, level) {
+      let targetMod = null;
+      DATA[activeSubject].forEach(sec => {
+        sec.modules.forEach(m => {
+          if (m.name === modName) targetMod = m;
+        });
+      });
+
+      if (!targetMod) return;
+      currentActiveModule = targetMod;
+
+      const subj = SUBJECTS.find(x => x.key === activeSubject);
+
+      document.getElementById('modal-title').innerText = targetMod.name;
+      document.getElementById('modal-subj-name').innerText = `${subj.name} • ${secTitle}`;
+      document.getElementById('modal-level-badge').innerText = level;
+
+      const linkWrap = document.getElementById('modal-lesson-link-wrap');
+      const lessonLink = document.getElementById('modal-lesson-link');
+      if (targetMod.link) {
+        linkWrap.classList.remove('hidden');
+        lessonLink.href = targetMod.link;
+      } else {
+        linkWrap.classList.add('hidden');
+      }
+
+      renderSubtopicsList();
+
+      const modal = document.getElementById('topic-modal');
+      const card = document.getElementById('modal-card');
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      card.classList.remove('scale-95');
+      card.classList.add('scale-100');
+    }
+
+    function renderSubtopicsList() {
+      if (!currentActiveModule) return;
+      const listEl = document.getElementById('modal-subtopics-list');
+
+      listEl.innerHTML = currentActiveModule.subtopics.map((st, i) => {
+        const isDone = !!completedSubtopics[st];
+        return `
+          <div onclick="toggleSubtopic('${st}')" 
+               class="p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${isDone ? 'bg-emerald-50/60 border-emerald-200' : 'bg-slate-50 border-slate-200/80 hover:border-slate-300'}">
+            <div class="flex items-center gap-3">
+              <span class="w-6 h-6 rounded-lg font-mono text-[11px] font-bold flex items-center justify-center shrink-0 ${isDone ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-600'}">
+                ${i+1}
+              </span>
+              <span class="text-xs sm:text-sm font-bold ${isDone ? 'text-emerald-900 line-through' : 'text-slate-800'}">
+                ${st}
+              </span>
+            </div>
+
+            <button class="w-5 h-5 rounded-md flex items-center justify-center shrink-0 transition-all ${isDone ? 'bg-emerald-600 text-white' : 'border border-slate-300 bg-white'}">
+              ${isDone ? `<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>` : ''}
+            </button>
+          </div>`;
+      }).join('');
+    }
+
+    function toggleSubtopic(st) {
+      completedSubtopics[st] = !completedSubtopics[st];
+      saveSubtopicsProgress();
+      renderSubtopicsList();
+      renderSections();
+    }
+
+    function toggleAllSubtopics() {
+      if (!currentActiveModule) return;
+      let allDone = currentActiveModule.subtopics.every(st => completedSubtopics[st]);
+
+      currentActiveModule.subtopics.forEach(st => {
+        completedSubtopics[st] = !allDone;
+      });
+
+      saveSubtopicsProgress();
+      renderSubtopicsList();
+      renderSections();
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('topic-modal');
+      const card = document.getElementById('modal-card');
+      if (card && modal) {
+        card.classList.remove('scale-100');
+        card.classList.add('scale-95');
+        modal.classList.add('opacity-0', 'pointer-events-none');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateOverallProgress();
+      renderSubjects();
+      renderSections();
+    });
+  </script>
+</body>
+</html>

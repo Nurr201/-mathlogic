@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Баптау — math·logic</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&family=Golos+Text:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  body { font-family: 'Golos Text', sans-serif; background: #F8FAFC; color: #0F172A; }
+  .fd { font-family: 'Rubik', sans-serif; }
+  .success-banner {
+    background: linear-gradient(135deg, #EFF6FF 0%, #E0F2FE 100%);
+    border: 1px solid #BFDBFE;
+  }
+</style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+  <div class="w-full max-w-2xl bg-white rounded-3xl p-6 md:p-10 shadow-2xl border border-blue-100 my-6">
+    
+    <!-- Прогресс-бар -->
+    <div class="mb-8" id="progress-header">
+      <div class="flex justify-between items-center mb-3">
+        <a href="index.html" class="fd font-extrabold text-xl text-blue-700">math<span class="text-sky-500">·</span>logic</a>
+        <span id="step-count" class="text-xs font-bold text-slate-400 fd bg-slate-100 px-3 py-1 rounded-full">1 / 3 қадам</span>
+      </div>
+      <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+        <div id="progress" class="h-full bg-blue-700 transition-all duration-500 w-1/3"></div>
+      </div>
+    </div>
+
+    <!-- ШАГ 1: ТЕМЫ -->
+    <div id="step-1" class="step-pane">
+      <h2 class="fd text-2xl md:text-3xl font-extrabold text-slate-800 mb-2">Нені дамытқың келеді?</h2>
+      <p class="text-sm text-slate-500 mb-6">Бір немесе бірнеше бағытты таңда</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div onclick="toggleGoal(this, 'math')" class="brilliant-card rounded-2xl p-4 active flex flex-col justify-between h-56">
+          <div class="flex justify-between items-start">
+            <span class="text-xs font-bold fd text-blue-700 bg-blue-100 px-2.5 py-1 rounded-lg">Алгебра</span>
+            <div class="card-check flex items-center justify-center text-white text-xs">✓</div>
+          </div>
+          <div class="my-2 flex justify-center items-center h-20 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100/60">
+            <svg viewBox="0 0 100 60" class="w-20 h-14"><path d="M10,50 Q30,10 50,30 T90,10" stroke="#1D4ED8" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="50" cy="30" r="4" fill="#0EA5E9"/></svg>
+          </div>
+          <div>
+            <p class="fd font-bold text-slate-800 text-sm">Теңдеулер & Матем</p>
+            <p class="text-[11px] text-slate-500 mt-0.5">Виет, функциялар мен хактар</p>
+          </div>
+        </div>
+
+        <div onclick="toggleGoal(this, 'geometry')" class="brilliant-card rounded-2xl p-4 flex flex-col justify-between h-56">
+          <div class="flex justify-between items-start">
+            <span class="text-xs font-bold fd text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-lg">Геометрия</span>
+            <div class="card-check flex items-center justify-center text-white text-xs">✓</div>
+          </div>
+          <div class="my-2 flex justify-center items-center h-20 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl border border-emerald-100/60">
+            <svg viewBox="0 0 80 60" class="w-16 h-14"><polygon points="10,50 40,10 70,50" stroke="#059669" stroke-width="3.5" fill="none"/><line x1="40" y1="10" x2="40" y2="50" stroke="#10B981" stroke-width="2" stroke-dasharray="3 3"/></svg>
+          </div>
+          <div>
+            <p class="fd font-bold text-slate-800 text-sm">Геометрия</p>
+            <p class="text-[11px] text-slate-500 mt-0.5">Фигуралар, Пифагор мен бұрыштар</p>
+          </div>
+        </div>
+
+        <div onclick="toggleGoal(this, 'logic')" class="brilliant-card rounded-2xl p-4 flex flex-col justify-between h-56">
+          <div class="flex justify-between items-start">
+            <span class="text-xs font-bold fd text-amber-700 bg-amber-100 px-2.5 py-1 rounded-lg">Логика</span>
+            <div class="card-check flex items-center justify-center text-white text-xs">✓</div>
+          </div>
+          <div class="my-2 flex justify-center items-center h-20 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border border-amber-100/60">
+            <svg viewBox="0 0 80 60" class="w-16 h-14"><rect x="10" y="15" width="25" height="25" rx="6" fill="#F59E0B"/><circle cx="55" cy="27" r="13" fill="#D97706"/></svg>
+          </div>
+          <div>
+            <p class="fd font-bold text-slate-800 text-sm">Логика & Паттерндер</p>
+            <p class="text-[11px] text-slate-500 mt-0.5">Сұрақтар мен алгоритмдер</p>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="nextStep(2)" class="w-full bg-blue-700 hover:bg-blue-800 text-white fd font-bold py-4 rounded-2xl shadow-lg shadow-blue-600/25 transition-all text-sm">Ары қарай →</button>
+    </div>
+
+    <!-- ШАГ 2: УРОВЕНЬ -->
+    <div id="step-2" class="step-pane hidden">
+      <h2 class="fd text-2xl md:text-3xl font-extrabold text-slate-800 mb-2">Қай деңгейдесің?</h2>
+      <p class="text-sm text-slate-500 mb-6">Өзіңе сай есептерді таңдаймыз</p>
+
+      <div class="space-y-3 mb-8">
+        <div onclick="selectLevel(this, 'beginner')" class="brilliant-card rounded-2xl p-4 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-green-100 text-green-600 flex items-center justify-center text-xl shrink-0">🌱</div>
+          <div class="flex-grow">
+            <p class="fd font-bold text-slate-800 text-sm">Жаңадан бастаушы</p>
+            <p class="text-xs text-slate-500 mt-0.5">Базалық ережелер мен жеңіл теңдеулер</p>
+          </div>
+          <div class="card-check flex items-center justify-center text-white text-xs shrink-0">✓</div>
+        </div>
+
+        <div onclick="selectLevel(this, 'middle')" class="brilliant-card rounded-2xl p-4 active flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl shrink-0">⚡️</div>
+          <div class="flex-grow">
+            <p class="fd font-bold text-slate-800 text-sm">База бар (8–9 сынып)</p>
+            <p class="text-xs text-slate-500 mt-0.5">Мектеп бағдарламасын жақсы білемін</p>
+          </div>
+          <div class="card-check flex items-center justify-center text-white text-xs shrink-0">✓</div>
+        </div>
+
+        <div onclick="selectLevel(this, 'pro')" class="brilliant-card rounded-2xl p-4 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl shrink-0">🔥</div>
+          <div class="flex-grow">
+            <p class="fd font-bold text-slate-800 text-sm">Олимпиада деңгейі</p>
+            <p class="text-xs text-slate-500 mt-0.5">Күрделі логика мен хардкор есептер</p>
+          </div>
+          <div class="card-check flex items-center justify-center text-white text-xs shrink-0">✓</div>
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        <button onclick="nextStep(1)" class="w-1/3 bg-slate-100 hover:bg-slate-200 text-slate-600 fd font-bold py-4 rounded-2xl transition-all text-sm">← Артқа</button>
+        <button onclick="nextStep(3)" class="w-2/3 bg-blue-700 hover:bg-blue-800 text-white fd font-bold py-4 rounded-2xl shadow-lg shadow-blue-600/25 transition-all text-sm">Ары қарай →</button>
+      </div>
+    </div>
+
+    <!-- ШАГ 3: ВОЗРАСТ -->
+    <div id="step-3" class="step-pane hidden">
+      <h2 class="fd text-2xl md:text-3xl font-extrabold text-slate-800 mb-2">Жасың нешеде?</h2>
+      <p class="text-sm text-slate-500 mb-6">Контентті сәйкестендіру үшін</p>
+
+      <div class="grid grid-cols-3 gap-4 mb-8">
+        <div onclick="selectAge(this, '<14')" class="brilliant-card rounded-2xl p-5 text-center flex flex-col items-center justify-center h-36">
+          <div class="text-3xl mb-2">🎒</div>
+          <p class="fd font-bold text-sm text-slate-800">14-ке дейін</p>
+        </div>
+
+        <div onclick="selectAge(this, '14-17')" class="brilliant-card rounded-2xl p-5 text-center active flex flex-col items-center justify-center h-36">
+          <div class="text-3xl mb-2">🎧</div>
+          <p class="fd font-bold text-sm text-slate-800">14 – 17</p>
+        </div>
+
+        <div onclick="selectAge(this, '18+')" class="brilliant-card rounded-2xl p-5 text-center flex flex-col items-center justify-center h-36">
+          <div class="text-3xl mb-2">☕️</div>
+          <p class="fd font-bold text-sm text-slate-800">18+</p>
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        <button onclick="nextStep(2)" class="w-1/3 bg-slate-100 hover:bg-slate-200 text-slate-600 fd font-bold py-4 rounded-2xl transition-all text-sm">← Артқа</button>
+        <button onclick="showRegistration()" class="w-2/3 bg-blue-700 hover:bg-blue-800 text-white fd font-bold py-4 rounded-2xl shadow-lg shadow-blue-600/25 transition-all text-sm">Бағдарламаны құру ✨</button>
+      </div>
+    </div>
+
+    <!-- ФИНАЛ: РЕГИСТРАЦИЯ (Отдельная полноценная карточка-итог) -->
+    <div id="step-4" class="step-pane hidden">
+      <div class="success-banner rounded-2xl p-5 mb-6 text-center">
+        <div class="w-12 h-12 bg-blue-600 text-white rounded-2xl mx-auto flex items-center justify-center text-2xl mb-3 shadow-md shadow-blue-500/20">🎉</div>
+        <h2 class="fd text-xl font-extrabold text-blue-900 mb-1">Жеке бағдарламаңыз дайын!</h2>
+        <p class="text-xs text-blue-700/80">Таңдауларыңыз ескерілді. Прогрессіңізді жоғалтпау үшін аккаунт жасаңыз.</p>
+      </div>
+
+      <form onsubmit="handleRegister(event)" class="space-y-4 mb-6">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 fd mb-1">Есіміңіз</label>
+          <input type="text" required placeholder="Люк" class="w-full bg-slate-50 border border-slate-200 focus:border-blue-700 rounded-xl px-4 py-3 text-sm outline-none transition-all">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 fd mb-1">Email поштаңыз</label>
+          <input type="email" required placeholder="luke@example.com" class="w-full bg-slate-50 border border-slate-200 focus:border-blue-700 rounded-xl px-4 py-3 text-sm outline-none transition-all">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 fd mb-1">Құпия сөз (Пароль)</label>
+          <input type="password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 focus:border-blue-700 rounded-xl px-4 py-3 text-sm outline-none transition-all">
+        </div>
+
+        <button type="submit" class="w-full bg-blue-700 hover:bg-blue-800 text-white fd font-bold py-4 rounded-2xl shadow-lg shadow-blue-600/25 transition-all text-sm mt-2">Тіркелу және бастау 🚀</button>
+      </form>
+      
+      <p class="text-xs text-slate-400 text-center">
+        Бұрыннан аккаунтыңыз бар ма? <a href="login.html" class="text-blue-700 font-bold hover:underline">Кіру</a>
+      </p>
+    </div>
+
+  </div>
+
+<script>
+  const userData = { goals: ['math'], level: 'middle', age: '14-17' };
+
+  function toggleGoal(elem, goalKey) {
+    elem.classList.toggle('active');
+    if (userData.goals.includes(goalKey)) {
+      userData.goals = userData.goals.filter(g => g !== goalKey);
+    } else {
+      userData.goals.push(goalKey);
+    }
+  }
+
+  function selectLevel(elem, levelKey) {
+    document.querySelectorAll('#step-2 .brilliant-card').forEach(c => c.classList.remove('active'));
+    elem.classList.add('active');
+    userData.level = levelKey;
+  }
+
+  function selectAge(elem, ageKey) {
+    document.querySelectorAll('#step-3 .brilliant-card').forEach(c => c.classList.remove('active'));
+    elem.classList.add('active');
+    userData.age = ageKey;
+  }
+
+  function nextStep(stepNumber) {
+    document.querySelectorAll('.step-pane').getElementById ? null : null;
+    document.querySelectorAll('.step-pane').forEach(p => p.classList.add('hidden'));
+    document.getElementById(`step-${stepNumber}`).classList.remove('hidden');
+
+    document.getElementById('step-count').innerText = `${stepNumber} / 3 қадам`;
+    const progressMap = { 1: '33%', 2: '66%', 3: '100%' };
+    document.getElementById('progress').style.width = progressMap[stepNumber];
+  }
+
+  function showRegistration() {
+    // Скрываем прогресс-бар настройки, так как переходим к финалу аккаунта
+    document.getElementById('progress-header').style.display = 'none';
+    
+    document.querySelectorAll('.step-pane').forEach(p => p.classList.add('hidden'));
+    document.getElementById('step-4').classList.remove('hidden');
+  }
+
+  function handleRegister(e) {
+    e.preventDefault();
+    const nameInput = e.target.querySelector('input[type="text"]');
+    const emailInput = e.target.querySelector('input[type="email"]');
+    const userName = nameInput ? nameInput.value : 'Пользователь';
+    const userEmail = emailInput ? emailInput.value : 'user@example.com';
+
+    try {
+      localStorage.setItem('math_logic_user', JSON.stringify({
+        name: userName,
+        email: userEmail,
+        goals: userData.goals,
+        level: userData.level,
+        age: userData.age,
+        loggedIn: true
+      }));
+    } catch(e) {}
+
+    window.location.href = "dashboard.html";
+  }
+</script>
+</body>
+</html>
