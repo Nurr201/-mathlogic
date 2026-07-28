@@ -1,0 +1,90 @@
+/* ========================================
+   ANIMATIONS — math·logic
+   Единый слой анимаций для всего проекта
+   ======================================== */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(29, 78, 216, 0.15); }
+  50% { box-shadow: 0 0 0 12px rgba(29, 78, 216, 0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes flame-flicker {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  25% { transform: scale(1.06); opacity: 0.9; }
+  50% { transform: scale(0.96); opacity: 1; }
+  75% { transform: scale(1.03); opacity: 0.95; }
+}
+
+@keyframes flame-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(249, 115, 22, 0.15); }
+  50% { box-shadow: 0 0 35px rgba(249, 115, 22, 0.25); }
+}
+
+/* Utility classes */
+.animate-float { animation: float 4s ease-in-out infinite; }
+.animate-scale-in { animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-pulse-glow { animation: pulse-glow 2.5s ease-in-out infinite; }
+.animate-fade { animation: fadeIn 0.35s ease-out forwards; }
+.animate-count { animation: countUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+.flame-icon { animation: flame-flicker 2.5s ease-in-out infinite; }
+.flame-glow { animation: flame-pulse 3s ease-in-out infinite; }
+
+/* Delay classes */
+.delay-100 { animation-delay: 0.1s; }
+.delay-150 { animation-delay: 0.15s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-250 { animation-delay: 0.25s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-350 { animation-delay: 0.35s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+
+/* Stagger for grid items */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+.stagger-6 { animation-delay: 0.3s; }
+.stagger-7 { animation-delay: 0.35s; }
+.stagger-8 { animation-delay: 0.4s; }
+
+/* Reveal on scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.reveal.show { opacity: 1; transform: none; }
+
+/* Section transitions (dashboard) */
+#sections-wrap { transition: opacity 0.25s ease, transform 0.25s ease; }
+.fade-out { opacity: 0; transform: translateY(10px); }
+.fade-in { opacity: 1; transform: translateY(0); }

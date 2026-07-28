@@ -6,6 +6,8 @@
   <title>Виет теоремасы — math·logic</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/components.css">
   <style>
     body {
       overflow: hidden;
@@ -15,18 +17,6 @@
     .scroll-area::-webkit-scrollbar-track { background: transparent; }
     .scroll-area::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
     .scroll-area::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
-    .step-box { transition: all 0.3s ease; }
-    .step-pending .step-box { background: #F1F5F9; color: #94A3B8; }
-    .step-pending .step-text { color: #64748B; }
-    .step-active .step-box {
-      background: #1D4ED8;
-      color: #FFFFFF;
-      box-shadow: 0 4px 12px rgba(29, 78, 216, 0.25);
-      transform: scale(1.05);
-    }
-    .step-active .step-text { color: #0F172A; font-weight: 700; }
-    .step-completed .step-box { background: #E0F2FE; color: #0EA5E9; }
-    .step-completed .step-text { color: #0EA5E9; font-weight: 600; }
   </style>
 </head>
 <body class="h-screen w-screen flex relative">
@@ -185,6 +175,11 @@
 
   </main>
 
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/app.js"></script>
   <script>
     const steps = [
       { id: "1", title: "Виет теоремасы", subtitle: "Теория және 3 мысал", type: "theory" },
@@ -242,10 +237,9 @@
           "Квадрат теңдеуге келтірілетін биквадрат теңдеулер"
         ];
         try {
-          const saved = localStorage.getItem('math_logic_subtopics');
-          const completed = saved ? JSON.parse(saved) : {};
+          const completed = ML.getSubtopics();
           moduleSubtopics.forEach(st => { completed[st] = true; });
-          localStorage.setItem('math_logic_subtopics', JSON.stringify(completed));
+          ML.setSubtopics(completed);
         } catch(e) {}
 
         const content = document.getElementById('main-content');

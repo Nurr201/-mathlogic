@@ -7,6 +7,8 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&family=Golos+Text:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/animations.css">
+<link rel="stylesheet" href="css/components.css">
 <style>
   body { font-family: 'Golos Text', sans-serif; background: #F8FAFC; color: #0F172A; }
   .fd { font-family: 'Rubik', sans-serif; }
@@ -53,17 +55,19 @@
     </div>
   </main>
 
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/app.js"></script>
   <script>
     function handleLogin(e) {
       e.preventDefault();
       const emailInput = e.target.querySelector('input[type="email"]');
       const userEmail = emailInput ? emailInput.value : 'user@example.com';
-
-      try {
-        localStorage.setItem('math_logic_user', JSON.stringify({ email: userEmail, loggedIn: true }));
-      } catch(e) {}
-
-      window.location.href = "dashboard.html";
+      ML.setUser({ email: userEmail, loggedIn: true });
+      UI.showToast('Кіру орындалды!', 'success');
+      setTimeout(function() { window.location.href = "dashboard.html"; }, 500);
     }
   </script>
 </body>

@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Профиль — math·logic</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body class="min-h-screen relative overflow-x-hidden">
+
+  <!-- АМБИЕНТНЫЙ ФОН -->
+  <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+    <div class="absolute top-[-8%] left-[-3%] w-[550px] h-[550px] bg-blue-200/40 rounded-full blur-[130px] animate-float"></div>
+    <div class="absolute top-[20%] right-[-8%] w-[480px] h-[480px] bg-purple-100/50 rounded-full blur-[120px] animate-float" style="animation-delay: -2s"></div>
+    <div class="absolute bottom-[-5%] left-[15%] w-[400px] h-[400px] bg-emerald-100/40 rounded-full blur-[100px] animate-float" style="animation-delay: -1s"></div>
+    <div class="absolute top-[50%] left-[40%] w-[300px] h-[300px] bg-amber-100/30 rounded-full blur-[90px]"></div>
+    <div class="absolute top-[-2%] right-[20%] w-[200px] h-[200px] bg-pink-100/30 rounded-full blur-[80px]"></div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="fixed top-0 left-0 w-full z-40 bg-white/70 backdrop-blur-md border-b border-slate-200/50 shadow-xs">
+    <div class="h-1 w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-600/15">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+        </div>
+        <span class="font-head font-extrabold text-xl text-slate-900 tracking-tight">
+          math<span class="text-blue-600">·</span>logic
+        </span>
+      </a>
+      <a href="dashboard.html" class="text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors px-3 py-2 rounded-xl hover:bg-slate-100">
+        <svg class="w-5 h-5 inline-block mr-1.5 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Артқа
+      </a>
+    </div>
+  </header>
+
+  <!-- HERO PROFILE -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 pt-28 pb-20">
+    <div class="glass-card-strong rounded-3xl p-6 sm:p-10 md:p-12 shadow-xl shadow-slate-900/5 animate-scale-in">
+      
+      <div class="flex flex-col md:flex-row md:items-center gap-8 md:gap-12">
+
+        <!-- АВАТАР -->
+        <div class="flex-shrink-0 flex flex-col items-center md:items-start gap-3">
+          <div class="relative animate-slide-up">
+            <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 p-[3px] avatar-ring animate-pulse-glow">
+              <div class="w-full h-full rounded-full bg-white overflow-hidden flex items-center justify-center">
+                <svg class="w-16 h-16 sm:w-20 sm:h-20 text-blue-600/80" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-emerald-500 border-[3px] border-white flex items-center justify-center shadow-lg shadow-emerald-500/30">
+              <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- ИНФО -->
+        <div class="flex-1 min-w-0 space-y-5">
+
+          <!-- ИМЯ + USERNAME -->
+          <div class="animate-slide-up delay-100">
+            <div class="flex items-center flex-wrap gap-3">
+              <h1 class="font-head font-extrabold text-3xl sm:text-4xl text-slate-900 tracking-tight">
+                Нұрбол Абдазов
+              </h1>
+              <span class="level-badge">Lv. 12</span>
+            </div>
+            <div class="flex items-center gap-2 mt-2">
+              <span class="username-dot"></span>
+              <span class="text-base font-semibold text-slate-400 font-mono tracking-tight">
+                @nurbek_dev
+              </span>
+            </div>
+          </div>
+
+          <!-- СТАТИСТИКА -->
+          <div class="animate-slide-up delay-200">
+            <div class="flex flex-wrap items-center gap-3">
+
+              <span class="stat-badge">
+                <svg class="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span class="text-slate-700">1 248 XP</span>
+              </span>
+
+              <span class="stat-badge">
+                <span style="font-size: 1.1rem; line-height: 1;">🔥</span>
+                <span class="text-slate-700">Streak 7 күн</span>
+              </span>
+
+              <span class="stat-badge">
+                <svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <span class="text-slate-700">Қаңтар 2026</span>
+              </span>
+
+            </div>
+          </div>
+
+          <!-- XP BAR -->
+          <div class="animate-slide-up delay-300">
+            <div class="flex items-center justify-between text-xs font-bold font-mono mb-1.5">
+              <span class="text-slate-500">700 / 2 000 XP</span>
+              <span class="text-blue-600">Lv. 13</span>
+            </div>
+            <div class="xp-bar-track">
+              <div class="xp-bar-fill" style="width: 35%;"></div>
+            </div>
+          </div>
+
+          <!-- КНОПКИ -->
+          <div class="flex flex-wrap items-center gap-3 animate-slide-up delay-400">
+            <button onclick="NAV.goToSettings()" class="btn text-sm font-semibold px-6 py-3 rounded-2xl gap-2 shadow-lg shadow-blue-600/20 hover:shadow-xl hover:shadow-blue-600/25 transition-all duration-300">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+              </svg>
+              Редактировать профиль
+            </button>
+            <button onclick="navigator.clipboard.writeText(window.location.href).then(()=>UI.showToast('Ссылка скопирована!','success')).catch(()=>UI.showToast('Не удалось скопировать','error'))" class="px-6 py-3 rounded-2xl text-sm font-bold text-slate-600 bg-slate-100/80 hover:bg-slate-200/80 border border-slate-200/60 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+              </svg>
+              Поделиться
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- СТАТИСТИКА -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
+    <div class="flex items-center gap-3 mb-8 animate-slide-up">
+      <div class="w-1 h-6 rounded-full bg-gradient-to-b from-blue-500 to-purple-500"></div>
+      <h2 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">
+        Ваша статистика
+      </h2>
+      <span class="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full font-mono">8 Показателей</span>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="stats-grid"></div>
+  </section>
+
+  <!-- ОБЩИЙ ПРОГРЕСС КУРСА -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
+    <div class="flex items-center gap-3 mb-8 animate-slide-up">
+      <div class="w-1 h-6 rounded-full bg-gradient-to-b from-purple-500 to-pink-500"></div>
+      <h2 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">
+        Общий прогресс курса
+      </h2>
+      <span class="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full font-mono">4 Предмета</span>
+    </div>
+
+    <div class="glass-card-strong rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl shadow-slate-900/5 animate-scale-in" id="progress-card">
+      
+      <!-- ВЕРХ: КРУГ + ИНФО -->
+      <div class="flex flex-col lg:flex-row items-center gap-8 lg:gap-14 mb-8">
+
+        <!-- КРУГОВОЙ ИНДИКАТОР -->
+        <div class="flex-shrink-0 relative animate-slide-up" id="circle-progress-wrap">
+          <svg class="circular-chart" viewBox="0 0 170 170">
+            <circle class="bg-circle" cx="85" cy="85" r="70"/>
+            <circle class="glow-circle" id="progress-glow" cx="85" cy="85" r="70" stroke="url(#progressGrad)"/>
+            <circle class="progress-circle" id="progress-ring" cx="85" cy="85" r="70" stroke="url(#progressGrad)"/>
+            <defs>
+              <linearGradient id="progressGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#3B82F6"/>
+                <stop offset="50%" stop-color="#8B5CF6"/>
+                <stop offset="100%" stop-color="#EC4899"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <span class="font-head font-extrabold text-4xl text-slate-900 tracking-tight" id="progress-pct-display">0%</span>
+            <span class="text-xs font-bold text-slate-400 mt-0.5">пройдено</span>
+          </div>
+        </div>
+
+        <!-- ИНФО СПРАВА -->
+        <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-5 w-full animate-slide-up delay-200">
+          <div class="bg-white/60 rounded-2xl p-5 border border-slate-200/60 hover:border-slate-300/80 transition-all hover:bg-white/80">
+            <div class="flex items-center gap-2.5 mb-2">
+              <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+              </div>
+              <span class="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider">Общий прогресс</span>
+            </div>
+            <span class="font-head font-extrabold text-3xl text-slate-900 tracking-tight" id="overall-pct-info">68%</span>
+          </div>
+
+          <div class="bg-white/60 rounded-2xl p-5 border border-slate-200/60 hover:border-slate-300/80 transition-all hover:bg-white/80">
+            <div class="flex items-center gap-2.5 mb-2">
+              <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <span class="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider">Осталось уроков</span>
+            </div>
+            <span class="font-head font-extrabold text-3xl text-slate-900 tracking-tight" id="remaining-lessons">24</span>
+          </div>
+
+          <div class="bg-white/60 rounded-2xl p-5 border border-slate-200/60 hover:border-slate-300/80 transition-all hover:bg-white/80">
+            <div class="flex items-center gap-2.5 mb-2">
+              <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                </svg>
+              </div>
+              <span class="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider">Осталось XP</span>
+            </div>
+            <span class="font-head font-extrabold text-3xl text-slate-900 tracking-tight" id="remaining-xp">752</span>
+          </div>
+
+          <div class="bg-white/60 rounded-2xl p-5 border border-slate-200/60 hover:border-slate-300/80 transition-all hover:bg-white/80">
+            <div class="flex items-center gap-2.5 mb-2">
+              <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                </svg>
+              </div>
+              <span class="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider">Следующая цель</span>
+            </div>
+            <span class="font-head font-bold text-base text-slate-900 tracking-tight" id="next-goal">Геометрия — Площади фигур</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- HORIZONTAL PROGRESS BAR -->
+      <div class="mb-6 animate-slide-up delay-300">
+        <div class="flex items-center justify-between text-xs font-bold font-mono mb-2.5">
+          <span class="text-slate-500">Прогресс курса</span>
+          <span class="text-blue-600" id="main-bar-label">68%</span>
+        </div>
+        <div class="main-progress-track shadow-inner">
+          <div class="main-progress-fill" id="main-progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- СРАВНЕНИЕ -->
+      <div class="flex justify-center mb-8 animate-slide-up delay-350">
+        <span class="comparison-badge text-slate-700">
+          <svg class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+          </svg>
+          Вы прошли больше, чем <span class="text-blue-600 mx-1" id="comparison-pct">72%</span> учеников
+        </span>
+      </div>
+
+      <!-- МИНИ-СТАТИСТИКА ПО ПРЕДМЕТАМ -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 animate-slide-up delay-400" id="subject-mini-stats">
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 🔥 ЕЖЕДНЕВНАЯ СЕРИЯ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
+    <div class="flex items-center gap-3 mb-8 animate-slide-up">
+      <div class="w-1 h-6 rounded-full bg-gradient-to-b from-orange-500 to-red-500"></div>
+      <h2 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">
+        Ежедневная серия
+      </h2>
+      <span class="text-xs font-bold text-orange-500 bg-orange-50 px-3 py-1 rounded-full font-mono">🔥 Streak</span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
+
+      <!-- БОЛЬШАЯ КАРТОЧКА СЕРИИ -->
+      <div class="lg:col-span-2 glass-card-strong rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-900/5 animate-scale-in flex flex-col items-center justify-center text-center flame-glow">
+        <div class="text-7xl sm:text-8xl mb-4 flame-icon">🔥</div>
+        <div class="font-head font-extrabold text-5xl sm:text-6xl text-slate-900 tracking-tight" id="streak-current">17</div>
+        <div class="text-sm font-bold text-slate-400 mt-1 mb-6">дней подряд</div>
+
+        <div class="flex gap-6 sm:gap-10">
+          <div>
+            <div class="font-head font-extrabold text-2xl text-slate-900" id="streak-best">42</div>
+            <div class="text-xs font-bold text-slate-400">Лучший рекорд</div>
+          </div>
+          <div class="w-px bg-slate-200"></div>
+          <div>
+            <div class="font-head font-extrabold text-2xl text-slate-900" id="streak-total">186</div>
+            <div class="text-xs font-bold text-slate-400">Всего дней</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- КАЛЕНДАРЬ + НАГРАДА -->
+      <div class="lg:col-span-3 flex flex-col gap-5">
+
+        <!-- КАЛЕНДАРЬ -->
+        <div class="glass-card-strong rounded-3xl p-5 sm:p-6 shadow-xl shadow-slate-900/5 animate-scale-in delay-100">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-sm font-bold font-head text-slate-700">Активность за 30 дней</span>
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-400">
+              <span>Меньше</span>
+              <div class="flex gap-1">
+                <div class="w-3.5 h-3.5 rounded-sm cal-day level-0"></div>
+                <div class="w-3.5 h-3.5 rounded-sm cal-day level-1"></div>
+                <div class="w-3.5 h-3.5 rounded-sm cal-day level-2"></div>
+                <div class="w-3.5 h-3.5 rounded-sm cal-day level-3"></div>
+              </div>
+              <span>Больше</span>
+            </div>
+          </div>
+          <div class="cal-grid" id="cal-grid"></div>
+        </div>
+
+        <!-- НАГРАДА -->
+        <div class="reward-card rounded-2xl p-5 sm:p-6 animate-scale-in delay-200">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-400 to-rose-500 flex items-center justify-center text-2xl shadow-lg shadow-orange-500/20">
+              🎯
+            </div>
+            <div>
+              <div class="text-sm font-bold text-slate-400">Следующая награда</div>
+              <div class="font-head font-extrabold text-lg sm:text-xl text-slate-900 mt-0.5" id="next-reward">
+                До награды «30 дней подряд» осталось 13 дней
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- МОТИВАЦИЯ -->
+        <div class="bg-white/60 border border-slate-200/60 rounded-2xl p-5 animate-scale-in delay-300">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-100 flex items-center justify-center text-lg">
+              💪
+            </div>
+            <div>
+              <div class="font-head font-bold text-base text-slate-900">Зайди завтра и сохрани серию</div>
+              <div class="text-xs font-semibold text-slate-400 mt-0.5">Каждый день без пропуска приближает к новой награде</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ПОСЛЕДНЯЯ АКТИВНОСТЬ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
+    <div class="flex items-center gap-3 mb-8 animate-slide-up">
+      <div class="w-1 h-6 rounded-full bg-gradient-to-b from-emerald-500 to-cyan-500"></div>
+      <h2 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">
+        Последняя активность
+      </h2>
+      <span class="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full font-mono">7 Действий</span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
+
+      <!-- TIMELINE -->
+      <div class="lg:col-span-3 glass-card-strong rounded-3xl p-6 sm:p-7 shadow-xl shadow-slate-900/5 animate-scale-in">
+        <div class="flex items-center gap-2.5 mb-6">
+          <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <span class="font-head font-bold text-base text-slate-800">Хронология</span>
+        </div>
+        <div class="relative" id="timeline-container">
+          <div class="timeline-line"></div>
+        </div>
+      </div>
+
+      <!-- ПРОДОЛЖИТЬ + СЛЕДУЮЩИЙ -->
+      <div class="lg:col-span-2 flex flex-col gap-5">
+
+        <!-- ПРОДОЛЖИТЬ ОБУЧЕНИЕ -->
+        <div class="continue-card rounded-3xl p-6 sm:p-7 shadow-xl shadow-slate-900/5 animate-scale-in delay-150">
+          <div class="flex items-center gap-2.5 mb-5">
+            <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <span class="font-head font-bold text-base text-slate-800">Продолжить обучение</span>
+          </div>
+
+          <div class="mb-4" id="continue-lesson-wrap">
+            <div class="font-head font-extrabold text-xl text-slate-900 tracking-tight" id="continue-lesson-title">Степени и их свойства</div>
+            <div class="text-xs font-bold text-slate-400 mt-1">Алгебра • Основы</div>
+          </div>
+
+          <div class="mb-4">
+            <div class="flex items-center justify-between text-xs font-bold font-mono mb-1.5">
+              <span class="text-slate-500">Прогресс урока</span>
+              <span class="text-blue-600" id="continue-progress-label">64%</span>
+            </div>
+            <div class="xp-bar-track">
+              <div class="xp-bar-fill" id="continue-progress-fill" style="width: 64%;"></div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 text-xs font-bold text-slate-400 mb-5">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span>Осталось ~<span id="continue-time">12</span> минут</span>
+          </div>
+
+          <button onclick="window.location.href='lesson.html'" class="continue-btn w-full py-3.5 rounded-2xl text-white font-head font-bold text-sm shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+            </svg>
+            Продолжить
+          </button>
+
+          <div class="text-center mt-3">
+            <span class="text-[11px] font-semibold text-slate-400">Лучше сделать сегодня, чем откладывать на завтра</span>
+          </div>
+        </div>
+
+        <!-- СЛЕДУЮЩИЙ УРОК -->
+        <div class="bg-white/60 border border-slate-200/60 rounded-3xl p-6 sm:p-7 animate-scale-in delay-200 hover:border-slate-300/80 transition-all hover:bg-white/80 shadow-sm">
+          <div class="flex items-center gap-2.5 mb-4">
+            <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+              </svg>
+            </div>
+            <span class="font-head font-bold text-base text-slate-800">Следующий урок</span>
+          </div>
+
+          <div class="mb-3" id="next-lesson-wrap">
+            <div class="font-head font-extrabold text-lg text-slate-900 tracking-tight" id="next-lesson-title">Квадратные уравнения</div>
+            <div class="text-xs font-bold text-slate-400 mt-1" id="next-lesson-desc">Решение через дискриминант, теорема Виета</div>
+          </div>
+
+          <div class="flex items-center gap-3 flex-wrap">
+            <span class="difficulty-badge bg-amber-50 text-amber-700 border border-amber-200">Средний</span>
+            <span class="difficulty-badge bg-slate-100 text-slate-500 border border-slate-200">
+              <svg class="w-3 h-3 inline-block mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              18 мин
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ДОСТИЖЕНИЯ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
+    <div class="flex items-center gap-3 mb-8 animate-slide-up">
+      <div class="w-1 h-6 rounded-full bg-gradient-to-b from-amber-500 to-rose-500"></div>
+      <h2 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">
+        Достижения
+      </h2>
+      <span class="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full font-mono">12 Наград</span>
+    </div>
+
+    <!-- СТАТИСТИКА ДОСТИЖЕНИЙ -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8 animate-slide-up delay-100" id="achv-stats"></div>
+
+    <!-- ФИЛЬТРЫ -->
+    <div class="flex flex-wrap gap-2 mb-7 animate-slide-up delay-150" id="achv-filters">
+      <button class="achv-filter-btn active" data-filter="all" onclick="filterAchv('all')">Все</button>
+      <button class="achv-filter-btn" data-filter="unlocked" onclick="filterAchv('unlocked')">Полученные</button>
+      <button class="achv-filter-btn" data-filter="in-progress" onclick="filterAchv('in-progress')">В процессе</button>
+      <button class="achv-filter-btn" data-filter="locked" onclick="filterAchv('locked')">Заблокированные</button>
+    </div>
+
+    <!-- СЕТКА -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="achv-grid"></div>
+  </section>
+
+  <!-- ЦЕЛИ И СЛЕДУЮЩИЙ УРОВЕНЬ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
+    <div class="flex items-center gap-3 mb-8 animate-slide-up">
+      <div class="w-1 h-6 rounded-full bg-gradient-to-b from-blue-500 to-emerald-500"></div>
+      <h2 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">
+        Цели и следующий уровень
+      </h2>
+      <span class="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full font-mono">Level Up</span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
+
+      <!-- ЛЕВАЯ КОЛОНКА: УРОВЕНЬ + ЦЕЛИ -->
+      <div class="lg:col-span-3 flex flex-col gap-5">
+
+        <!-- КАРТОЧКА УРОВНЯ -->
+        <div class="glass-card-strong rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-900/5 animate-scale-in">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-head font-extrabold text-2xl shadow-lg shadow-blue-600/20" id="current-level-display">12</div>
+              <div>
+                <div class="text-xs font-bold text-slate-400">Текущий уровень</div>
+                <div class="font-head font-extrabold text-lg text-slate-900">Уровень <span id="current-level-label">12</span></div>
+              </div>
+            </div>
+            <div class="hidden sm:block text-slate-300 text-2xl font-head font-extrabold">→</div>
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-rose-500 flex items-center justify-center text-white font-head font-extrabold text-2xl shadow-lg shadow-amber-500/20 opacity-70" id="next-level-display">13</div>
+              <div>
+                <div class="text-xs font-bold text-slate-400">Следующий</div>
+                <div class="font-head font-extrabold text-lg text-slate-900">Уровень <span id="next-level-label">13</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <div class="flex items-center justify-between text-xs font-bold font-mono mb-2">
+              <span class="text-slate-500" id="xp-progress-label">700 / 2 000 XP</span>
+              <span class="text-blue-600" id="level-progress-pct">35%</span>
+            </div>
+            <div class="xp-bar-track h-3">
+              <div class="xp-bar-fill" id="level-progress-bar" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 mt-4 text-xs font-bold text-slate-400">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            <span id="xp-remaining-text">Осталось 1 300 XP до уровня 13</span>
+          </div>
+        </div>
+
+        <!-- БЛИЖАЙШИЕ ЦЕЛИ -->
+        <div class="glass-card-strong rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-900/5 animate-scale-in delay-100">
+          <div class="flex items-center gap-2.5 mb-5">
+            <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <span class="font-head font-bold text-base text-slate-800">Ближайшие цели</span>
+          </div>
+          <div class="space-y-4" id="goals-container"></div>
+        </div>
+      </div>
+
+      <!-- ПРАВАЯ КОЛОНКА: СЕГОДНЯ + МОТИВАЦИЯ + НАГРАДА -->
+      <div class="lg:col-span-2 flex flex-col gap-5">
+
+        <!-- СЕГОДНЯШНЯЯ ЦЕЛЬ -->
+        <div class="glass-card-strong rounded-3xl p-6 sm:p-7 shadow-xl shadow-slate-900/5 animate-scale-in delay-150">
+          <div class="flex items-center gap-2.5 mb-5">
+            <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <span class="font-head font-bold text-base text-slate-800">Сегодняшняя цель</span>
+            <span class="text-xs font-bold font-mono text-emerald-600 ml-auto" id="today-progress-label">0%</span>
+          </div>
+
+          <div id="today-tasks" class="space-y-3 mb-5"></div>
+
+          <div class="xp-bar-track">
+            <div class="xp-bar-fill" id="today-progress-bar" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <!-- МОТИВАЦИЯ -->
+        <div class="bg-gradient-to-br from-blue-50/80 to-purple-50/80 border border-blue-100/60 rounded-3xl p-6 sm:p-7 animate-scale-in delay-200">
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-xl shadow-md shrink-0">💪</div>
+            <div>
+              <div class="font-head font-bold text-base text-slate-900">Почти у цели!</div>
+              <div class="text-sm font-semibold text-slate-500 mt-1 leading-relaxed" id="motivation-text">
+                До следующего уровня осталось совсем немного! Заверши ещё один урок и приблизься к новой награде.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- НАГРАДА СЛЕДУЮЩЕГО УРОВНЯ -->
+        <div class="bg-white/60 border border-slate-200/60 rounded-3xl p-6 sm:p-7 animate-scale-in delay-250 hover:border-slate-300/80 transition-all hover:bg-white/80 shadow-sm">
+          <div class="flex items-center gap-2.5 mb-4">
+            <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+              </svg>
+            </div>
+            <span class="font-head font-bold text-base text-slate-800">Награда уровня 13</span>
+          </div>
+          <div class="space-y-2.5" id="reward-preview"></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- АНАЛИТИКА ОБУЧЕНИЯ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
+    <div class="flex items-center gap-3 mb-6 animate-slide-up">
+      <div class="w-1 h-6 rounded-full bg-gradient-to-b from-cyan-500 to-blue-500"></div>
+      <h2 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">
+        Аналитика обучения
+      </h2>
+    </div>
+
+    <!-- ПЕРИОД -->
+    <div class="flex flex-wrap gap-2 mb-7 animate-slide-up delay-100" id="period-filters">
+      <button class="period-btn" data-period="7" onclick="filterPeriod(7)">7 дней</button>
+      <button class="period-btn active" data-period="30" onclick="filterPeriod(30)">30 дней</button>
+      <button class="period-btn" data-period="90" onclick="filterPeriod(90)">3 месяца</button>
+      <button class="period-btn" data-period="all" onclick="filterPeriod('all')">Всё время</button>
+    </div>
+
+    <!-- ГРАФИКИ -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
+      <div class="chart-card animate-scale-in">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          </div>
+          <span class="text-sm font-bold text-slate-700">Получено XP</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="xpChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card animate-scale-in delay-100">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-7 h-7 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          </div>
+          <span class="text-sm font-bold text-slate-700">Прогресс по предметам</span>
+        </div>
+        <div class="chart-wrap flex justify-center">
+          <canvas id="subjectsChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ВЫВОДЫ -->
+    <div class="glass-card-strong rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-900/5 animate-scale-in delay-400">
+      <div class="flex items-center gap-2.5 mb-5">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-xs">💡</div>
+        <span class="font-head font-bold text-base text-slate-800">Аналитические выводы</span>
+      </div>
+      <div class="grid grid-cols-3 gap-3" id="insights-grid"></div>
+    </div>
+  </section>
+
+  <!-- ФУТЕР-НАВИГАЦИЯ -->
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 pb-24">
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up">
+      <button onclick="NAV.goToSettings()" class="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-2xl bg-white border border-slate-200/80 text-slate-700 font-head font-bold text-sm shadow-sm hover:border-slate-300 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Настройки
+      </button>
+      <button onclick="NAV.logout()" class="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-2xl border-2 border-red-200 bg-white text-red-500 font-head font-bold text-sm hover:bg-red-50 hover:border-red-300 hover:-translate-y-0.5 transition-all duration-300">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        Выйти из аккаунта
+      </button>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    const STATS_CONFIG = [
+      { key: 'lessons_completed', icon: '📚', label: 'Завершено уроков', color: 'bg-blue-50', iconBg: 'bg-blue-100', iconColor: 'text-blue-600', valueColor: 'text-blue-700', border: 'border-blue-200/60', defaultVal: 34 },
+      { key: 'modules_completed', icon: '🧩', label: 'Завершено модулей', color: 'bg-emerald-50', iconBg: 'bg-emerald-100', iconColor: 'text-emerald-600', valueColor: 'text-emerald-700', border: 'border-emerald-200/60', defaultVal: 12 },
+      { key: 'xp_earned', icon: '⭐', label: 'Получено XP', color: 'bg-amber-50', iconBg: 'bg-amber-100', iconColor: 'text-amber-600', valueColor: 'text-amber-700', border: 'border-amber-200/60', defaultVal: 1248 },
+      { key: 'study_time', icon: '⏱️', label: 'Время обучения (мин)', color: 'bg-purple-50', iconBg: 'bg-purple-100', iconColor: 'text-purple-600', valueColor: 'text-purple-700', border: 'border-purple-200/60', defaultVal: 684 },
+      { key: 'problems_solved', icon: '📝', label: 'Решено задач', color: 'bg-cyan-50', iconBg: 'bg-cyan-100', iconColor: 'text-cyan-600', valueColor: 'text-cyan-700', border: 'border-cyan-200/60', defaultVal: 237 },
+      { key: 'avg_score', icon: '🎯', label: 'Средний результат', color: 'bg-green-50', iconBg: 'bg-green-100', iconColor: 'text-green-600', valueColor: 'text-green-700', border: 'border-green-200/60', defaultVal: 86, suffix: '%' },
+      { key: 'best_streak', icon: '🔥', label: 'Лучшая серия (дней)', color: 'bg-orange-50', iconBg: 'bg-orange-100', iconColor: 'text-orange-600', valueColor: 'text-orange-700', border: 'border-orange-200/60', defaultVal: 14 },
+      { key: 'achievements', icon: '🏆', label: 'Получено достижений', color: 'bg-rose-50', iconBg: 'bg-rose-100', iconColor: 'text-rose-600', valueColor: 'text-rose-700', border: 'border-rose-200/60', defaultVal: 8 },
+    ];
+
+    function getStatValue(key, defaultVal) {
+      return ML.getProfileStat(key, defaultVal);
+    }
+
+    function formatStatValue(val, suffix) {
+      if (val >= 1000000) return (val / 1000000).toFixed(1) + 'M' + (suffix || '');
+      if (val >= 1000) return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + (suffix || '');
+      return val + (suffix || '');
+    }
+
+    function renderStats() {
+      const grid = document.getElementById('stats-grid');
+      grid.innerHTML = STATS_CONFIG.map((s, i) => {
+        const val = getStatValue(s.key, s.defaultVal);
+        return `
+          <div class="stat-card animate-count stagger-${i + 1} ${s.color} border ${s.border} shadow-sm hover:shadow-md">
+            <div class="stat-card-shine"></div>
+            <div class="flex items-start gap-3.5 mb-3">
+              <div class="stat-icon-wrap ${s.iconBg} ${s.iconColor}">${s.icon}</div>
+            </div>
+            <div class="${s.valueColor} stat-value">${formatStatValue(val, s.suffix)}</div>
+            <div class="${s.valueColor} stat-label mt-1">${s.label}</div>
+          </div>`;
+      }).join('');
+    }
+
+    /* ACHIEVEMENTS */
+    const ACHV_DATA = [
+      { id: 1, icon: '🎉', name: 'Первый урок', desc: 'Завершите свой первый урок', rarity: 'common', status: 'unlocked', date: '2026-01-15', progress: null, condition: null },
+      { id: 2, icon: '⭐', name: 'Первые 100 XP', desc: 'Наберите 100 опыта', rarity: 'common', status: 'unlocked', date: '2026-01-18', progress: null, condition: null },
+      { id: 3, icon: '🔥', name: 'Серия 7 дней', desc: 'Занимайтесь 7 дней подряд', rarity: 'rare', status: 'unlocked', date: '2026-02-03', progress: null, condition: null },
+      { id: 4, icon: '🔥', name: 'Серия 30 дней', desc: 'Занимайтесь 30 дней подряд', rarity: 'epic', status: 'in-progress', date: null, progress: 17, condition: '30 дней подряд', total: 30 },
+      { id: 5, icon: '📘', name: 'Мастер алгебры', desc: 'Завершите все темы алгебры', rarity: 'epic', status: 'in-progress', date: null, progress: 78, condition: '100% алгебры', total: 100 },
+      { id: 6, icon: '📐', name: 'Мастер геометрии', desc: 'Завершите все темы геометрии', rarity: 'epic', status: 'in-progress', date: null, progress: 54, condition: '100% геометрии', total: 100 },
+      { id: 7, icon: '🧠', name: 'Эксперт по логике', desc: 'Завершите все темы логики', rarity: 'legendary', status: 'unlocked', date: '2026-03-01', progress: null, condition: null },
+      { id: 8, icon: '⚡', name: 'Быстрое решение', desc: 'Решите задачу менее чем за 30 секунд', rarity: 'rare', status: 'unlocked', date: '2026-02-14', progress: null, condition: null },
+      { id: 9, icon: '💯', name: 'Идеальный результат', desc: 'Получите 100% в любом тесте', rarity: 'epic', status: 'locked', date: null, progress: null, condition: '10/10 в тесте' },
+      { id: 10, icon: '📚', name: 'Завершён первый модуль', desc: 'Пройдите весь модуль целиком', rarity: 'common', status: 'unlocked', date: '2026-01-22', progress: null, condition: null },
+      { id: 11, icon: '🏆', name: '100 решённых задач', desc: 'Решите 100 задач', rarity: 'rare', status: 'in-progress', date: null, progress: 73, condition: '100 задач', total: 100 },
+      { id: 12, icon: '🚀', name: 'Активный ученик', desc: 'Занимайтесь 5 дней в неделю', rarity: 'legendary', status: 'locked', date: null, progress: null, condition: '5/7 дней в неделю' },
+    ];
+
+    const RARITY_STYLES = {
+      common: { bg: 'bg-slate-50', border: 'border-slate-200', badge: 'bg-slate-200 text-slate-600', iconBg: 'bg-slate-100 text-slate-600' },
+      rare: { bg: 'bg-blue-50', border: 'border-blue-200', badge: 'bg-blue-200 text-blue-700', iconBg: 'bg-blue-100 text-blue-600' },
+      epic: { bg: 'bg-purple-50', border: 'border-purple-200', badge: 'bg-purple-200 text-purple-700', iconBg: 'bg-purple-100 text-purple-600' },
+      legendary: { bg: 'bg-amber-50', border: 'border-amber-200', badge: 'bg-amber-200 text-amber-700', iconBg: 'bg-amber-100 text-amber-600' },
+    };
+
+    const RARITY_LABELS = { common: 'Обычное', rare: 'Редкое', epic: 'Эпическое', legendary: 'Легендарное' };
+
+    function getAchievements() {
+      const stored = localStorage.getItem('profile_achievements');
+      if (stored) {
+        try { return JSON.parse(stored); } catch(e) {}
+      }
+      return ACHV_DATA;
+    }
+
+    let activeAchvFilter = 'all';
+
+    function filterAchv(filter) {
+      document.querySelectorAll('.achv-filter-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.achv-filter-btn[data-filter="' + filter + '"]').classList.add('active');
+      activeAchvFilter = filter;
+      renderAchievements();
+      var labels = { all: 'Все достижения', unlocked: 'Полученные', 'in-progress': 'В процессе', locked: 'Заблокированные' };
+      UI.showToast(labels[filter] || filter, 'info');
+    }
+
+    function filterPeriod(period) {
+      document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+      var selector = '.period-btn[data-period="' + period + '"]';
+      document.querySelector(selector).classList.add('active');
+      activePeriod = period === 'all' ? 120 : parseInt(period);
+      renderAnalytics();
+      var labels = { 7: '7 дней', 30: '30 дней', 90: '3 месяца', all: 'Всё время' };
+      UI.showToast('Период: ' + (labels[period] || period), 'info');
+    }
+
+    function renderAchvStats() {
+      const wrap = document.getElementById('achv-stats');
+      if (!wrap) return;
+      const data = getAchievements();
+      const unlocked = data.filter(a => a.status === 'unlocked').length;
+      const total = data.length;
+      const pct = Math.round((unlocked / total) * 100);
+
+      const cards = [
+        { label: 'Всего', value: total, color: 'bg-slate-900', bg: 'bg-slate-100' },
+        { label: 'Получено', value: unlocked, color: 'text-emerald-700', bg: 'bg-emerald-50' },
+        { label: 'Осталось', value: total - unlocked, color: 'text-amber-700', bg: 'bg-amber-50' },
+        { label: 'Прогресс', value: pct + '%', color: 'text-blue-700', bg: 'bg-blue-50' },
+      ];
+
+      wrap.innerHTML = cards.map(c => `
+        <div class="${c.bg} rounded-2xl p-4 border border-slate-200/60 text-center">
+          <div class="font-head font-extrabold text-2xl sm:text-3xl text-slate-900 ${c.color}">${c.value}</div>
+          <div class="text-xs font-bold text-slate-400 mt-0.5">${c.label}</div>
+        </div>`).join('');
+    }
+
+    function renderAchievements() {
+      const grid = document.getElementById('achv-grid');
+      if (!grid) return;
+      const data = getAchievements();
+
+      const filtered = activeAchvFilter === 'all' ? data : data.filter(a => a.status === activeAchvFilter);
+
+      grid.innerHTML = filtered.map((a, i) => {
+        const s = RARITY_STYLES[a.rarity];
+        const isLocked = a.status === 'locked';
+        const isInProg = a.status === 'in-progress';
+        const isUnlocked = a.status === 'unlocked';
+        const progPct = isInProg && a.total ? Math.round((a.progress / a.total) * 100) : 0;
+
+        return `
+          <div class="achv-card ${s.bg} border ${s.border} shadow-sm ${isLocked ? 'locked' : ''} animate-count stagger-${(i % 8) + 1}">
+            ${isLocked ? '<div class="achv-lock-icon">🔒</div>' : ''}
+            <div class="relative" style="${isLocked ? 'filter: blur(1px);' : ''}">
+              <div class="flex items-start gap-3.5 mb-3">
+                <div class="achv-badge-icon ${s.iconBg}">${a.icon}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="font-head font-bold text-sm text-slate-900 leading-tight">${a.name}</div>
+                  <div class="mt-1">
+                    <span class="achv-rarity ${s.badge}">${RARITY_LABELS[a.rarity]}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="text-xs font-semibold text-slate-500 leading-relaxed">${isLocked ? a.condition : a.desc}</div>
+              ${isUnlocked && a.date ? `<div class="text-[11px] font-bold text-slate-400 mt-2">Получено ${a.date}</div>` : ''}
+              ${isInProg ? `
+                <div class="mt-3">
+                  <div class="flex items-center gap-2.5">
+                    <div class="achv-progress-track">
+                      <div class="achv-progress-fill ${s.badge.split(' ')[0]}" style="width: ${progPct}%"></div>
+                    </div>
+                    <span class="text-xs font-bold font-mono text-slate-500">${progPct}%</span>
+                  </div>
+                  <div class="text-[11px] font-bold text-slate-400 mt-1">${a.progress}/${a.total} • ${a.condition}</div>
+                </div>` : ''}
+              ${isLocked ? `
+                <div class="mt-3 pt-3 border-t border-slate-200/60">
+                  <div class="flex items-center gap-1.5 text-[11px] font-bold text-slate-400">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    ${a.condition}
+                  </div>
+                </div>` : ''}
+            </div>
+          </div>`;
+      }).join('');
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400 font-bold">Нет достижений в этой категории</div>`;
+      }
+    }
+
+    /* STREAK & CALENDAR */
+    function getStreakData() {
+      const stored = localStorage.getItem('profile_streak_data');
+      if (stored) {
+        try { return JSON.parse(stored); } catch(e) {}
+      }
+      const today = new Date();
+      const days = [];
+      for (let i = 29; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        const dateStr = d.toISOString().slice(0, 10);
+        const r = Math.random();
+        if (r < 0.3) days.push({ date: dateStr, level: 0 });
+        else if (r < 0.55) days.push({ date: dateStr, level: 1 });
+        else if (r < 0.8) days.push({ date: dateStr, level: 2 });
+        else days.push({ date: dateStr, level: 3 });
+      }
+      days[days.length - 1].level = Math.floor(Math.random() * 3) + 1;
+      return {
+        current: 17,
+        best: 42,
+        total: 186,
+        days: days
+      };
+    }
+
+    function renderCalendar() {
+      const grid = document.getElementById('cal-grid');
+      if (!grid) return;
+      const data = getStreakData();
+      const today = new Date().toISOString().slice(0, 10);
+
+      document.getElementById('streak-current').textContent = data.current;
+      document.getElementById('streak-best').textContent = data.best;
+      document.getElementById('streak-total').textContent = data.total;
+
+      const rewardDays = 30;
+      const remaining = rewardDays - data.current;
+      const rewardEl = document.getElementById('next-reward');
+      if (remaining > 0) {
+        rewardEl.textContent = `До награды «${rewardDays} дней подряд» осталось ${remaining} дней`;
+      } else {
+        rewardEl.textContent = `🏆 Награда «${rewardDays} дней подряд» получена!`;
+      }
+
+      grid.innerHTML = data.days.map(d => {
+        const isToday = d.date === today;
+        return `<div class="cal-day level-${d.level}${isToday ? ' today' : ''}" title="${d.date}"></div>`;
+      }).join('');
+    }
+
+    /* TIMELINE */
+    function getTimelineData() {
+      const stored = localStorage.getItem('profile_timeline');
+      if (stored) {
+        try { return JSON.parse(stored); } catch(e) {}
+      }
+      const now = Date.now();
+      const h = n => 1000 * 60 * 60 * n;
+      return [
+        { icon: '📘', title: 'Изучил тему "Степени и их свойства"', desc: 'Алгебра • 8 класс', time: now - h(2), color: 'bg-blue-500' },
+        { icon: '✅', title: 'Прошел тест "Линейные уравнения"', desc: 'Результат: 8/10 правильных', time: now - h(5), color: 'bg-emerald-500' },
+        { icon: '⭐', title: 'Получил 50 XP', desc: 'За завершение модуля', time: now - h(8), color: 'bg-amber-500' },
+        { icon: '🏆', title: 'Получил достижение "Быстрый старт"', desc: 'Первый модуль за 2 дня', time: now - h(24), color: 'bg-purple-500' },
+        { icon: '📐', title: 'Закончил модуль "Геометрия"', desc: 'Площади фигур • 100%', time: now - h(48), color: 'bg-cyan-500' },
+        { icon: '🧩', title: 'Начал тему "Квадратные уравнения"', desc: 'Введение в тему', time: now - h(72), color: 'bg-rose-500' },
+        { icon: '📊', title: 'Улучшил рекорд в тренировке', desc: 'Новый рекорд: 15 задач подряд', time: now - h(96), color: 'bg-orange-500' },
+      ];
+    }
+
+    function timeAgo(ts) {
+      const diff = Date.now() - ts;
+      const mins = Math.floor(diff / 60000);
+      if (mins < 60) return mins + ' мин назад';
+      const hours = Math.floor(mins / 60);
+      if (hours < 24) return hours + ' ч назад';
+      const days = Math.floor(hours / 24);
+      if (days === 1) return 'Вчера';
+      if (days < 7) return days + ' дня назад';
+      return Math.floor(days / 7) + ' нед назад';
+    }
+
+    function renderTimeline() {
+      const container = document.getElementById('timeline-container');
+      if (!container) return;
+      const items = getTimelineData();
+
+      items.forEach((item, i) => {
+        const el = document.createElement('div');
+        el.className = 'timeline-item animate-slide-up';
+        el.style.animationDelay = (i * 0.08) + 's';
+        el.innerHTML = `
+          <div class="timeline-dot ${item.color} text-white shadow-md">${item.icon}</div>
+          <div class="bg-white/70 border border-slate-200/60 rounded-2xl p-4 hover:bg-white/90 hover:border-slate-300/80 transition-all shadow-sm">
+            <div class="font-head font-bold text-sm text-slate-900">${item.title}</div>
+            <div class="text-xs font-semibold text-slate-400 mt-1">${item.desc}</div>
+            <div class="text-[11px] font-bold text-slate-300 mt-1.5">${timeAgo(item.time)}</div>
+          </div>`;
+        container.appendChild(el);
+      });
+    }
+
+    /* GOALS & LEVEL */
+    function getGoalsData() {
+      const stored = localStorage.getItem('profile_goals');
+      if (stored) {
+        try { return JSON.parse(stored); } catch(e) {}
+      }
+      return {
+        currentLevel: 12,
+        currentXp: 700,
+        xpToNext: 2000,
+        goals: [
+          { icon: '⭐', name: 'Получить ещё 250 XP', progress: 63, total: 250, reward: '50 XP бонус', color: 'bg-amber-500' },
+          { icon: '📚', name: 'Завершить ещё 3 урока', progress: 1, total: 3, reward: 'Новый бейдж', color: 'bg-blue-500' },
+          { icon: '🔥', name: 'Дойти до серии 30 дней', progress: 17, total: 30, reward: '🔥 Легендарный статус', color: 'bg-orange-500' },
+          { icon: '🏆', name: 'Получить "Мастер алгебры"', progress: 78, total: 100, reward: 'Эпический бейдж', color: 'bg-purple-500' },
+        ],
+        todayTasks: [
+          { icon: '📖', name: 'Пройди 1 урок', done: false },
+          { icon: '✏️', name: 'Реши 10 задач', done: false },
+          { icon: '⭐', name: 'Заработай 30 XP', done: false },
+        ],
+        motivation: 'До следующего уровня осталось совсем немного! Заверши ещё один урок и приблизься к новой награде.'
+      };
+    }
+
+    function renderGoals() {
+      const data = getGoalsData();
+      const pct = Math.round((data.currentXp / data.xpToNext) * 100);
+      const remaining = data.xpToNext - data.currentXp;
+
+      document.getElementById('current-level-display').textContent = data.currentLevel;
+      document.getElementById('current-level-label').textContent = data.currentLevel;
+      document.getElementById('next-level-display').textContent = data.currentLevel + 1;
+      document.getElementById('next-level-label').textContent = data.currentLevel + 1;
+      document.getElementById('xp-progress-label').textContent = `${data.currentXp.toLocaleString()} / ${data.xpToNext.toLocaleString()} XP`;
+      document.getElementById('level-progress-pct').textContent = pct + '%';
+      document.getElementById('xp-remaining-text').textContent = `Осталось ${remaining.toLocaleString()} XP до уровня ${data.currentLevel + 1}`;
+
+      setTimeout(() => {
+        document.getElementById('level-progress-bar').style.width = pct + '%';
+      }, 300);
+
+      // Goals
+      const goalsEl = document.getElementById('goals-container');
+      goalsEl.innerHTML = data.goals.map(g => {
+        const gpct = Math.round((g.progress / g.total) * 100);
+        return `
+          <div class="goal-card bg-white/60 border border-slate-200/60 hover:bg-white/80 hover:border-slate-300/80 shadow-sm">
+            <div class="flex items-start gap-3.5">
+              <div class="w-9 h-9 rounded-xl ${g.color.replace('bg-', 'bg-').replace('500', '100')} flex items-center justify-center text-sm shrink-0">${g.icon}</div>
+              <div class="flex-1 min-w-0">
+                <div class="font-head font-bold text-sm text-slate-900">${g.name}</div>
+                <div class="flex items-center gap-2.5 mt-2.5">
+                  <div class="achv-progress-track">
+                    <div class="achv-progress-fill ${g.color}" style="width: ${gpct}%"></div>
+                  </div>
+                  <span class="text-xs font-bold font-mono text-slate-500 shrink-0">${gpct}%</span>
+                </div>
+                <div class="flex items-center justify-between mt-1.5">
+                  <span class="text-[11px] font-bold text-slate-400">${g.progress}/${g.total}</span>
+                  <span class="text-[11px] font-bold text-emerald-600">+ ${g.reward}</span>
+                </div>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+
+      // Today tasks
+      const tasksEl = document.getElementById('today-tasks');
+      const doneCount = data.todayTasks.filter(t => t.done).length;
+      const todayPct = Math.round((doneCount / data.todayTasks.length) * 100);
+      document.getElementById('today-progress-label').textContent = todayPct + '%';
+      setTimeout(() => {
+        document.getElementById('today-progress-bar').style.width = todayPct + '%';
+      }, 400);
+
+      tasksEl.innerHTML = data.todayTasks.map(t => `
+        <div class="today-task${t.done ? ' done' : ''}">
+          <div class="today-check">
+            ${t.done ? '<svg class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>' : ''}
+          </div>
+          <span class="text-sm font-bold text-slate-700 flex-1">${t.name}</span>
+          ${t.done ? '<span class="text-[11px] font-bold text-emerald-600">Выполнено</span>' : '<span class="text-[11px] font-bold text-slate-400">Ожидание</span>'}
+        </div>`).join('');
+
+      // Motivation
+      document.getElementById('motivation-text').textContent = data.motivation;
+
+      // Reward preview
+      const previewEl = document.getElementById('reward-preview');
+      const level = data.currentLevel + 1;
+      const rewards = [
+        { icon: '🎨', label: 'Новый цвет профиля', desc: `Уровень ${level} — Синий сапфир` },
+        { icon: '🏅', label: 'Новый бейдж', desc: `Уровень ${level} — Опытный ученик` },
+        { icon: '👑', label: 'Новый титул', desc: `Уровень ${level} — "Математик"` },
+      ];
+      previewEl.innerHTML = rewards.map(r => `
+        <div class="reward-preview-item">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-100 to-amber-50 border border-amber-200 flex items-center justify-center text-base shrink-0">${r.icon}</div>
+          <div>
+            <div class="text-sm font-bold text-slate-900">${r.label}</div>
+            <div class="text-[11px] font-bold text-slate-400">${r.desc}</div>
+          </div>
+        </div>`).join('');
+    }
+
+    /* ANALYTICS */
+    function getAnalyticsData(period) {
+      const stored = localStorage.getItem('profile_analytics');
+      if (stored) {
+        try { return JSON.parse(stored); } catch(e) {}
+      }
+      const days = period === 7 ? 7 : period === 30 ? 30 : period === 90 ? 90 : 120;
+      const data = [];
+      const now = new Date();
+      for (let i = days - 1; i >= 0; i--) {
+        const d = new Date(now);
+        d.setDate(d.getDate() - i);
+        data.push({
+          date: d.toISOString().slice(0, 10),
+          xp: Math.floor(Math.random() * 80) + 10,
+          time: Math.floor(Math.random() * 45) + 5,
+          lessons: Math.random() > 0.4 ? Math.floor(Math.random() * 3) + 1 : 0
+        });
+      }
+      return data;
+    }
+
+    let chartInstances = {};
+    let activePeriod = 30;
+
+    function getSubjectData() {
+      return {
+        labels: ['Алгебра', 'Геометрия', 'Логика', 'Сандар'],
+        values: [78, 54, 92, 67],
+        colors: ['#3B82F6', '#10B981', '#8B5CF6', '#F59E0B']
+      };
+    }
+
+    function renderAnalytics() {
+      const data = getAnalyticsData(activePeriod);
+      const subj = getSubjectData();
+
+      // XP Chart
+      const ctx1 = document.getElementById('xpChart');
+      if (ctx1) {
+        if (chartInstances.xp) chartInstances.xp.destroy();
+        chartInstances.xp = new Chart(ctx1, {
+          type: 'line',
+          data: {
+            labels: data.map(d => d.date.slice(5)),
+            datasets: [{
+              label: 'XP',
+              data: data.map(d => d.xp),
+              borderColor: '#3B82F6',
+              backgroundColor: 'rgba(59,130,246,0.08)',
+              fill: true,
+              tension: 0.4,
+              pointRadius: 2,
+              pointHoverRadius: 5,
+              pointBackgroundColor: '#3B82F6',
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { backgroundColor: '#fff', titleColor: '#0F172A', bodyColor: '#0F172A', borderColor: '#E2E8F0', borderWidth: 1, cornerRadius: 12, padding: 12 } },
+            scales: { x: { grid: { display: false }, ticks: { color: '#94A3B8', font: { size: 9, weight: 'bold' }, maxTicksLimit: 8 } }, y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { color: '#94A3B8', font: { size: 9, weight: 'bold' } } } }
+          }
+        });
+      }
+
+      // Subjects Doughnut
+      const ctx3 = document.getElementById('subjectsChart');
+      if (ctx3) {
+        if (chartInstances.subj) chartInstances.subj.destroy();
+        chartInstances.subj = new Chart(ctx3, {
+          type: 'doughnut',
+          data: {
+            labels: subj.labels,
+            datasets: [{
+              data: subj.values,
+              backgroundColor: subj.colors,
+              borderWidth: 3,
+              borderColor: '#fff'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '60%',
+            plugins: {
+              legend: { position: 'right', labels: { boxWidth: 10, padding: 8, color: '#64748B', font: { size: 10, weight: 'bold' } } },
+              tooltip: { backgroundColor: '#fff', titleColor: '#0F172A', bodyColor: '#0F172A', borderColor: '#E2E8F0', borderWidth: 1, cornerRadius: 12, padding: 12 }
+            }
+          }
+        });
+      }
+
+      // Insights
+      const totalXp = data.reduce((s, d) => s + d.xp, 0);
+      const avgXp = Math.round(totalXp / data.length);
+      const bestDay = ['ВС','ПН','ВТ','СР','ЧТ','ПТ','СБ'][data.reduce((best, d) => d.xp > (data[best]?.xp || 0) ? data.indexOf(d) : best, 0)] || '—';
+      const bestSubj = subj.labels[subj.values.indexOf(Math.max(...subj.values))];
+      const worstSubj = subj.labels[subj.values.indexOf(Math.min(...subj.values))];
+
+      const insights = [
+        { icon: '⭐', label: 'Сред. XP/день', value: avgXp },
+        { icon: '❤️', label: 'Любимый предмет', value: bestSubj },
+        { icon: '📈', label: 'Подтянуть', value: worstSubj },
+      ];
+
+      const grid = document.getElementById('insights-grid');
+      if (grid) {
+        grid.innerHTML = insights.map(ins => `
+          <div class="insight-card text-center">
+            <div class="text-xl mb-1">${ins.icon}</div>
+            <div class="font-head font-extrabold text-base text-slate-900">${ins.value}</div>
+            <div class="text-[11px] font-bold text-slate-400 mt-0.5">${ins.label}</div>
+          </div>`).join('');
+      }
+    }
+
+    /* SETTINGS */
+document.addEventListener('DOMContentLoaded', function() {
+      renderStats();
+      renderCalendar();
+      renderTimeline();
+      renderAchvStats();
+      renderAchievements();
+      renderGoals();
+      setTimeout(renderAnalytics, 100);
+
+      // Set circular progress offset
+      var pctText = document.getElementById('progress-pct-display');
+      var ring = document.getElementById('progress-ring');
+      var glow = document.getElementById('progress-glow');
+      if (pctText && ring && glow) {
+        var pct = parseInt(pctText.textContent) || 0;
+        var offset = 439.8 * (100 - pct) / 100;
+        ring.style.setProperty('--offset', offset + 'px');
+        glow.style.setProperty('--offset', offset + 'px');
+        ring.classList.add('animated');
+        glow.classList.add('animated');
+      }
+    });
+
+</script>
+</body>
+</html>

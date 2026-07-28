@@ -83,23 +83,14 @@ window.MathJax={
 
 <link rel="stylesheet" href="css/styles.css">
 
+<link rel="stylesheet" href="css/animations.css">
+
+<link rel="stylesheet" href="css/components.css">
+
 <style>
 
 html{
   scroll-behavior:smooth;
-}
-
-.hero{
-  background:
-    radial-gradient(circle at top right,#5b7cff 0%,transparent 35%),
-    radial-gradient(circle at bottom left,#7c3aed 0%,transparent 40%),
-    linear-gradient(135deg,#2563eb,#4338ca);
-}
-
-.hero .glass{
-  background:rgba(255,255,255,.12);
-  backdrop-filter:blur(16px);
-  border:1px solid rgba(255,255,255,.15);
 }
 
 .sidebar{
@@ -109,28 +100,6 @@ html{
 
 .lesson-section{
   scroll-margin-top:110px;
-}
-
-.section-title{
-  font-family:'Rubik',sans-serif;
-  font-size:40px;
-  font-weight:800;
-  line-height:1.1;
-}
-
-.section-desc{
-  margin-top:12px;
-  color:#64748b;
-  font-size:18px;
-  line-height:1.8;
-}
-
-.stat{
-  padding:28px;
-  border-radius:24px;
-  background:rgba(255,255,255,.10);
-  backdrop-filter:blur(10px);
-  border:1px solid rgba(255,255,255,.12);
 }
 
 </style>
@@ -1496,6 +1465,11 @@ class="mt-4 px-10 py-5 rounded-2xl bg-indigo-600 text-white font-bold hover:scal
 
 </section>
 
+<script src="js/storage.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/app.js"></script>
 <script>
 
 const questions=[
@@ -1680,20 +1654,17 @@ document.getElementById("lessonGrade").textContent=grade;
 
 // Save progress to localStorage when all questions are completed
 if(solved===questions.length){
-  const moduleSubtopics=[
-    "Санды және әріпті өрнектер",
-    "Одночлен мен многочлен",
-    "Жақшаны ашу мен ұқсас мүшелер",
-    "Қысқаша көбейту формулалары (ФСУ)",
-    "Алгебралық бөлшектер мен ОДЗ"
-  ];
-  try{
-    const saved=localStorage.getItem('math_logic_subtopics');
-    const completed=saved?JSON.parse(saved):{};
+    const moduleSubtopics=[
+      "Санды және әріпті өрнектер",
+      "Одночлен мен многочлен",
+      "Жақшаны ашу мен ұқсас мүшелер",
+      "Қысқаша көбейту формулалары (ФСУ)",
+      "Алгебралық бөлшектер мен ОДЗ"
+    ];
+    const completed=ML.getSubtopics();
     moduleSubtopics.forEach(st=>{completed[st]=true;});
-    localStorage.setItem('math_logic_subtopics',JSON.stringify(completed));
-  }catch(e){}
-}
+    ML.setSubtopics(completed);
+  }
 
 }
 

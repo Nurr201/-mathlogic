@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Настройки — math·logic</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/components.css">
+  <style>
+    body { background: #F8FAFC; }
+  </style>
+</head>
+<body class="min-h-screen relative overflow-x-hidden bg-[#F8FAFC]">
+
+  <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+    <div class="absolute top-[-8%] left-[-3%] w-[550px] h-[550px] bg-blue-200/40 rounded-full blur-[130px] animate-float"></div>
+    <div class="absolute top-[20%] right-[-8%] w-[480px] h-[480px] bg-purple-100/50 rounded-full blur-[120px] animate-float" style="animation-delay: -2s"></div>
+    <div class="absolute bottom-[-5%] left-[15%] w-[400px] h-[400px] bg-emerald-100/40 rounded-full blur-[100px] animate-float" style="animation-delay: -1s"></div>
+  </div>
+
+  <header class="fixed top-0 left-0 w-full z-40 bg-white/70 backdrop-blur-md border-b border-slate-200/50 shadow-xs">
+    <div class="h-1 w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-600/15">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+        </div>
+        <span class="font-head font-extrabold text-xl text-slate-900 tracking-tight">math<span class="text-blue-600">·</span>logic</span>
+      </a>
+      <a href="profile.html" class="text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors px-3 py-2 rounded-xl hover:bg-slate-100">
+        <svg class="w-5 h-5 inline-block mr-1.5 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Профиль
+      </a>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 pt-28 pb-24">
+    <div class="flex items-center gap-3 mb-8 animate-slide-up">
+      <div class="w-1 h-6 rounded-full bg-gradient-to-b from-slate-500 to-slate-700"></div>
+      <h1 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">Настройки</h1>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <div class="settings-card animate-scale-in">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
+            <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+          </div>
+          <span class="font-head font-bold text-base text-slate-800">Профиль</span>
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Аватар</span>
+          <button class="text-xs font-bold text-blue-600 bg-blue-50 px-4 py-2 rounded-xl hover:bg-blue-100 transition-colors">Изменить</button>
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Имя</span>
+          <input class="settings-input" type="text" value="Нұрбол Абдазов">
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Username</span>
+          <input class="settings-input" type="text" value="@nurbek_dev">
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Email</span>
+          <input class="settings-input" type="email" value="nurbek@example.com">
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Пароль</span>
+          <button class="text-xs font-bold text-blue-600 bg-blue-50 px-4 py-2 rounded-xl hover:bg-blue-100 transition-colors">Сменить</button>
+        </div>
+      </div>
+
+      <div class="settings-card animate-scale-in delay-100">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-9 h-9 rounded-xl bg-purple-100 flex items-center justify-center text-purple-600">
+            <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
+          </div>
+          <span class="font-head font-bold text-base text-slate-800">Внешний вид</span>
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Тема</span>
+          <div class="flex gap-2">
+            <button class="theme-btn active">Светлая</button>
+            <button class="theme-btn">Тёмная</button>
+            <button class="theme-btn">Системная</button>
+          </div>
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Акцентный цвет</span>
+          <div class="flex gap-2">
+            <div class="color-swatch active" style="background:#1D4ED8"></div>
+            <div class="color-swatch" style="background:#059669"></div>
+            <div class="color-swatch" style="background:#7C3AED"></div>
+            <div class="color-swatch" style="background:#DC2626"></div>
+            <div class="color-swatch" style="background:#D97706"></div>
+          </div>
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Размер шрифта</span>
+          <div class="flex gap-2">
+            <button class="theme-btn">Мелкий</button>
+            <button class="theme-btn active">Средний</button>
+            <button class="theme-btn">Крупный</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-card animate-scale-in delay-150">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600">
+            <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <span class="font-head font-bold text-base text-slate-800">Язык</span>
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Интерфейс</span>
+          <div class="flex gap-2">
+            <button class="lang-btn active">Қазақша</button>
+            <button class="lang-btn">Русский</button>
+            <button class="lang-btn">English</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-card animate-scale-in delay-200">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600">
+            <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          </div>
+          <span class="font-head font-bold text-base text-slate-800">Обучение</span>
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Ежедневная цель</span>
+          <input class="settings-input w-24 text-center" type="number" value="3" min="1" max="10">
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Напоминания</span>
+          <div class="toggle active" role="switch" aria-checked="true" tabindex="0"></div>
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Автосохранение</span>
+          <div class="toggle active" role="switch" aria-checked="true" tabindex="0"></div>
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Показывать решения</span>
+          <div class="flex gap-2">
+            <button class="theme-btn">Сразу</button>
+            <button class="theme-btn active">После ответа</button>
+          </div>
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Звуковые эффекты</span>
+          <div class="toggle active" role="switch" aria-checked="true" tabindex="0"></div>
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Анимации</span>
+          <div class="toggle active" role="switch" aria-checked="true" tabindex="0"></div>
+        </div>
+      </div>
+
+      <div class="settings-card animate-scale-in delay-250">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-9 h-9 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600">
+            <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          </div>
+          <span class="font-head font-bold text-base text-slate-800">Конфиденциальность</span>
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Экспорт прогресса</span>
+          <button class="text-xs font-bold text-blue-600 bg-blue-50 px-4 py-2 rounded-xl hover:bg-blue-100 transition-colors">Скачать</button>
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Очистить данные</span>
+          <button class="danger-btn">Очистить</button>
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Сбросить прогресс</span>
+          <button class="danger-btn-solid">Сбросить</button>
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Политика конфиденциальности</span>
+          <a href="#" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors">Открыть</a>
+        </div>
+      </div>
+
+      <div class="settings-card animate-scale-in delay-300">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-9 h-9 rounded-xl bg-cyan-100 flex items-center justify-center text-cyan-600">
+            <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <span class="font-head font-bold text-base text-slate-800">О приложении</span>
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Версия</span>
+          <span class="text-sm font-bold text-slate-500">2.4.1</span>
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Уроков всего</span>
+          <span class="text-sm font-bold text-slate-500">247</span>
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Модулей всего</span>
+          <span class="text-sm font-bold text-slate-500">34</span>
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">Автор</span>
+          <span class="text-sm font-bold text-slate-500">Нұрбол Абдазов</span>
+        </div>
+        <div class="settings-row">
+          <span class="text-sm font-bold text-slate-700">GitHub</span>
+          <a href="#" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors">Скоро</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-center mt-10 animate-scale-in delay-350">
+      <button class="logout-btn flex items-center gap-3" onclick="NAV.logout()">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        Выйти из аккаунта
+      </button>
+    </div>
+  </main>
+
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Settings-specific toggles and buttons
+    document.querySelectorAll('.toggle').forEach(el => {
+      el.addEventListener('click', () => { el.classList.toggle('active'); el.setAttribute('aria-checked', el.classList.contains('active')); });
+      el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.classList.toggle('active'); el.setAttribute('aria-checked', el.classList.contains('active')); } });
+    });
+    document.querySelectorAll('.theme-btn, .lang-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const row = this.closest('.settings-row');
+        if (row) row.querySelectorAll('.theme-btn, .lang-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+    document.querySelectorAll('.color-swatch').forEach(el => {
+      el.addEventListener('click', function() {
+        const row = this.closest('.settings-row');
+        if (row) row.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+    document.querySelectorAll('.danger-btn, .danger-btn-solid').forEach(btn => {
+      btn.addEventListener('click', function() {
+        if (confirm('Вы уверены? Это действие нельзя отменить.')) {
+          if (this.classList.contains('danger-btn-solid')) {
+            localStorage.clear();
+            location.reload();
+          }
+        }
+      });
+    });
+    document.querySelectorAll('.settings-row a[href="#"]').forEach(a => {
+      a.addEventListener('click', e => e.preventDefault());
+    });
+  </script>
+</body>
+</html>

@@ -1,32 +1,58 @@
+/* ========================================
+   STYLES — math·logic
+   Дизайн-система: переменные, базовые стили, типографика
+   ======================================== */
+
 @import url('https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&family=Rubik:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
+  /* Основные цвета */
   --primary: #1D4ED8;
   --primary-hover: #1E40AF;
   --primary-light: #EFF6FF;
   --secondary: #0EA5E9;
   --accent: #4F46E5;
+
+  /* Состояния */
+  --success: #10B981;
+  --success-bg: #F0FDF4;
+  --warning: #F59E0B;
+  --warning-bg: #FFFBEB;
+  --danger: #EF4444;
+  --danger-bg: #FEF2F2;
+
+  /* Фоны */
   --bg-main: #F8FAFC;
   --bg-white: #FFFFFF;
+
+  /* Текст */
   --text-main: #0F172A;
   --text-muted: #64748B;
   --text-light: #94A3B8;
+
+  /* Границы */
   --border: #E2E8F0;
   --border-light: #F1F5F9;
-  --success: #10B981;
-  --success-bg: #ECFDF5;
-  --danger: #EF4444;
-  --danger-bg: #FEF2F2;
-  --warning: #F59E0B;
+
+  /* Тени */
   --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04);
   --shadow-md: 0 4px 20px -4px rgba(15, 23, 42, 0.06);
   --shadow-lg: 0 8px 30px rgba(15, 23, 42, 0.06);
   --shadow-xl: 0 12px 40px -8px rgba(15, 23, 42, 0.08);
+
+  /* Скругления */
   --radius-sm: 12px;
   --radius-md: 16px;
   --radius-lg: 20px;
   --radius-xl: 24px;
   --radius-2xl: 32px;
+
+  /* Спейсинг */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
 }
 
 *, *::before, *::after {
@@ -51,7 +77,7 @@ body {
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
-/* Buttons */
+/* Buttons (базовый .btn — переопределяется компонентом) */
 .btn {
   background: var(--primary);
   color: #ffffff;
@@ -86,7 +112,7 @@ body {
   box-shadow: none;
 }
 
-/* Cards */
+/* Cards (базовый — переопределяется компонентом) */
 .card {
   background: var(--bg-white);
   border-radius: var(--radius-xl);
@@ -123,7 +149,7 @@ input:focus, textarea:focus {
   box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
 }
 
-/* Label */
+/* Labels */
 label {
   display: block;
   font-family: 'Rubik', sans-serif;
@@ -167,10 +193,7 @@ label {
   color: white;
 }
 
-/* Section title */
-
-
-/* Progress bar */
+/* Progress bar (generic) */
 .progress-track {
   height: 8px;
   background: var(--border-light);
@@ -184,16 +207,7 @@ label {
   transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Fade animation */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.animate-fade {
-  animation: fadeIn 0.35s ease-out forwards;
-}
-
-/* Modal backdrop */
+/* Modal overlay */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -241,7 +255,7 @@ label {
   box-shadow: 0 4px 16px -4px rgba(29, 78, 216, 0.12);
 }
 
-/* Section block */
+/* Section block (dashboard) */
 .section-block {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
@@ -253,7 +267,7 @@ label {
   border-color: #CBD5E1;
 }
 
-/* Topic chip */
+/* Topic chip (dashboard) */
 .topic-chip {
   background: var(--bg-white);
   border-radius: var(--radius-md);
@@ -271,7 +285,7 @@ label {
   border-color: var(--chip-border, #BBF7D0);
 }
 
-/* Bottom bar */
+/* Bottom bar (dashboard) */
 .bottom-bar {
   position: fixed;
   bottom: 0;
@@ -299,25 +313,6 @@ label {
 }
 .bottom-item:hover { color: #F8FAFC; }
 .bottom-item.active { color: #FFFFFF; background: #334155; }
-
-/* Quiz answer */
-.quiz-answer {
-  padding: 1.25rem 1.5rem;
-  border-radius: var(--radius-md);
-  border: 2px solid var(--border);
-  cursor: pointer;
-  font-size: 1.125rem;
-  font-weight: 600;
-  transition: all 0.2s ease;
-  background: var(--bg-white);
-}
-.quiz-answer:hover {
-  border-color: var(--primary);
-  background: var(--primary-light);
-  transform: translateY(-1px);
-}
-.quiz-answer.correct { background: var(--success-bg); border-color: var(--success); }
-.quiz-answer.wrong { background: var(--danger-bg); border-color: var(--danger); }
 
 /* Brilliant card (onboarding) */
 .brilliant-card {
@@ -354,12 +349,20 @@ label {
   border-color: var(--primary);
 }
 
-/* Step pane */
+/* Step pane (onboarding) */
 .step-pane {
   animation: fadeIn 0.35s ease-out forwards;
 }
 
-/* Math formula containers */
+/* Reading text (lesson) */
+.reading-text {
+  font-family: 'Inter', 'Golos Text', sans-serif;
+  line-height: 1.75;
+  letter-spacing: -0.01em;
+  font-size: 1.125rem;
+}
+
+/* Math display (topic-1) */
 .math-display {
   text-align: center;
   padding: 1.5rem 0;
@@ -369,62 +372,49 @@ label {
   font-size: 1.25rem !important;
 }
 
-/* Formula card (topic-1) */
-.formula-card {
-  border-radius: var(--radius-xl);
-  padding: 1.75rem;
-  background: var(--bg-white);
-  border: 1px solid var(--border);
-  transition: all 0.25s ease;
+/* Hero section (topic-1) */
+.hero{
+  background:
+    radial-gradient(circle at top right,#5b7cff 0%,transparent 35%),
+    radial-gradient(circle at bottom left,#7c3aed 0%,transparent 40%),
+    linear-gradient(135deg,#2563eb,#4338ca);
 }
-.formula-card:hover {
-  border-color: var(--primary);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-/* Reading text */
-.reading-text {
-  font-family: 'Inter', 'Golos Text', sans-serif;
-  line-height: 1.75;
-  letter-spacing: -0.01em;
-  font-size: 1.125rem;
+.hero .glass{
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.15);
 }
 
-/* Lesson sidebar step */
-.step-box {
-  transition: all 0.3s ease;
+.section-title{
+  font-family:'Rubik',sans-serif;
+  font-size:40px;
+  font-weight:800;
+  line-height:1.1;
 }
-.step-pending .step-box { background: #F1F5F9; color: #94A3B8; }
-.step-pending .step-text { color: #64748B; }
-.step-active .step-box {
-  background: var(--primary);
-  color: #FFFFFF;
-  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.25);
-  transform: scale(1.05);
-}
-.step-active .step-text { color: #0F172A; font-weight: 700; }
-.step-completed .step-box { background: #E0F2FE; color: var(--secondary); }
-.step-completed .step-text { color: var(--secondary); font-weight: 600; }
-
-/* Success banner */
-.success-banner {
-  background: linear-gradient(135deg, #EFF6FF 0%, #E0F2FE 100%);
-  border: 1px solid #BFDBFE;
+.section-desc{
+  margin-top:12px;
+  color:#64748b;
+  font-size:18px;
+  line-height:1.8;
 }
 
-/* Section transition */
-#sections-wrap { transition: opacity 0.25s ease, transform 0.25s ease; }
-.fade-out { opacity: 0; transform: translateY(10px); }
-.fade-in { opacity: 1; transform: translateY(0); }
-
-/* Reveal scroll animation */
-.reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+/* Stats block (topic-1) */
+.stat{
+  padding:28px;
+  border-radius:24px;
+  background:rgba(255,255,255,.10);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.12);
 }
-.reveal.show { opacity: 1; transform: none; }
+
+/* Sidebar on topic-1 */
+.sidebar{
+  position:sticky;
+  top:100px;
+}
+.lesson-section{
+  scroll-margin-top:110px;
+}
 
 /* Responsive text */
 @media (max-width: 640px) {

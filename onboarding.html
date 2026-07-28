@@ -7,13 +7,11 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&family=Golos+Text:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/animations.css">
+<link rel="stylesheet" href="css/components.css">
 <style>
   body { font-family: 'Golos Text', sans-serif; background: #F8FAFC; color: #0F172A; }
   .fd { font-family: 'Rubik', sans-serif; }
-  .success-banner {
-    background: linear-gradient(135deg, #EFF6FF 0%, #E0F2FE 100%);
-    border: 1px solid #BFDBFE;
-  }
 </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
@@ -183,6 +181,11 @@
 
   </div>
 
+<script src="js/storage.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/app.js"></script>
 <script>
   const userData = { goals: ['math'], level: 'middle', age: '14-17' };
 
@@ -208,19 +211,15 @@
   }
 
   function nextStep(stepNumber) {
-    document.querySelectorAll('.step-pane').getElementById ? null : null;
     document.querySelectorAll('.step-pane').forEach(p => p.classList.add('hidden'));
-    document.getElementById(`step-${stepNumber}`).classList.remove('hidden');
-
-    document.getElementById('step-count').innerText = `${stepNumber} / 3 қадам`;
+    document.getElementById('step-' + stepNumber).classList.remove('hidden');
+    document.getElementById('step-count').innerText = stepNumber + ' / 3 қадам';
     const progressMap = { 1: '33%', 2: '66%', 3: '100%' };
     document.getElementById('progress').style.width = progressMap[stepNumber];
   }
 
   function showRegistration() {
-    // Скрываем прогресс-бар настройки, так как переходим к финалу аккаунта
     document.getElementById('progress-header').style.display = 'none';
-    
     document.querySelectorAll('.step-pane').forEach(p => p.classList.add('hidden'));
     document.getElementById('step-4').classList.remove('hidden');
   }
@@ -232,18 +231,17 @@
     const userName = nameInput ? nameInput.value : 'Пользователь';
     const userEmail = emailInput ? emailInput.value : 'user@example.com';
 
-    try {
-      localStorage.setItem('math_logic_user', JSON.stringify({
-        name: userName,
-        email: userEmail,
-        goals: userData.goals,
-        level: userData.level,
-        age: userData.age,
-        loggedIn: true
-      }));
-    } catch(e) {}
+    ML.setUser({
+      name: userName,
+      email: userEmail,
+      goals: userData.goals,
+      level: userData.level,
+      age: userData.age,
+      loggedIn: true
+    });
 
-    window.location.href = "dashboard.html";
+    UI.showToast('Тіркелу сәтті өтті! Қош келдіңіз, ' + userName + '!', 'success');
+    setTimeout(function() { window.location.href = "dashboard.html"; }, 500);
   }
 </script>
 </body>
