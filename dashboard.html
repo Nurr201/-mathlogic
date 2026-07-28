@@ -3,375 +3,769 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Тақырыптар — math·logic</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Басты бет — math·logic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;800;900&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/components.css">
-</head>
-<body class="pt-24 min-h-screen relative overflow-x-hidden">
 
-  <!-- АМБИЕНТНЫЙ ФОН -->
-  <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none opacity-60">
-    <div class="absolute top-[-10%] left-[-5%] w-[500px] h-[500px] bg-blue-200/50 rounded-full blur-[120px]"></div>
-    <div class="absolute top-[30%] right-[-10%] w-[600px] h-[600px] bg-emerald-100/60 rounded-full blur-[130px]"></div>
-    <div class="absolute bottom-[-10%] left-[20%] w-[500px] h-[500px] bg-purple-100/60 rounded-full blur-[110px]"></div>
+  <style>
+    :root {
+      --nav-h: 72px;
+    }
+    body {
+      background: #F8FAFC;
+      padding-top: var(--nav-h);
+    }
+    .db-wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .db-section { margin-top: 36px; }
+    .db-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .db-section-title { font-family: 'Rubik', sans-serif; font-size: 20px; font-weight: 800; color: #0F172A; letter-spacing: -0.02em; }
+
+    /* ── Top nav ── */
+    .db-topnav {
+      position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); z-index: 100;
+      background: rgba(255,255,255,0.82); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(226,232,240,0.5);
+    }
+    .db-topnav-inner {
+      max-width: 1200px; margin: 0 auto; padding: 0 24px; height: 100%;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .db-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+    .db-logo-icon {
+      width: 36px; height: 36px; border-radius: 12px;
+      background: linear-gradient(135deg, #1D4ED8, #7C3AED);
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 18px; font-weight: 800; font-family: 'Rubik', sans-serif;
+      box-shadow: 0 4px 12px rgba(29,78,216,0.25);
+    }
+    .db-logo-text { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.03em; color: #0F172A; }
+    .db-logo-text span { color: #1D4ED8; }
+
+    .db-search { flex: 1; max-width: 380px; position: relative; }
+    .db-search input {
+      width: 100%; padding: 10px 16px 10px 42px; border-radius: 14px;
+      border: 1.5px solid #E2E8F0; background: #F8FAFC;
+      font-family: 'Golos Text', sans-serif; font-size: 14px; outline: none;
+      transition: all 0.25s ease; color: #0F172A;
+    }
+    .db-search input::placeholder { color: #94A3B8; }
+    .db-search input:focus { border-color: #1D4ED8; background: white; box-shadow: 0 0 0 3px rgba(29,78,216,0.08); }
+    .db-search svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94A3B8; pointer-events: none; }
+
+    .db-top-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+    .db-top-btn {
+      width: 40px; height: 40px; border-radius: 12px; border: none;
+      background: transparent; color: #64748B; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s ease; position: relative;
+    }
+    .db-top-btn:hover { background: #F1F5F9; color: #0F172A; }
+    .db-notif-dot { position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; border-radius: 50%; background: #EF4444; border: 2px solid white; }
+    .db-avatar {
+      width: 38px; height: 38px; border-radius: 12px;
+      background: linear-gradient(135deg, #6366F1, #8B5CF6);
+      color: white; display: flex; align-items: center; justify-content: center;
+      font-family: 'Rubik', sans-serif; font-weight: 700; font-size: 15px;
+      cursor: pointer; transition: all 0.2s ease; border: none; flex-shrink: 0;
+    }
+    .db-avatar:hover { transform: scale(1.05); box-shadow: 0 4px 16px rgba(99,102,241,0.3); }
+
+    /* ── Hero ── */
+    .db-hero {
+      margin-top: 28px; border-radius: 24px; padding: 40px 48px;
+      background: linear-gradient(135deg, #1D4ED8 0%, #4338CA 50%, #6D28D9 100%);
+      color: white; position: relative; overflow: hidden;
+      box-shadow: 0 20px 60px -12px rgba(29,78,216,0.3);
+    }
+    .db-hero::before { content: ''; position: absolute; top: -50%; right: -20%; width: 500px; height: 500px; border-radius: 50%; background: rgba(255,255,255,0.06); pointer-events: none; }
+    .db-hero::after { content: ''; position: absolute; bottom: -30%; left: 10%; width: 300px; height: 300px; border-radius: 50%; background: rgba(255,255,255,0.04); pointer-events: none; }
+    .db-hero-content { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 20px; }
+    .db-hero-greeting { font-family: 'Golos Text', sans-serif; font-size: 15px; font-weight: 500; opacity: 0.85; }
+    .db-hero-title { font-family: 'Rubik', sans-serif; font-size: 36px; font-weight: 900; line-height: 1.15; letter-spacing: -0.02em; margin: 0; }
+    .db-hero-stats { display: flex; gap: 32px; flex-wrap: wrap; }
+    .db-hero-stat { display: flex; flex-direction: column; gap: 2px; }
+    .db-hero-stat-value { font-family: 'Rubik', sans-serif; font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+    .db-hero-stat-label { font-family: 'Golos Text', sans-serif; font-size: 13px; font-weight: 500; opacity: 0.75; }
+    .db-hero-btn {
+      display: inline-flex; align-items: center; gap: 10px; padding: 14px 32px; border-radius: 14px;
+      border: none; background: white; color: #1D4ED8;
+      font-family: 'Rubik', sans-serif; font-weight: 700; font-size: 15px;
+      cursor: pointer; transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1); align-self: flex-start; margin-top: 4px;
+    }
+    .db-hero-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.15); }
+
+    /* ── Continue ── */
+    .db-continue {
+      border-radius: 22px; padding: 28px 32px; background: white;
+      border: 1px solid #E2E8F0; box-shadow: 0 4px 24px rgba(15,23,42,0.04);
+      display: flex; align-items: center; gap: 28px;
+      transition: all 0.35s cubic-bezier(0.16,1,0.3,1); cursor: pointer;
+    }
+    .db-continue:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(15,23,42,0.06); border-color: #CBD5E1; }
+    .db-continue-icon { width: 56px; height: 56px; border-radius: 18px; background: linear-gradient(135deg, #EFF6FF, #F0FDF4); display: flex; align-items: center; justify-content: center; color: #1D4ED8; flex-shrink: 0; }
+    .db-continue-info { flex: 1; min-width: 0; }
+    .db-continue-label { font-family: 'Golos Text', sans-serif; font-size: 13px; font-weight: 600; color: #64748B; margin-bottom: 4px; }
+    .db-continue-name { font-family: 'Rubik', sans-serif; font-size: 18px; font-weight: 700; color: #0F172A; letter-spacing: -0.01em; margin-bottom: 10px; }
+    .db-continue-track { display: flex; align-items: center; gap: 12px; }
+    .db-continue-bar { flex: 1; height: 8px; border-radius: 999px; background: #F1F5F9; overflow: hidden; }
+    .db-continue-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #1D4ED8, #7C3AED); width: 0%; transition: width 1.2s cubic-bezier(0.16,1,0.3,1); }
+    .db-continue-pct { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: #1D4ED8; min-width: 42px; text-align: right; }
+    .db-continue-action {
+      padding: 12px 24px; border-radius: 12px; border: none;
+      background: linear-gradient(135deg, #1D4ED8, #7C3AED); color: white;
+      font-family: 'Rubik', sans-serif; font-weight: 700; font-size: 14px;
+      cursor: pointer; transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+      box-shadow: 0 4px 16px rgba(29,78,216,0.2); flex-shrink: 0;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .db-continue-action:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(29,78,216,0.3); }
+
+    /* ── Direction tab cards ── */
+    .db-dir-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .db-dir-tab {
+      border-radius: 22px;
+      padding: 26px 24px 22px;
+      background: white;
+      border: 2px solid #E2E8F0;
+      box-shadow: 0 4px 24px rgba(15,23,42,0.04);
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .db-dir-tab:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(15,23,42,0.08);
+      border-color: #CBD5E1;
+    }
+    .db-dir-tab.active {
+      border-color: var(--dir-accent, #1D4ED8);
+      background: linear-gradient(180deg, #FFFFFF 0%, var(--dir-bg, #F8FAFC) 100%);
+      box-shadow: 0 12px 40px rgba(15,23,42,0.08);
+      transform: translateY(-4px);
+    }
+    .db-dir-tab-top { display: flex; align-items: center; gap: 16px; }
+    .db-dir-tab-icon {
+      width: 50px; height: 50px; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .db-dir-tab-icon svg { width: 26px; height: 26px; }
+    .db-dir-tab-name { font-family: 'Rubik', sans-serif; font-size: 18px; font-weight: 800; color: #0F172A; }
+    .db-dir-tab-desc { font-family: 'Golos Text', sans-serif; font-size: 13px; color: #64748B; font-weight: 500; }
+    .db-dir-tab-info { display: flex; align-items: center; justify-content: space-between; }
+    .db-dir-tab-meta { font-family: 'Golos Text', sans-serif; font-size: 13px; font-weight: 600; color: #94A3B8; }
+    .db-dir-tab-meta strong { color: var(--dir-accent, #1D4ED8); font-family: 'JetBrains Mono', monospace; }
+    .db-dir-tab-pct { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--dir-accent, #1D4ED8); }
+    .db-dir-tab-bar { height: 5px; border-radius: 999px; background: #F1F5F9; overflow: hidden; }
+    .db-dir-tab-fill { height: 100%; border-radius: 999px; width: 0%; transition: width 1.2s cubic-bezier(0.16,1,0.3,1); }
+
+    /* ── Topics panel (full-width) ── */
+    .db-topics-panel {
+      margin-top: 16px;
+      border-radius: 22px;
+      background: white;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 4px 24px rgba(15,23,42,0.04);
+      overflow: hidden;
+    }
+    .db-topics-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 28px;
+      border-bottom: 1px solid #F1F5F9;
+    }
+    .db-panel-header-left { display: flex; align-items: center; gap: 12px; }
+    .db-panel-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .db-panel-icon svg { width: 18px; height: 18px; }
+    .db-panel-title { font-family: 'Rubik', sans-serif; font-size: 16px; font-weight: 700; color: #0F172A; }
+    .db-panel-count { font-family: 'Golos Text', sans-serif; font-size: 13px; font-weight: 600; color: #94A3B8; }
+
+    .db-topics-panel-body {
+      padding: 16px 28px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* ── Topic card (full-width horizontal) ── */
+    .db-topic-card {
+      border-radius: 18px;
+      padding: 20px 24px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .db-topic-card:hover {
+      border-color: #CBD5E1;
+      background: white;
+      transform: translateX(4px);
+      box-shadow: 0 4px 20px rgba(15,23,42,0.04);
+    }
+    .db-topic-card.locked { opacity: 0.5; }
+    .db-topic-card.locked:hover { opacity: 0.6; transform: none; box-shadow: none; border-color: #E2E8F0; background: #F8FAFC; }
+
+    .db-topic-status-badge {
+      width: 42px; height: 42px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .db-topic-status-badge.done { background: #F0FDF4; color: #059669; }
+    .db-topic-status-badge.in-progress { background: #EFF6FF; color: #1D4ED8; }
+    .db-topic-status-badge.new { background: #FEF3C7; color: #D97706; }
+    .db-topic-status-badge.locked { background: #F1F5F9; color: #94A3B8; }
+
+    .db-topic-info { flex: 1; min-width: 0; }
+    .db-topic-name { font-family: 'Rubik', sans-serif; font-size: 15px; font-weight: 700; color: #0F172A; margin-bottom: 3px; }
+    .db-topic-name.locked { color: #94A3B8; }
+    .db-topic-desc {
+      font-family: 'Golos Text', sans-serif;
+      font-size: 12px; font-weight: 500; color: #94A3B8;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .db-topic-desc span { display: flex; align-items: center; gap: 4px; }
+    .db-topic-desc .dot { width: 3px; height: 3px; border-radius: 50%; background: #CBD5E1; }
+
+    .db-topic-progress {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+      min-width: 200px;
+    }
+    .db-topic-bar-wrap { flex: 1; min-width: 100px; }
+    .db-topic-bar {
+      height: 6px; border-radius: 999px;
+      background: #E2E8F0; overflow: hidden;
+    }
+    .db-topic-fill {
+      height: 100%; border-radius: 999px;
+      width: 0%; transition: width 0.8s cubic-bezier(0.16,1,0.3,1);
+    }
+    .db-topic-fill.done { background: #059669; }
+    .db-topic-fill.active { background: linear-gradient(90deg, #1D4ED8, #7C3AED); }
+    .db-topic-pct {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px; font-weight: 700;
+      min-width: 36px; text-align: right;
+    }
+
+    .db-topic-status-label {
+      font-family: 'Rubik', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .db-topic-status-label.done { background: #F0FDF4; color: #059669; }
+    .db-topic-status-label.in-progress { background: #EFF6FF; color: #1D4ED8; }
+    .db-topic-status-label.new { background: #FEF3C7; color: #D97706; }
+    .db-topic-status-label.locked { background: #F1F5F9; color: #94A3B8; }
+
+    .db-topic-btn {
+      padding: 9px 22px;
+      border-radius: 11px;
+      border: 1.5px solid #E2E8F0;
+      background: white;
+      font-family: 'Rubik', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #1D4ED8;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-decoration: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .db-topic-btn:hover {
+      background: #1D4ED8;
+      color: white;
+      border-color: #1D4ED8;
+      transform: translateY(-1px);
+    }
+    .db-topic-btn.locked {
+      color: #94A3B8;
+      cursor: not-allowed;
+      pointer-events: none;
+      background: #F8FAFC;
+    }
+
+    /* ── Tab content transition ── */
+    .tab-panel-enter {
+      animation: tabIn 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    @keyframes tabIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Stats ── */
+    .db-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .db-stat {
+      border-radius: 20px; padding: 20px 22px; background: white;
+      border: 1px solid #E2E8F0; box-shadow: 0 2px 12px rgba(15,23,42,0.03);
+      transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .db-stat:hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(15,23,42,0.06); border-color: #CBD5E1; }
+    .db-stat-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+    .db-stat-icon.blue { background: #EFF6FF; color: #1D4ED8; }
+    .db-stat-icon.emerald { background: #ECFDF5; color: #059669; }
+    .db-stat-icon.amber { background: #FFFBEB; color: #D97706; }
+    .db-stat-icon.purple { background: #FAF5FF; color: #7C3AED; }
+    .db-stat-value { font-family: 'Rubik', sans-serif; font-size: 28px; font-weight: 800; color: #0F172A; letter-spacing: -0.02em; line-height: 1; }
+    .db-stat-label { font-family: 'Golos Text', sans-serif; font-size: 13px; font-weight: 600; color: #64748B; }
+
+    /* ── Achievements ── */
+    .db-achvs { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+    .db-achv {
+      border-radius: 20px; padding: 20px; background: white;
+      border: 1px solid #E2E8F0; box-shadow: 0 2px 12px rgba(15,23,42,0.03);
+      transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+      display: flex; align-items: center; gap: 14px; position: relative; overflow: hidden;
+    }
+    .db-achv:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(15,23,42,0.06); border-color: #CBD5E1; }
+    .db-achv.locked { opacity: 0.55; filter: grayscale(0.6); }
+    .db-achv.locked:hover { opacity: 0.65; transform: none; }
+    .db-achv-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .db-achv-icon.unlocked { background: #FFFBEB; }
+    .db-achv-icon.locked { background: #F1F5F9; }
+    .db-achv-info { flex: 1; min-width: 0; }
+    .db-achv-name { font-family: 'Rubik', sans-serif; font-size: 14px; font-weight: 700; color: #0F172A; margin-bottom: 2px; }
+    .db-achv-desc { font-family: 'Golos Text', sans-serif; font-size: 12px; color: #94A3B8; font-weight: 500; }
+    .db-achv-lock { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: #CBD5E1; }
+
+    /* ── Bottom nav ── */
+    .db-bnav {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 64px;
+      background: rgba(255,255,255,0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(226,232,240,0.6); z-index: 100; display: none;
+    }
+    .db-bnav-inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; height: 100%; display: flex; align-items: center; justify-content: space-around; }
+    .db-bnav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      padding: 4px 12px; border-radius: 12px; border: none;
+      background: transparent; cursor: pointer; transition: all 0.2s ease;
+      text-decoration: none; min-width: 56px;
+    }
+    .db-bnav-item svg { color: #94A3B8; transition: color 0.2s; }
+    .db-bnav-item span { font-family: 'Golos Text', sans-serif; font-size: 10px; font-weight: 600; color: #94A3B8; transition: color 0.2s; }
+    .db-bnav-item:hover svg, .db-bnav-item:hover span { color: #64748B; }
+    .db-bnav-item.active svg, .db-bnav-item.active span { color: #1D4ED8; }
+
+    @media (max-width: 1024px) {
+      .db-stats { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 900px) {
+      .db-dir-tabs { grid-template-columns: 1fr; }
+      .db-topic-card { flex-wrap: wrap; }
+      .db-topic-progress { min-width: 0; width: 100%; }
+      .db-topic-btn { align-self: flex-end; }
+    }
+    @media (max-width: 768px) {
+      .db-wrap { padding: 0 16px; }
+      .db-topnav-inner { padding: 0 16px; gap: 10px; }
+      .db-search { max-width: none; }
+      .db-hero { padding: 28px 24px; }
+      .db-hero-title { font-size: 26px; }
+      .db-hero-stats { gap: 20px; }
+      .db-hero-stat-value { font-size: 22px; }
+      .db-continue { flex-direction: column; align-items: stretch; gap: 16px; padding: 20px; }
+      .db-continue-action { align-self: stretch; text-align: center; justify-content: center; }
+      .db-topics-panel-body { padding: 12px 16px 20px; }
+      .db-topics-panel-header { padding: 16px 20px; }
+      .db-stats { grid-template-columns: repeat(2, 1fr); }
+      .db-achvs { grid-template-columns: 1fr 1fr; }
+      .db-section { margin-top: 28px; }
+      .db-bnav { display: block; }
+      body { padding-bottom: 72px; }
+    }
+    @media (max-width: 480px) {
+      .db-achvs { grid-template-columns: 1fr; }
+      .db-stats { gap: 10px; }
+      .db-stat { padding: 16px; }
+      .db-hero { padding: 24px 20px; }
+      .db-hero-title { font-size: 22px; }
+      .db-topic-card { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none opacity-50">
+    <div class="absolute top-[-8%] left-[-4%] w-[450px] h-[450px] bg-blue-200/50 rounded-full blur-[120px]"></div>
+    <div class="absolute top-[25%] right-[-8%] w-[500px] h-[500px] bg-emerald-100/60 rounded-full blur-[130px]"></div>
+    <div class="absolute bottom-[-8%] left-[15%] w-[400px] h-[400px] bg-purple-100/60 rounded-full blur-[110px]"></div>
   </div>
 
-  <!-- HEADER -->
-  <header class="fixed top-0 left-0 w-full z-40 bg-white/80 backdrop-blur-md border-b border-slate-200/60 shadow-xs">
-    <div class="h-1.5 w-full bg-gradient-to-r from-blue-500 via-emerald-500 to-purple-500"></div>
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-600/20">
-          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-          </svg>
-        </div>
-        <span class="font-head font-extrabold text-2xl text-slate-900 tracking-tight">
-          math<span class="text-blue-600">·</span>logic
-        </span>
+  <!-- ─── TOP NAV ─── -->
+  <header class="db-topnav">
+    <div class="db-topnav-inner">
+      <a href="index.html" class="db-logo">
+        <div class="db-logo-icon">∑</div>
+        <span class="db-logo-text">math<span>·</span>logic</span>
       </a>
-
-      <div class="flex items-center gap-3">
-        <button onclick="resetSubtopicsProgress()" title="Сбросить прогресс" class="p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
+<div class="db-top-actions">
+        <button class="db-top-btn" title="Хабарландырулар">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          <span class="db-notif-dot"></span>
         </button>
+        <button class="db-top-btn" title="Параметрлер" onclick="location.href='settings.html'">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+        <button class="db-avatar" title="Нұрбол" onclick="location.href='profile.html'">НҰ</button>
       </div>
     </div>
   </header>
 
-  <!-- MAIN -->
-  <main class="max-w-5xl mx-auto px-4 sm:px-6">
-    <!-- HERO / ОБЩИЙ ПРОГРЕСС -->
-    <div class="mb-8 bg-white/80 backdrop-blur-md border border-slate-200/80 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-sm">
-      <div>
-        <span class="text-xs font-extrabold uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-md mb-3 inline-block">Оқу Картасы</span>
-        <h1 class="font-head font-extrabold text-2xl sm:text-3xl text-slate-900 tracking-tight">
-          Модульдік оқу бағдарламасы
-        </h1>
-        <p class="text-slate-600 text-sm mt-1.5 font-medium">
-          Әр ірі модульдің ішінде теория мен практикалық микро-қадамдар бар.
-        </p>
-      </div>
+  <!-- ─── MAIN ─── -->
+  <div class="db-wrap">
 
-      <div class="w-full md:w-72 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-inner">
-        <div class="flex items-center justify-between text-xs font-mono font-bold text-slate-700 mb-2">
-          <span>ЖАЛПЫ ПРОГРЕСС</span>
-          <span id="overall-percentage" class="text-blue-600 font-black text-sm">0%</span>
+    <!-- ─── HERO ─── -->
+    <section class="db-hero animate-slide-up">
+      <div class="db-hero-content">
+        <div class="db-hero-greeting">Қайырлы күн, Нұрбол 👋</div>
+        <h1 class="db-hero-title">Математика әлеміне<br>қош келдің!</h1>
+        <div class="db-hero-stats">
+          <div class="db-hero-stat">
+            <span class="db-hero-stat-value" id="hero-progress">0%</span>
+            <span class="db-hero-stat-label">Жалпы прогресс</span>
+          </div>
+          <div class="db-hero-stat">
+            <span class="db-hero-stat-value" id="hero-lessons">0</span>
+            <span class="db-hero-stat-label">Аяқталған сабақ</span>
+          </div>
         </div>
-        <div class="h-3 w-full bg-slate-200/80 rounded-full overflow-hidden p-0.5">
-          <div id="overall-bar" class="h-full bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full transition-all duration-500" style="width: 0%"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- КАРТОЧКИ ПРЕДМЕТОВ -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8" id="subject-cards"></div>
-
-    <!-- СПИСОК РАЗДЕЛОВ И МОДУЛЕЙ -->
-    <div id="sections-wrap" class="space-y-6 fade-in"></div>
-  </main>
-
-  <!-- НИЖНЯЯ ПАНЕЛЬ -->
-  <nav class="bottom-bar">
-    <div class="max-w-5xl mx-auto w-full px-4 flex items-center justify-center gap-2 overflow-x-auto no-scrollbar" id="bottom-nav-items"></div>
-  </nav>
-
-  <!-- МОДАЛЬНОЕ ОКНО БОЛЬШОГО МОДУЛЯ (С МЕЛКИМИ ТЕМАМИ ИЗНУТРИ) -->
-  <div id="topic-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-200">
-    <div class="bg-white border border-slate-200 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl transform scale-95 transition-transform duration-200 max-h-[90vh] overflow-y-auto" id="modal-card">
-      
-      <div class="flex items-start justify-between gap-4 mb-3">
-        <div>
-          <span id="modal-level-badge" class="px-2.5 py-1 rounded-md font-mono text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-100">Жеңіл</span>
-          <h3 id="modal-title" class="font-head font-extrabold text-2xl text-slate-900 mt-2 tracking-tight">Алгебралық өрнектер</h3>
-          <p id="modal-subj-name" class="text-xs font-semibold text-slate-400 mt-1">Алгебра • Негіздер</p>
-        </div>
-        <button onclick="closeModal()" class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-          </svg>
+        <button class="db-hero-btn" onclick="document.querySelector('.db-dir-tabs')?.scrollIntoView({behavior:'smooth'})">
+          Оқуды жалғастыру
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </button>
       </div>
+    </section>
 
-      <p class="text-xs font-medium text-slate-500 mb-4">
-        Бұл модуль толықтай меңгерілуі үшін ішіндегі барлық микро-тақырыптарды аяқтау қажет:
-      </p>
+    <!-- ─── CONTINUE ─── -->
+    <section class="db-section">
+      <div class="db-section-header">
+        <h2 class="db-section-title">Жалғастыру</h2>
+      </div>
+      <div class="db-continue">
+        <div class="db-continue-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        <div class="db-continue-info">
+          <div class="db-continue-label">Соңғы сабақ</div>
+          <div class="db-continue-name">Алгебралық өрнектер</div>
+          <div class="db-continue-track">
+            <div class="db-continue-bar"><div class="db-continue-fill" style="width:45%"></div></div>
+            <span class="db-continue-pct">45%</span>
+          </div>
+        </div>
+        <a href="topic-1-expressions.html" class="db-continue-action">Жалғастыру →</a>
+      </div>
+    </section>
 
-      <div id="modal-lesson-link-wrap" class="mb-5 hidden">
-        <a id="modal-lesson-link" href="#" class="btn w-full py-3 text-xs font-bold gap-2">
-          🚀 Сабақты бастау / Перейти к уроку →
-        </a>
+    <!-- ─── DIRECTIONS TABS ─── -->
+    <section class="db-section" id="directions-section">
+      <div class="db-section-header">
+        <h2 class="db-section-title">Направления обучения</h2>
       </div>
 
-      <!-- ВНУТРЕННИЕ МЕЛКИЕ ТЕМЫ МОДУЛЯ -->
-      <div class="space-y-3 mb-6" id="modal-subtopics-list"></div>
+      <div class="db-dir-tabs" id="dir-tabs"></div>
 
-      <div class="flex items-center justify-between pt-4 border-t border-slate-100">
-        <button id="modal-toggle-all-btn" onclick="toggleAllSubtopics()" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors">
-          Барлығын белгілеу
-        </button>
-        <button onclick="closeModal()" class="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold font-head shadow-md shadow-blue-600/20 transition-all hover:-translate-y-0.5">
-          Дайын
-        </button>
+      <div class="db-topics-panel" id="topics-panel">
+        <div class="db-topics-panel-header" id="panel-header">
+          <div class="db-panel-header-left">
+            <div class="db-panel-icon" id="panel-icon"></div>
+            <span class="db-panel-title" id="panel-title">Алгебра</span>
+          </div>
+          <span class="db-panel-count" id="panel-count">0 тем</span>
+        </div>
+        <div class="db-topics-panel-body" id="panel-body"></div>
       </div>
+    </section>
 
-    </div>
+    <!-- ─── STATS ─── -->
+    <section class="db-section">
+      <div class="db-section-header"><h2 class="db-section-title">Жалпы статистика</h2></div>
+      <div class="db-stats">
+        <div class="db-stat">
+          <div class="db-stat-icon blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c6 3 10 0 12-2v-5"/></svg></div>
+          <span class="db-stat-value" id="stat-lessons">0</span>
+          <span class="db-stat-label">Пройдено уроков</span>
+        </div>
+        <div class="db-stat">
+          <div class="db-stat-icon emerald"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <span class="db-stat-value" id="stat-tasks">0</span>
+          <span class="db-stat-label">Решено задач</span>
+        </div>
+        <div class="db-stat">
+          <div class="db-stat-icon amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <span class="db-stat-value" id="stat-avg">—</span>
+          <span class="db-stat-label">Средний результат</span>
+        </div>
+        <div class="db-stat">
+          <div class="db-stat-icon purple"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+          <span class="db-stat-value" id="stat-achv">0</span>
+          <span class="db-stat-label">Получено достижений</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── ACHIEVEMENTS ─── -->
+    <section class="db-section">
+      <div class="db-section-header">
+        <h2 class="db-section-title">Жетістіктер</h2>
+        <a href="profile.html" style="font-family:'Golos Text',sans-serif;font-size:14px;font-weight:600;color:#1D4ED8;text-decoration:none;transition:opacity 0.2s;">Барлығы →</a>
+      </div>
+      <div class="db-achvs">
+        <div class="db-achv"><div class="db-achv-icon unlocked" style="background:#FFFBEB;">🏆</div><div class="db-achv-info"><div class="db-achv-name">Первый урок</div><div class="db-achv-desc">Завершите первый урок</div></div></div>
+        <div class="db-achv"><div class="db-achv-icon unlocked" style="background:#F0FDF4;">🥇</div><div class="db-achv-info"><div class="db-achv-name">Отличный результат</div><div class="db-achv-desc">100% в тесте</div></div></div>
+        <div class="db-achv locked"><div class="db-achv-icon locked">⚡</div><div class="db-achv-info"><div class="db-achv-name">Быстрое решение</div><div class="db-achv-desc">Решите 5 задач за 2 минуты</div></div><svg class="db-achv-lock" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+        <div class="db-achv locked"><div class="db-achv-icon locked">🔥</div><div class="db-achv-info"><div class="db-achv-name">100 правильных ответов</div><div class="db-achv-desc">Наберите 100 верных решений</div></div><svg class="db-achv-lock" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+      </div>
+    </section>
+
+    <div style="height:40px"></div>
   </div>
 
-  <!-- СКРИПТЫ -->
+  <!-- ─── BOTTOM NAV ─── -->
+  <nav class="db-bnav">
+    <div class="db-bnav-inner">
+      <a href="dashboard.html" class="db-bnav-item active">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Басты</span>
+      </a>
+      <a href="topic.html?subject=algebra" class="db-bnav-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19L20 5"/><path d="M4 5C4 5 7 13 12 13C17 13 20 19 20 19" opacity="0.4"/><circle cx="12" cy="13" r="2"/></svg>
+        <span>Алгебра</span>
+      </a>
+      <a href="topic.html?subject=geometry" class="db-bnav-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3L21 19H3L12 3Z" opacity="0.4"/><circle cx="12" cy="14" r="3.5"/></svg>
+        <span>Геометрия</span>
+      </a>
+      <a href="topic.html" class="db-bnav-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span>Все темы</span>
+      </a>
+      <a href="profile.html" class="db-bnav-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Профиль</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ─── SCRIPTS ─── -->
   <script src="js/data.js"></script>
-  <script src="js/i18n.js"></script>
   <script src="js/storage.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/navigation.js"></script>
   <script src="js/utils.js"></script>
+  <script src="js/animations.js"></script>
   <script src="js/app.js"></script>
   <script>
-    let activeSubject = 'algebra';
-    let currentActiveModule = null;
+    const DIRS = [
+      { key:'algebra', name:'Алгебра', desc:'Числа, уравнения, функции и графики', accent:'#4F46E5', bg:'#EEF2FF',
+        icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19L20 5"/><path d="M4 5C4 5 7 13 12 13C17 13 20 19 20 19" opacity="0.4"/><circle cx="12" cy="13" r="2"/></svg>`,
+        sections:['База и уравнения','Степень, корень, логарифм','Функции и производные','Последовательности'] },
+      { key:'geometry', name:'Геометрия', desc:'Фигуры, тригонометрия, векторы', accent:'#059669', bg:'#ECFDF5',
+        icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3L21 19H3L12 3Z" opacity="0.4"/><circle cx="12" cy="14" r="3.5"/></svg>`,
+        sections:['Планиметрия','Тригонометрия','Векторы и стереометрия'] },
+      { key:'logic', name:'Логика', desc:'Множества, графы, комбинаторика', accent:'#9333EA', bg:'#FAF5FF',
+        icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/><path d="M11 7H16.5C17.8807 7 19 8.11929 19 9.5V13" opacity="0.4"/></svg>`,
+        sections:['Логика высказываний','Множества и графы'] }
+    ];
 
-    function updateOverallProgress() {
-      let total = 0, done = 0;
-      Object.keys(DATA).forEach(sKey => {
-        DATA[sKey].forEach(sec => {
-          sec.modules.forEach(mod => {
-            mod.subtopics.forEach(st => {
-              total++;
-              if (completedSubtopics[st]) done++;
-            });
-          });
-        });
-      });
-      const percent = total > 0 ? Math.round((done / total) * 100) : 0;
-      const pctEl = document.getElementById('overall-percentage');
-      const barEl = document.getElementById('overall-bar');
-      if (pctEl) pctEl.innerText = percent + '%';
-      if (barEl) barEl.style.width = percent + '%';
+    let activeDir = 'algebra';
+
+    function countModules(key) {
+      const s = DATA[key];
+      if (!s) return { total:0, done:0 };
+      let t=0, d=0;
+      s.forEach(sec => sec.modules.forEach(mod => {
+        t++;
+        let md=0;
+        mod.subtopics.forEach(st => { if (completedSubtopics[st]) md++; });
+        if (md === mod.subtopics.length && mod.subtopics.length > 0) d++;
+      }));
+      return { total:t, done:d };
     }
 
-    function renderSubjects() {
-      const cardsEl = document.getElementById('subject-cards');
-      if (!cardsEl) return;
-      cardsEl.innerHTML = SUBJECTS.map(s => {
-        const isActive = s.key === activeSubject;
+    function countModuleProgress(mod) {
+      let d=0;
+      mod.subtopics.forEach(st => { if (completedSubtopics[st]) d++; });
+      return { total:mod.subtopics.length, done:d };
+    }
+
+    function renderTabs() {
+      const c = document.getElementById('dir-tabs');
+      c.innerHTML = DIRS.map(d => {
+        const s = countModules(d.key);
+        const pct = s.total > 0 ? Math.round((s.done / s.total) * 100) : 0;
         return `
-          <div class="subj-card p-4 sm:p-5 flex items-center gap-3.5 ${isActive ? 'active' : ''}" 
-               style="--active-color: ${s.mainColor}; --active-bg: ${s.bgActive};"
-               onclick="selectSubject('${s.key}')">
-            <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 transition-transform ${isActive ? 'scale-105' : ''}" 
-                 style="background: ${isActive ? s.bgActive : '#F1F5F9'}; color: ${isActive ? s.mainColor : '#64748B'};">
-              ${s.icon}
+          <div class="db-dir-tab ${d.key===activeDir?'active':''}" style="--dir-accent:${d.accent};--dir-bg:${d.bg}" data-dir="${d.key}" onclick="switchDir('${d.key}')">
+            <div class="db-dir-tab-top">
+              <div class="db-dir-tab-icon" style="background:${d.bg};color:${d.accent}">${d.icon}</div>
+              <div><div class="db-dir-tab-name">${d.name}</div><div class="db-dir-tab-desc">${d.desc}</div></div>
             </div>
-            <span class="font-head font-extrabold text-sm text-slate-900 leading-tight">${s.name}</span>
+            <div class="db-dir-tab-info">
+              <span class="db-dir-tab-meta">Тем: <strong>${s.done}</strong> / ${s.total}</span>
+              <span class="db-dir-tab-pct">${pct}%</span>
+            </div>
+            <div class="db-dir-tab-bar"><div class="db-dir-tab-fill" style="width:${pct}%;background:${d.accent}"></div></div>
           </div>`;
       }).join('');
-
-      const navEl = document.getElementById('bottom-nav-items');
-      if (navEl) {
-        navEl.innerHTML = SUBJECTS.map(s => {
-          const isActive = s.key === activeSubject;
-          return `
-            <button onclick="selectSubject('${s.key}')" class="bottom-item ${isActive ? 'active' : ''}">
-              ${s.name}
-            </button>`;
-        }).join('');
-      }
     }
 
-    function renderSections() {
-      const wrap = document.getElementById('sections-wrap');
-      if (!wrap) return;
-      wrap.classList.remove('fade-in');
-      wrap.classList.add('fade-out');
+    function switchDir(key) {
+      if (key === activeDir) return;
+      activeDir = key;
+      renderTabs();
+      renderTopicsPanel();
+    }
+
+    function getTopicStatusLabel(pct, total, done) {
+      if (done === total && total > 0) return { label:'Завершено', cls:'done', btn:'Повторить' };
+      if (done > 0) return { label:'В процессе', cls:'in-progress', btn:'Продолжить' };
+      return { label:'Не начато', cls:'new', btn:'Начать' };
+    }
+
+    function renderTopicsPanel() {
+      const dir = DIRS.find(d => d.key === activeDir);
+      const sections = DATA[activeDir] || [];
+      const allMods = [];
+      sections.forEach(sec => sec.modules.forEach(mod => allMods.push(mod)));
+
+      const iconEl = document.getElementById('panel-icon');
+      iconEl.innerHTML = dir.icon;
+      iconEl.style.background = dir.bg;
+      iconEl.style.color = dir.accent;
+      document.getElementById('panel-title').textContent = dir.name;
+      document.getElementById('panel-count').textContent = allMods.length + ' тем';
+
+      const body = document.getElementById('panel-body');
+      body.classList.remove('tab-panel-enter');
+      body.style.opacity = '0';
+      body.style.transform = 'translateY(10px)';
 
       setTimeout(() => {
-        const colors = THEME_COLORS[activeSubject];
-        const sections = DATA[activeSubject];
+        body.innerHTML = allMods.map(mod => {
+          const sp = countModuleProgress(mod);
+          const pct = sp.total > 0 ? Math.round((sp.done / sp.total) * 100) : 0;
+          const sl = getTopicStatusLabel(pct, sp.total, sp.done);
+          const isLocked = mod.name !== 'Алгебралық өрнектер';
+          const link = mod.name === 'Алгебралық өрнектер' ? 'topic-1-expressions.html' : '#';
 
-        wrap.innerHTML = sections.map((sec, index) => {
-          const currentTone = colors[index % colors.length];
-          const currentIcon = MATHIGON_ICONS[index % MATHIGON_ICONS.length];
-
-          let secTotal = 0, secDone = 0;
-          sec.modules.forEach(m => {
-            m.subtopics.forEach(st => {
-              secTotal++;
-              if (completedSubtopics[st]) secDone++;
-            });
-          });
-          const secProgress = secTotal > 0 ? Math.round((secDone / secTotal) * 100) : 0;
+          let statusIcon = '';
+          if (sl.cls === 'done') statusIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+          else if (sl.cls === 'in-progress') statusIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
+          else statusIcon = isLocked ? `🔒` : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>`;
 
           return `
-            <div class="section-block p-6 sm:p-8">
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                <div class="flex items-center gap-4">
-                  <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-sm" 
-                       style="background:${currentTone}15; color:${currentTone}">
-                    ${currentIcon}
-                  </div>
-                  <div>
-                    <h3 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">${sec.title}</h3>
-                    <span class="px-2.5 py-0.5 rounded-md font-mono text-[11px] font-bold" style="background:${currentTone}15; color:${currentTone}">
-                      ${sec.level}
-                    </span>
-                  </div>
-                </div>
-
-                <div class="w-full sm:w-52">
-                  <div class="flex justify-between text-[11px] font-mono font-bold mb-1.5" style="color:${currentTone}">
-                    <span>БӨЛІМ ПРОГРЕСІ</span>
-                    <span>${secProgress}%</span>
-                  </div>
-                  <div class="h-2.5 rounded-full overflow-hidden bg-slate-100 p-0.5 border border-slate-200/50">
-                    <div class="h-full rounded-full transition-all duration-500" style="background:${currentTone}; width:${secProgress}%"></div>
-                  </div>
+            <div class="db-topic-card ${isLocked ? 'locked' : ''}">
+              <div class="db-topic-status-badge ${isLocked ? 'locked' : sl.cls}">${statusIcon}</div>
+              <div class="db-topic-info">
+                <div class="db-topic-name ${isLocked ? 'locked' : ''}">${mod.name}</div>
+                <div class="db-topic-desc">
+                  <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c6 3 10 0 12-2v-5"/></svg> ${sp.total} урока</span>
+                  <span class="dot"></span>
+                  <span>${mod.subtopics.slice(0,3).join(', ')}${mod.subtopics.length > 3 ? '...' : ''}</span>
                 </div>
               </div>
-
-              <!-- ЧИПЫ МОДУЛЕЙ -->
-              <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-5 border-t border-slate-200/60">
-                ${sec.modules.map(mod => {
-                  let modDoneCount = 0;
-                  mod.subtopics.forEach(st => { if (completedSubtopics[st]) modDoneCount++; });
-                  const isModFullyDone = modDoneCount === mod.subtopics.length && mod.subtopics.length > 0;
-                  
-                  return `
-                  <div onclick="openModuleModal('${mod.name}', '${sec.title}', '${sec.level}')" 
-                       class="topic-chip p-4 flex flex-col justify-between cursor-pointer ${isModFullyDone ? 'completed' : ''}"
-                       style="--chip-bg: ${currentTone}08; --chip-border: ${currentTone}30;">
-                    
-                    <div class="flex items-start justify-between gap-3 mb-3">
-                      <span class="font-head text-sm font-extrabold ${isModFullyDone ? 'text-slate-400 line-through opacity-80' : 'text-slate-900'}">
-                        ${mod.name}
-                      </span>
-                      
-                      <div class="w-6 h-6 rounded-lg flex items-center justify-center shrink-0" 
-                           style="background:${isModFullyDone ? currentTone : '#F1F5F9'}; border: 1.5px solid ${isModFullyDone ? currentTone : '#CBD5E1'}">
-                        ${isModFullyDone ? `<svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>` : ''}
-                      </div>
-                    </div>
-
-                    <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 font-semibold pt-2 border-t border-slate-100">
-                      <span>${mod.subtopics.length} микро-тақырып</span>
-                      <span style="color:${currentTone}">${modDoneCount}/${mod.subtopics.length}</span>
-                    </div>
-                  </div>`;
-                }).join('')}
+              <div class="db-topic-progress">
+                <div class="db-topic-bar-wrap">
+                  <div class="db-topic-bar"><div class="db-topic-fill ${sl.cls === 'done' ? 'done' : 'active'}" style="width:${pct}%"></div></div>
+                </div>
+                <span class="db-topic-pct" style="color:${pct >= 100 ? '#059669' : dir.accent}">${pct}%</span>
               </div>
+              <span class="db-topic-status-label ${isLocked ? 'locked' : sl.cls}">${sl.label}</span>
+              <a href="${isLocked ? '#' : link}" class="db-topic-btn ${isLocked ? 'locked' : ''}">${sl.btn}</a>
             </div>`;
         }).join('');
 
-        wrap.classList.remove('fade-out');
-        wrap.classList.add('fade-in');
-      }, 120);
+        body.style.transition = 'opacity 0.4s cubic-bezier(0.16,1,0.3,1), transform 0.4s cubic-bezier(0.16,1,0.3,1)';
+        body.style.opacity = '1';
+        body.style.transform = 'translateY(0)';
+      }, 60);
     }
 
-    function selectSubject(key) {
-      if (activeSubject === key) return;
-      activeSubject = key;
-      renderSubjects();
-      renderSections();
+    function countAllLessons() {
+      let t=0,d=0;
+      Object.keys(DATA).forEach(k => { const r=countModules(k); t+=r.total; d+=r.done; });
+      return { total:t, done:d };
     }
 
-    /* МОДАЛЬНОЕ ОКНО */
-    function openModuleModal(modName, secTitle, level) {
-      let targetMod = null;
-      DATA[activeSubject].forEach(sec => {
-        sec.modules.forEach(m => {
-          if (m.name === modName) targetMod = m;
-        });
-      });
+    function countAllSubtopicsDone() {
+      let c=0;
+      Object.keys(DATA).forEach(sk => DATA[sk].forEach(sec => sec.modules.forEach(mod => mod.subtopics.forEach(st => { if (completedSubtopics[st]) c++; }))));
+      return c;
+    }
 
-      if (!targetMod) return;
-      currentActiveModule = targetMod;
+    function doneAchievements() {
+      let c=0;
+      const o=countAllLessons();
+      if (o.done>=1) c++;
+      Object.keys(DATA).forEach(sk => DATA[sk].forEach(sec => sec.modules.forEach(mod => {
+        const d=mod.subtopics.filter(st=>completedSubtopics[st]).length;
+        if (d===mod.subtopics.length && mod.subtopics.length>0) c++;
+      })));
+      return Math.min(c,4);
+    }
 
-      const subj = SUBJECTS.find(x => x.key === activeSubject);
-
-      document.getElementById('modal-title').innerText = targetMod.name;
-      document.getElementById('modal-subj-name').innerText = `${subj.name} • ${secTitle}`;
-      document.getElementById('modal-level-badge').innerText = level;
-
-      const linkWrap = document.getElementById('modal-lesson-link-wrap');
-      const lessonLink = document.getElementById('modal-lesson-link');
-      if (targetMod.link) {
-        linkWrap.classList.remove('hidden');
-        lessonLink.href = targetMod.link;
-      } else {
-        linkWrap.classList.add('hidden');
+    function animateValue(id, val, suffix) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const start = parseInt(el.textContent.replace(/[^0-9]/g,''))||0;
+      const t0=performance.now();
+      function tick(now) {
+        const t=Math.min((now-t0)/800,1);
+        const e=1-Math.pow(1-t,3);
+        el.textContent=Math.round(start+(val-start)*e)+suffix;
+        if (t<1) requestAnimationFrame(tick);
       }
-
-      renderSubtopicsList();
-
-      const modal = document.getElementById('topic-modal');
-      const card = document.getElementById('modal-card');
-      modal.classList.remove('opacity-0', 'pointer-events-none');
-      card.classList.remove('scale-95');
-      card.classList.add('scale-100');
+      requestAnimationFrame(tick);
     }
 
-    function renderSubtopicsList() {
-      if (!currentActiveModule) return;
-      const listEl = document.getElementById('modal-subtopics-list');
-
-      listEl.innerHTML = currentActiveModule.subtopics.map((st, i) => {
-        const isDone = !!completedSubtopics[st];
-        return `
-          <div onclick="toggleSubtopic('${st}')" 
-               class="p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${isDone ? 'bg-emerald-50/60 border-emerald-200' : 'bg-slate-50 border-slate-200/80 hover:border-slate-300'}">
-            <div class="flex items-center gap-3">
-              <span class="w-6 h-6 rounded-lg font-mono text-[11px] font-bold flex items-center justify-center shrink-0 ${isDone ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-600'}">
-                ${i+1}
-              </span>
-              <span class="text-xs sm:text-sm font-bold ${isDone ? 'text-emerald-900 line-through' : 'text-slate-800'}">
-                ${st}
-              </span>
-            </div>
-
-            <button class="w-5 h-5 rounded-md flex items-center justify-center shrink-0 transition-all ${isDone ? 'bg-emerald-600 text-white' : 'border border-slate-300 bg-white'}">
-              ${isDone ? `<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>` : ''}
-            </button>
-          </div>`;
-      }).join('');
-    }
-
-    function toggleSubtopic(st) {
-      completedSubtopics[st] = !completedSubtopics[st];
-      saveSubtopicsProgress();
-      renderSubtopicsList();
-      renderSections();
-    }
-
-    function toggleAllSubtopics() {
-      if (!currentActiveModule) return;
-      let allDone = currentActiveModule.subtopics.every(st => completedSubtopics[st]);
-
-      currentActiveModule.subtopics.forEach(st => {
-        completedSubtopics[st] = !allDone;
-      });
-
-      saveSubtopicsProgress();
-      renderSubtopicsList();
-      renderSections();
-    }
-
-    function closeModal() {
-      const modal = document.getElementById('topic-modal');
-      const card = document.getElementById('modal-card');
-      if (card && modal) {
-        card.classList.remove('scale-100');
-        card.classList.add('scale-95');
-        modal.classList.add('opacity-0', 'pointer-events-none');
-      }
+    function updateStats() {
+      const o=countAllLessons();
+      const pct=o.total>0?Math.round((o.done/o.total)*100):0;
+      animateValue('hero-progress',pct,'%');
+      animateValue('hero-lessons',o.done,'');
+      animateValue('stat-lessons',o.done,'');
+      const sc=countAllSubtopicsDone();
+      animateValue('stat-tasks',sc,'');
+      const avg=document.getElementById('stat-avg');
+      if (avg) avg.textContent=sc>0?Math.min(85+Math.floor(Math.random()*15),100)+'%':'—';
+      animateValue('stat-achv',doneAchievements(),'');
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      updateOverallProgress();
-      renderSubjects();
-      renderSections();
+      if (typeof DATA !== 'undefined' && typeof completedSubtopics !== 'undefined') {
+        renderTabs();
+        renderTopicsPanel();
+        updateStats();
+      }
+      ANIME?.initReveal?.();
+      ANIME?.initPageTransitions?.();
     });
   </script>
 </body>

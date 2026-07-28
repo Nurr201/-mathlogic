@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/components.css">
 </head>
-<body class="min-h-screen relative overflow-x-hidden">
+<body class="min-h-screen relative overflow-x-hidden page-enter">
 
   <!-- АМБИЕНТНЫЙ ФОН -->
   <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
@@ -74,14 +74,14 @@
           <!-- ИМЯ + USERNAME -->
           <div class="animate-slide-up delay-100">
             <div class="flex items-center flex-wrap gap-3">
-              <h1 class="font-head font-extrabold text-3xl sm:text-4xl text-slate-900 tracking-tight">
+              <h1 id="profile-name" class="font-head font-extrabold text-3xl sm:text-4xl text-slate-900 tracking-tight">
                 Нұрбол Абдазов
               </h1>
-              <span class="level-badge">Lv. 12</span>
+              <span id="profile-level" class="level-badge">Lv. 12</span>
             </div>
             <div class="flex items-center gap-2 mt-2">
               <span class="username-dot"></span>
-              <span class="text-base font-semibold text-slate-400 font-mono tracking-tight">
+              <span id="profile-username" class="text-base font-semibold text-slate-400 font-mono tracking-tight">
                 @nurbek_dev
               </span>
             </div>
@@ -95,19 +95,19 @@
                 <svg class="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                <span class="text-slate-700">1 248 XP</span>
+                <span id="profile-xp" class="text-slate-700">1 248 XP</span>
               </span>
 
               <span class="stat-badge">
                 <span style="font-size: 1.1rem; line-height: 1;">🔥</span>
-                <span class="text-slate-700">Streak 7 күн</span>
+                <span id="profile-streak" class="text-slate-700">Streak 7 күн</span>
               </span>
 
               <span class="stat-badge">
                 <svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                 </svg>
-                <span class="text-slate-700">Қаңтар 2026</span>
+                <span id="profile-last-active" class="text-slate-700">Қаңтар 2026</span>
               </span>
 
             </div>
@@ -116,17 +116,17 @@
           <!-- XP BAR -->
           <div class="animate-slide-up delay-300">
             <div class="flex items-center justify-between text-xs font-bold font-mono mb-1.5">
-              <span class="text-slate-500">700 / 2 000 XP</span>
-              <span class="text-blue-600">Lv. 13</span>
+              <span id="profile-xp-bar-text" class="text-slate-500">700 / 2 000 XP</span>
+              <span id="profile-next-level" class="text-blue-600">Lv. 13</span>
             </div>
             <div class="xp-bar-track">
-              <div class="xp-bar-fill" style="width: 35%;"></div>
+              <div id="profile-xp-bar-fill" class="xp-bar-fill" style="width: 35%;"></div>
             </div>
           </div>
 
           <!-- КНОПКИ -->
           <div class="flex flex-wrap items-center gap-3 animate-slide-up delay-400">
-            <button onclick="NAV.goToSettings()" class="btn text-sm font-semibold px-6 py-3 rounded-2xl gap-2 shadow-lg shadow-blue-600/20 hover:shadow-xl hover:shadow-blue-600/25 transition-all duration-300">
+            <button onclick="NAV.goToSettings()" class="btn text-sm font-semibold px-6 py-3 rounded-2xl gap-2 shadow-lg shadow-blue-600/20 hover:shadow-xl hover:shadow-blue-600/25 transition-all duration-300 ripple">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
               </svg>
@@ -188,7 +188,7 @@
             </defs>
           </svg>
           <div class="absolute inset-0 flex flex-col items-center justify-center">
-            <span class="font-head font-extrabold text-4xl text-slate-900 tracking-tight" id="progress-pct-display">0%</span>
+            <span class="font-head font-extrabold text-4xl text-slate-900 tracking-tight count-up" id="progress-pct-display" data-target="68" data-suffix="%" data-duration="1500">0%</span>
             <span class="text-xs font-bold text-slate-400 mt-0.5">пройдено</span>
           </div>
         </div>
@@ -204,7 +204,7 @@
               </div>
               <span class="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider">Общий прогресс</span>
             </div>
-            <span class="font-head font-extrabold text-3xl text-slate-900 tracking-tight" id="overall-pct-info">68%</span>
+            <span class="font-head font-extrabold text-3xl text-slate-900 tracking-tight count-up" data-target="68" data-suffix="%" data-duration="1200">68%</span>
           </div>
 
           <div class="bg-white/60 rounded-2xl p-5 border border-slate-200/60 hover:border-slate-300/80 transition-all hover:bg-white/80">
@@ -216,7 +216,7 @@
               </div>
               <span class="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider">Осталось уроков</span>
             </div>
-            <span class="font-head font-extrabold text-3xl text-slate-900 tracking-tight" id="remaining-lessons">24</span>
+            <span class="font-head font-extrabold text-3xl text-slate-900 tracking-tight count-up" data-target="24" data-duration="1000">24</span>
           </div>
 
           <div class="bg-white/60 rounded-2xl p-5 border border-slate-200/60 hover:border-slate-300/80 transition-all hover:bg-white/80">
@@ -228,7 +228,7 @@
               </div>
               <span class="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider">Осталось XP</span>
             </div>
-            <span class="font-head font-extrabold text-3xl text-slate-900 tracking-tight" id="remaining-xp">752</span>
+            <span class="font-head font-extrabold text-3xl text-slate-900 tracking-tight count-up" data-target="752" data-suffix="" data-duration="1200">752</span>
           </div>
 
           <div class="bg-white/60 rounded-2xl p-5 border border-slate-200/60 hover:border-slate-300/80 transition-all hover:bg-white/80">
@@ -251,9 +251,9 @@
           <span class="text-slate-500">Прогресс курса</span>
           <span class="text-blue-600" id="main-bar-label">68%</span>
         </div>
-        <div class="main-progress-track shadow-inner">
-          <div class="main-progress-fill" id="main-progress-fill"></div>
-        </div>
+          <div class="main-progress-track shadow-inner">
+            <div class="main-progress-fill" id="main-progress-fill" data-progress="68"></div>
+          </div>
       </div>
 
       <!-- СРАВНЕНИЕ -->
@@ -288,7 +288,7 @@
       <!-- БОЛЬШАЯ КАРТОЧКА СЕРИИ -->
       <div class="lg:col-span-2 glass-card-strong rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-900/5 animate-scale-in flex flex-col items-center justify-center text-center flame-glow">
         <div class="text-7xl sm:text-8xl mb-4 flame-icon">🔥</div>
-        <div class="font-head font-extrabold text-5xl sm:text-6xl text-slate-900 tracking-tight" id="streak-current">17</div>
+        <div class="font-head font-extrabold text-5xl sm:text-6xl text-slate-900 tracking-tight count-up" id="streak-current" data-target="17" data-duration="1000">17</div>
         <div class="text-sm font-bold text-slate-400 mt-1 mb-6">дней подряд</div>
 
         <div class="flex gap-6 sm:gap-10">
@@ -410,7 +410,7 @@
               <span class="text-blue-600" id="continue-progress-label">64%</span>
             </div>
             <div class="xp-bar-track">
-              <div class="xp-bar-fill" id="continue-progress-fill" style="width: 64%;"></div>
+              <div class="xp-bar-fill" id="continue-progress-fill" data-progress="64" style="width: 64%;"></div>
             </div>
           </div>
 
@@ -421,7 +421,7 @@
             <span>Осталось ~<span id="continue-time">12</span> минут</span>
           </div>
 
-          <button onclick="window.location.href='lesson.html'" class="continue-btn w-full py-3.5 rounded-2xl text-white font-head font-bold text-sm shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2">
+          <button onclick="window.location.href='lesson.html'" class="continue-btn w-full py-3.5 rounded-2xl text-white font-head font-bold text-sm shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2 ripple">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
             </svg>
@@ -530,7 +530,7 @@
               <span class="text-blue-600" id="level-progress-pct">35%</span>
             </div>
             <div class="xp-bar-track h-3">
-              <div class="xp-bar-fill" id="level-progress-bar" style="width: 0%;"></div>
+              <div class="xp-bar-fill" id="level-progress-bar" data-progress="35" style="width: 0%;"></div>
             </div>
           </div>
 
@@ -679,6 +679,7 @@
   <script src="js/ui.js"></script>
   <script src="js/navigation.js"></script>
   <script src="js/utils.js"></script>
+  <script src="js/animations.js"></script>
   <script src="js/app.js"></script>
   <script>
     const STATS_CONFIG = [
@@ -744,10 +745,9 @@
     const RARITY_LABELS = { common: 'Обычное', rare: 'Редкое', epic: 'Эпическое', legendary: 'Легендарное' };
 
     function getAchievements() {
-      const stored = localStorage.getItem('profile_achievements');
-      if (stored) {
-        try { return JSON.parse(stored); } catch(e) {}
-      }
+      var stored = ML.getProfile('achievements');
+      if (stored && Array.isArray(stored)) return stored;
+      ML.setProfile('achievements', ACHV_DATA);
       return ACHV_DATA;
     }
 
@@ -853,10 +853,8 @@
 
     /* STREAK & CALENDAR */
     function getStreakData() {
-      const stored = localStorage.getItem('profile_streak_data');
-      if (stored) {
-        try { return JSON.parse(stored); } catch(e) {}
-      }
+      var stored = ML.getProfile('streak_data');
+      if (stored && stored.days) return stored;
       const today = new Date();
       const days = [];
       for (let i = 29; i >= 0; i--) {
@@ -870,12 +868,14 @@
         else days.push({ date: dateStr, level: 3 });
       }
       days[days.length - 1].level = Math.floor(Math.random() * 3) + 1;
-      return {
+      var result = {
         current: 17,
         best: 42,
         total: 186,
         days: days
       };
+      ML.setProfile('streak_data', result);
+      return result;
     }
 
     function renderCalendar() {
@@ -905,13 +905,11 @@
 
     /* TIMELINE */
     function getTimelineData() {
-      const stored = localStorage.getItem('profile_timeline');
-      if (stored) {
-        try { return JSON.parse(stored); } catch(e) {}
-      }
+      var stored = ML.getProfile('timeline');
+      if (stored && Array.isArray(stored)) return stored;
       const now = Date.now();
       const h = n => 1000 * 60 * 60 * n;
-      return [
+      var result = [
         { icon: '📘', title: 'Изучил тему "Степени и их свойства"', desc: 'Алгебра • 8 класс', time: now - h(2), color: 'bg-blue-500' },
         { icon: '✅', title: 'Прошел тест "Линейные уравнения"', desc: 'Результат: 8/10 правильных', time: now - h(5), color: 'bg-emerald-500' },
         { icon: '⭐', title: 'Получил 50 XP', desc: 'За завершение модуля', time: now - h(8), color: 'bg-amber-500' },
@@ -920,6 +918,8 @@
         { icon: '🧩', title: 'Начал тему "Квадратные уравнения"', desc: 'Введение в тему', time: now - h(72), color: 'bg-rose-500' },
         { icon: '📊', title: 'Улучшил рекорд в тренировке', desc: 'Новый рекорд: 15 задач подряд', time: now - h(96), color: 'bg-orange-500' },
       ];
+      ML.setProfile('timeline', result);
+      return result;
     }
 
     function timeAgo(ts) {
@@ -956,11 +956,9 @@
 
     /* GOALS & LEVEL */
     function getGoalsData() {
-      const stored = localStorage.getItem('profile_goals');
-      if (stored) {
-        try { return JSON.parse(stored); } catch(e) {}
-      }
-      return {
+      var stored = ML.getProfile('goals');
+      if (stored && stored.goals) return stored;
+      var goalsResult = {
         currentLevel: 12,
         currentXp: 700,
         xpToNext: 2000,
@@ -977,6 +975,8 @@
         ],
         motivation: 'До следующего уровня осталось совсем немного! Заверши ещё один урок и приблизься к новой награде.'
       };
+      ML.setProfile('goals', goalsResult);
+      return goalsResult;
     }
 
     function renderGoals() {
@@ -1062,15 +1062,13 @@
 
     /* ANALYTICS */
     function getAnalyticsData(period) {
-      const stored = localStorage.getItem('profile_analytics');
-      if (stored) {
-        try { return JSON.parse(stored); } catch(e) {}
-      }
-      const days = period === 7 ? 7 : period === 30 ? 30 : period === 90 ? 90 : 120;
-      const data = [];
-      const now = new Date();
-      for (let i = days - 1; i >= 0; i--) {
-        const d = new Date(now);
+      var stored = ML.getProfile('analytics.' + period);
+      if (stored && Array.isArray(stored)) return stored;
+      var days = period === 7 ? 7 : period === 30 ? 30 : period === 90 ? 90 : 120;
+      var data = [];
+      var now = new Date();
+      for (var i = days - 1; i >= 0; i--) {
+        var d = new Date(now);
         d.setDate(d.getDate() - i);
         data.push({
           date: d.toISOString().slice(0, 10),
@@ -1079,6 +1077,7 @@
           lessons: Math.random() > 0.4 ? Math.floor(Math.random() * 3) + 1 : 0
         });
       }
+      ML.setProfile('analytics.' + period, data);
       return data;
     }
 
@@ -1179,7 +1178,109 @@
     }
 
     /* SETTINGS */
+    function loadProfileData() {
+      var user = ML.getUser();
+      if (!user) return;
+      var elName = document.getElementById('profile-name');
+      var elLevel = document.getElementById('profile-level');
+      var elUser = document.getElementById('profile-username');
+      var elXp = document.getElementById('profile-xp');
+      var elStreak = document.getElementById('profile-streak');
+      var elLast = document.getElementById('profile-last-active');
+      var elXpBar = document.getElementById('profile-xp-bar-text');
+      var elNextLv = document.getElementById('profile-next-level');
+      var elXpFill = document.getElementById('profile-xp-bar-fill');
+      var elPct = document.getElementById('progress-pct-display');
+      var elPct2 = document.querySelector('#progress-card .count-up[data-target="68"]');
+      var elRemain = document.querySelector('#progress-card .count-up[data-target="24"]');
+      var elXpRemain = document.querySelector('#progress-card .count-up[data-target="752"]');
+      var elNextGoal = document.getElementById('next-goal');
+      var elCompPct = document.getElementById('comparison-pct');
+      var elMainLabel = document.getElementById('main-bar-label');
+      var elMainFill = document.getElementById('main-progress-fill');
+
+      if (elName) elName.textContent = user.name || 'Пользователь';
+      if (elLevel) elLevel.textContent = 'Lv. ' + (user.level || 1);
+      if (elUser) elUser.textContent = user.username || '@user';
+      var xpFormatted = (user.xp || 0).toLocaleString();
+      if (elXp) elXp.textContent = xpFormatted + ' XP';
+      if (elStreak) elStreak.textContent = 'Streak ' + (user.streak || 0) + ' күн';
+      if (elLast) {
+        var d = user.lastVisit ? new Date(user.lastVisit) : null;
+        if (d) {
+          var months = ['Қаңтар','Ақпан','Наурыз','Сәуір','Мамыр','Маусым','Шілде','Тамыз','Қыркүйек','Қазан','Қараша','Желтоқсан'];
+          elLast.textContent = months[d.getMonth()] + ' ' + d.getFullYear();
+        }
+      }
+      if (elXpBar) {
+        var currentXp = user.xp || 0;
+        var currentLevel = user.level || 1;
+        var xpForCurrent = ML.calcXpForLevel(currentLevel);
+        var xpForNext = ML.calcXpForLevel(currentLevel + 1);
+        var levelXp = xpForNext - xpForCurrent;
+        var levelProgress = levelXp > 0 ? Math.round(((currentXp - xpForCurrent) / levelXp) * 100) : 0;
+        levelProgress = Math.max(0, Math.min(100, levelProgress));
+        elXpBar.textContent = currentXp.toLocaleString() + ' / ' + xpForNext.toLocaleString() + ' XP';
+        if (elNextLv) elNextLv.textContent = 'Lv. ' + (currentLevel + 1);
+        if (elXpFill) {
+          elXpFill.style.width = levelProgress + '%';
+          elXpFill.style.transition = 'width 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+        }
+      }
+
+      var overallPct = ML.calcOverallProgress();
+      if (elPct) {
+        elPct.textContent = overallPct + '%';
+        elPct.dataset.target = overallPct;
+      }
+      if (elPct2) {
+        elPct2.textContent = overallPct + '%';
+        elPct2.dataset.target = overallPct;
+      }
+      if (elMainLabel) elMainLabel.textContent = overallPct + '%';
+      if (elMainFill) {
+        elMainFill.style.width = overallPct + '%';
+        elMainFill.dataset.progress = overallPct;
+      }
+
+      var totalSubtopics = 0;
+      try {
+        if (typeof DATA !== 'undefined') {
+          Object.keys(DATA).forEach(function(sk) {
+            (DATA[sk] || []).forEach(function(sec) {
+              (sec.modules || []).forEach(function(mod) {
+                (mod.subtopics || []).forEach(function() { totalSubtopics++; });
+              });
+            });
+          });
+        }
+      } catch(e) {}
+      var doneCount = Object.keys(ML.getSubtopics()).length;
+      var remaining = Math.max(0, totalSubtopics - doneCount);
+      if (elRemain) {
+        elRemain.textContent = remaining;
+        elRemain.dataset.target = remaining;
+      }
+
+      var xpToNext = ML.calcXpToNext(user.level || 1, user.xp || 0);
+      if (elXpRemain) {
+        elXpRemain.textContent = xpToNext.toLocaleString();
+        elXpRemain.dataset.target = xpToNext;
+      }
+
+      if (elNextGoal) {
+        var lastLesson = user.lastLesson || 'Геометрия — Площади фигур';
+        elNextGoal.textContent = lastLesson;
+      }
+
+      if (elCompPct) {
+        var comp = Math.min(99, Math.round(overallPct * 0.7 + 15 + Math.random() * 10));
+        elCompPct.textContent = comp + '%';
+      }
+    }
+
 document.addEventListener('DOMContentLoaded', function() {
+      loadProfileData();
       renderStats();
       renderCalendar();
       renderTimeline();
@@ -1187,19 +1288,20 @@ document.addEventListener('DOMContentLoaded', function() {
       renderAchievements();
       renderGoals();
       setTimeout(renderAnalytics, 100);
+      ANIME.initPageTransitions();
 
-      // Set circular progress offset
-      var pctText = document.getElementById('progress-pct-display');
-      var ring = document.getElementById('progress-ring');
-      var glow = document.getElementById('progress-glow');
-      if (pctText && ring && glow) {
-        var pct = parseInt(pctText.textContent) || 0;
-        var offset = 439.8 * (100 - pct) / 100;
-        ring.style.setProperty('--offset', offset + 'px');
-        glow.style.setProperty('--offset', offset + 'px');
-        ring.classList.add('animated');
-        glow.classList.add('animated');
-      }
+      setTimeout(function() {
+        var pct = ML.calcOverallProgress();
+        var ring = document.getElementById('progress-ring');
+        var glow = document.getElementById('progress-glow');
+        if (ring && glow) {
+          var offset = 439.8 * (100 - pct) / 100;
+          ring.style.setProperty('--offset', offset + 'px');
+          glow.style.setProperty('--offset', offset + 'px');
+          ring.classList.add('animated');
+          glow.classList.add('animated');
+        }
+      }, 200);
     });
 
 </script>

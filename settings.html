@@ -9,17 +9,432 @@
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/components.css">
   <style>
-    body { background: #F8FAFC; }
+    html { scroll-behavior: smooth; }
+
+    .settings-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .settings-sidebar {
+      position: sticky;
+      top: 100px;
+    }
+
+    .settings-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: #64748B;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      text-decoration: none;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-family: 'Rubik', sans-serif;
+    }
+    .settings-nav-item:hover {
+      background: #F1F5F9;
+      color: #0F172A;
+    }
+    .settings-nav-item.active {
+      background: #EFF6FF;
+      color: #1D4ED8;
+    }
+    .settings-nav-item .nav-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: transparent;
+      transition: all 0.25s ease;
+    }
+    .settings-nav-item.active .nav-dot {
+      background: #1D4ED8;
+      box-shadow: 0 0 0 3px rgba(29,78,216,0.15);
+    }
+
+    .settings-card {
+      border-radius: 24px;
+      padding: 1.75rem;
+      background: rgba(255,255,255,0.78);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(226,232,240,0.6);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .settings-card:hover {
+      border-color: #CBD5E1;
+      background: rgba(255,255,255,0.9);
+    }
+
+    .settings-section {
+      scroll-margin-top: 100px;
+    }
+
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.875rem 0;
+      gap: 1rem;
+    }
+    .settings-row + .settings-row {
+      border-top: 1px solid rgba(226,232,240,0.5);
+    }
+
+    .settings-label {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .settings-label span:first-child {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: #0F172A;
+      font-family: 'Rubik', sans-serif;
+    }
+    .settings-label span:last-child {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #94A3B8;
+    }
+
+    .settings-input {
+      font-family: 'Golos Text', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      background: white;
+      border: 1.5px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 0.625rem 1rem;
+      outline: none;
+      transition: all 0.2s ease;
+      color: #0F172A;
+      width: 100%;
+      max-width: 280px;
+    }
+    .settings-input:focus {
+      border-color: #1D4ED8;
+      box-shadow: 0 0 0 3px rgba(29,78,216,0.1);
+    }
+
+    .option-btn {
+      padding: 6px 16px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: 'Rubik', sans-serif;
+      border: 1.5px solid #E2E8F0;
+      background: white;
+      color: #64748B;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+    }
+    .option-btn:hover {
+      border-color: #94A3B8;
+      color: #475569;
+    }
+    .option-btn:active {
+      transform: scale(0.96);
+    }
+    .option-btn.active {
+      background: #EFF6FF;
+      border-color: #1D4ED8;
+      color: #1D4ED8;
+      box-shadow: 0 2px 8px rgba(29,78,216,0.08);
+    }
+
+    .color-swatch {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      flex-shrink: 0;
+      outline: none;
+    }
+    .color-swatch:hover { transform: scale(1.18); }
+    .color-swatch:active { transform: scale(0.95); }
+    .color-swatch.active {
+      border-color: #0F172A;
+      box-shadow: 0 0 0 2px white, 0 0 0 4px rgba(15,23,42,0.1);
+    }
+
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 26px;
+      flex-shrink: 0;
+      border-radius: 999px;
+      background: #CBD5E1;
+      cursor: pointer;
+      transition: background 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .toggle:focus-visible {
+      outline: 2px solid #1D4ED8;
+      outline-offset: 2px;
+    }
+    .toggle.active { background: #1D4ED8; }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .toggle.active::after { transform: translateX(18px); }
+
+    .danger-btn {
+      padding: 8px 18px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      font-family: 'Rubik', sans-serif;
+      border: 1.5px solid #FECACA;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      background: #FEF2F2;
+      color: #EF4444;
+    }
+    .danger-btn:hover {
+      background: #FEE2E2;
+      border-color: #FCA5A5;
+      transform: translateY(-1px);
+    }
+    .danger-btn:active { transform: scale(0.97); }
+
+    .danger-btn-solid {
+      padding: 8px 18px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      font-family: 'Rubik', sans-serif;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      background: #EF4444;
+      color: white;
+      box-shadow: 0 4px 12px rgba(239,68,68,0.2);
+    }
+    .danger-btn-solid:hover {
+      background: #DC2626;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(239,68,68,0.3);
+    }
+    .danger-btn-solid:active { transform: scale(0.97); }
+
+    .primary-btn {
+      padding: 10px 24px;
+      border-radius: 12px;
+      font-size: 0.8125rem;
+      font-weight: 800;
+      font-family: 'Rubik', sans-serif;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      background: #1D4ED8;
+      color: white;
+      box-shadow: 0 4px 12px rgba(29,78,216,0.2);
+    }
+    .primary-btn:hover {
+      background: #1E40AF;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(29,78,216,0.3);
+    }
+    .primary-btn:active { transform: scale(0.97); }
+    .primary-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .primary-btn-outline {
+      padding: 10px 24px;
+      border-radius: 12px;
+      font-size: 0.8125rem;
+      font-weight: 800;
+      font-family: 'Rubik', sans-serif;
+      border: 1.5px solid #E2E8F0;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      background: white;
+      color: #1D4ED8;
+    }
+    .primary-btn-outline:hover {
+      background: #EFF6FF;
+      border-color: #1D4ED8;
+      transform: translateY(-1px);
+    }
+    .primary-btn-outline:active { transform: scale(0.97); }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(15,23,42,0.5);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-box {
+      background: white;
+      border-radius: 28px;
+      max-width: 400px;
+      width: 100%;
+      padding: 2rem;
+      box-shadow: 0 25px 60px rgba(15,23,42,0.15);
+      transform: scale(0.92) translateY(12px);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .modal-overlay.open .modal-box {
+      transform: scale(1) translateY(0);
+    }
+
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast {
+      padding: 12px 24px;
+      border-radius: 16px;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      font-family: 'Rubik', sans-serif;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+      pointer-events: auto;
+      animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toast-success { background: #065F46; color: white; }
+    .toast-info { background: #1E40AF; color: white; }
+    .toast-error { background: #991B1B; color: white; }
+    .toast-warning { background: #92400E; color: white; }
+
+    .section-icon-wrap {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.125rem;
+      flex-shrink: 0;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      font-family: 'Rubik', sans-serif;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+
+    .badge-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    @media (max-width: 896px) {
+      .settings-layout {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .settings-sidebar {
+        position: static;
+        display: flex;
+        overflow-x: auto;
+        gap: 4px;
+        padding: 4px;
+        background: rgba(255,255,255,0.6);
+        backdrop-filter: blur(12px);
+        border-radius: 18px;
+        border: 1px solid rgba(226,232,240,0.6);
+        -webkit-overflow-scrolling: touch;
+      }
+      .settings-sidebar::-webkit-scrollbar { display: none; }
+      .settings-nav-item {
+        white-space: nowrap;
+        padding: 8px 12px;
+        font-size: 0.75rem;
+      }
+      .settings-nav-item .nav-dot { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .settings-card { padding: 1.25rem; }
+      .settings-row { flex-wrap: wrap; gap: 8px; }
+      .settings-input { max-width: 100%; }
+      .modal-box { padding: 1.5rem; margin: 0.5rem; }
+    }
+
+    body.dark .settings-card {
+      background: rgba(30,41,59,0.8);
+      border-color: rgba(51,65,85,0.6);
+    }
+    body.dark .settings-card:hover {
+      background: rgba(30,41,59,0.95);
+      border-color: #475569;
+    }
+    body.dark .settings-nav-item:hover { background: #334155; color: #F1F5F9; }
+    body.dark .settings-nav-item.active { background: rgba(29,78,216,0.2); color: #60A5FA; }
+    body.dark .settings-label span:first-child { color: #F1F5F9; }
+    body.dark .settings-input { background: #1E293B; border-color: #334155; color: #F1F5F9; }
+    body.dark .settings-input:focus { border-color: #3B82F6; }
+    body.dark .option-btn { background: #1E293B; border-color: #334155; color: #94A3B8; }
+    body.dark .option-btn.active { background: rgba(29,78,216,0.2); border-color: #3B82F6; color: #60A5FA; }
+    body.dark .toggle:not(.active) { background: #475569; }
+    body.dark .modal-box { background: #1E293B; }
   </style>
 </head>
-<body class="min-h-screen relative overflow-x-hidden bg-[#F8FAFC]">
+<body class="min-h-screen relative overflow-x-hidden bg-[#F8FAFC] page-enter" id="app-body">
 
+  <!-- AMBIENT BG -->
   <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
-    <div class="absolute top-[-8%] left-[-3%] w-[550px] h-[550px] bg-blue-200/40 rounded-full blur-[130px] animate-float"></div>
-    <div class="absolute top-[20%] right-[-8%] w-[480px] h-[480px] bg-purple-100/50 rounded-full blur-[120px] animate-float" style="animation-delay: -2s"></div>
-    <div class="absolute bottom-[-5%] left-[15%] w-[400px] h-[400px] bg-emerald-100/40 rounded-full blur-[100px] animate-float" style="animation-delay: -1s"></div>
+    <div class="absolute top-[-8%] left-[-3%] w-[550px] h-[550px] bg-blue-200/40 rounded-full blur-[130px]"></div>
+    <div class="absolute top-[20%] right-[-8%] w-[480px] h-[480px] bg-purple-100/50 rounded-full blur-[120px]"></div>
+    <div class="absolute bottom-[-5%] left-[15%] w-[400px] h-[400px] bg-emerald-100/40 rounded-full blur-[100px]"></div>
   </div>
 
+  <!-- HEADER -->
   <header class="fixed top-0 left-0 w-full z-40 bg-white/70 backdrop-blur-md border-b border-slate-200/50 shadow-xs">
     <div class="h-1 w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
     <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -40,230 +455,791 @@
     </div>
   </header>
 
-  <main class="max-w-4xl mx-auto px-4 sm:px-6 pt-28 pb-24">
-    <div class="flex items-center gap-3 mb-8 animate-slide-up">
-      <div class="w-1 h-6 rounded-full bg-gradient-to-b from-slate-500 to-slate-700"></div>
-      <h1 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">Настройки</h1>
+  <!-- MAIN -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-24">
+    <div class="flex items-center gap-3 mb-8 reveal">
+      <div class="w-1 h-7 rounded-full bg-gradient-to-b from-blue-500 to-purple-500"></div>
+      <h1 class="font-head font-extrabold text-2xl sm:text-3xl text-slate-900 tracking-tight">Настройки</h1>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-      <div class="settings-card animate-scale-in">
-        <div class="flex items-center gap-3 mb-5">
-          <div class="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
-            <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-          </div>
-          <span class="font-head font-bold text-base text-slate-800">Профиль</span>
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Аватар</span>
-          <button class="text-xs font-bold text-blue-600 bg-blue-50 px-4 py-2 rounded-xl hover:bg-blue-100 transition-colors">Изменить</button>
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Имя</span>
-          <input class="settings-input" type="text" value="Нұрбол Абдазов">
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Username</span>
-          <input class="settings-input" type="text" value="@nurbek_dev">
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Email</span>
-          <input class="settings-input" type="email" value="nurbek@example.com">
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Пароль</span>
-          <button class="text-xs font-bold text-blue-600 bg-blue-50 px-4 py-2 rounded-xl hover:bg-blue-100 transition-colors">Сменить</button>
-        </div>
-      </div>
+    <div class="settings-layout">
 
-      <div class="settings-card animate-scale-in delay-100">
-        <div class="flex items-center gap-3 mb-5">
-          <div class="w-9 h-9 rounded-xl bg-purple-100 flex items-center justify-center text-purple-600">
-            <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
-          </div>
-          <span class="font-head font-bold text-base text-slate-800">Внешний вид</span>
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Тема</span>
-          <div class="flex gap-2">
-            <button class="theme-btn active">Светлая</button>
-            <button class="theme-btn">Тёмная</button>
-            <button class="theme-btn">Системная</button>
-          </div>
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Акцентный цвет</span>
-          <div class="flex gap-2">
-            <div class="color-swatch active" style="background:#1D4ED8"></div>
-            <div class="color-swatch" style="background:#059669"></div>
-            <div class="color-swatch" style="background:#7C3AED"></div>
-            <div class="color-swatch" style="background:#DC2626"></div>
-            <div class="color-swatch" style="background:#D97706"></div>
-          </div>
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Размер шрифта</span>
-          <div class="flex gap-2">
-            <button class="theme-btn">Мелкий</button>
-            <button class="theme-btn active">Средний</button>
-            <button class="theme-btn">Крупный</button>
-          </div>
-        </div>
-      </div>
+      <!-- SIDEBAR NAV -->
+      <nav class="settings-sidebar" id="settings-nav">
+        <a href="#section-account" class="settings-nav-item active" data-section="account">
+          <span class="nav-dot"></span>
+          <span>👤 Аккаунт</span>
+        </a>
+        <a href="#section-appearance" class="settings-nav-item" data-section="appearance">
+          <span class="nav-dot"></span>
+          <span>🎨 Внешний вид</span>
+        </a>
+        <a href="#section-language" class="settings-nav-item" data-section="language">
+          <span class="nav-dot"></span>
+          <span>🌍 Язык</span>
+        </a>
+        <a href="#section-learning" class="settings-nav-item" data-section="learning">
+          <span class="nav-dot"></span>
+          <span>📚 Обучение</span>
+        </a>
+        <a href="#section-notifications" class="settings-nav-item" data-section="notifications">
+          <span class="nav-dot"></span>
+          <span>🔔 Уведомления</span>
+        </a>
+        <a href="#section-security" class="settings-nav-item" data-section="security">
+          <span class="nav-dot"></span>
+          <span>🔒 Безопасность</span>
+        </a>
+        <a href="#section-data" class="settings-nav-item" data-section="data">
+          <span class="nav-dot"></span>
+          <span>💾 Данные</span>
+        </a>
+        <a href="#section-about" class="settings-nav-item" data-section="about">
+          <span class="nav-dot"></span>
+          <span>ℹ️ О проекте</span>
+        </a>
+      </nav>
 
-      <div class="settings-card animate-scale-in delay-150">
-        <div class="flex items-center gap-3 mb-5">
-          <div class="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600">
-            <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          </div>
-          <span class="font-head font-bold text-base text-slate-800">Язык</span>
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Интерфейс</span>
-          <div class="flex gap-2">
-            <button class="lang-btn active">Қазақша</button>
-            <button class="lang-btn">Русский</button>
-            <button class="lang-btn">English</button>
-          </div>
-        </div>
-      </div>
+      <!-- CONTENT -->
+      <div class="flex flex-col gap-6">
 
-      <div class="settings-card animate-scale-in delay-200">
-        <div class="flex items-center gap-3 mb-5">
-          <div class="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600">
-            <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-          </div>
-          <span class="font-head font-bold text-base text-slate-800">Обучение</span>
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Ежедневная цель</span>
-          <input class="settings-input w-24 text-center" type="number" value="3" min="1" max="10">
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Напоминания</span>
-          <div class="toggle active" role="switch" aria-checked="true" tabindex="0"></div>
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Автосохранение</span>
-          <div class="toggle active" role="switch" aria-checked="true" tabindex="0"></div>
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Показывать решения</span>
-          <div class="flex gap-2">
-            <button class="theme-btn">Сразу</button>
-            <button class="theme-btn active">После ответа</button>
-          </div>
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Звуковые эффекты</span>
-          <div class="toggle active" role="switch" aria-checked="true" tabindex="0"></div>
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Анимации</span>
-          <div class="toggle active" role="switch" aria-checked="true" tabindex="0"></div>
-        </div>
-      </div>
+        <!-- ==================== АККАУНТ ==================== -->
+        <section id="section-account" class="settings-section reveal">
+          <div class="settings-card">
+            <div class="flex items-center gap-3 mb-6 pb-5 border-b border-slate-200/50">
+              <div class="section-icon-wrap bg-blue-100 text-blue-600">👤</div>
+              <div>
+                <h2 class="font-head font-bold text-lg text-slate-900">Аккаунт</h2>
+                <p class="text-xs font-medium text-slate-400">Управление профилем</p>
+              </div>
+            </div>
 
-      <div class="settings-card animate-scale-in delay-250">
-        <div class="flex items-center gap-3 mb-5">
-          <div class="w-9 h-9 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600">
-            <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-          </div>
-          <span class="font-head font-bold text-base text-slate-800">Конфиденциальность</span>
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Экспорт прогресса</span>
-          <button class="text-xs font-bold text-blue-600 bg-blue-50 px-4 py-2 rounded-xl hover:bg-blue-100 transition-colors">Скачать</button>
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Очистить данные</span>
-          <button class="danger-btn">Очистить</button>
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Сбросить прогресс</span>
-          <button class="danger-btn-solid">Сбросить</button>
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Политика конфиденциальности</span>
-          <a href="#" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors">Открыть</a>
-        </div>
-      </div>
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Аватар</span>
+                <span>PNG, JPG до 2MB</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-head font-bold text-sm shadow-sm" id="avatar-preview">Н</div>
+                <button class="option-btn" onclick="showToast('Функция недоступна в демо', 'info')">Изменить</button>
+              </div>
+            </div>
 
-      <div class="settings-card animate-scale-in delay-300">
-        <div class="flex items-center gap-3 mb-5">
-          <div class="w-9 h-9 rounded-xl bg-cyan-100 flex items-center justify-center text-cyan-600">
-            <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          </div>
-          <span class="font-head font-bold text-base text-slate-800">О приложении</span>
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Версия</span>
-          <span class="text-sm font-bold text-slate-500">2.4.1</span>
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Уроков всего</span>
-          <span class="text-sm font-bold text-slate-500">247</span>
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Модулей всего</span>
-          <span class="text-sm font-bold text-slate-500">34</span>
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">Автор</span>
-          <span class="text-sm font-bold text-slate-500">Нұрбол Абдазов</span>
-        </div>
-        <div class="settings-row">
-          <span class="text-sm font-bold text-slate-700">GitHub</span>
-          <a href="#" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors">Скоро</a>
-        </div>
-      </div>
-    </div>
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Имя</span>
+                <span>Ваше отображаемое имя</span>
+              </div>
+              <input class="settings-input" type="text" id="settings-name" value="Нұрбол Абдазов" onchange="saveAccount()">
+            </div>
 
-    <div class="flex justify-center mt-10 animate-scale-in delay-350">
-      <button class="logout-btn flex items-center gap-3" onclick="NAV.logout()">
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-        Выйти из аккаунта
-      </button>
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Username</span>
+                <span>Ваш уникальный логин</span>
+              </div>
+              <input class="settings-input" type="text" id="settings-username" value="@nurbek_dev" onchange="saveAccount()">
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Email</span>
+                <span>Для уведомлений и входа</span>
+              </div>
+              <input class="settings-input" type="email" id="settings-email" value="nurbek@example.com" onchange="saveAccount()">
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Пароль</span>
+                <span>Минимум 8 символов</span>
+              </div>
+              <button class="option-btn" onclick="showToast('Функция недоступна в демо', 'info')">Сменить</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== ВНЕШНИЙ ВИД ==================== -->
+        <section id="section-appearance" class="settings-section reveal">
+          <div class="settings-card">
+            <div class="flex items-center gap-3 mb-6 pb-5 border-b border-slate-200/50">
+              <div class="section-icon-wrap bg-purple-100 text-purple-600">🎨</div>
+              <div>
+                <h2 class="font-head font-bold text-lg text-slate-900">Внешний вид</h2>
+                <p class="text-xs font-medium text-slate-400">Тема, цвета, шрифты</p>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Тема оформления</span>
+                <span>Выберите стиль отображения</span>
+              </div>
+              <div class="flex gap-2" id="theme-options">
+                <button class="option-btn active" data-theme="light" onclick="setTheme('light')">☀️ Светлая</button>
+                <button class="option-btn" data-theme="dark" onclick="setTheme('dark')">🌙 Тёмная</button>
+                <button class="option-btn" data-theme="system" onclick="setTheme('system')">💻 Системная</button>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Акцентный цвет</span>
+                <span>Цвет выделения элементов</span>
+              </div>
+              <div class="flex gap-2" id="accent-options">
+                <button class="color-swatch active" data-color="#1D4ED8" style="background:#1D4ED8" onclick="setAccent('#1D4ED8')" aria-label="Синий"></button>
+                <button class="color-swatch" data-color="#059669" style="background:#059669" onclick="setAccent('#059669')" aria-label="Зелёный"></button>
+                <button class="color-swatch" data-color="#7C3AED" style="background:#7C3AED" onclick="setAccent('#7C3AED')" aria-label="Фиолетовый"></button>
+                <button class="color-swatch" data-color="#DC2626" style="background:#DC2626" onclick="setAccent('#DC2626')" aria-label="Красный"></button>
+                <button class="color-swatch" data-color="#D97706" style="background:#D97706" onclick="setAccent('#D97706')" aria-label="Оранжевый"></button>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Размер шрифта</span>
+                <span>Настройка текста интерфейса</span>
+              </div>
+              <div class="flex gap-2" id="fontsize-options">
+                <button class="option-btn" data-size="small" onclick="setFontSize('small')">Мелкий</button>
+                <button class="option-btn active" data-size="medium" onclick="setFontSize('medium')">Средний</button>
+                <button class="option-btn" data-size="large" onclick="setFontSize('large')">Крупный</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== ЯЗЫК ==================== -->
+        <section id="section-language" class="settings-section reveal">
+          <div class="settings-card">
+            <div class="flex items-center gap-3 mb-6 pb-5 border-b border-slate-200/50">
+              <div class="section-icon-wrap bg-emerald-100 text-emerald-600">🌍</div>
+              <div>
+                <h2 class="font-head font-bold text-lg text-slate-900">Язык</h2>
+                <p class="text-xs font-medium text-slate-400">Язык интерфейса</p>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Интерфейс</span>
+                <span>Выберите язык отображения</span>
+              </div>
+              <div class="flex gap-2" id="lang-options">
+                <button class="option-btn" data-lang="kz" onclick="setLang('kz')">🇰🇿 Қазақша</button>
+                <button class="option-btn active" data-lang="ru" onclick="setLang('ru')">🇷🇺 Русский</button>
+                <button class="option-btn" data-lang="en" onclick="setLang('en')">🇬🇧 English</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== ОБУЧЕНИЕ ==================== -->
+        <section id="section-learning" class="settings-section reveal">
+          <div class="settings-card">
+            <div class="flex items-center gap-3 mb-6 pb-5 border-b border-slate-200/50">
+              <div class="section-icon-wrap bg-amber-100 text-amber-600">📚</div>
+              <div>
+                <h2 class="font-head font-bold text-lg text-slate-900">Обучение</h2>
+                <p class="text-xs font-medium text-slate-400">Персональные настройки</p>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Ежедневная цель</span>
+                <span>Количество уроков в день</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <button class="option-btn" onclick="adjustGoal(-1)">−</button>
+                <span class="font-head font-extrabold text-xl text-slate-900 w-8 text-center" id="daily-goal-value">3</span>
+                <button class="option-btn" onclick="adjustGoal(1)">+</button>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Напоминания</span>
+                <span>Ежедневные уведомления о занятиях</span>
+              </div>
+              <div class="toggle active" id="toggle-reminders" role="switch" aria-checked="true" tabindex="0"></div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Автосохранение</span>
+                <span>Автоматически сохранять прогресс</span>
+              </div>
+              <div class="toggle active" id="toggle-autosave" role="switch" aria-checked="true" tabindex="0"></div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Показывать решения</span>
+                <span>Когда отображать правильный ответ</span>
+              </div>
+              <div class="flex gap-2" id="solutions-options">
+                <button class="option-btn" data-mode="immediate" onclick="setSolutionsMode('immediate')">Сразу</button>
+                <button class="option-btn active" data-mode="after_answer" onclick="setSolutionsMode('after_answer')">После ответа</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== УВЕДОМЛЕНИЯ ==================== -->
+        <section id="section-notifications" class="settings-section reveal">
+          <div class="settings-card">
+            <div class="flex items-center gap-3 mb-6 pb-5 border-b border-slate-200/50">
+              <div class="section-icon-wrap bg-sky-100 text-sky-600">🔔</div>
+              <div>
+                <h2 class="font-head font-bold text-lg text-slate-900">Уведомления</h2>
+                <p class="text-xs font-medium text-slate-400">Настройка оповещений</p>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Push-уведомления</span>
+                <span>Браузерные уведомления о прогрессе</span>
+              </div>
+              <div class="toggle" id="toggle-push" role="switch" aria-checked="false" tabindex="0"></div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Email-уведомления</span>
+                <span>Письма о достижениях и напоминания</span>
+              </div>
+              <div class="toggle active" id="toggle-email" role="switch" aria-checked="true" tabindex="0"></div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Звуковые эффекты</span>
+                <span>Звуки при ответах и достижениях</span>
+              </div>
+              <div class="toggle active" id="toggle-sound" role="switch" aria-checked="true" tabindex="0"></div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Анимации</span>
+                <span>Визуальные эффекты интерфейса</span>
+              </div>
+              <div class="toggle active" id="toggle-animations" role="switch" aria-checked="true" tabindex="0"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== БЕЗОПАСНОСТЬ ==================== -->
+        <section id="section-security" class="settings-section reveal">
+          <div class="settings-card">
+            <div class="flex items-center gap-3 mb-6 pb-5 border-b border-slate-200/50">
+              <div class="section-icon-wrap bg-rose-100 text-rose-600">🔒</div>
+              <div>
+                <h2 class="font-head font-bold text-lg text-slate-900">Безопасность</h2>
+                <p class="text-xs font-medium text-slate-400">Защита аккаунта</p>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Текущий пароль</span>
+                <span>Последнее изменение: 3 месяца назад</span>
+              </div>
+              <button class="option-btn" onclick="showToast('Функция недоступна в демо', 'info')">Изменить</button>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Двухфакторная аутентификация</span>
+                <span>Дополнительный уровень защиты</span>
+              </div>
+              <button class="option-btn" onclick="showToast('Функция недоступна в демо', 'info')">Настроить</button>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Сессии</span>
+                <span>Активных сессий: 1</span>
+              </div>
+              <button class="option-btn" onclick="showToast('Функция недоступна в демо', 'info')">Управлять</button>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span style="color:#EF4444;">Удалить аккаунт</span>
+                <span>Это действие необратимо</span>
+              </div>
+              <button class="danger-btn-solid" onclick="openModal('delete-account')">Удалить</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== ДАННЫЕ ==================== -->
+        <section id="section-data" class="settings-section reveal">
+          <div class="settings-card">
+            <div class="flex items-center gap-3 mb-6 pb-5 border-b border-slate-200/50">
+              <div class="section-icon-wrap bg-cyan-100 text-cyan-600">💾</div>
+              <div>
+                <h2 class="font-head font-bold text-lg text-slate-900">Данные</h2>
+                <p class="text-xs font-medium text-slate-400">Управление данными</p>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Экспорт прогресса</span>
+                <span>Скачать все данные в JSON</span>
+              </div>
+              <button class="option-btn" onclick="exportData()">📥 Скачать</button>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Очистить данные</span>
+                <span>Удалить все настройки, кроме аккаунта</span>
+              </div>
+              <button class="danger-btn" onclick="openModal('clear-data')">Очистить</button>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Сбросить прогресс</span>
+                <span>Удалить весь прогресс обучения</span>
+              </div>
+              <button class="danger-btn" onclick="openModal('reset-progress')">Сбросить</button>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Политика конфиденциальности</span>
+                <span>Как мы обрабатываем ваши данные</span>
+              </div>
+              <a href="#" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors" onclick="showToast('Страница недоступна в демо', 'info'); return false;">Открыть</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== О ПРОЕКТЕ ==================== -->
+        <section id="section-about" class="settings-section reveal">
+          <div class="settings-card">
+            <div class="flex items-center gap-3 mb-6 pb-5 border-b border-slate-200/50">
+              <div class="section-icon-wrap bg-indigo-100 text-indigo-600">ℹ️</div>
+              <div>
+                <h2 class="font-head font-bold text-lg text-slate-900">О проекте</h2>
+                <p class="text-xs font-medium text-slate-400">math·logic v2.4.1</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6" id="about-stats"></div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Версия</span>
+                <span>Текущая версия приложения</span>
+              </div>
+              <span class="text-sm font-bold text-slate-900 font-mono">2.4.1</span>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Автор</span>
+                <span>Разработчик проекта</span>
+              </div>
+              <span class="text-sm font-bold text-slate-900">Нұрбол Абдазов</span>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>GitHub</span>
+                <span>Исходный код проекта</span>
+              </div>
+              <a href="https://github.com" target="_blank" class="text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors" onclick="showToast('Ссылка недоступна в демо', 'info'); return false;">Открыть →</a>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <span>Лицензия</span>
+                <span>Условия использования</span>
+              </div>
+              <span class="text-sm font-bold text-slate-500">MIT</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- LOGOUT -->
+        <div class="flex justify-center pt-4 reveal">
+          <button class="danger-btn-solid flex items-center gap-2.5 px-8 py-3.5 rounded-2xl shadow-lg shadow-red-600/15 text-sm" onclick="openModal('logout')">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+            Выйти из аккаунта
+          </button>
+        </div>
+
+      </div>
     </div>
   </main>
+
+  <!-- ==================== MODALS ==================== -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal-box text-center" id="modal-box">
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <!-- ==================== TOAST CONTAINER ==================== -->
+  <div class="toast-container" id="toast-container"></div>
 
   <script src="js/storage.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/navigation.js"></script>
   <script src="js/utils.js"></script>
+  <script src="js/animations.js"></script>
   <script src="js/app.js"></script>
   <script>
-    // Settings-specific toggles and buttons
-    document.querySelectorAll('.toggle').forEach(el => {
-      el.addEventListener('click', () => { el.classList.toggle('active'); el.setAttribute('aria-checked', el.classList.contains('active')); });
-      el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.classList.toggle('active'); el.setAttribute('aria-checked', el.classList.contains('active')); } });
+    /* ===================================================
+       SETTINGS ENGINE — math·logic
+       Все настройки сохраняются в localStorage
+       =================================================== */
+
+    // ---- HELPERS ----
+    function get(key, def) { return ML.getSetting(key, def); }
+    function set(key, val) { ML.setSetting(key, val); }
+
+    function showToast(msg, type) {
+      type = type || 'success';
+      var container = document.getElementById('toast-container');
+      var toast = document.createElement('div');
+      var icons = { success: '✓', info: 'ℹ', error: '✕', warning: '⚠' };
+      toast.className = 'toast toast-' + type;
+      toast.innerHTML = '<span>' + (icons[type] || '✓') + '</span> ' + msg;
+      container.appendChild(toast);
+      setTimeout(function() {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        toast.style.transform = 'translateY(8px)';
+        setTimeout(function() { toast.remove(); }, 300);
+      }, 2500);
+    }
+
+    // ---- MODAL ----
+    var overlay = document.getElementById('modal-overlay');
+    var modalBox = document.getElementById('modal-box');
+    var modalContent = document.getElementById('modal-content');
+
+    function openModal(action) {
+      var titles = {
+        'clear-data': { icon: '⚠️', title: 'Очистить данные?', desc: 'Все настройки будут удалены. Прогресс обучения останется.', confirm: 'Очистить', danger: true },
+        'reset-progress': { icon: '🔄', title: 'Сбросить прогресс?', desc: 'Весь прогресс обучения будет удалён. Настройки останутся.', confirm: 'Сбросить', danger: true },
+        'logout': { icon: '🚪', title: 'Выйти из аккаунта?', desc: 'Вы будете перенаправлены на страницу входа.', confirm: 'Выйти', danger: true },
+        'delete-account': { icon: '🗑️', title: 'Удалить аккаунт?', desc: 'Это действие необратимо. Все данные будут потеряны.', confirm: 'Удалить навсегда', danger: true }
+      };
+      var data = titles[action] || { icon: '⚠️', title: 'Вы уверены?', desc: '', confirm: 'Да', danger: false };
+      modalContent.innerHTML =
+        '<div class="text-4xl mb-4">' + data.icon + '</div>' +
+        '<h3 class="font-head font-extrabold text-xl text-slate-900 mb-2">' + data.title + '</h3>' +
+        '<p class="text-sm font-medium text-slate-500 mb-6">' + data.desc + '</p>' +
+        '<div class="flex gap-3">' +
+        '<button onclick="closeModal()" class="flex-1 px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-head font-bold text-sm transition-all">Отмена</button>' +
+        '<button id="modal-confirm-btn" class="flex-1 px-5 py-3 rounded-xl font-head font-bold text-sm transition-all shadow-md">' + data.confirm + '</button>' +
+        '</div>';
+      var confirmBtn = document.getElementById('modal-confirm-btn');
+      if (data.danger) {
+        confirmBtn.className = 'flex-1 px-5 py-3 rounded-xl font-head font-bold text-sm transition-all shadow-md bg-red-600 hover:bg-red-700 text-white shadow-red-600/20';
+      } else {
+        confirmBtn.className = 'flex-1 px-5 py-3 rounded-xl font-head font-bold text-sm transition-all shadow-md bg-blue-600 hover:bg-blue-700 text-white shadow-blue-600/20';
+      }
+      confirmBtn.onclick = function() { handleModalAction(action); };
+      overlay.classList.add('open');
+    }
+
+    function closeModal() {
+      overlay.classList.remove('open');
+    }
+
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) closeModal();
     });
-    document.querySelectorAll('.theme-btn, .lang-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const row = this.closest('.settings-row');
-        if (row) row.querySelectorAll('.theme-btn, .lang-btn').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    function handleModalAction(action) {
+      var d;
+      if (action === 'clear-data') {
+        d = ML.getData();
+        d.settings = { theme: 'light', accent: '#1D4ED8', font_size: 'medium', lang: 'kz', daily_goal: 3, reminders: true, autosave: true, solutions: 'after_answer', push: false, email: true, sound: true, animations: true };
+        ML.saveData(d);
+        showToast('Данные очищены', 'success');
+        loadAllSettings();
+      } else if (action === 'reset-progress') {
+        d = ML.getData();
+        d.progress.subtopics = {};
+        d.user.loggedIn = false;
+        d.stats = { lessons_completed: 0, modules_completed: 0, xp_earned: 0, study_time: 0, problems_solved: 0, avg_score: 0, best_streak: 0, achievements_count: 0 };
+        delete d.achievements;
+        delete d.streak_data;
+        delete d.timeline;
+        delete d.goals;
+        delete d.analytics;
+        ML.saveData(d);
+        showToast('Прогресс сброшен', 'success');
+      } else if (action === 'logout') {
+        ML.clearUser();
+        window.location.href = 'login.html';
+      } else if (action === 'delete-account') {
+        ML.resetAll();
+        showToast('Аккаунт удалён', 'info');
+        setTimeout(function() { window.location.href = 'index.html'; }, 800);
+      }
+      closeModal();
+    }
+
+    // ---- SIDEBAR NAV ----
+    var navItems = document.querySelectorAll('.settings-nav-item');
+    var sections = document.querySelectorAll('.settings-section');
+
+    function updateActiveNav() {
+      var scrollY = window.scrollY + 120;
+      var activeId = 'account';
+      sections.forEach(function(sec) {
+        var top = sec.offsetTop;
+        var bottom = top + sec.offsetHeight;
+        if (scrollY >= top && scrollY < bottom) {
+          activeId = sec.id.replace('section-', '');
+        }
       });
-    });
-    document.querySelectorAll('.color-swatch').forEach(el => {
-      el.addEventListener('click', function() {
-        const row = this.closest('.settings-row');
-        if (row) row.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-        this.classList.add('active');
+      navItems.forEach(function(item) {
+        item.classList.toggle('active', item.dataset.section === activeId);
       });
-    });
-    document.querySelectorAll('.danger-btn, .danger-btn-solid').forEach(btn => {
-      btn.addEventListener('click', function() {
-        if (confirm('Вы уверены? Это действие нельзя отменить.')) {
-          if (this.classList.contains('danger-btn-solid')) {
-            localStorage.clear();
-            location.reload();
-          }
+    }
+
+    var ticking = false;
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        requestAnimationFrame(function() { updateActiveNav(); ticking = false; });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    navItems.forEach(function(item) {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        var target = document.getElementById('section-' + this.dataset.section);
+        if (target) {
+          var top = target.getBoundingClientRect().top + window.scrollY - 90;
+          window.scrollTo({ top: top, behavior: 'smooth' });
         }
       });
     });
-    document.querySelectorAll('.settings-row a[href="#"]').forEach(a => {
-      a.addEventListener('click', e => e.preventDefault());
+
+    // ---- ACCOUNT ----
+    function saveAccount() {
+      var name = document.getElementById('settings-name').value;
+      var username = document.getElementById('settings-username').value;
+      var email = document.getElementById('settings-email').value;
+      set('name', name);
+      set('username', username);
+      set('email', email);
+      ML.setUser({ name: name, email: email, username: username });
+      showToast('Профиль обновлён', 'success');
+    }
+
+    // ---- THEME ----
+    function setTheme(theme) {
+      set('theme', theme);
+      document.querySelectorAll('#theme-options .option-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelector('#theme-options .option-btn[data-theme="' + theme + '"]').classList.add('active');
+      applyTheme(theme);
+      showToast('Тема изменена: ' + theme, 'success');
+    }
+
+    function applyTheme(theme) {
+      var body = document.getElementById('app-body');
+      if (theme === 'dark') {
+        body.classList.add('dark');
+      } else if (theme === 'light') {
+        body.classList.remove('dark');
+      } else if (theme === 'system') {
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        body.classList.toggle('dark', prefersDark);
+      }
+    }
+
+    // ---- ACCENT COLOR ----
+    function setAccent(color) {
+      set('accent', color);
+      document.querySelectorAll('#accent-options .color-swatch').forEach(function(s) { s.classList.remove('active'); });
+      document.querySelector('#accent-options .color-swatch[data-color="' + color + '"]').classList.add('active');
+      document.documentElement.style.setProperty('--primary', color);
+      showToast('Акцентный цвет изменён', 'success');
+    }
+
+    // ---- FONT SIZE ----
+    function setFontSize(size) {
+      set('font_size', size);
+      document.querySelectorAll('#fontsize-options .option-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelector('#fontsize-options .option-btn[data-size="' + size + '"]').classList.add('active');
+      var sizes = { small: '14px', medium: '16px', large: '18px' };
+      document.documentElement.style.fontSize = sizes[size] || '16px';
+      showToast('Размер шрифта изменён', 'success');
+    }
+
+    // ---- LANGUAGE ----
+    function setLang(lang) {
+      set('lang', lang);
+      ML.setLang(lang === 'kz' ? 'kz' : 'ru');
+      document.querySelectorAll('#lang-options .option-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelector('#lang-options .option-btn[data-lang="' + lang + '"]').classList.add('active');
+      showToast('Язык изменён на ' + lang, 'success');
+    }
+
+    // ---- DAILY GOAL ----
+    function adjustGoal(delta) {
+      var val = parseInt(get('daily_goal', 3));
+      val = Math.max(1, Math.min(10, val + delta));
+      set('daily_goal', val);
+      document.getElementById('daily-goal-value').textContent = val;
+      showToast('Ежедневная цель: ' + val + ' урок(а)', 'success');
+    }
+
+    // ---- SOLUTIONS MODE ----
+    function setSolutionsMode(mode) {
+      set('solutions', mode);
+      document.querySelectorAll('#solutions-options .option-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelector('#solutions-options .option-btn[data-mode="' + mode + '"]').classList.add('active');
+      showToast('Режим решений изменён', 'success');
+    }
+
+    // ---- TOGGLES ----
+    function initToggle(id, key, defaultValue) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var val = get(key, defaultValue);
+      el.classList.toggle('active', val === true || val === 'true');
+      el.setAttribute('aria-checked', el.classList.contains('active'));
+      el.addEventListener('click', function() {
+        this.classList.toggle('active');
+        var isActive = this.classList.contains('active');
+        this.setAttribute('aria-checked', isActive);
+        set(key, isActive);
+        var labels = {
+          'toggle-reminders': 'Напоминания',
+          'toggle-autosave': 'Автосохранение',
+          'toggle-push': 'Push-уведомления',
+          'toggle-email': 'Email-уведомления',
+          'toggle-sound': 'Звуковые эффекты',
+          'toggle-animations': 'Анимации'
+        };
+        var label = labels[id] || 'Настройка';
+        showToast(label + ': ' + (isActive ? 'включено' : 'выключено'), 'info');
+      });
+      el.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          this.click();
+        }
+      });
+    }
+
+    // ---- ABOUT STATS ----
+    function renderAboutStats() {
+      var container = document.getElementById('about-stats');
+      if (!container) return;
+      var stats = [
+        { value: '27', label: 'Модулей', color: 'bg-blue-50', textColor: 'text-blue-700' },
+        { value: '4', label: 'Раздела', color: 'bg-emerald-50', textColor: 'text-emerald-700' },
+        { value: '60+', label: 'Тем', color: 'bg-purple-50', textColor: 'text-purple-700' },
+        { value: '2.4', label: 'Версия', color: 'bg-amber-50', textColor: 'text-amber-700' },
+      ];
+      container.innerHTML = stats.map(function(s) {
+        return '<div class="' + s.color + ' rounded-2xl p-4 text-center border border-slate-200/40">' +
+          '<div class="font-head font-extrabold text-2xl ' + s.textColor + '">' + s.value + '</div>' +
+          '<div class="text-xs font-bold text-slate-400 mt-0.5">' + s.label + '</div></div>';
+      }).join('');
+    }
+
+    // ---- EXPORT ----
+    function exportData() {
+      var data = ML.exportAll();
+      var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'mathlogic-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Данные экспортированы', 'success');
+    }
+
+    // ---- LOAD ALL SETTINGS ----
+    function loadAllSettings() {
+      // Name
+      var nameVal = get('name', 'Нұрбол Абдазов');
+      document.getElementById('settings-name').value = nameVal;
+      document.getElementById('avatar-preview').textContent = nameVal.charAt(0);
+
+      var usernameVal = get('username', '@nurbek_dev');
+      document.getElementById('settings-username').value = usernameVal;
+
+      var emailVal = get('email', 'nurbek@example.com');
+      document.getElementById('settings-email').value = emailVal;
+
+      // Theme
+      var theme = get('theme', 'light');
+      document.querySelectorAll('#theme-options .option-btn').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.theme === theme);
+      });
+      applyTheme(theme);
+
+      // Accent
+      var accent = get('accent', '#1D4ED8');
+      document.querySelectorAll('#accent-options .color-swatch').forEach(function(s) {
+        s.classList.toggle('active', s.dataset.color === accent);
+      });
+      document.documentElement.style.setProperty('--primary', accent);
+
+      // Font size
+      var fontSize = get('font_size', 'medium');
+      document.querySelectorAll('#fontsize-options .option-btn').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.size === fontSize);
+      });
+      var sizes = { small: '14px', medium: '16px', large: '18px' };
+      document.documentElement.style.fontSize = sizes[fontSize] || '16px';
+
+      // Lang
+      var lang = get('lang', 'ru');
+      document.querySelectorAll('#lang-options .option-btn').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.lang === lang);
+      });
+
+      // Daily goal
+      var goal = get('daily_goal', 3);
+      document.getElementById('daily-goal-value').textContent = goal;
+
+      // Solutions mode
+      var solutionsMode = get('solutions', 'after_answer');
+      document.querySelectorAll('#solutions-options .option-btn').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.mode === solutionsMode);
+      });
+
+      // Toggles
+      initToggle('toggle-reminders', 'reminders', true);
+      initToggle('toggle-autosave', 'autosave', true);
+      initToggle('toggle-push', 'push', false);
+      initToggle('toggle-email', 'email', true);
+      initToggle('toggle-sound', 'sound', true);
+      initToggle('toggle-animations', 'animations', true);
+    }
+
+    // ---- INIT ----
+    document.addEventListener('DOMContentLoaded', function() {
+      renderAboutStats();
+      loadAllSettings();
+      ANIME.initPageTransitions();
+      updateActiveNav();
     });
   </script>
 </body>
