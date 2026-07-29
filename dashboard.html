@@ -3,770 +3,1588 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Басты бет — math·logic</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;800;900&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/animations.css">
-  <link rel="stylesheet" href="css/components.css">
-
+  <title>Дашборд — math·logic</title>
+  <meta name="theme-color" content="#4F46E5">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@600;700;800;900&family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;500;600;700&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --nav-h: 72px;
+      --bottom-h: 72px;
+
+      --spacing-2xs: 4px;
+      --spacing-xs: 8px;
+      --spacing-sm: 12px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --spacing-2xl: 48px;
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --radius-2xl: 24px;
+      --radius-full: 999px;
+
+      --color-bg: #F8FAFC;
+      --color-surface: #FFFFFF;
+      --color-border: #E2E8F0;
+      --color-border-hover: #C7D2FE;
+      --color-primary: #4F46E5;
+      --color-primary-light: #EEF2FF;
+      --color-primary-dark: #4338CA;
+      --color-text: #0F172A;
+      --color-text-secondary: #475569;
+      --color-text-muted: #94A3B8;
+      --color-success: #16A34A;
+      --color-success-bg: #F0FDF4;
+      --color-success-border: #86EFAC;
+      --color-info: #2563EB;
+      --color-info-bg: #DBEAFE;
+      --color-warning: #D97706;
+      --color-warning-bg: #FFFBEB;
+      --color-new-bg: #F1F5F9;
+      --color-new-text: #64748B;
+      --color-shadow: rgba(15, 23, 42, 0.06);
+      --color-shadow-hover: rgba(79, 70, 229, 0.10);
+      --color-hero-start: #1E1B4B;
+      --color-hero-mid: #312E81;
+      --color-hero-end: #4F46E5;
+
+      --card-bg: var(--color-surface);
+      --card-border: 1.5px solid var(--color-border);
+      --card-radius: var(--radius-lg);
+      --card-padding: var(--spacing-lg) var(--spacing-lg);
+      --card-shadow: 0 1px 2px var(--color-shadow);
+      --card-hover-shadow: 0 8px 24px -8px var(--color-shadow-hover);
+      --card-hover-transform: translateY(-2px);
+
+      --btn-height: 40px;
+      --btn-radius: var(--radius-sm);
+      --btn-padding: 0 20px;
+      --btn-font: 700 0.8125rem/1 'Rubik', sans-serif;
+      --btn-primary-bg: var(--color-primary);
+      --btn-primary-hover: var(--color-primary-dark);
+      --btn-primary-shadow: 0 3px 10px rgba(79,70,229,0.2);
+      --btn-secondary-bg: #F1F5F9;
+      --btn-secondary-hover: #E2E8F0;
+      --btn-secondary-color: var(--color-text-secondary);
+
+      --progress-height: 6px;
+      --progress-radius: var(--radius-full);
+
+      --font-title: 800 1.25rem/1.2 'Rubik', sans-serif;
+      --font-subject: 800 1.125rem/1.2 'Rubik', sans-serif;
+      --font-topic: 800 0.9375rem/1.3 'Rubik', sans-serif;
+      --font-body: 500 0.875rem/1.5 'Inter', sans-serif;
+      --font-caption: 500 0.75rem/1.4 'Inter', sans-serif;
+      --font-small: 600 0.6875rem/1 'Inter', sans-serif;
+      --font-tiny: 700 0.625rem/1 'Rubik', sans-serif;
     }
     body {
-      background: #F8FAFC;
-      padding-top: var(--nav-h);
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      padding-bottom: calc(var(--bottom-h) + var(--spacing-lg));
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
     }
-    .db-wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-    .db-section { margin-top: 36px; }
-    .db-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-    .db-section-title { font-family: 'Rubik', sans-serif; font-size: 20px; font-weight: 800; color: #0F172A; letter-spacing: -0.02em; }
+    .font-head { font-family: 'Rubik', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
 
-    /* ── Top nav ── */
-    .db-topnav {
-      position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); z-index: 100;
-      background: rgba(255,255,255,0.82); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(226,232,240,0.5);
-    }
-    .db-topnav-inner {
-      max-width: 1200px; margin: 0 auto; padding: 0 24px; height: 100%;
-      display: flex; align-items: center; gap: 16px;
-    }
-    .db-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
-    .db-logo-icon {
-      width: 36px; height: 36px; border-radius: 12px;
-      background: linear-gradient(135deg, #1D4ED8, #7C3AED);
-      display: flex; align-items: center; justify-content: center;
-      color: white; font-size: 18px; font-weight: 800; font-family: 'Rubik', sans-serif;
-      box-shadow: 0 4px 12px rgba(29,78,216,0.25);
-    }
-    .db-logo-text { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.03em; color: #0F172A; }
-    .db-logo-text span { color: #1D4ED8; }
-
-    .db-search { flex: 1; max-width: 380px; position: relative; }
-    .db-search input {
-      width: 100%; padding: 10px 16px 10px 42px; border-radius: 14px;
-      border: 1.5px solid #E2E8F0; background: #F8FAFC;
-      font-family: 'Golos Text', sans-serif; font-size: 14px; outline: none;
-      transition: all 0.25s ease; color: #0F172A;
-    }
-    .db-search input::placeholder { color: #94A3B8; }
-    .db-search input:focus { border-color: #1D4ED8; background: white; box-shadow: 0 0 0 3px rgba(29,78,216,0.08); }
-    .db-search svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94A3B8; pointer-events: none; }
-
-    .db-top-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
-    .db-top-btn {
-      width: 40px; height: 40px; border-radius: 12px; border: none;
-      background: transparent; color: #64748B; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.2s ease; position: relative;
-    }
-    .db-top-btn:hover { background: #F1F5F9; color: #0F172A; }
-    .db-notif-dot { position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; border-radius: 50%; background: #EF4444; border: 2px solid white; }
-    .db-avatar {
-      width: 38px; height: 38px; border-radius: 12px;
-      background: linear-gradient(135deg, #6366F1, #8B5CF6);
-      color: white; display: flex; align-items: center; justify-content: center;
-      font-family: 'Rubik', sans-serif; font-weight: 700; font-size: 15px;
-      cursor: pointer; transition: all 0.2s ease; border: none; flex-shrink: 0;
-    }
-    .db-avatar:hover { transform: scale(1.05); box-shadow: 0 4px 16px rgba(99,102,241,0.3); }
-
-    /* ── Hero ── */
-    .db-hero {
-      margin-top: 28px; border-radius: 24px; padding: 40px 48px;
-      background: linear-gradient(135deg, #1D4ED8 0%, #4338CA 50%, #6D28D9 100%);
-      color: white; position: relative; overflow: hidden;
-      box-shadow: 0 20px 60px -12px rgba(29,78,216,0.3);
-    }
-    .db-hero::before { content: ''; position: absolute; top: -50%; right: -20%; width: 500px; height: 500px; border-radius: 50%; background: rgba(255,255,255,0.06); pointer-events: none; }
-    .db-hero::after { content: ''; position: absolute; bottom: -30%; left: 10%; width: 300px; height: 300px; border-radius: 50%; background: rgba(255,255,255,0.04); pointer-events: none; }
-    .db-hero-content { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 20px; }
-    .db-hero-greeting { font-family: 'Golos Text', sans-serif; font-size: 15px; font-weight: 500; opacity: 0.85; }
-    .db-hero-title { font-family: 'Rubik', sans-serif; font-size: 36px; font-weight: 900; line-height: 1.15; letter-spacing: -0.02em; margin: 0; }
-    .db-hero-stats { display: flex; gap: 32px; flex-wrap: wrap; }
-    .db-hero-stat { display: flex; flex-direction: column; gap: 2px; }
-    .db-hero-stat-value { font-family: 'Rubik', sans-serif; font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
-    .db-hero-stat-label { font-family: 'Golos Text', sans-serif; font-size: 13px; font-weight: 500; opacity: 0.75; }
-    .db-hero-btn {
-      display: inline-flex; align-items: center; gap: 10px; padding: 14px 32px; border-radius: 14px;
-      border: none; background: white; color: #1D4ED8;
-      font-family: 'Rubik', sans-serif; font-weight: 700; font-size: 15px;
-      cursor: pointer; transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1); align-self: flex-start; margin-top: 4px;
-    }
-    .db-hero-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.15); }
-
-    /* ── Continue ── */
-    .db-continue {
-      border-radius: 22px; padding: 28px 32px; background: white;
-      border: 1px solid #E2E8F0; box-shadow: 0 4px 24px rgba(15,23,42,0.04);
-      display: flex; align-items: center; gap: 28px;
-      transition: all 0.35s cubic-bezier(0.16,1,0.3,1); cursor: pointer;
-    }
-    .db-continue:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(15,23,42,0.06); border-color: #CBD5E1; }
-    .db-continue-icon { width: 56px; height: 56px; border-radius: 18px; background: linear-gradient(135deg, #EFF6FF, #F0FDF4); display: flex; align-items: center; justify-content: center; color: #1D4ED8; flex-shrink: 0; }
-    .db-continue-info { flex: 1; min-width: 0; }
-    .db-continue-label { font-family: 'Golos Text', sans-serif; font-size: 13px; font-weight: 600; color: #64748B; margin-bottom: 4px; }
-    .db-continue-name { font-family: 'Rubik', sans-serif; font-size: 18px; font-weight: 700; color: #0F172A; letter-spacing: -0.01em; margin-bottom: 10px; }
-    .db-continue-track { display: flex; align-items: center; gap: 12px; }
-    .db-continue-bar { flex: 1; height: 8px; border-radius: 999px; background: #F1F5F9; overflow: hidden; }
-    .db-continue-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #1D4ED8, #7C3AED); width: 0%; transition: width 1.2s cubic-bezier(0.16,1,0.3,1); }
-    .db-continue-pct { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: #1D4ED8; min-width: 42px; text-align: right; }
-    .db-continue-action {
-      padding: 12px 24px; border-radius: 12px; border: none;
-      background: linear-gradient(135deg, #1D4ED8, #7C3AED); color: white;
-      font-family: 'Rubik', sans-serif; font-weight: 700; font-size: 14px;
-      cursor: pointer; transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
-      box-shadow: 0 4px 16px rgba(29,78,216,0.2); flex-shrink: 0;
-      text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
-    }
-    .db-continue-action:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(29,78,216,0.3); }
-
-    /* ── Direction tab cards ── */
-    .db-dir-tabs {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-    .db-dir-tab {
-      border-radius: 22px;
-      padding: 26px 24px 22px;
-      background: white;
-      border: 2px solid #E2E8F0;
-      box-shadow: 0 4px 24px rgba(15,23,42,0.04);
-      cursor: pointer;
-      transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--spacing-xl) var(--spacing-lg);
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: var(--spacing-xl);
     }
-    .db-dir-tab:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 48px rgba(15,23,42,0.08);
-      border-color: #CBD5E1;
-    }
-    .db-dir-tab.active {
-      border-color: var(--dir-accent, #1D4ED8);
-      background: linear-gradient(180deg, #FFFFFF 0%, var(--dir-bg, #F8FAFC) 100%);
-      box-shadow: 0 12px 40px rgba(15,23,42,0.08);
-      transform: translateY(-4px);
-    }
-    .db-dir-tab-top { display: flex; align-items: center; gap: 16px; }
-    .db-dir-tab-icon {
-      width: 50px; height: 50px; border-radius: 16px;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
-    .db-dir-tab-icon svg { width: 26px; height: 26px; }
-    .db-dir-tab-name { font-family: 'Rubik', sans-serif; font-size: 18px; font-weight: 800; color: #0F172A; }
-    .db-dir-tab-desc { font-family: 'Golos Text', sans-serif; font-size: 13px; color: #64748B; font-weight: 500; }
-    .db-dir-tab-info { display: flex; align-items: center; justify-content: space-between; }
-    .db-dir-tab-meta { font-family: 'Golos Text', sans-serif; font-size: 13px; font-weight: 600; color: #94A3B8; }
-    .db-dir-tab-meta strong { color: var(--dir-accent, #1D4ED8); font-family: 'JetBrains Mono', monospace; }
-    .db-dir-tab-pct { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--dir-accent, #1D4ED8); }
-    .db-dir-tab-bar { height: 5px; border-radius: 999px; background: #F1F5F9; overflow: hidden; }
-    .db-dir-tab-fill { height: 100%; border-radius: 999px; width: 0%; transition: width 1.2s cubic-bezier(0.16,1,0.3,1); }
 
-    /* ── Topics panel (full-width) ── */
-    .db-topics-panel {
-      margin-top: 16px;
-      border-radius: 22px;
-      background: white;
-      border: 1px solid #E2E8F0;
-      box-shadow: 0 4px 24px rgba(15,23,42,0.04);
-      overflow: hidden;
-    }
-    .db-topics-panel-header {
+    /* ====== HEADER ====== */
+    .dash-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 22px 28px;
-      border-bottom: 1px solid #F1F5F9;
     }
-    .db-panel-header-left { display: flex; align-items: center; gap: 12px; }
-    .db-panel-icon {
-      width: 36px; height: 36px; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
+    .dash-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
     }
-    .db-panel-icon svg { width: 18px; height: 18px; }
-    .db-panel-title { font-family: 'Rubik', sans-serif; font-size: 16px; font-weight: 700; color: #0F172A; }
-    .db-panel-count { font-family: 'Golos Text', sans-serif; font-size: 13px; font-weight: 600; color: #94A3B8; }
+    .dash-logo-mark {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--color-primary), #7C3AED);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font: 900 0.9375rem/1 'Rubik', sans-serif;
+      box-shadow: 0 4px 12px rgba(79,70,229,0.25);
+    }
+    .dash-logo-text {
+      font: 800 1.125rem/1 'Rubik', sans-serif;
+      color: var(--color-text);
+      letter-spacing: -0.02em;
+    }
+    .dash-logo-text span { color: var(--color-primary); }
+    .dash-header-right {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+    .dash-header-right .streak-mini {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 12px 4px 8px;
+      border-radius: var(--radius-full);
+      background: rgba(251,146,60,0.15);
+      border: 1px solid rgba(251,146,60,0.2);
+      font: 600 0.8125rem/1 'Inter', sans-serif;
+    }
+    .dash-header-right .streak-mini span:last-child {
+      font: 800 0.8125rem/1 'Rubik', sans-serif;
+      color: #FB923C;
+    }
+    .dash-avatar {
+      width: 40px; height: 40px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--color-primary), #7C3AED);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font: 800 0.875rem/1 'Rubik', sans-serif;
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .dash-avatar:hover { transform: scale(1.08); }
 
-    .db-topics-panel-body {
-      padding: 16px 28px 28px;
+    /* ====== HERO ====== */
+    .hero-card {
+      background: linear-gradient(135deg, var(--color-hero-start) 0%, var(--color-hero-mid) 50%, var(--color-hero-end) 100%);
+      border-radius: var(--radius-2xl);
+      padding: var(--spacing-xl) var(--spacing-xl);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 16px 48px -12px rgba(30,27,75,0.3);
+    }
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 15% 30%, rgba(255,255,255,0.07) 0%, transparent 50%),
+        radial-gradient(circle at 85% 70%, rgba(165,180,252,0.06) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .hero-symbols {
+      position: absolute; inset: 0;
+      pointer-events: none; overflow: hidden;
+    }
+    .hero-symbols span {
+      position: absolute;
+      font: 700 4rem/1 'JetBrains Mono', monospace;
+      color: rgba(255,255,255,0.04);
+    }
+    .hero-content { position: relative; z-index: 1; }
+    .hero-row {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+    .hero-avatar {
+      width: 52px; height: 52px;
+      border-radius: var(--radius-md);
+      background: rgba(255,255,255,0.12);
+      border: 2px solid rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font: 800 1.25rem/1 'Rubik', sans-serif;
+      color: white;
+      flex-shrink: 0;
+    }
+    .hero-text { flex: 1; min-width: 0; }
+    .hero-greeting {
+      font: 600 0.9375rem/1 'Inter', sans-serif;
+      color: rgba(255,255,255,0.75);
+    }
+    .hero-name {
+      font: 800 1.5rem/1.2 'Rubik', sans-serif;
+      color: white;
+      letter-spacing: -0.02em;
+      margin-top: 2px;
+    }
+    .hero-badges {
+      display: flex;
+      gap: var(--spacing-sm);
+      flex-shrink: 0;
+    }
+    .hero-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 14px 6px 10px;
+      border-radius: var(--radius-full);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      font: 500 0.8125rem/1 'Inter', sans-serif;
+    }
+    .hero-badge .badge-icon { font-size: 1rem; }
+    .hero-badge .badge-value {
+      font: 800 0.875rem/1 'Rubik', sans-serif;
+      color: white;
+    }
+    .hero-badge .badge-label {
+      font: 600 0.625rem/1 'Inter', sans-serif;
+      color: rgba(255,255,255,0.5);
+    }
+    .hero-badge-wrap { display: flex; flex-direction: column; }
+    .hero-cta {
+      margin-top: var(--spacing-lg);
+      width: 100%;
+      height: 50px;
+      padding: 0 var(--spacing-lg);
+      border-radius: var(--radius-md);
+      border: none;
+      background: linear-gradient(135deg, #6366F1, #818CF8);
+      color: white;
+      font: 800 1rem/1 'Rubik', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 6px 20px rgba(99,102,241,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      letter-spacing: -0.01em;
+    }
+    .hero-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(99,102,241,0.4);
+    }
+    .hero-cta:active { transform: translateY(0); }
+
+    /* ====== DAILY QUESTS ====== */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+    .section-accent {
+      width: 4px; height: 24px;
+      border-radius: var(--radius-full);
+      flex-shrink: 0;
+    }
+    .section-title {
+      font: var(--font-title);
+    }
+    .section-badge {
+      font: var(--font-small);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--color-primary), #7C3AED);
+      color: white;
+      margin-left: auto;
+    }
+    .quests-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-md) !important;
+    }
+    .quest-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--card-padding);
+      background: var(--card-bg);
+      border-radius: var(--card-radius);
+      border: var(--card-border);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+      box-shadow: var(--card-shadow);
+    }
+    .quest-item:hover {
+      border-color: var(--color-border-hover);
+      box-shadow: var(--card-hover-shadow);
+      transform: var(--card-hover-transform);
+    }
+    .quest-item.done {
+      background: var(--color-success-bg);
+      border-color: var(--color-success-border);
+    }
+    .quest-check {
+      width: 24px; height: 24px;
+      border-radius: var(--radius-sm);
+      border: 2px solid #CBD5E1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .quest-item.done .quest-check {
+      background: #22C55E;
+      border-color: #22C55E;
+    }
+    .quest-item.done .quest-check svg { display: block; }
+    .quest-check svg {
+      width: 14px; height: 14px;
+      color: white;
+      display: none;
+    }
+    .quest-info { flex: 1; min-width: 0; }
+    .quest-title {
+      font: var(--font-body);
+      font-weight: 700;
+      color: var(--color-text);
+      transition: all 0.3s ease;
+    }
+    .quest-item.done .quest-title {
+      text-decoration: line-through;
+      color: var(--color-text-muted);
+    }
+    .quest-desc {
+      font: var(--font-caption);
+      color: var(--color-text-muted);
+      margin-top: 2px;
+    }
+    .quest-item.done .quest-desc { color: #86EFAC; }
+    .quest-xp {
+      font: var(--font-tiny);
+      color: var(--color-primary);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      background: var(--color-primary-light);
+      flex-shrink: 0;
+    }
+    .quest-item.done .quest-xp { opacity: 0.4; }
+    .quest-progress {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-sm);
+    }
+    .quest-progress-bar {
+      flex: 1;
+      height: var(--progress-height);
+      background: var(--color-border);
+      border-radius: var(--progress-radius);
+      overflow: hidden;
+    }
+    .quest-progress-fill {
+      height: 100%;
+      border-radius: var(--progress-radius);
+      background: linear-gradient(90deg, var(--color-primary), #7C3AED);
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .quest-progress-text {
+      font: var(--font-tiny);
+      color: var(--color-text-secondary);
+      flex-shrink: 0;
+    }
+
+    /* ====== STATISTICS ====== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--spacing-md);
+      margin-top: var(--spacing-md) !important;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border-radius: var(--card-radius);
+      padding: var(--card-padding);
+      border: var(--card-border);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: var(--card-shadow);
+    }
+    .stat-card:hover {
+      border-color: var(--color-border-hover);
+      box-shadow: var(--card-hover-shadow);
+      transform: var(--card-hover-transform);
+    }
+    .stat-icon {
+      width: 44px; height: 44px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.25rem;
+      background: var(--color-primary-light) !important;
+      color: var(--color-primary) !important;
+    }
+    .stat-info { min-width: 0; }
+    .stat-value {
+      font: 800 1.25rem/1.2 'Rubik', sans-serif;
+      color: var(--color-text);
+    }
+    .stat-label {
+      font: var(--font-small);
+      color: var(--color-text-muted);
+      margin-top: 1px;
+    }
+
+    /* ====== SUBJECTS ====== */
+    .subjects-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--spacing-md);
+      margin-top: var(--spacing-md) !important;
+    }
+    .subject-card {
+      border-radius: var(--card-radius) !important;
+      padding: var(--card-padding);
       display: flex;
       flex-direction: column;
-      gap: 12px;
-    }
-
-    /* ── Topic card (full-width horizontal) ── */
-    .db-topic-card {
-      border-radius: 18px;
-      padding: 20px 24px;
-      background: #F8FAFC;
-      border: 1px solid #E2E8F0;
-      transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
-      display: flex;
-      align-items: center;
-      gap: 24px;
-    }
-    .db-topic-card:hover {
-      border-color: #CBD5E1;
-      background: white;
-      transform: translateX(4px);
-      box-shadow: 0 4px 20px rgba(15,23,42,0.04);
-    }
-    .db-topic-card.locked { opacity: 0.5; }
-    .db-topic-card.locked:hover { opacity: 0.6; transform: none; box-shadow: none; border-color: #E2E8F0; background: #F8FAFC; }
-
-    .db-topic-status-badge {
-      width: 42px; height: 42px; border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    .db-topic-status-badge.done { background: #F0FDF4; color: #059669; }
-    .db-topic-status-badge.in-progress { background: #EFF6FF; color: #1D4ED8; }
-    .db-topic-status-badge.new { background: #FEF3C7; color: #D97706; }
-    .db-topic-status-badge.locked { background: #F1F5F9; color: #94A3B8; }
-
-    .db-topic-info { flex: 1; min-width: 0; }
-    .db-topic-name { font-family: 'Rubik', sans-serif; font-size: 15px; font-weight: 700; color: #0F172A; margin-bottom: 3px; }
-    .db-topic-name.locked { color: #94A3B8; }
-    .db-topic-desc {
-      font-family: 'Golos Text', sans-serif;
-      font-size: 12px; font-weight: 500; color: #94A3B8;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .db-topic-desc span { display: flex; align-items: center; gap: 4px; }
-    .db-topic-desc .dot { width: 3px; height: 3px; border-radius: 50%; background: #CBD5E1; }
-
-    .db-topic-progress {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-shrink: 0;
-      min-width: 200px;
-    }
-    .db-topic-bar-wrap { flex: 1; min-width: 100px; }
-    .db-topic-bar {
-      height: 6px; border-radius: 999px;
-      background: #E2E8F0; overflow: hidden;
-    }
-    .db-topic-fill {
-      height: 100%; border-radius: 999px;
-      width: 0%; transition: width 0.8s cubic-bezier(0.16,1,0.3,1);
-    }
-    .db-topic-fill.done { background: #059669; }
-    .db-topic-fill.active { background: linear-gradient(90deg, #1D4ED8, #7C3AED); }
-    .db-topic-pct {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 14px; font-weight: 700;
-      min-width: 36px; text-align: right;
-    }
-
-    .db-topic-status-label {
-      font-family: 'Rubik', sans-serif;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 12px;
-      border-radius: 999px;
-      white-space: nowrap;
-    }
-    .db-topic-status-label.done { background: #F0FDF4; color: #059669; }
-    .db-topic-status-label.in-progress { background: #EFF6FF; color: #1D4ED8; }
-    .db-topic-status-label.new { background: #FEF3C7; color: #D97706; }
-    .db-topic-status-label.locked { background: #F1F5F9; color: #94A3B8; }
-
-    .db-topic-btn {
-      padding: 9px 22px;
-      border-radius: 11px;
-      border: 1.5px solid #E2E8F0;
-      background: white;
-      font-family: 'Rubik', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      color: #1D4ED8;
+      gap: var(--spacing-sm);
+      position: relative;
+      overflow: hidden;
       cursor: pointer;
-      transition: all 0.25s ease;
-      text-decoration: none;
-      white-space: nowrap;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      border: var(--card-border);
+      background: var(--card-bg);
+      box-shadow: var(--card-shadow);
+    }
+    .subject-card:hover {
+      transform: var(--card-hover-transform);
+      box-shadow: var(--card-hover-shadow);
+      border-color: var(--color-border-hover);
+    }
+    .subject-card.active {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(79,70,229,0.1), var(--card-hover-shadow);
+      transform: translateY(-2px);
+    }
+    .subject-card .sc-top {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-md);
+    }
+    .subject-card .sc-icon-wrap {
+      width: 48px; height: 48px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       flex-shrink: 0;
+      font-size: 1.5rem;
+      background: var(--color-bg);
+      border: 1.5px solid var(--color-border);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .db-topic-btn:hover {
-      background: #1D4ED8;
-      color: white;
-      border-color: #1D4ED8;
-      transform: translateY(-1px);
+    .subject-card:hover .sc-icon-wrap {
+      border-color: var(--color-border-hover);
+      transform: scale(1.06);
     }
-    .db-topic-btn.locked {
-      color: #94A3B8;
-      cursor: not-allowed;
+    .subject-card .sc-info { flex: 1; min-width: 0; }
+    .subject-card .sc-name {
+      font: var(--font-subject);
+    }
+    .subject-card .sc-desc {
+      font: var(--font-caption);
+      color: var(--color-text-muted);
+      line-height: 1.4;
+      margin-top: 2px;
+    }
+    .subject-card .sc-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font: var(--font-caption);
+      font-weight: 600;
+    }
+    .subject-card .sc-meta .sc-count {
+      color: var(--color-text-secondary);
+    }
+    .subject-card .sc-meta .sc-pct {
+      font-weight: 800;
+    }
+    .subject-card .sc-bar {
+      height: var(--progress-height);
+      background: var(--color-border);
+      border-radius: var(--progress-radius);
+      overflow: hidden;
+    }
+    .subject-card .sc-bar-fill {
+      height: 100%;
+      border-radius: var(--progress-radius);
+      background: linear-gradient(90deg, var(--color-primary), #818CF8);
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .subject-card .sc-badge {
+      font: var(--font-small);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 3px 8px;
+      border-radius: 6px;
+      margin-left: auto;
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+    }
+    .subject-card .sc-watermark {
+      position: absolute;
+      bottom: -4px; right: -2px;
+      font-size: 4rem;
+      opacity: 0.04;
       pointer-events: none;
-      background: #F8FAFC;
+      line-height: 1;
+    }
+    .subject-card div[style*="position:absolute;top:0;left:0"] {
+      border-radius: var(--card-radius) var(--card-radius) 0 0 !important;
     }
 
-    /* ── Tab content transition ── */
-    .tab-panel-enter {
-      animation: tabIn 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
+    /* ====== TOPICS ====== */
+    .topics-section {
+      margin-top: var(--spacing-lg);
+      overflow: hidden;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    @keyframes tabIn {
+    .topics-section.collapsed {
+      max-height: 0 !important;
+      opacity: 0;
+      margin: 0;
+      padding: 0;
+    }
+    .topics-header {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+    }
+    .topics-header-icon {
+      font-size: 1.25rem;
+    }
+    .topics-header-text {
+      font: 800 1rem/1 'Rubik', sans-serif;
+      color: var(--color-text);
+      letter-spacing: -0.01em;
+    }
+    .topics-header-count {
+      font: 700 0.75rem/1 'Rubik', sans-serif;
+      color: var(--color-text-muted);
+      margin-left: auto;
+    }
+    .topics-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+    .topic-card {
+      border-radius: var(--card-radius);
+      padding: var(--card-padding);
+      background: var(--card-bg);
+      border: var(--card-border);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: topicCardIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+      box-shadow: var(--card-shadow);
+    }
+    .topic-card:hover {
+      border-color: var(--color-border-hover);
+      box-shadow: var(--card-hover-shadow);
+      transform: var(--card-hover-transform);
+    }
+    @keyframes topicCardIn {
       from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── Stats ── */
-    .db-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-    .db-stat {
-      border-radius: 20px; padding: 20px 22px; background: white;
-      border: 1px solid #E2E8F0; box-shadow: 0 2px 12px rgba(15,23,42,0.03);
-      transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
-      display: flex; flex-direction: column; gap: 12px;
+    .topic-card .tc-row1 {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--spacing-sm);
     }
-    .db-stat:hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(15,23,42,0.06); border-color: #CBD5E1; }
-    .db-stat-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
-    .db-stat-icon.blue { background: #EFF6FF; color: #1D4ED8; }
-    .db-stat-icon.emerald { background: #ECFDF5; color: #059669; }
-    .db-stat-icon.amber { background: #FFFBEB; color: #D97706; }
-    .db-stat-icon.purple { background: #FAF5FF; color: #7C3AED; }
-    .db-stat-value { font-family: 'Rubik', sans-serif; font-size: 28px; font-weight: 800; color: #0F172A; letter-spacing: -0.02em; line-height: 1; }
-    .db-stat-label { font-family: 'Golos Text', sans-serif; font-size: 13px; font-weight: 600; color: #64748B; }
+    .topic-card .tc-title-group {
+      flex: 1;
+      min-width: 0;
+    }
+    .topic-card .tc-name {
+      font: var(--font-topic);
+    }
+    .topic-card .tc-desc {
+      font: var(--font-caption);
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+      margin-top: 4px;
+    }
+    .topic-card .tc-status {
+      font: var(--font-small);
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .topic-card .tc-status.done { background: var(--color-success-bg); color: var(--color-success); }
+    .topic-card .tc-status.progress { background: var(--color-info-bg); color: var(--color-info); }
+    .topic-card .tc-status.new { background: var(--color-new-bg); color: var(--color-new-text); }
 
-    /* ── Achievements ── */
-    .db-achvs { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
-    .db-achv {
-      border-radius: 20px; padding: 20px; background: white;
-      border: 1px solid #E2E8F0; box-shadow: 0 2px 12px rgba(15,23,42,0.03);
-      transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
-      display: flex; align-items: center; gap: 14px; position: relative; overflow: hidden;
+    .topic-card .tc-row2 {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      flex-wrap: wrap;
     }
-    .db-achv:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(15,23,42,0.06); border-color: #CBD5E1; }
-    .db-achv.locked { opacity: 0.55; filter: grayscale(0.6); }
-    .db-achv.locked:hover { opacity: 0.65; transform: none; }
-    .db-achv-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
-    .db-achv-icon.unlocked { background: #FFFBEB; }
-    .db-achv-icon.locked { background: #F1F5F9; }
-    .db-achv-info { flex: 1; min-width: 0; }
-    .db-achv-name { font-family: 'Rubik', sans-serif; font-size: 14px; font-weight: 700; color: #0F172A; margin-bottom: 2px; }
-    .db-achv-desc { font-family: 'Golos Text', sans-serif; font-size: 12px; color: #94A3B8; font-weight: 500; }
-    .db-achv-lock { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: #CBD5E1; }
+    .topic-card .tc-stat {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font: var(--font-caption);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+    }
+    .topic-card .tc-stat span:first-child { font-size: 0.875rem; }
 
-    /* ── Bottom nav ── */
-    .db-bnav {
-      position: fixed; bottom: 0; left: 0; right: 0; height: 64px;
-      background: rgba(255,255,255,0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(226,232,240,0.6); z-index: 100; display: none;
+    .topic-card .tc-row3 {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
     }
-    .db-bnav-inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; height: 100%; display: flex; align-items: center; justify-content: space-around; }
-    .db-bnav-item {
-      display: flex; flex-direction: column; align-items: center; gap: 2px;
-      padding: 4px 12px; border-radius: 12px; border: none;
-      background: transparent; cursor: pointer; transition: all 0.2s ease;
-      text-decoration: none; min-width: 56px;
+    .topic-card .tc-bar-wrap {
+      flex: 1;
+      min-width: 0;
     }
-    .db-bnav-item svg { color: #94A3B8; transition: color 0.2s; }
-    .db-bnav-item span { font-family: 'Golos Text', sans-serif; font-size: 10px; font-weight: 600; color: #94A3B8; transition: color 0.2s; }
-    .db-bnav-item:hover svg, .db-bnav-item:hover span { color: #64748B; }
-    .db-bnav-item.active svg, .db-bnav-item.active span { color: #1D4ED8; }
+    .topic-card .tc-bar {
+      height: var(--progress-height);
+      background: var(--color-border);
+      border-radius: var(--progress-radius);
+      overflow: hidden;
+    }
+    .topic-card .tc-bar-fill {
+      height: 100%;
+      border-radius: var(--progress-radius);
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .topic-card .tc-pct-text {
+      font: var(--font-small);
+      color: var(--color-text-muted);
+      flex-shrink: 0;
+      min-width: 32px;
+      text-align: right;
+    }
+    .topic-card .tc-btn {
+      height: var(--btn-height);
+      padding: var(--btn-padding);
+      border-radius: var(--btn-radius);
+      font: var(--btn-font);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      border: none;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .topic-card .tc-btn.primary {
+      background: var(--btn-primary-bg);
+      color: white;
+      box-shadow: var(--btn-primary-shadow);
+    }
+    .topic-card .tc-btn.primary:hover {
+      background: var(--btn-primary-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 5px 16px rgba(79,70,229,0.3);
+    }
+    .topic-card .tc-btn.primary:active {
+      transform: translateY(0);
+    }
+    .topic-card .tc-btn.secondary {
+      background: var(--btn-secondary-bg);
+      color: var(--btn-secondary-color);
+    }
+    .topic-card .tc-btn.secondary:hover {
+      background: var(--btn-secondary-hover);
+    }
 
+    /* ====== FORMULA OF THE DAY ====== */
+    .formula-card {
+      border-radius: var(--card-radius);
+      background: linear-gradient(135deg, #EEF2FF 0%, #F5F3FF 50%, #FFFBEB 100%);
+      border: 1.5px solid var(--color-border-hover);
+      padding: var(--spacing-lg) var(--spacing-lg);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: var(--card-shadow);
+    }
+    .formula-card:hover {
+      box-shadow: var(--card-hover-shadow);
+      transform: var(--card-hover-transform);
+    }
+    .formula-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 90% 15%, rgba(251,191,36,0.06) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .formula-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--color-primary), #7C3AED);
+      color: white;
+      font: 800 0.6875rem/1 'Rubik', sans-serif;
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+    .formula-name {
+      font: var(--font-title);
+      color: var(--color-hero-start);
+      margin-bottom: var(--spacing-md);
+      line-height: 1.3;
+      position: relative;
+      z-index: 1;
+    }
+    .formula-box {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(199,210,254,0.5);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-lg) var(--spacing-lg);
+      text-align: center;
+      margin-bottom: var(--spacing-md);
+      position: relative;
+      z-index: 1;
+    }
+    .formula-math {
+      font: 700 1.75rem/1 'Georgia', 'Times New Roman', serif;
+      color: var(--color-primary);
+      letter-spacing: 0.02em;
+    }
+    .formula-rules {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 1;
+    }
+    .rule-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font: 700 0.8125rem/1 'JetBrains Mono', monospace;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      background: rgba(255,255,255,0.6);
+    }
+    .formula-actions { display: flex; gap: var(--spacing-sm); position: relative; z-index: 1; }
+    .formula-btn {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-2xs);
+      height: var(--btn-height);
+      padding: var(--btn-padding);
+      border-radius: var(--btn-radius);
+      font: var(--btn-font);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      border: none;
+      text-decoration: none;
+    }
+    .formula-btn-primary {
+      background: var(--btn-primary-bg);
+      color: white;
+      box-shadow: var(--btn-primary-shadow);
+    }
+    .formula-btn-primary:hover {
+      background: var(--btn-primary-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 5px 16px rgba(79,70,229,0.3);
+    }
+    .formula-btn-primary:active {
+      transform: translateY(0);
+    }
+    .formula-btn-secondary {
+      background: var(--btn-secondary-bg);
+      color: var(--color-primary);
+      border: 1.5px solid var(--color-border);
+    }
+    .formula-btn-secondary:hover {
+      background: var(--btn-secondary-hover);
+      transform: translateY(-1px);
+    }
+    .formula-btn-secondary:active {
+      transform: translateY(0);
+    }
+
+    /* ====== FOOTER ====== */
+    .dash-footer {
+      margin-top: 4px;
+      padding: var(--spacing-lg) 0 0;
+      border-top: 1px solid var(--color-border);
+    }
+    .footer-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .footer-brand-mark {
+      width: 26px; height: 26px;
+      border-radius: 7px;
+      background: linear-gradient(135deg, var(--color-primary), #7C3AED);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font: 900 0.6875rem/1 'Rubik', sans-serif;
+    }
+    .footer-brand-name {
+      font: 800 0.875rem/1 'Rubik', sans-serif;
+      color: var(--color-text);
+    }
+    .footer-brand-name span { color: var(--color-primary); }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a {
+      font: 600 0.8125rem/1 'Inter', sans-serif;
+      color: var(--color-text-muted);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .footer-links a:hover { color: var(--color-primary); }
+    .footer-copy {
+      font: 600 0.6875rem/1 'Inter', sans-serif;
+      color: #CBD5E1;
+    }
+
+    /* ====== BOTTOM NAV ====== */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: var(--bottom-h);
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(226,232,240,0.6);
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
+    }
+    .bottom-nav-inner {
+      display: flex;
+      gap: 4px;
+      width: 100%;
+      max-width: 400px;
+      padding: 0 8px;
+    }
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 8px 0;
+      border-radius: var(--radius-sm);
+      font: 700 0.625rem/1 'Rubik', sans-serif;
+      color: var(--color-text-muted);
+      transition: all 0.2s ease;
+      cursor: pointer;
+      background: none;
+      border: none;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .nav-item:hover { color: var(--color-text-secondary); background: var(--color-bg); }
+    .nav-item.active { color: var(--color-primary); background: var(--color-primary-light); }
+    .nav-item svg { width: 22px; height: 22px; }
+
+    /* ====== TOAST ====== */
+    .toast {
+      position: fixed;
+      bottom: calc(var(--bottom-h) + 16px);
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1E293B;
+      color: white;
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      font: 700 0.8125rem/1 'Rubik', sans-serif;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      z-index: 100;
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ====== RESPONSIVE ====== */
     @media (max-width: 1024px) {
-      .db-stats { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 900px) {
-      .db-dir-tabs { grid-template-columns: 1fr; }
-      .db-topic-card { flex-wrap: wrap; }
-      .db-topic-progress { min-width: 0; width: 100%; }
-      .db-topic-btn { align-self: flex-end; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .subjects-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 768px) {
-      .db-wrap { padding: 0 16px; }
-      .db-topnav-inner { padding: 0 16px; gap: 10px; }
-      .db-search { max-width: none; }
-      .db-hero { padding: 28px 24px; }
-      .db-hero-title { font-size: 26px; }
-      .db-hero-stats { gap: 20px; }
-      .db-hero-stat-value { font-size: 22px; }
-      .db-continue { flex-direction: column; align-items: stretch; gap: 16px; padding: 20px; }
-      .db-continue-action { align-self: stretch; text-align: center; justify-content: center; }
-      .db-topics-panel-body { padding: 12px 16px 20px; }
-      .db-topics-panel-header { padding: 16px 20px; }
-      .db-stats { grid-template-columns: repeat(2, 1fr); }
-      .db-achvs { grid-template-columns: 1fr 1fr; }
-      .db-section { margin-top: 28px; }
-      .db-bnav { display: block; }
-      body { padding-bottom: 72px; }
+      .hero-badges { gap: var(--spacing-xs); flex-wrap: wrap; }
+      .hero-badge { padding: 4px 10px 4px 8px; font-size: 0.75rem; }
+      .hero-badge .badge-value { font-size: 0.8125rem; }
+    }
+    @media (max-width: 640px) {
+      .container { padding: var(--spacing-lg) var(--spacing-md); gap: 22px; }
+      .hero-card { padding: var(--spacing-lg); border-radius: var(--radius-lg); }
+      .hero-name { font-size: 1.25rem; }
+      .hero-cta { height: 46px; font-size: 0.9375rem; }
+      .stats-grid { gap: var(--spacing-sm); }
+      .subjects-grid { gap: var(--spacing-sm); }
+      .formula-card { padding: var(--spacing-lg); border-radius: var(--radius-lg); }
+      .formula-math { font-size: 1.375rem; }
+      .formula-name { font-size: 1.0625rem; }
     }
     @media (max-width: 480px) {
-      .db-achvs { grid-template-columns: 1fr; }
-      .db-stats { gap: 10px; }
-      .db-stat { padding: 16px; }
-      .db-hero { padding: 24px 20px; }
-      .db-hero-title { font-size: 22px; }
-      .db-topic-card { padding: 16px; }
+      .container { padding: var(--spacing-md) var(--spacing-sm); gap: 18px; }
+      .hero-card { padding: 18px; border-radius: var(--radius-md); }
+      .hero-avatar { width: 44px; height: 44px; font-size: 1rem; }
+      .hero-name { font-size: 1.125rem; }
+      .hero-badges { gap: 4px; }
+      .hero-badge { padding: 3px 8px 3px 6px; font-size: 0.6875rem; }
+      .hero-badge .badge-value { font-size: 0.75rem; }
+      .hero-cta { height: 42px; font-size: 0.875rem; margin-top: var(--spacing-md); border-radius: var(--radius-sm); }
+      .stats-grid { grid-template-columns: 1fr; gap: var(--spacing-xs); }
+      .stat-card { padding: 14px 16px; }
+      .stat-icon { width: 38px; height: 38px; font-size: 1rem; }
+      .stat-value { font-size: 1.0625rem; }
+      .subjects-grid { grid-template-columns: 1fr; gap: var(--spacing-xs); }
+      .subject-card { padding: var(--spacing-md); }
+      .subject-card .sc-name { font-size: 0.9375rem; }
+      .subject-card .sc-watermark { font-size: 3rem; }
+      .formula-card { padding: 18px; border-radius: var(--radius-md); }
+      .formula-math { font-size: 1.125rem; }
+      .formula-name { font-size: 0.9375rem; }
+      .formula-actions { flex-direction: column; }
+      .topic-card { padding: var(--spacing-md) 18px; gap: var(--spacing-sm); }
+      .topic-card .tc-btn { padding: 8px 16px; font-size: 0.75rem; }
+      .topic-card .tc-row2 { gap: var(--spacing-sm); }
+      .topic-card .tc-stat { font-size: 0.6875rem; }
     }
   </style>
 </head>
 <body>
 
-  <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none opacity-50">
-    <div class="absolute top-[-8%] left-[-4%] w-[450px] h-[450px] bg-blue-200/50 rounded-full blur-[120px]"></div>
-    <div class="absolute top-[25%] right-[-8%] w-[500px] h-[500px] bg-emerald-100/60 rounded-full blur-[130px]"></div>
-    <div class="absolute bottom-[-8%] left-[15%] w-[400px] h-[400px] bg-purple-100/60 rounded-full blur-[110px]"></div>
-  </div>
+  <div class="container">
 
-  <!-- ─── TOP NAV ─── -->
-  <header class="db-topnav">
-    <div class="db-topnav-inner">
-      <a href="index.html" class="db-logo">
-        <div class="db-logo-icon">∑</div>
-        <span class="db-logo-text">math<span>·</span>logic</span>
+    <!-- ====== HEADER ====== -->
+    <header class="dash-header">
+      <a href="index.html" class="dash-logo">
+        <div class="dash-logo-mark">m</div>
+        <span class="dash-logo-text">math<span>·</span>logic</span>
       </a>
-<div class="db-top-actions">
-        <button class="db-top-btn" title="Хабарландырулар">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-          <span class="db-notif-dot"></span>
+      <div class="dash-header-right">
+        <div class="streak-mini">
+          <span>🔥</span>
+          <span id="streakCount">0</span>
+        </div>
+        <div class="dash-avatar" id="avatarBtn">Н</div>
+      </div>
+    </header>
+
+    <!-- ====== HERO ====== -->
+    <section class="hero-card">
+      <div class="hero-symbols">
+        <span style="top:5%;left:5%;">∑</span>
+        <span style="bottom:10%;right:8%;">∫</span>
+        <span style="top:35%;right:12%;font-size:3rem;">π</span>
+        <span style="bottom:25%;left:8%;font-size:3rem;">√</span>
+      </div>
+      <div class="hero-content">
+        <div class="hero-row">
+          <div class="hero-avatar">Н</div>
+          <div class="hero-text">
+            <div class="hero-greeting">Қайырлы күн!</div>
+            <div class="hero-name">Нұрбол</div>
+          </div>
+          <div class="hero-badges">
+            <div class="hero-badge">
+              <span class="badge-icon">🔥</span>
+              <div class="hero-badge-wrap">
+                <span class="badge-value" id="heroStreak">0</span>
+                <span class="badge-label">күн</span>
+              </div>
+            </div>
+            <div class="hero-badge">
+              <span class="badge-icon">⚡</span>
+              <div class="hero-badge-wrap">
+                <span class="badge-value" id="heroXp">0</span>
+                <span class="badge-label">XP</span>
+              </div>
+            </div>
+            <div class="hero-badge">
+              <span class="badge-icon">⭐</span>
+              <div class="hero-badge-wrap">
+                <span class="badge-value" id="heroLevel">1</span>
+                <span class="badge-label">деңгей</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="hero-cta" onclick="continueLearning()">
+          📚 Продолжить обучение
         </button>
-        <button class="db-top-btn" title="Параметрлер" onclick="location.href='settings.html'">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-        </button>
-        <button class="db-avatar" title="Нұрбол" onclick="location.href='profile.html'">НҰ</button>
-      </div>
-    </div>
-  </header>
-
-  <!-- ─── MAIN ─── -->
-  <div class="db-wrap">
-
-    <!-- ─── HERO ─── -->
-    <section class="db-hero animate-slide-up">
-      <div class="db-hero-content">
-        <div class="db-hero-greeting">Қайырлы күн, Нұрбол 👋</div>
-        <h1 class="db-hero-title">Математика әлеміне<br>қош келдің!</h1>
-        <div class="db-hero-stats">
-          <div class="db-hero-stat">
-            <span class="db-hero-stat-value" id="hero-progress">0%</span>
-            <span class="db-hero-stat-label">Жалпы прогресс</span>
-          </div>
-          <div class="db-hero-stat">
-            <span class="db-hero-stat-value" id="hero-lessons">0</span>
-            <span class="db-hero-stat-label">Аяқталған сабақ</span>
-          </div>
-        </div>
-        <button class="db-hero-btn" onclick="document.querySelector('.db-dir-tabs')?.scrollIntoView({behavior:'smooth'})">
-          Оқуды жалғастыру
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </button>
       </div>
     </section>
 
-    <!-- ─── CONTINUE ─── -->
-    <section class="db-section">
-      <div class="db-section-header">
-        <h2 class="db-section-title">Жалғастыру</h2>
+    <!-- ====== DAILY QUESTS ====== -->
+    <section>
+      <div class="section-header">
+        <div class="section-accent" style="background:linear-gradient(180deg,#F59E0B,#D97706)"></div>
+        <h2 class="section-title">Күн квесттері</h2>
+        <span class="section-badge">Күнделікті</span>
       </div>
-      <div class="db-continue">
-        <div class="db-continue-icon">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        </div>
-        <div class="db-continue-info">
-          <div class="db-continue-label">Соңғы сабақ</div>
-          <div class="db-continue-name">Алгебралық өрнектер</div>
-          <div class="db-continue-track">
-            <div class="db-continue-bar"><div class="db-continue-fill" style="width:45%"></div></div>
-            <span class="db-continue-pct">45%</span>
+      <div class="quests-grid" id="questsGrid" style="margin-top:12px"></div>
+      <div class="quest-progress">
+        <div class="quest-progress-bar"><div class="quest-progress-fill" id="questProgressFill" style="width:0%"></div></div>
+        <span class="quest-progress-text" id="questProgressText">0/0</span>
+      </div>
+    </section>
+
+    <!-- ====== STATISTICS ====== -->
+    <section>
+      <div class="section-header">
+        <div class="section-accent" style="background:linear-gradient(180deg,#059669,#10B981)"></div>
+        <h2 class="section-title">Статистика</h2>
+      </div>
+      <div class="stats-grid" style="margin-top:12px">
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#EEF2FF;color:#4F46E5">📊</div>
+          <div class="stat-info">
+            <div class="stat-value" id="statOverall">0%</div>
+            <div class="stat-label">Жалпы прогресс</div>
           </div>
         </div>
-        <a href="topic-1-expressions.html" class="db-continue-action">Жалғастыру →</a>
-      </div>
-    </section>
-
-    <!-- ─── DIRECTIONS TABS ─── -->
-    <section class="db-section" id="directions-section">
-      <div class="db-section-header">
-        <h2 class="db-section-title">Направления обучения</h2>
-      </div>
-
-      <div class="db-dir-tabs" id="dir-tabs"></div>
-
-      <div class="db-topics-panel" id="topics-panel">
-        <div class="db-topics-panel-header" id="panel-header">
-          <div class="db-panel-header-left">
-            <div class="db-panel-icon" id="panel-icon"></div>
-            <span class="db-panel-title" id="panel-title">Алгебра</span>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#ECFDF5;color:#059669">📚</div>
+          <div class="stat-info">
+            <div class="stat-value" id="statLessons">0</div>
+            <div class="stat-label">Өтілген сабақ</div>
           </div>
-          <span class="db-panel-count" id="panel-count">0 тем</span>
         </div>
-        <div class="db-topics-panel-body" id="panel-body"></div>
-      </div>
-    </section>
-
-    <!-- ─── STATS ─── -->
-    <section class="db-section">
-      <div class="db-section-header"><h2 class="db-section-title">Жалпы статистика</h2></div>
-      <div class="db-stats">
-        <div class="db-stat">
-          <div class="db-stat-icon blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c6 3 10 0 12-2v-5"/></svg></div>
-          <span class="db-stat-value" id="stat-lessons">0</span>
-          <span class="db-stat-label">Пройдено уроков</span>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#FFF7ED;color:#EA580C">⚡</div>
+          <div class="stat-info">
+            <div class="stat-value" id="statXp">0</div>
+            <div class="stat-label">XP</div>
+          </div>
         </div>
-        <div class="db-stat">
-          <div class="db-stat-icon emerald"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-          <span class="db-stat-value" id="stat-tasks">0</span>
-          <span class="db-stat-label">Решено задач</span>
-        </div>
-        <div class="db-stat">
-          <div class="db-stat-icon amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-          <span class="db-stat-value" id="stat-avg">—</span>
-          <span class="db-stat-label">Средний результат</span>
-        </div>
-        <div class="db-stat">
-          <div class="db-stat-icon purple"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
-          <span class="db-stat-value" id="stat-achv">0</span>
-          <span class="db-stat-label">Получено достижений</span>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#FFFBEB;color:#D97706">🔥</div>
+          <div class="stat-info">
+            <div class="stat-value" id="statStreak">0</div>
+            <div class="stat-label">Күн қатары</div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- ─── ACHIEVEMENTS ─── -->
-    <section class="db-section">
-      <div class="db-section-header">
-        <h2 class="db-section-title">Жетістіктер</h2>
-        <a href="profile.html" style="font-family:'Golos Text',sans-serif;font-size:14px;font-weight:600;color:#1D4ED8;text-decoration:none;transition:opacity 0.2s;">Барлығы →</a>
+    <!-- ====== SUBJECTS ====== -->
+    <section>
+      <div class="section-header">
+        <div class="section-accent" style="background:linear-gradient(180deg,#4F46E5,#059669)"></div>
+        <h2 class="section-title">Пәндер</h2>
+        <span class="section-badge">Басты оқу бөлімі</span>
       </div>
-      <div class="db-achvs">
-        <div class="db-achv"><div class="db-achv-icon unlocked" style="background:#FFFBEB;">🏆</div><div class="db-achv-info"><div class="db-achv-name">Первый урок</div><div class="db-achv-desc">Завершите первый урок</div></div></div>
-        <div class="db-achv"><div class="db-achv-icon unlocked" style="background:#F0FDF4;">🥇</div><div class="db-achv-info"><div class="db-achv-name">Отличный результат</div><div class="db-achv-desc">100% в тесте</div></div></div>
-        <div class="db-achv locked"><div class="db-achv-icon locked">⚡</div><div class="db-achv-info"><div class="db-achv-name">Быстрое решение</div><div class="db-achv-desc">Решите 5 задач за 2 минуты</div></div><svg class="db-achv-lock" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-        <div class="db-achv locked"><div class="db-achv-icon locked">🔥</div><div class="db-achv-info"><div class="db-achv-name">100 правильных ответов</div><div class="db-achv-desc">Наберите 100 верных решений</div></div><svg class="db-achv-lock" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+      <div class="subjects-grid" id="subjectsGrid" style="margin-top:12px"></div>
+      <div class="topics-section collapsed" id="topicsSection">
+        <div class="topics-header">
+          <span class="topics-header-icon" id="topicsHeaderIcon">📘</span>
+          <span class="topics-header-text" id="topicsHeaderText">Тақырыптар</span>
+          <span class="topics-header-count" id="topicsHeaderCount">0/0</span>
+        </div>
+        <div class="topics-list" id="topicsList"></div>
       </div>
     </section>
 
-    <div style="height:40px"></div>
+    <!-- ====== FORMULA OF THE DAY ====== -->
+    <section>
+      <div class="section-header">
+        <div class="section-accent" style="background:linear-gradient(180deg,#4F46E5,#F59E0B)"></div>
+        <h2 class="section-title">Формула күні</h2>
+      </div>
+      <div class="formula-card" style="margin-top:12px">
+        <div class="formula-tag">💡 КҮН ФОРМУЛАСЫ</div>
+        <div class="formula-name">Квадрат теңдеу және Дискриминант</div>
+        <div class="formula-box">
+          <span class="formula-math">D = b² − 4ac</span>
+        </div>
+        <div class="formula-rules">
+          <span class="rule-item" style="color:#059669">▸ D &gt; 0 → 2 түбір</span>
+          <span class="rule-item" style="color:#D97706">▸ D = 0 → 1 түбір</span>
+          <span class="rule-item" style="color:#DC2626">▸ D &lt; 0 → түбірі жоқ</span>
+        </div>
+        <div class="formula-actions">
+          <button class="formula-btn formula-btn-primary" onclick="rememberFormula()">Есте сақтадым 👍</button>
+          <button class="formula-btn formula-btn-secondary" onclick="copyFormula()">Көшіру 📋</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== FOOTER ====== -->
+    <footer class="dash-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="footer-brand-mark">m</div>
+          <span class="footer-brand-name">math<span>·</span>logic</span>
+        </div>
+        <div class="footer-links">
+          <a href="#">Көмек</a>
+          <a href="#">Ережелер</a>
+          <a href="#">Қоғамдастық</a>
+        </div>
+        <div class="footer-copy">© 2026 math·logic</div>
+      </div>
+    </footer>
+
   </div>
 
-  <!-- ─── BOTTOM NAV ─── -->
-  <nav class="db-bnav">
-    <div class="db-bnav-inner">
-      <a href="dashboard.html" class="db-bnav-item active">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  <!-- ====== BOTTOM NAV ====== -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <a href="index.html" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
         <span>Басты</span>
       </a>
-      <a href="topic.html?subject=algebra" class="db-bnav-item">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19L20 5"/><path d="M4 5C4 5 7 13 12 13C17 13 20 19 20 19" opacity="0.4"/><circle cx="12" cy="13" r="2"/></svg>
-        <span>Алгебра</span>
+      <a href="dashboard.html" class="nav-item active">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        <span>Пәндер</span>
       </a>
-      <a href="topic.html?subject=geometry" class="db-bnav-item">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3L21 19H3L12 3Z" opacity="0.4"/><circle cx="12" cy="14" r="3.5"/></svg>
-        <span>Геометрия</span>
-      </a>
-      <a href="topic.html" class="db-bnav-item">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        <span>Все темы</span>
-      </a>
-      <a href="profile.html" class="db-bnav-item">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <a href="profile.html" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
         <span>Профиль</span>
+      </a>
+      <a href="settings.html" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <span>Параметрлер</span>
       </a>
     </div>
   </nav>
 
-  <!-- ─── SCRIPTS ─── -->
-  <script src="js/data.js"></script>
-  <script src="js/storage.js"></script>
-  <script src="js/i18n.js"></script>
-  <script src="js/ui.js"></script>
-  <script src="js/navigation.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/animations.js"></script>
-  <script src="js/app.js"></script>
+  <!-- ====== TOAST ====== -->
+  <div class="toast" id="toast"></div>
+
   <script>
-    const DIRS = [
-      { key:'algebra', name:'Алгебра', desc:'Числа, уравнения, функции и графики', accent:'#4F46E5', bg:'#EEF2FF',
-        icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19L20 5"/><path d="M4 5C4 5 7 13 12 13C17 13 20 19 20 19" opacity="0.4"/><circle cx="12" cy="13" r="2"/></svg>`,
-        sections:['База и уравнения','Степень, корень, логарифм','Функции и производные','Последовательности'] },
-      { key:'geometry', name:'Геометрия', desc:'Фигуры, тригонометрия, векторы', accent:'#059669', bg:'#ECFDF5',
-        icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3L21 19H3L12 3Z" opacity="0.4"/><circle cx="12" cy="14" r="3.5"/></svg>`,
-        sections:['Планиметрия','Тригонометрия','Векторы и стереометрия'] },
-      { key:'logic', name:'Логика', desc:'Множества, графы, комбинаторика', accent:'#9333EA', bg:'#FAF5FF',
-        icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/><path d="M11 7H16.5C17.8807 7 19 8.11929 19 9.5V13" opacity="0.4"/></svg>`,
-        sections:['Логика высказываний','Множества и графы'] }
+    // ============================================================
+    // DATA
+    // ============================================================
+    const DAYS_KK = ['Дс','Сс','Ср','Бс','Жм','Сб','Жс'];
+
+    const QUEST_DATA = [
+      { id: 'q1', title: '3 алгебра есебін шығару', desc: 'Квадрат теңдеулер тақырыбы', xp: 30, icon: '📐' },
+      { id: 'q2', title: '1 геометрия сабағын өту', desc: 'Үшбұрыштар бөлімі', xp: 40, icon: '📏' },
+      { id: 'q3', title: 'Дискриминант формуласын қайталау', desc: 'D = b² − 4ac', xp: 20, icon: '🧮' },
+      { id: 'q4', title: '5 логикалық есеп шығару', desc: 'Графтар және комбинаторика', xp: 35, icon: '🧩' },
     ];
 
-    let activeDir = 'algebra';
+    const SUBJECTS = [
+      {
+        id: 'alg', name: 'Алгебра', desc: 'Өрнектер, теңдеулер және функциялар', emoji: '📘',
+        pct: 21, done: 3, total: 14,
+        topics: [
+          { name: 'Алгебралық өрнектер', desc: 'Айнымалылары бар өрнектер және оларды түрлендіру.', status: 'done', lessons: 3, tasks: 8 },
+          { name: 'Бірмүшелер', desc: 'Бірмүшелер және оларға амалдар қолдану.', status: 'done', lessons: 2, tasks: 6 },
+          { name: 'Көпмүшелер', desc: 'Көпмүшелерді қосу, азайту және көбейту.', status: 'done', lessons: 3, tasks: 10 },
+          { name: 'Қысқаша көбейту формулалары', desc: 'Қысқаша көбейту формулаларын есептерде қолдану.', status: 'progress', lessons: 4, tasks: 12 },
+          { name: 'Дәрежелер және олардың қасиеттері', desc: 'Дәрежелер, олардың қасиеттері және дәрежелік функциялар.', status: 'new', lessons: 3, tasks: 9 },
+          { name: 'Түбірлер', desc: 'Квадрат түбір және оның қасиеттері.', status: 'new', lessons: 3, tasks: 8 },
+          { name: 'Рационал өрнектер', desc: 'Рационал өрнектерді ықшамдау және түрлендіру.', status: 'new', lessons: 4, tasks: 11 },
+          { name: 'Сызықтық теңдеулер', desc: 'Сызықтық теңдеулерді шешу әдістері.', status: 'new', lessons: 3, tasks: 10 },
+          { name: 'Сызықтық теңдеулер жүйесі', desc: 'Сызықтық теңдеулер жүйесін шешу тәсілдері.', status: 'new', lessons: 4, tasks: 12 },
+          { name: 'Квадрат теңдеулер', desc: 'Квадрат теңдеулерді шешу, дискриминант және Виет теоремасы.', status: 'new', lessons: 5, tasks: 14 },
+          { name: 'Квадрат функция', desc: 'Квадрат функция және оның графигі.', status: 'new', lessons: 3, tasks: 9 },
+          { name: 'Пропорциялар және пайыздар', desc: 'Пропорциялар, пайыздар және оларға есептер.', status: 'new', lessons: 2, tasks: 8 },
+          { name: 'Функциялар', desc: 'Функциялар, олардың қасиеттері және графиктері.', status: 'new', lessons: 4, tasks: 10 },
+          { name: 'Прогрессиялар', desc: 'Арифметикалық және геометриялық прогрессиялар.', status: 'new', lessons: 4, tasks: 11 },
+        ]
+      },
+      {
+        id: 'geo', name: 'Геометрия', desc: 'Үшбұрыштар, көпбұрыштар және кеңістік фигуралары', emoji: '📐',
+        pct: 15, done: 2, total: 13,
+        topics: [
+          { name: 'Негізгі геометриялық ұғымдар', desc: 'Нүкте, түзу, жазықтық және кесінді.', status: 'done', lessons: 2, tasks: 6 },
+          { name: 'Бұрыштар', desc: 'Бұрыштардың түрлері және оларды өлшеу.', status: 'done', lessons: 3, tasks: 8 },
+          { name: 'Үшбұрыштар', desc: 'Үшбұрыштар, олардың түрлері және қасиеттері.', status: 'progress', lessons: 4, tasks: 12 },
+          { name: 'Төртбұрыштар', desc: 'Төртбұрыштар, параллелограмм, тіктөртбұрыш, квадрат.', status: 'new', lessons: 4, tasks: 10 },
+          { name: 'Көпбұрыштар', desc: 'Көпбұрыштар және олардың элементтері.', status: 'new', lessons: 3, tasks: 8 },
+          { name: 'Шеңбер және дөңгелек', desc: 'Шеңбер, дөңгелек, олардың элементтері.', status: 'new', lessons: 4, tasks: 11 },
+          { name: 'Пифагор теоремасы', desc: 'Пифагор теоремасы және оның қолданылуы.', status: 'new', lessons: 3, tasks: 10 },
+          { name: 'Ұқсастық', desc: 'Үшбұрыштардың ұқсастық белгілері.', status: 'new', lessons: 3, tasks: 9 },
+          { name: 'Геометриялық салулар', desc: 'Геометриялық салулар және циркуль мен сызғыш.', status: 'new', lessons: 3, tasks: 8 },
+          { name: 'Координаталық геометрия', desc: 'Координаталар жүйесі және нүктелердің координаталары.', status: 'new', lessons: 4, tasks: 10 },
+          { name: 'Кеңістік фигуралары', desc: 'Кеңістік фигуралары: куб, параллелепипед, призма.', status: 'new', lessons: 4, tasks: 12 },
+          { name: 'Аудан', desc: 'Фигуралардың аудандарын есептеу.', status: 'new', lessons: 3, tasks: 10 },
+          { name: 'Көлем', desc: 'Кеңістік фигураларының көлемдері.', status: 'new', lessons: 3, tasks: 9 },
+        ]
+      },
+      {
+        id: 'log', name: 'Логика', desc: 'Пікірлер, жиындар және комбинаторика', emoji: '🧠',
+        pct: 11, done: 1, total: 9,
+        topics: [
+          { name: 'Логикалық ойлау', desc: 'Логикалық ойлау дағдыларын дамыту.', status: 'done', lessons: 2, tasks: 6 },
+          { name: 'Пікірлер', desc: 'Пікірлер, ақиқат және жалған мәндер.', status: 'progress', lessons: 3, tasks: 8 },
+          { name: 'Логикалық амалдар', desc: 'Логикалық амалдар: конъюнкция, дизъюнкция, терістеу.', status: 'new', lessons: 4, tasks: 12 },
+          { name: 'Жиындар', desc: 'Жиындар, олармен амалдар және қасиеттері.', status: 'new', lessons: 3, tasks: 9 },
+          { name: 'Комбинаторика', desc: 'Комбинаторикалық есептерді шешу әдістері.', status: 'new', lessons: 4, tasks: 12 },
+          { name: 'Ықтималдық', desc: 'Ықтималдық теориясының негіздері.', status: 'new', lessons: 3, tasks: 10 },
+          { name: 'Стратегиялық есептер', desc: 'Стратегиялық ойлауды қажет ететін есептер.', status: 'new', lessons: 3, tasks: 8 },
+          { name: 'Олимпиадалық есептер', desc: 'Олимпиадалық деңгейдегі математикалық есептер.', status: 'new', lessons: 4, tasks: 14 },
+          { name: 'Логикалық ойындар', desc: 'Логикалық ойындар және басқатырғыштар.', status: 'new', lessons: 2, tasks: 6 },
+        ]
+      },
+      {
+        id: 'num', name: 'Сандар', desc: 'Сандар, бөлшектер және сан аралықтары', emoji: '🔢',
+        pct: 20, done: 2, total: 10,
+        topics: [
+          { name: 'Натурал сандар', desc: 'Натурал сандар және олармен амалдар.', status: 'done', lessons: 2, tasks: 6 },
+          { name: 'Бүтін сандар', desc: 'Бүтін сандар және оларға амалдар қолдану.', status: 'done', lessons: 3, tasks: 8 },
+          { name: 'Рационал сандар', desc: 'Рационал сандар, бөлшектер және пропорциялар.', status: 'progress', lessons: 4, tasks: 10 },
+          { name: 'Нақты сандар', desc: 'Нақты сандар және олардың қасиеттері.', status: 'new', lessons: 3, tasks: 8 },
+          { name: 'Бөлшектер', desc: 'Жай бөлшектер және оларға амалдар.', status: 'new', lessons: 4, tasks: 12 },
+          { name: 'Ондық бөлшектер', desc: 'Ондық бөлшектер және олармен есептеулер.', status: 'new', lessons: 3, tasks: 10 },
+          { name: 'Сан осі', desc: 'Сан осі және нүктелердің орналасуы.', status: 'new', lessons: 2, tasks: 6 },
+          { name: 'Модуль', desc: 'Санның модулі және оның қасиеттері.', status: 'new', lessons: 3, tasks: 8 },
+          { name: 'Сан аралықтары', desc: 'Сан аралықтары және олардың белгіленуі.', status: 'new', lessons: 2, tasks: 6 },
+          { name: 'Санды жуықтау', desc: 'Сандарды жуықтау және дөңгелектеу.', status: 'new', lessons: 2, tasks: 6 },
+        ]
+      }
+    ];
 
-    function countModules(key) {
-      const s = DATA[key];
-      if (!s) return { total:0, done:0 };
-      let t=0, d=0;
-      s.forEach(sec => sec.modules.forEach(mod => {
-        t++;
-        let md=0;
-        mod.subtopics.forEach(st => { if (completedSubtopics[st]) md++; });
-        if (md === mod.subtopics.length && mod.subtopics.length > 0) d++;
+    // ============================================================
+    // STATE
+    // ============================================================
+    let state = { xp: 0, quests: {}, currentSubject: null };
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem('ml_dash_state');
+        if (raw) {
+          const saved = JSON.parse(raw);
+          state.xp = saved.xp || 0;
+          state.quests = saved.quests || {};
+          const today = new Date().toDateString();
+          Object.keys(state.quests).forEach(k => {
+            if (state.quests[k].date !== today) delete state.quests[k];
+          });
+        }
+      } catch(e) { /* ignore */ }
+    }
+
+    function saveState() {
+      localStorage.setItem('ml_dash_state', JSON.stringify({
+        xp: state.xp,
+        quests: state.quests
       }));
-      return { total:t, done:d };
     }
 
-    function countModuleProgress(mod) {
-      let d=0;
-      mod.subtopics.forEach(st => { if (completedSubtopics[st]) d++; });
-      return { total:mod.subtopics.length, done:d };
-    }
-
-    function renderTabs() {
-      const c = document.getElementById('dir-tabs');
-      c.innerHTML = DIRS.map(d => {
-        const s = countModules(d.key);
-        const pct = s.total > 0 ? Math.round((s.done / s.total) * 100) : 0;
+    // ============================================================
+    // QUEST RENDER
+    // ============================================================
+    function renderQuests() {
+      const grid = document.getElementById('questsGrid');
+      const today = new Date().toDateString();
+      grid.innerHTML = QUEST_DATA.map(q => {
+        const key = q.id;
+        const done = state.quests[key] && state.quests[key].date === today ? state.quests[key].done : false;
         return `
-          <div class="db-dir-tab ${d.key===activeDir?'active':''}" style="--dir-accent:${d.accent};--dir-bg:${d.bg}" data-dir="${d.key}" onclick="switchDir('${d.key}')">
-            <div class="db-dir-tab-top">
-              <div class="db-dir-tab-icon" style="background:${d.bg};color:${d.accent}">${d.icon}</div>
-              <div><div class="db-dir-tab-name">${d.name}</div><div class="db-dir-tab-desc">${d.desc}</div></div>
+          <div class="quest-item ${done ? 'done' : ''}" data-id="${key}" onclick="toggleQuest('${key}')">
+            <div class="quest-check">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
             </div>
-            <div class="db-dir-tab-info">
-              <span class="db-dir-tab-meta">Тем: <strong>${s.done}</strong> / ${s.total}</span>
-              <span class="db-dir-tab-pct">${pct}%</span>
+            <span style="font-size:1.25rem;flex-shrink:0">${q.icon}</span>
+            <div class="quest-info">
+              <div class="quest-title">${q.title}</div>
+              <div class="quest-desc">${q.desc}</div>
             </div>
-            <div class="db-dir-tab-bar"><div class="db-dir-tab-fill" style="width:${pct}%;background:${d.accent}"></div></div>
-          </div>`;
+            <div class="quest-xp">+${q.xp} XP</div>
+          </div>
+        `;
       }).join('');
+      updateQuestProgress();
     }
 
-    function switchDir(key) {
-      if (key === activeDir) return;
-      activeDir = key;
-      renderTabs();
-      renderTopicsPanel();
-    }
-
-    function getTopicStatusLabel(pct, total, done) {
-      if (done === total && total > 0) return { label:'Завершено', cls:'done', btn:'Повторить' };
-      if (done > 0) return { label:'В процессе', cls:'in-progress', btn:'Продолжить' };
-      return { label:'Не начато', cls:'new', btn:'Начать' };
-    }
-
-    function renderTopicsPanel() {
-      const dir = DIRS.find(d => d.key === activeDir);
-      const sections = DATA[activeDir] || [];
-      const allMods = [];
-      sections.forEach(sec => sec.modules.forEach(mod => allMods.push(mod)));
-
-      const iconEl = document.getElementById('panel-icon');
-      iconEl.innerHTML = dir.icon;
-      iconEl.style.background = dir.bg;
-      iconEl.style.color = dir.accent;
-      document.getElementById('panel-title').textContent = dir.name;
-      document.getElementById('panel-count').textContent = allMods.length + ' тем';
-
-      const body = document.getElementById('panel-body');
-      body.classList.remove('tab-panel-enter');
-      body.style.opacity = '0';
-      body.style.transform = 'translateY(10px)';
-
-      setTimeout(() => {
-        body.innerHTML = allMods.map(mod => {
-          const sp = countModuleProgress(mod);
-          const pct = sp.total > 0 ? Math.round((sp.done / sp.total) * 100) : 0;
-          const sl = getTopicStatusLabel(pct, sp.total, sp.done);
-          const isLocked = mod.name !== 'Алгебралық өрнектер';
-          const link = mod.name === 'Алгебралық өрнектер' ? 'topic-1-expressions.html' : '#';
-
-          let statusIcon = '';
-          if (sl.cls === 'done') statusIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>`;
-          else if (sl.cls === 'in-progress') statusIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
-          else statusIcon = isLocked ? `🔒` : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>`;
-
-          return `
-            <div class="db-topic-card ${isLocked ? 'locked' : ''}">
-              <div class="db-topic-status-badge ${isLocked ? 'locked' : sl.cls}">${statusIcon}</div>
-              <div class="db-topic-info">
-                <div class="db-topic-name ${isLocked ? 'locked' : ''}">${mod.name}</div>
-                <div class="db-topic-desc">
-                  <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c6 3 10 0 12-2v-5"/></svg> ${sp.total} урока</span>
-                  <span class="dot"></span>
-                  <span>${mod.subtopics.slice(0,3).join(', ')}${mod.subtopics.length > 3 ? '...' : ''}</span>
-                </div>
-              </div>
-              <div class="db-topic-progress">
-                <div class="db-topic-bar-wrap">
-                  <div class="db-topic-bar"><div class="db-topic-fill ${sl.cls === 'done' ? 'done' : 'active'}" style="width:${pct}%"></div></div>
-                </div>
-                <span class="db-topic-pct" style="color:${pct >= 100 ? '#059669' : dir.accent}">${pct}%</span>
-              </div>
-              <span class="db-topic-status-label ${isLocked ? 'locked' : sl.cls}">${sl.label}</span>
-              <a href="${isLocked ? '#' : link}" class="db-topic-btn ${isLocked ? 'locked' : ''}">${sl.btn}</a>
-            </div>`;
-        }).join('');
-
-        body.style.transition = 'opacity 0.4s cubic-bezier(0.16,1,0.3,1), transform 0.4s cubic-bezier(0.16,1,0.3,1)';
-        body.style.opacity = '1';
-        body.style.transform = 'translateY(0)';
-      }, 60);
-    }
-
-    function countAllLessons() {
-      let t=0,d=0;
-      Object.keys(DATA).forEach(k => { const r=countModules(k); t+=r.total; d+=r.done; });
-      return { total:t, done:d };
-    }
-
-    function countAllSubtopicsDone() {
-      let c=0;
-      Object.keys(DATA).forEach(sk => DATA[sk].forEach(sec => sec.modules.forEach(mod => mod.subtopics.forEach(st => { if (completedSubtopics[st]) c++; }))));
-      return c;
-    }
-
-    function doneAchievements() {
-      let c=0;
-      const o=countAllLessons();
-      if (o.done>=1) c++;
-      Object.keys(DATA).forEach(sk => DATA[sk].forEach(sec => sec.modules.forEach(mod => {
-        const d=mod.subtopics.filter(st=>completedSubtopics[st]).length;
-        if (d===mod.subtopics.length && mod.subtopics.length>0) c++;
-      })));
-      return Math.min(c,4);
-    }
-
-    function animateValue(id, val, suffix) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const start = parseInt(el.textContent.replace(/[^0-9]/g,''))||0;
-      const t0=performance.now();
-      function tick(now) {
-        const t=Math.min((now-t0)/800,1);
-        const e=1-Math.pow(1-t,3);
-        el.textContent=Math.round(start+(val-start)*e)+suffix;
-        if (t<1) requestAnimationFrame(tick);
+    function toggleQuest(id) {
+      const today = new Date().toDateString();
+      const q = QUEST_DATA.find(x => x.id === id);
+      if (!q) return;
+      const key = id;
+      const wasDone = state.quests[key] && state.quests[key].date === today ? state.quests[key].done : false;
+      if (wasDone) {
+        state.quests[key] = { date: today, done: false };
+        state.xp = Math.max(0, state.xp - q.xp);
+      } else {
+        state.quests[key] = { date: today, done: true };
+        state.xp += q.xp;
+        showToast(`+${q.xp} XP — «${q.title}» орындалды! 🎉`);
       }
-      requestAnimationFrame(tick);
+      saveState();
+      renderQuests();
+      updateHeroMetrics();
+      updateStats();
     }
 
+    function updateQuestProgress() {
+      const today = new Date().toDateString();
+      const total = QUEST_DATA.length;
+      const done = QUEST_DATA.filter(q => state.quests[q.id] && state.quests[q.id].date === today && state.quests[q.id].done).length;
+      const pct = total > 0 ? (done / total) * 100 : 0;
+      document.getElementById('questProgressFill').style.width = pct + '%';
+      document.getElementById('questProgressText').textContent = `${done}/${total}`;
+    }
+
+    // ============================================================
+    // HERO METRICS
+    // ============================================================
+    function updateHeroMetrics() {
+      const level = Math.floor(state.xp / 100) + 1;
+      document.getElementById('heroXp').textContent = state.xp;
+      document.getElementById('heroLevel').textContent = level;
+      document.getElementById('heroStreak').textContent = calcStreak();
+      document.getElementById('streakCount').textContent = calcStreak();
+    }
+
+    // ============================================================
+    // STREAK
+    // ============================================================
+    function calcStreak() {
+      try {
+        const raw = localStorage.getItem('ml_dash_state');
+        if (!raw) return 0;
+        const saved = JSON.parse(raw);
+        const qs = saved.quests || {};
+        const activeDays = new Set();
+        Object.values(qs).forEach(v => {
+          if (v.done) activeDays.add(v.date);
+        });
+        let streak = 0;
+        const today = new Date();
+        for (let i = 0; i < 365; i++) {
+          const d = new Date(today);
+          d.setDate(d.getDate() - i);
+          const key = d.toDateString();
+          if (activeDays.has(key)) {
+            streak++;
+          } else if (i > 0) {
+            break;
+          }
+        }
+        if (!activeDays.has(today.toDateString())) streak = 0;
+        return streak;
+      } catch(e) { return 0; }
+    }
+
+    // ============================================================
+    // STATISTICS
+    // ============================================================
     function updateStats() {
-      const o=countAllLessons();
-      const pct=o.total>0?Math.round((o.done/o.total)*100):0;
-      animateValue('hero-progress',pct,'%');
-      animateValue('hero-lessons',o.done,'');
-      animateValue('stat-lessons',o.done,'');
-      const sc=countAllSubtopicsDone();
-      animateValue('stat-tasks',sc,'');
-      const avg=document.getElementById('stat-avg');
-      if (avg) avg.textContent=sc>0?Math.min(85+Math.floor(Math.random()*15),100)+'%':'—';
-      animateValue('stat-achv',doneAchievements(),'');
+      const totalDone = SUBJECTS.reduce((sum, s) => sum + s.done, 0);
+      const totalAll = SUBJECTS.reduce((sum, s) => sum + s.total, 0);
+      const overallPct = totalAll > 0 ? Math.round((totalDone / totalAll) * 100) : 0;
+
+      document.getElementById('statOverall').textContent = overallPct + '%';
+      document.getElementById('statLessons').textContent = totalDone;
+      document.getElementById('statXp').textContent = state.xp;
+      document.getElementById('statStreak').textContent = calcStreak();
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      if (typeof DATA !== 'undefined' && typeof completedSubtopics !== 'undefined') {
-        renderTabs();
-        renderTopicsPanel();
-        updateStats();
+    // ============================================================
+    // SUBJECTS
+    // ============================================================
+    const SUBJECT_ACCENTS = {
+      alg: '#4F46E5', geo: '#059669', log: '#9333EA', num: '#EA580C'
+    };
+
+    function renderSubjects() {
+      const grid = document.getElementById('subjectsGrid');
+
+      grid.innerHTML = SUBJECTS.map(s => {
+        const active = state.currentSubject === s.id;
+        const accent = SUBJECT_ACCENTS[s.id];
+
+        return `
+          <div class="subject-card ${active ? 'active' : ''}"
+               data-id="${s.id}"
+               onclick="selectSubject('${s.id}')">
+            <div style="position:absolute;top:0;left:0;right:0;height:4px;border-radius:24px 24px 0 0;background:${accent};opacity:${active ? '1' : '0.4'}"></div>
+            <div class="sc-watermark" style="color:${accent}">${s.emoji}</div>
+            <div class="sc-top">
+              <div class="sc-icon-wrap">${s.emoji}</div>
+              <div class="sc-info">
+                <div class="sc-name">${s.name}</div>
+                <div class="sc-desc">${s.desc}</div>
+              </div>
+              <div class="sc-badge">${s.pct}%</div>
+            </div>
+            <div class="sc-meta">
+              <span class="sc-count">${s.done}/${s.total} тақырып</span>
+              <span class="sc-pct" style="color:${accent}">${s.pct}%</span>
+            </div>
+            <div class="sc-bar"><div class="sc-bar-fill" style="width:${s.pct}%"></div></div>
+          </div>
+        `;
+      }).join('');
+
+      renderTopics();
+    }
+
+    function selectSubject(id) {
+      if (state.currentSubject === id) {
+        state.currentSubject = null;
+      } else {
+        state.currentSubject = id;
       }
-      ANIME?.initReveal?.();
-      ANIME?.initPageTransitions?.();
-    });
+      renderSubjects();
+    }
+
+    function renderTopics() {
+      const section = document.getElementById('topicsSection');
+      const list = document.getElementById('topicsList');
+      const headerIcon = document.getElementById('topicsHeaderIcon');
+      const headerText = document.getElementById('topicsHeaderText');
+      const headerCount = document.getElementById('topicsHeaderCount');
+
+      if (!state.currentSubject) {
+        section.classList.add('collapsed');
+        return;
+      }
+
+      const subj = SUBJECTS.find(s => s.id === state.currentSubject);
+      if (!subj) {
+        section.classList.add('collapsed');
+        return;
+      }
+
+      headerIcon.textContent = subj.emoji;
+      headerText.textContent = subj.name + ' — Тақырыптар';
+      headerCount.textContent = subj.done + '/' + subj.topics.length + ' өтілген';
+
+      const accent = SUBJECT_ACCENTS[subj.id];
+
+      list.innerHTML = subj.topics.map((t, i) => {
+        const statusLabel = t.status === 'done' ? 'Өтілген' : t.status === 'progress' ? 'Жалғасуда' : 'Жаңа';
+        const statusClass = t.status === 'done' ? 'done' : t.status === 'progress' ? 'progress' : 'new';
+        const btnClass = t.status === 'done' ? 'secondary' : 'primary';
+        const barPct = t.status === 'done' ? 100 : t.status === 'progress' ? 40 : 0;
+        const barColor = t.status === 'done' ? '#16A34A' : accent;
+        const doneLessons = t.status === 'done' ? t.lessons : t.status === 'progress' ? Math.ceil(t.lessons * 0.4) : 0;
+        const doneTasks = t.status === 'done' ? t.tasks : t.status === 'progress' ? Math.ceil(t.tasks * 0.4) : 0;
+
+        return `
+          <div class="topic-card" style="animation-delay:${i * 0.04}s">
+            <div class="tc-row1">
+              <div class="tc-title-group">
+                <div class="tc-name">${t.name}</div>
+                <div class="tc-desc">${t.desc}</div>
+              </div>
+              <div class="tc-status ${statusClass}">${statusLabel}</div>
+            </div>
+            <div class="tc-row2">
+              <div class="tc-stat"><span>📖</span> ${doneLessons}/${t.lessons} сабақ</div>
+              <div class="tc-stat"><span>📝</span> ${doneTasks}/${t.tasks} тапсырма</div>
+            </div>
+            <div class="tc-row3">
+              <div class="tc-bar-wrap">
+                <div class="tc-bar"><div class="tc-bar-fill" style="width:${barPct}%;background:${barColor}"></div></div>
+              </div>
+              <div class="tc-pct-text">${barPct}%</div>
+              <button class="tc-btn ${btnClass}" onclick="showToast('«${t.name}» бөлімі ашылды! 📚')">Продолжить</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      section.classList.remove('collapsed');
+    }
+
+    // ============================================================
+    // CONTINUE LEARNING
+    // ============================================================
+    function continueLearning() {
+      const target = document.getElementById('subjectsGrid');
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      if (!state.currentSubject) {
+        const next = SUBJECTS.find(s => s.topics.some(t => t.status === 'progress'));
+        if (next) {
+          state.currentSubject = next.id;
+          renderSubjects();
+        } else {
+          const first = SUBJECTS.find(s => s.topics.some(t => t.status === 'new'));
+          if (first) {
+            state.currentSubject = first.id;
+            renderSubjects();
+          }
+        }
+      }
+    }
+
+    // ============================================================
+    // FORMULA
+    // ============================================================
+    function rememberFormula() {
+      showToast('Жарайсың! Формула есте қалды ✅ +10 XP');
+      state.xp += 10;
+      saveState();
+      updateHeroMetrics();
+      updateStats();
+    }
+
+    function copyFormula() {
+      navigator.clipboard.writeText('D = b² - 4ac').then(() => {
+        showToast('Формула көшірілді! 📋');
+      }).catch(() => {
+        showToast('Көшіру мүмкін болмады');
+      });
+    }
+
+    // ============================================================
+    // TOAST
+    // ============================================================
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(el._timer);
+      el._timer = setTimeout(() => el.classList.remove('show'), 2600);
+    }
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    loadState();
+    renderQuests();
+    updateHeroMetrics();
+    updateStats();
+    renderSubjects();
   </script>
 </body>
 </html>
