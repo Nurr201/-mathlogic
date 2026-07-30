@@ -30,31 +30,9 @@ const NAV = (function() {
     window.location.href = 'settings.html';
   }
 
-  function goToProfile(e) {
-    if (e) e.preventDefault();
-    window.location.href = 'profile.html';
-  }
-
-  function goToDashboard(e) {
-    if (e) e.preventDefault();
-    window.location.href = 'dashboard.html';
-  }
-
-  // Проверка: если не залогинен → редирект на login
-  function requireAuth() {
-    if (!ML.isLoggedIn()) {
-      window.location.href = 'login.html';
-      return false;
-    }
-    return true;
-  }
-
   return {
     fixLinks: fixLinks,
     logout: logout,
     goToSettings: goToSettings,
-    goToProfile: goToProfile,
-    goToDashboard: goToDashboard,
-    requireAuth: requireAuth
   };
 })();

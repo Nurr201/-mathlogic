@@ -157,6 +157,8 @@ const ANIME = (function() {
      PAGE TRANSITIONS
      ====================== */
   function initPageTransitions() {
+    if (document.body.dataset.mlPageTransitions) return;
+    document.body.dataset.mlPageTransitions = '1';
     document.body.classList.add('page-enter');
 
     document.querySelectorAll('a[href]:not([target="_blank"]):not([href^="#"]):not([href^="http"]):not([href^="mailto"])').forEach(a => {

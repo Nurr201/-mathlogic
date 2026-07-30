@@ -943,6 +943,34 @@
     }
 
     /* ====== RESPONSIVE ====== */
+    /* ====== QUEST TIMER ====== */
+    .quest-timer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: var(--radius-full);
+      background: var(--color-primary-light);
+      font: var(--font-caption);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      margin-top: var(--spacing-sm);
+      border: 1.5px solid var(--color-border);
+    }
+    .quest-timer-value {
+      font: 700 0.875rem/1 'JetBrains Mono', monospace;
+      color: var(--color-primary);
+    }
+
+    /* ====== QUEST COMPLETE ANIMATION ====== */
+    @keyframes questComplete {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.03); }
+      60% { transform: scale(0.98); }
+      100% { transform: scale(1); }
+    }
+
     @media (max-width: 1024px) {
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
       .subjects-grid { grid-template-columns: repeat(2, 1fr); }
@@ -990,6 +1018,12 @@
       .topic-card .tc-stat { font-size: 0.6875rem; }
     }
   </style>
+  <script src="js/storage.js"></script>
+  <script src="js/events.js"></script>
+  <script src="js/xp.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/learning.js"></script>
+  <script src="js/achievements.js"></script>
 </head>
 <body>
 
@@ -1066,6 +1100,10 @@
       <div class="quest-progress">
         <div class="quest-progress-bar"><div class="quest-progress-fill" id="questProgressFill" style="width:0%"></div></div>
         <span class="quest-progress-text" id="questProgressText">0/0</span>
+      </div>
+      <div class="quest-timer">
+        <span>Следующее обновление через:</span>
+        <span class="quest-timer-value" id="questTimer">00:00:00</span>
       </div>
     </section>
 
@@ -1198,28 +1236,29 @@
     // ============================================================
     const DAYS_KK = ['Дс','Сс','Ср','Бс','Жм','Сб','Жс'];
 
-    const QUEST_DATA = [
-      { id: 'q1', title: '3 алгебра есебін шығару', desc: 'Квадрат теңдеулер тақырыбы', xp: 30, icon: '📐' },
-      { id: 'q2', title: '1 геометрия сабағын өту', desc: 'Үшбұрыштар бөлімі', xp: 40, icon: '📏' },
-      { id: 'q3', title: 'Дискриминант формуласын қайталау', desc: 'D = b² − 4ac', xp: 20, icon: '🧮' },
-      { id: 'q4', title: '5 логикалық есеп шығару', desc: 'Графтар және комбинаторика', xp: 35, icon: '🧩' },
+    const QUEST_DEFS = [
+      { id: 'quest_lesson', title: '📚 Пройти 1 урок', desc: 'Автоматически после первого завершённого урока.', xp: 30, icon: '📚', target: 1 },
+      { id: 'quest_gradeA', title: '⭐ Получить оценку A', desc: 'Автоматически после урока с оценкой A.', xp: 20, icon: '⭐', target: 1 },
+      { id: 'quest_problems', title: '📝 Решить 10 задач', desc: 'Считать ответы во всех уроках.', xp: 40, icon: '📝', target: 10 },
+      { id: 'quest_login', title: '🔥 Зайти сегодня', desc: 'Если пользователь впервые открыл сайт сегодня.', xp: 10, icon: '🔥', target: 1 },
+      { id: 'quest_study', title: '⏱️ Учиться 20 минут', desc: 'Считать только активное время.', xp: 50, icon: '⏱️', target: 1200 },
     ];
 
-    const SUBJECTS = [
+    const DASH_SUBJECTS = [
       {
         id: 'alg', name: 'Алгебра', desc: 'Өрнектер, теңдеулер және функциялар', emoji: '📘',
-        pct: 21, done: 3, total: 14,
+        pct: 0, done: 0, total: 14,
         topics: [
-          { name: 'Алгебралық өрнектер', desc: 'Айнымалылары бар өрнектер және оларды түрлендіру.', status: 'done', lessons: 3, tasks: 8 },
-          { name: 'Бірмүшелер', desc: 'Бірмүшелер және оларға амалдар қолдану.', status: 'done', lessons: 2, tasks: 6 },
-          { name: 'Көпмүшелер', desc: 'Көпмүшелерді қосу, азайту және көбейту.', status: 'done', lessons: 3, tasks: 10 },
-          { name: 'Қысқаша көбейту формулалары', desc: 'Қысқаша көбейту формулаларын есептерде қолдану.', status: 'progress', lessons: 4, tasks: 12 },
-          { name: 'Дәрежелер және олардың қасиеттері', desc: 'Дәрежелер, олардың қасиеттері және дәрежелік функциялар.', status: 'new', lessons: 3, tasks: 9 },
+          { name: 'Алгебралық өрнектер', desc: 'Айнымалылары бар өрнектер және оларды түрлендіру.', status: 'new', lessons: 3, tasks: 8, implemented: true, link: 'topic-1-expressions.html' },
+          { name: 'Бірмүшелер', desc: 'Бірмүшелер және оларға амалдар қолдану.', status: 'new', lessons: 2, tasks: 6 },
+          { name: 'Көпмүшелер', desc: 'Көпмүшелерді қосу, азайту және көбейту.', status: 'new', lessons: 3, tasks: 10 },
+          { name: 'Қысқаша көбейту формулалары', desc: 'Қысқаша көбейту формулаларын есептерде қолдану.', status: 'new', lessons: 4, tasks: 12 },
+          { name: 'Дәрежелер және олардың қасиеттері', desc: 'Дәрежелер, олардың қасиеттері және дәрежелік функциялар.', status: 'new', lessons: 3, tasks: 9, implemented: true, link: 'topic-1-expressions.html' },
           { name: 'Түбірлер', desc: 'Квадрат түбір және оның қасиеттері.', status: 'new', lessons: 3, tasks: 8 },
           { name: 'Рационал өрнектер', desc: 'Рационал өрнектерді ықшамдау және түрлендіру.', status: 'new', lessons: 4, tasks: 11 },
           { name: 'Сызықтық теңдеулер', desc: 'Сызықтық теңдеулерді шешу әдістері.', status: 'new', lessons: 3, tasks: 10 },
           { name: 'Сызықтық теңдеулер жүйесі', desc: 'Сызықтық теңдеулер жүйесін шешу тәсілдері.', status: 'new', lessons: 4, tasks: 12 },
-          { name: 'Квадрат теңдеулер', desc: 'Квадрат теңдеулерді шешу, дискриминант және Виет теоремасы.', status: 'new', lessons: 5, tasks: 14 },
+          { name: 'Квадрат теңдеулер', desc: 'Квадрат теңдеулерді шешу, дискриминант және Виет теоремасы.', status: 'new', lessons: 5, tasks: 14, implemented: true, link: 'lesson.html' },
           { name: 'Квадрат функция', desc: 'Квадрат функция және оның графигі.', status: 'new', lessons: 3, tasks: 9 },
           { name: 'Пропорциялар және пайыздар', desc: 'Пропорциялар, пайыздар және оларға есептер.', status: 'new', lessons: 2, tasks: 8 },
           { name: 'Функциялар', desc: 'Функциялар, олардың қасиеттері және графиктері.', status: 'new', lessons: 4, tasks: 10 },
@@ -1228,11 +1267,11 @@
       },
       {
         id: 'geo', name: 'Геометрия', desc: 'Үшбұрыштар, көпбұрыштар және кеңістік фигуралары', emoji: '📐',
-        pct: 15, done: 2, total: 13,
+        pct: 0, done: 0, total: 13,
         topics: [
-          { name: 'Негізгі геометриялық ұғымдар', desc: 'Нүкте, түзу, жазықтық және кесінді.', status: 'done', lessons: 2, tasks: 6 },
-          { name: 'Бұрыштар', desc: 'Бұрыштардың түрлері және оларды өлшеу.', status: 'done', lessons: 3, tasks: 8 },
-          { name: 'Үшбұрыштар', desc: 'Үшбұрыштар, олардың түрлері және қасиеттері.', status: 'progress', lessons: 4, tasks: 12 },
+          { name: 'Негізгі геометриялық ұғымдар', desc: 'Нүкте, түзу, жазықтық және кесінді.', status: 'new', lessons: 2, tasks: 6 },
+          { name: 'Бұрыштар', desc: 'Бұрыштардың түрлері және оларды өлшеу.', status: 'new', lessons: 3, tasks: 8 },
+          { name: 'Үшбұрыштар', desc: 'Үшбұрыштар, олардың түрлері және қасиеттері.', status: 'new', lessons: 4, tasks: 12 },
           { name: 'Төртбұрыштар', desc: 'Төртбұрыштар, параллелограмм, тіктөртбұрыш, квадрат.', status: 'new', lessons: 4, tasks: 10 },
           { name: 'Көпбұрыштар', desc: 'Көпбұрыштар және олардың элементтері.', status: 'new', lessons: 3, tasks: 8 },
           { name: 'Шеңбер және дөңгелек', desc: 'Шеңбер, дөңгелек, олардың элементтері.', status: 'new', lessons: 4, tasks: 11 },
@@ -1247,10 +1286,10 @@
       },
       {
         id: 'log', name: 'Логика', desc: 'Пікірлер, жиындар және комбинаторика', emoji: '🧠',
-        pct: 11, done: 1, total: 9,
+        pct: 0, done: 0, total: 9,
         topics: [
-          { name: 'Логикалық ойлау', desc: 'Логикалық ойлау дағдыларын дамыту.', status: 'done', lessons: 2, tasks: 6 },
-          { name: 'Пікірлер', desc: 'Пікірлер, ақиқат және жалған мәндер.', status: 'progress', lessons: 3, tasks: 8 },
+          { name: 'Логикалық ойлау', desc: 'Логикалық ойлау дағдыларын дамыту.', status: 'new', lessons: 2, tasks: 6 },
+          { name: 'Пікірлер', desc: 'Пікірлер, ақиқат және жалған мәндер.', status: 'new', lessons: 3, tasks: 8 },
           { name: 'Логикалық амалдар', desc: 'Логикалық амалдар: конъюнкция, дизъюнкция, терістеу.', status: 'new', lessons: 4, tasks: 12 },
           { name: 'Жиындар', desc: 'Жиындар, олармен амалдар және қасиеттері.', status: 'new', lessons: 3, tasks: 9 },
           { name: 'Комбинаторика', desc: 'Комбинаторикалық есептерді шешу әдістері.', status: 'new', lessons: 4, tasks: 12 },
@@ -1262,11 +1301,11 @@
       },
       {
         id: 'num', name: 'Сандар', desc: 'Сандар, бөлшектер және сан аралықтары', emoji: '🔢',
-        pct: 20, done: 2, total: 10,
+        pct: 0, done: 0, total: 10,
         topics: [
-          { name: 'Натурал сандар', desc: 'Натурал сандар және олармен амалдар.', status: 'done', lessons: 2, tasks: 6 },
-          { name: 'Бүтін сандар', desc: 'Бүтін сандар және оларға амалдар қолдану.', status: 'done', lessons: 3, tasks: 8 },
-          { name: 'Рационал сандар', desc: 'Рационал сандар, бөлшектер және пропорциялар.', status: 'progress', lessons: 4, tasks: 10 },
+          { name: 'Натурал сандар', desc: 'Натурал сандар және олармен амалдар.', status: 'new', lessons: 2, tasks: 6 },
+          { name: 'Бүтін сандар', desc: 'Бүтін сандар және оларға амалдар қолдану.', status: 'new', lessons: 3, tasks: 8 },
+          { name: 'Рационал сандар', desc: 'Рационал сандар, бөлшектер және пропорциялар.', status: 'new', lessons: 4, tasks: 10 },
           { name: 'Нақты сандар', desc: 'Нақты сандар және олардың қасиеттері.', status: 'new', lessons: 3, tasks: 8 },
           { name: 'Бөлшектер', desc: 'Жай бөлшектер және оларға амалдар.', status: 'new', lessons: 4, tasks: 12 },
           { name: 'Ондық бөлшектер', desc: 'Ондық бөлшектер және олармен есептеулер.', status: 'new', lessons: 3, tasks: 10 },
@@ -1281,92 +1320,191 @@
     // ============================================================
     // STATE
     // ============================================================
-    let state = { xp: 0, quests: {}, currentSubject: null };
+    let state = { currentSubject: null };
 
-    function loadState() {
+    const TOPIC_LESSON_MAP = {
+      'alg': { 0: 'algebra_1', 4: 'algebra_4', 9: 'algebra_3' }
+    };
+
+    function syncFromML() {
       try {
-        const raw = localStorage.getItem('ml_dash_state');
-        if (raw) {
-          const saved = JSON.parse(raw);
-          state.xp = saved.xp || 0;
-          state.quests = saved.quests || {};
-          const today = new Date().toDateString();
-          Object.keys(state.quests).forEach(k => {
-            if (state.quests[k].date !== today) delete state.quests[k];
+        ML.getData();
+        var completedLessons = ML.getCompletedLessons();
+        if (completedLessons && Object.keys(completedLessons).length > 0) {
+          DASH_SUBJECTS.forEach(function(subj) {
+            subj.done = 0;
+            subj.topics.forEach(function(t, i) {
+              var subjKey = subj.id;
+              var topicKey = TOPIC_LESSON_MAP[subjKey];
+              if (t.implemented && topicKey && topicKey[i]) {
+                var lessonId = topicKey[i];
+                var lessonState = Learning.getLessonState(lessonId);
+                if (lessonState === 'completed') {
+                  t.status = 'done';
+                }
+              }
+              if (t.status === 'done') subj.done++;
+            });
+            subj.pct = subj.total > 0 ? Math.round((subj.done / subj.total) * 100) : 0;
           });
         }
-      } catch(e) { /* ignore */ }
-    }
-
-    function saveState() {
-      localStorage.setItem('ml_dash_state', JSON.stringify({
-        xp: state.xp,
-        quests: state.quests
-      }));
+      } catch(e) { console.warn('[Dash] ML sync error:', e); }
     }
 
     // ============================================================
-    // QUEST RENDER
+    // QUESTS — Automated Daily Quests
     // ============================================================
+    function getQuestState() {
+      var quests = ML.get('dailyQuests', null);
+      var today = new Date().toDateString();
+
+      if (!quests || !Array.isArray(quests) || quests.length === 0 || quests[0].date !== today) {
+        quests = QUEST_DEFS.map(function(q) {
+          return {
+            id: q.id,
+            title: q.title,
+            description: q.desc,
+            rewardXP: q.xp,
+            icon: q.icon,
+            progress: 0,
+            target: q.target,
+            completed: false,
+            rewardClaimed: false,
+            completedAt: null,
+            date: today,
+          };
+        });
+        ML.set('dailyQuests', quests);
+      }
+
+      return quests;
+    }
+
+    function saveQuestState(quests) {
+      ML.set('dailyQuests', quests);
+      saveStreakDates(quests);
+    }
+
+    function saveStreakDates(quests) {
+      var dates = [];
+      quests.forEach(function(q) {
+        if (q.completed && dates.indexOf(q.date) === -1) dates.push(q.date);
+      });
+      try {
+        var existing = JSON.parse(localStorage.getItem('ml_streak_dates') || '[]');
+        existing.forEach(function(d) {
+          if (dates.indexOf(d) === -1) dates.push(d);
+        });
+        localStorage.setItem('ml_streak_dates', JSON.stringify(dates));
+      } catch(e) {}
+    }
+
+    function updateQuest(id, increment) {
+      var quests = getQuestState();
+      var quest = null;
+      for (var i = 0; i < quests.length; i++) {
+        if (quests[i].id === id) { quest = quests[i]; break; }
+      }
+      if (!quest || quest.completed) return;
+
+      quest.progress += increment;
+      if (quest.progress >= quest.target) {
+        quest.progress = quest.target;
+        completeQuest(quest);
+      }
+      saveQuestState(quests);
+      renderQuests();
+    }
+
+    function completeQuest(quest) {
+      quest.completed = true;
+      quest.completedAt = Date.now();
+      quest.rewardClaimed = true;
+
+      try { XP.addXP(quest.rewardXP, 'quest:' + quest.id); } catch(e) {}
+
+      var titleClean = quest.title.replace(/^[^\s]+\s/, '');
+      showToast('+' + quest.rewardXP + ' XP — «' + titleClean + '» 🎉');
+
+      updateHeroMetrics();
+      updateStats();
+
+      setTimeout(function() {
+        var el = document.querySelector('.quest-item[data-id="' + quest.id + '"]');
+        if (el) el.style.animation = 'questComplete 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+      }, 50);
+    }
+
     function renderQuests() {
-      const grid = document.getElementById('questsGrid');
-      const today = new Date().toDateString();
-      grid.innerHTML = QUEST_DATA.map(q => {
-        const key = q.id;
-        const done = state.quests[key] && state.quests[key].date === today ? state.quests[key].done : false;
-        return `
-          <div class="quest-item ${done ? 'done' : ''}" data-id="${key}" onclick="toggleQuest('${key}')">
-            <div class="quest-check">
-              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-            </div>
-            <span style="font-size:1.25rem;flex-shrink:0">${q.icon}</span>
-            <div class="quest-info">
-              <div class="quest-title">${q.title}</div>
-              <div class="quest-desc">${q.desc}</div>
-            </div>
-            <div class="quest-xp">+${q.xp} XP</div>
-          </div>
-        `;
+      var quests = getQuestState();
+      var grid = document.getElementById('questsGrid');
+
+      grid.innerHTML = quests.map(function(q) {
+        var pct = Math.min(100, Math.round((q.progress / q.target) * 100));
+        var showProgress = q.target > 1;
+        var progressHtml = showProgress
+          ? '<div class="quest-progress" style="margin-top:8px">'
+            + '<div class="quest-progress-bar"><div class="quest-progress-fill" style="width:' + pct + '%"></div></div>'
+            + '<span class="quest-progress-text">' + q.progress + '/' + q.target + '</span>'
+            + '</div>'
+          : '';
+
+        return [
+          '<div class="quest-item ' + (q.completed ? 'done' : '') + '" data-id="' + q.id + '">',
+            '<div class="quest-check">',
+              '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>',
+            '</div>',
+            '<span style="font-size:1.25rem;flex-shrink:0">' + q.icon + '</span>',
+            '<div class="quest-info">',
+              '<div class="quest-title">' + q.title + '</div>',
+              '<div class="quest-desc">' + q.description + '</div>',
+              progressHtml,
+            '</div>',
+            '<div class="quest-xp">+' + q.rewardXP + ' XP</div>',
+          '</div>'
+        ].join('');
       }).join('');
+
       updateQuestProgress();
     }
 
-    function toggleQuest(id) {
-      const today = new Date().toDateString();
-      const q = QUEST_DATA.find(x => x.id === id);
-      if (!q) return;
-      const key = id;
-      const wasDone = state.quests[key] && state.quests[key].date === today ? state.quests[key].done : false;
-      if (wasDone) {
-        state.quests[key] = { date: today, done: false };
-        state.xp = Math.max(0, state.xp - q.xp);
-      } else {
-        state.quests[key] = { date: today, done: true };
-        state.xp += q.xp;
-        showToast(`+${q.xp} XP — «${q.title}» орындалды! 🎉`);
+    function updateQuestProgress() {
+      var quests = getQuestState();
+      var total = quests.length;
+      var done = 0;
+      for (var i = 0; i < total; i++) {
+        if (quests[i].completed) done++;
       }
-      saveState();
-      renderQuests();
-      updateHeroMetrics();
-      updateStats();
+      var pct = total > 0 ? (done / total) * 100 : 0;
+      document.getElementById('questProgressFill').style.width = pct + '%';
+      document.getElementById('questProgressText').textContent = done + '/' + total;
     }
 
-    function updateQuestProgress() {
-      const today = new Date().toDateString();
-      const total = QUEST_DATA.length;
-      const done = QUEST_DATA.filter(q => state.quests[q.id] && state.quests[q.id].date === today && state.quests[q.id].done).length;
-      const pct = total > 0 ? (done / total) * 100 : 0;
-      document.getElementById('questProgressFill').style.width = pct + '%';
-      document.getElementById('questProgressText').textContent = `${done}/${total}`;
+    function updateTimer() {
+      var now = new Date();
+      var midnight = new Date(now);
+      midnight.setDate(midnight.getDate() + 1);
+      midnight.setHours(0, 0, 0, 0);
+      var diff = Math.max(0, Math.floor((midnight - now) / 1000));
+      var h = Math.floor(diff / 3600);
+      var m = Math.floor((diff % 3600) / 60);
+      var s = diff % 60;
+      var el = document.getElementById('questTimer');
+      if (el) {
+        el.textContent = [
+          String(h).padStart(2, '0'),
+          String(m).padStart(2, '0'),
+          String(s).padStart(2, '0'),
+        ].join(':');
+      }
     }
 
     // ============================================================
     // HERO METRICS
     // ============================================================
     function updateHeroMetrics() {
-      const level = Math.floor(state.xp / 100) + 1;
-      document.getElementById('heroXp').textContent = state.xp;
-      document.getElementById('heroLevel').textContent = level;
+      document.getElementById('heroXp').textContent = XP.getXP();
+      document.getElementById('heroLevel').textContent = XP.getLevel();
       document.getElementById('heroStreak').textContent = calcStreak();
       document.getElementById('streakCount').textContent = calcStreak();
     }
@@ -1376,27 +1514,24 @@
     // ============================================================
     function calcStreak() {
       try {
-        const raw = localStorage.getItem('ml_dash_state');
-        if (!raw) return 0;
-        const saved = JSON.parse(raw);
-        const qs = saved.quests || {};
-        const activeDays = new Set();
-        Object.values(qs).forEach(v => {
-          if (v.done) activeDays.add(v.date);
-        });
-        let streak = 0;
-        const today = new Date();
-        for (let i = 0; i < 365; i++) {
-          const d = new Date(today);
+        var datesStr = localStorage.getItem('ml_streak_dates');
+        if (!datesStr) return 0;
+        var activeDays = JSON.parse(datesStr);
+        if (!Array.isArray(activeDays) || activeDays.length === 0) return 0;
+        var today = new Date().toDateString();
+        var streak = 0;
+        var current = new Date();
+        for (var i = 0; i < 365; i++) {
+          var d = new Date(current);
           d.setDate(d.getDate() - i);
-          const key = d.toDateString();
-          if (activeDays.has(key)) {
+          var key = d.toDateString();
+          if (activeDays.indexOf(key) !== -1) {
             streak++;
           } else if (i > 0) {
             break;
           }
         }
-        if (!activeDays.has(today.toDateString())) streak = 0;
+        if (activeDays.indexOf(today) === -1) streak = 0;
         return streak;
       } catch(e) { return 0; }
     }
@@ -1405,29 +1540,32 @@
     // STATISTICS
     // ============================================================
     function updateStats() {
-      const totalDone = SUBJECTS.reduce((sum, s) => sum + s.done, 0);
-      const totalAll = SUBJECTS.reduce((sum, s) => sum + s.total, 0);
+      const totalDone = DASH_SUBJECTS.reduce((sum, s) => sum + s.done, 0);
+      const totalAll = DASH_SUBJECTS.reduce((sum, s) => sum + s.total, 0);
       const overallPct = totalAll > 0 ? Math.round((totalDone / totalAll) * 100) : 0;
 
+      var completedCount = 0;
+      try { completedCount = Object.keys(ML.getCompletedLessons()).length; } catch(e) {}
+
       document.getElementById('statOverall').textContent = overallPct + '%';
-      document.getElementById('statLessons').textContent = totalDone;
-      document.getElementById('statXp').textContent = state.xp;
+      document.getElementById('statLessons').textContent = completedCount || totalDone;
+      document.getElementById('statXp').textContent = XP.getXP();
       document.getElementById('statStreak').textContent = calcStreak();
     }
 
     // ============================================================
     // SUBJECTS
     // ============================================================
-    const SUBJECT_ACCENTS = {
+    const DASH_SUBJECT_ACCENTS = {
       alg: '#4F46E5', geo: '#059669', log: '#9333EA', num: '#EA580C'
     };
 
     function renderSubjects() {
       const grid = document.getElementById('subjectsGrid');
 
-      grid.innerHTML = SUBJECTS.map(s => {
+      grid.innerHTML = DASH_SUBJECTS.map(s => {
         const active = state.currentSubject === s.id;
-        const accent = SUBJECT_ACCENTS[s.id];
+        const accent = DASH_SUBJECT_ACCENTS[s.id];
 
         return `
           <div class="subject-card ${active ? 'active' : ''}"
@@ -1476,7 +1614,7 @@
         return;
       }
 
-      const subj = SUBJECTS.find(s => s.id === state.currentSubject);
+      const subj = DASH_SUBJECTS.find(s => s.id === state.currentSubject);
       if (!subj) {
         section.classList.add('collapsed');
         return;
@@ -1486,19 +1624,39 @@
       headerText.textContent = subj.name + ' — Тақырыптар';
       headerCount.textContent = subj.done + '/' + subj.topics.length + ' өтілген';
 
-      const accent = SUBJECT_ACCENTS[subj.id];
+      const accent = DASH_SUBJECT_ACCENTS[subj.id];
 
       list.innerHTML = subj.topics.map((t, i) => {
-        const statusLabel = t.status === 'done' ? 'Өтілген' : t.status === 'progress' ? 'Жалғасуда' : 'Жаңа';
-        const statusClass = t.status === 'done' ? 'done' : t.status === 'progress' ? 'progress' : 'new';
-        const btnClass = t.status === 'done' ? 'secondary' : 'primary';
-        const barPct = t.status === 'done' ? 100 : t.status === 'progress' ? 40 : 0;
-        const barColor = t.status === 'done' ? '#16A34A' : accent;
-        const doneLessons = t.status === 'done' ? t.lessons : t.status === 'progress' ? Math.ceil(t.lessons * 0.4) : 0;
-        const doneTasks = t.status === 'done' ? t.tasks : t.status === 'progress' ? Math.ceil(t.tasks * 0.4) : 0;
+        var statusLabel = 'Жаңа';
+        var statusClass = 'new';
+        var btnClass = 'primary';
+        var barPct = 0;
+        var barColor = accent;
+        var doneLessons = 0;
+        var doneTasks = 0;
+        var muted = '';
+        var btnAction = "showToast('«" + t.name + "» бөлімі ашылды! 📚')";
+
+        if (t.status === 'done') {
+          statusLabel = 'Өтілген';
+          statusClass = 'done';
+          barPct = 100;
+          doneLessons = t.lessons;
+          doneTasks = t.tasks;
+          btnClass = 'primary';
+          btnAction = t.link ? "window.location.href='" + t.link + "'" : "showToast('Қайталау үшін басыңыз')";
+        } else if (t.implemented) {
+          btnAction = "window.location.href='" + t.link + "'";
+        } else {
+          statusLabel = 'Скоро';
+          statusClass = 'new';
+          muted = 'style="opacity:0.5"';
+          btnClass = 'secondary';
+          btnAction = "showToast('Эта тема ещё находится в разработке.')";
+        }
 
         return `
-          <div class="topic-card" style="animation-delay:${i * 0.04}s">
+          <div class="topic-card" style="animation-delay:${i * 0.04}s" ${muted}>
             <div class="tc-row1">
               <div class="tc-title-group">
                 <div class="tc-name">${t.name}</div>
@@ -1515,7 +1673,7 @@
                 <div class="tc-bar"><div class="tc-bar-fill" style="width:${barPct}%;background:${barColor}"></div></div>
               </div>
               <div class="tc-pct-text">${barPct}%</div>
-              <button class="tc-btn ${btnClass}" onclick="showToast('«${t.name}» бөлімі ашылды! 📚')">Продолжить</button>
+              <button class="tc-btn ${btnClass}" onclick="${btnAction}">Продолжить</button>
             </div>
           </div>
         `;
@@ -1533,16 +1691,13 @@
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
       if (!state.currentSubject) {
-        const next = SUBJECTS.find(s => s.topics.some(t => t.status === 'progress'));
+        const next = DASH_SUBJECTS.find(s => s.topics.some(t => t.status === 'progress'));
         if (next) {
           state.currentSubject = next.id;
           renderSubjects();
         } else {
-          const first = SUBJECTS.find(s => s.topics.some(t => t.status === 'new'));
-          if (first) {
-            state.currentSubject = first.id;
-            renderSubjects();
-          }
+          state.currentSubject = DASH_SUBJECTS[0].id;
+          renderSubjects();
         }
       }
     }
@@ -1552,8 +1707,7 @@
     // ============================================================
     function rememberFormula() {
       showToast('Жарайсың! Формула есте қалды ✅ +10 XP');
-      state.xp += 10;
-      saveState();
+      try { XP.addXP(10, 'formula'); } catch(e) {}
       updateHeroMetrics();
       updateStats();
     }
@@ -1580,8 +1734,47 @@
     // ============================================================
     // INIT
     // ============================================================
-    loadState();
+    syncFromML();
     renderQuests();
+    updateTimer();
+    setInterval(updateTimer, 1000);
+
+    // Auto-complete login quest on first daily visit
+    (function() {
+      var quests = getQuestState();
+      for (var i = 0; i < quests.length; i++) {
+        if (quests[i].id === 'quest_login' && !quests[i].completed) {
+          completeQuest(quests[i]);
+          saveQuestState(quests);
+          renderQuests();
+          break;
+        }
+      }
+    })();
+
+    // Listen for lesson completion → update quests
+    document.addEventListener('lesson:completed', function(e) {
+      var detail = e.detail || {};
+      if (detail.lessonId) {
+        updateQuest('quest_lesson', 1);
+        if (detail.grade === 'A' || detail.grade === 'S') {
+          updateQuest('quest_gradeA', 1);
+        }
+      }
+      if (detail.correct > 0) {
+        updateQuest('quest_problems', detail.correct);
+      }
+    });
+
+    // Track active study time (only when page is visible)
+    (function() {
+      setInterval(function() {
+        if (!document.hidden) {
+          updateQuest('quest_study', 1);
+        }
+      }, 1000);
+    })();
+
     updateHeroMetrics();
     updateStats();
     renderSubjects();

@@ -5,12 +5,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>math·logic — Қазақша математика платформасы</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        blue: { 50: '#EEF2FF', 100: '#E0E7FF', 200: '#C7D2FE', 300: '#A5B4FC', 400: '#818CF8', 500: '#6366F1', 600: '#4F46E5', 700: '#4338CA', 800: '#3730A3', 900: '#312E81' },
+        indigo: { 50: '#EEF2FF', 100: '#E0E7FF', 200: '#C7D2FE', 300: '#A5B4FC', 400: '#818CF8', 500: '#6366F1', 600: '#4F46E5', 700: '#4338CA', 800: '#3730A3', 900: '#312E81' },
+        purple: { 50: '#F5F3FF', 100: '#EDE9FE', 200: '#DDD6FE', 300: '#C4B5FD', 400: '#A78BFA', 500: '#8B5CF6', 600: '#7C3AED', 700: '#6D28D9' },
+        emerald: { 50: '#F0FDF4', 100: '#D1FAE5', 200: '#A7F3D0', 300: '#6EE7B7', 400: '#34D399', 500: '#10B981', 600: '#059669' },
+        sky: { 100: '#E0E7FF', 200: '#C7D2FE', 300: '#A5B4FC', 400: '#818CF8', 500: '#6366F1', 600: '#4F46E5' },
+        amber: { 50: '#FFFBEB', 100: '#FEF3C7', 200: '#FDE68A', 300: '#FCD34D', 400: '#FBBF24', 500: '#F59E0B' },
+        rose: { 500: '#F43F5E' },
+      },
+      fontFamily: {
+        head: ['Rubik', 'sans-serif'],
+      },
+      borderRadius: {
+        '2xl': '16px',
+        '3xl': '20px',
+      },
+    }
+  }
+}
+</script>
 <link rel="stylesheet" href="css/styles.css">
 <link rel="stylesheet" href="css/animations.css">
 <link rel="stylesheet" href="css/components.css">
 <style>
   .hero-gradient {
-    background: linear-gradient(135deg, #EFF6FF 0%, #F0F9FF 40%, #FAF5FF 100%);
+    background: linear-gradient(135deg, #EEF2FF 0%, #F5F3FF 40%, #FAF5FF 100%);
   }
   .hero-math-float {
     animation: float 6s ease-in-out infinite;
@@ -25,9 +49,9 @@
   }
   .hero-grid-bg {
     background-image:
-      radial-gradient(circle at 20% 50%, rgba(29,78,216,0.03) 0%, transparent 50%),
+      radial-gradient(circle at 20% 50%, rgba(79,70,229,0.03) 0%, transparent 50%),
       radial-gradient(circle at 80% 50%, rgba(124,58,237,0.03) 0%, transparent 50%),
-      radial-gradient(circle at 50% 0%, rgba(14,165,233,0.04) 0%, transparent 40%);
+      radial-gradient(circle at 50% 0%, rgba(129,140,248,0.04) 0%, transparent 40%);
   }
   .hero-cta {
     transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
@@ -43,7 +67,7 @@
   }
   .nav-link {
     position: relative;
-    font-family: 'Rubik', 'Golos Text', sans-serif;
+    font-family: 'Rubik', sans-serif;
     font-size: 0.875rem;
     font-weight: 500;
     color: #64748B;
@@ -58,13 +82,13 @@
     left: 0;
     width: 0;
     height: 2px;
-    background: #1D4ED8;
-    border-radius: 2px;
-    transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .nav-link:hover { color: #1D4ED8; }
-  .nav-link:hover::after { width: 100%; }
-  .nav-link.active { color: #1D4ED8; }
+      background: #4F46E5;
+      border-radius: 2px;
+      transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .nav-link:hover { color: #4F46E5; }
+    .nav-link:hover::after { width: 100%; }
+    .nav-link.active { color: #4F46E5; }
   .nav-link.active::after { width: 100%; }
 
   .feature-card {
@@ -83,7 +107,7 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--card-accent, #1D4ED8), var(--card-accent-secondary, #0EA5E9));
+    background: linear-gradient(90deg, var(--card-accent, #4F46E5), var(--card-accent-secondary, #818CF8));
     opacity: 0;
     transition: opacity 0.4s ease;
   }
@@ -129,7 +153,7 @@
   }
   .auth-modal-box {
     background: white;
-    border-radius: 28px;
+    border-radius: 24px;
     max-width: 400px;
     width: 100%;
     padding: 2rem;
@@ -144,7 +168,7 @@
 
   .subject-card {
     background: white;
-    border-radius: 20px;
+    border-radius: 16px;
     border: 1.5px solid #E2E8F0;
     transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     cursor: pointer;
@@ -155,7 +179,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 20px;
+    border-radius: 16px;
     opacity: 0;
     background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 60%);
     transition: opacity 0.35s ease;
@@ -164,8 +188,8 @@
   .subject-card:hover::before { opacity: 1; }
   .subject-card:hover {
     transform: translateY(-4px);
-    border-color: var(--card-accent, #1D4ED8);
-    box-shadow: 0 12px 40px -8px var(--card-shadow, rgba(29,78,216,0.12));
+    border-color: var(--card-accent, #4F46E5);
+    box-shadow: 0 12px 40px -8px var(--card-shadow, rgba(79,70,229,0.12));
   }
   .subject-card .subject-icon {
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -186,7 +210,7 @@
     width: 100%;
     height: 3px;
     border-radius: 3px;
-    background: linear-gradient(90deg, #1D4ED8, #7C3AED);
+    background: linear-gradient(90deg, #4F46E5, #7C3AED);
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -212,7 +236,7 @@
     background: rgba(255,255,255,0.85);
     backdrop-filter: blur(16px);
     border: 1px solid rgba(226,232,240,0.6);
-    border-radius: 20px;
+    border-radius: 16px;
     padding: 1.5rem 1rem;
     text-align: center;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -227,8 +251,8 @@
   .step-num {
     width: 44px;
     height: 44px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, #1D4ED8, #7C3AED);
+    border-radius: 12px;
+    background: linear-gradient(135deg, #4F46E5, #7C3AED);
     color: white;
     display: flex;
     align-items: center;
@@ -237,7 +261,7 @@
     font-weight: 800;
     font-size: 1.125rem;
     margin: 0 auto 1rem;
-    box-shadow: 0 6px 16px rgba(29,78,216,0.2);
+    box-shadow: 0 6px 16px rgba(79,70,229,0.2);
   }
   .step-title {
     font-family: 'Rubik', sans-serif;
@@ -390,17 +414,17 @@
       <!-- Stats row -->
       <div class="flex flex-wrap justify-center gap-6 sm:gap-10 mt-12 reveal delay-300">
         <div class="text-center">
-          <div class="font-head font-extrabold text-2xl sm:text-3xl text-slate-900">27</div>
+          <div class="font-head font-extrabold text-2xl sm:text-3xl text-slate-900" id="stat-modules">—</div>
           <div class="text-xs font-bold text-slate-400 mt-0.5">Модуль</div>
         </div>
         <div class="w-px bg-slate-200 hidden sm:block"></div>
         <div class="text-center">
-          <div class="font-head font-extrabold text-2xl sm:text-3xl text-slate-900">4</div>
+          <div class="font-head font-extrabold text-2xl sm:text-3xl text-slate-900" id="stat-sections">—</div>
           <div class="text-xs font-bold text-slate-400 mt-0.5">Бөлім</div>
         </div>
         <div class="w-px bg-slate-200 hidden sm:block"></div>
         <div class="text-center">
-          <div class="font-head font-extrabold text-2xl sm:text-3xl text-slate-900">60+</div>
+          <div class="font-head font-extrabold text-2xl sm:text-3xl text-slate-900" id="stat-topics">—</div>
           <div class="text-xs font-bold text-slate-400 mt-0.5">Тақырып</div>
         </div>
         <div class="w-px bg-slate-200 hidden sm:block"></div>
@@ -580,6 +604,8 @@
 <script src="js/data.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/storage.js"></script>
+<script src="js/events.js"></script>
+<script src="js/xp.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/navigation.js"></script>
 <script src="js/utils.js"></script>
@@ -649,7 +675,31 @@
     if (e.key === 'Escape') closeAuthModal();
   });
 
+  function updateLandingStats() {
+    var totalModules = 0, totalTopics = 0, totalSections = 0;
+    try {
+      if (typeof DATA !== 'undefined') {
+        totalSections = Object.keys(DATA).length;
+        Object.keys(DATA).forEach(function(sk) {
+          (DATA[sk] || []).forEach(function(sec) {
+            (sec.modules || []).forEach(function(mod) {
+              totalModules++;
+              (mod.subtopics || []).forEach(function() { totalTopics++; });
+            });
+          });
+        });
+      }
+    } catch(e) {}
+    var elMod = document.getElementById('stat-modules');
+    var elSec = document.getElementById('stat-sections');
+    var elTop = document.getElementById('stat-topics');
+    if (elMod) elMod.textContent = totalModules || '—';
+    if (elSec) elSec.textContent = totalSections || '—';
+    if (elTop) elTop.textContent = totalTopics > 0 ? totalTopics + '+' : '—';
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
+    updateLandingStats();
     renderLandingTopics();
     ANIME.initPageTransitions();
     ML.applySettings();

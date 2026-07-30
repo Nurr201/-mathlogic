@@ -1,36 +1,42 @@
 /* ========================================
    STORAGE — math·logic
-   Единая система хранения данных
+   Единое ядро данных пользователя
    Все данные в одном ключе localStorage
+   Версия схемы: 1
    ======================================== */
 
 const ML = (function() {
 
+  const VERSION = 1;
   const STORAGE_KEY = 'mathlogic_data';
 
   const DEFAULTS = {
+    version: VERSION,
     user: {
       id: null,
-      name: 'Нұрбол Абдазов',
-      username: '@nurbek_dev',
-      email: 'nurbek@example.com',
-      level: 12,
-      xp: 700,
-      xpToNext: 2000,
-      streak: 17,
-      streakBest: 42,
-      streakTotal: 186,
+      name: '',
+      username: '',
+      email: '',
+      level: 1,
+      xp: 0,
+      xpToNext: 100,
+      streak: 0,
+      streakBest: 0,
+      streakTotal: 0,
       lastVisit: null,
-      lastLesson: 'Виет теоремасы',
+      lastLesson: '',
       createdAt: null,
       loggedIn: false,
+      goals: [],
+      age: null,
     },
     progress: {
       subtopics: {},
+      lessons: {},
     },
     settings: {
       theme: 'light',
-      accent: '#1D4ED8',
+      accent: '#4F46E5',
       font_size: 'medium',
       lang: 'kz',
       daily_goal: 3,
@@ -38,28 +44,30 @@ const ML = (function() {
       autosave: true,
       solutions: 'after_answer',
       push: false,
-      email: true,
+      email_notif: true,
       sound: true,
       animations: true,
     },
     stats: {
-      lessons_completed: 34,
-      modules_completed: 12,
-      xp_earned: 1248,
-      study_time: 684,
-      problems_solved: 237,
-      avg_score: 86,
-      best_streak: 14,
-      achievements_count: 8,
+      lessons_completed: 0,
+      modules_completed: 0,
+      xp_earned: 0,
+      study_time: 0,
+      problems_solved: 0,
+      avg_score: 0,
+      best_streak: 0,
+      achievements_count: 0,
     },
     achievements: [],
     streak_data: null,
     timeline: [],
     goals: null,
     analytics: {},
+    dashboard: {
+      quests: {},
+    },
   };
 
-  // Полная структура данных
   let _cache = null;
 
   /* ---------- ВНУТРЕННИЕ ---------- */
@@ -92,9 +100,9 @@ const ML = (function() {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
   }
 
-  /* ---------- МИГРАЦИЯ СО СТАРЫХ КЛЮЧЕЙ ---------- */
+  /* ---------- МИГРАЦИЯ ---------- */
 
-  function migrate() {
+  function migrateLegacy() {
     var data = loadRaw();
     if (data) return data;
 
@@ -112,7 +120,6 @@ const ML = (function() {
 
     var oldLang = localStorage.getItem('math_logic_lang');
 
-    // Собираем старые profile_* ключи
     var oldProfile = {};
     for (var i = 0; i < localStorage.length; i++) {
       var key = localStorage.key(i);
@@ -126,15 +133,19 @@ const ML = (function() {
       }
     }
 
-    // Строим новый объект
+    if (!oldUser && !oldSubtopics && !oldLang && Object.keys(oldProfile).length === 0) {
+      return null;
+    }
+
     data = clone(DEFAULTS);
+    data.version = VERSION;
 
     if (oldUser) {
-      data.user.name = oldUser.name || data.user.name;
-      data.user.email = oldUser.email || data.user.email;
+      data.user.name = oldUser.name || '';
+      data.user.email = oldUser.email || '';
       data.user.loggedIn = oldUser.loggedIn || false;
-      data.user.level = oldUser.level || data.user.level;
-      data.user.id = oldUser.id || data.user.id;
+      data.user.level = oldUser.level || 1;
+      data.user.id = oldUser.id || null;
     }
 
     if (oldSubtopics) {
@@ -145,7 +156,6 @@ const ML = (function() {
       data.settings.lang = oldLang;
     }
 
-    // Перенос настроек из profile_settings_*
     for (var sk in oldProfile) {
       if (sk.indexOf('settings_') === 0) {
         var skName = sk.replace('settings_', '');
@@ -160,23 +170,18 @@ const ML = (function() {
       }
     }
 
-    // Перенос статистики
     var statKeys = ['lessons_completed','modules_completed','xp_earned','study_time','problems_solved','avg_score','best_streak','achievements_count'];
     statKeys.forEach(function(k) {
       if (oldProfile[k] !== undefined) data.stats[k] = parseInt(oldProfile[k], 10);
     });
 
-    // Перенос achievements, streak, timeline, goals, analytics
     if (oldProfile.achievements) data.achievements = oldProfile.achievements;
     if (oldProfile.streak_data) data.streak_data = oldProfile.streak_data;
     if (oldProfile.timeline) data.timeline = oldProfile.timeline;
     if (oldProfile.goals) data.goals = oldProfile.goals;
     if (oldProfile.analytics) data.analytics = oldProfile.analytics;
 
-    // Удаляем старые ключи
-    var oldKeys = [
-      'math_logic_user','math_logic_subtopics','math_logic_lang',
-    ];
+    var oldKeys = ['math_logic_user','math_logic_subtopics','math_logic_lang'];
     for (var j = 0; j < localStorage.length; j++) {
       var k2 = localStorage.key(j);
       if (k2 && (k2.indexOf('profile_') === 0 || k2.indexOf('math_logic_') === 0)) {
@@ -191,16 +196,70 @@ const ML = (function() {
     return data;
   }
 
+  function runMigrations(data) {
+    var v = data.version || 0;
+
+    if (v < 1) {
+      data = migrateV0toV1(data);
+    }
+
+    return data;
+  }
+
+  function migrateV0toV1(data) {
+    data = data || {};
+
+    delete data.settings.name;
+    delete data.settings.username;
+    delete data.settings.name_err;
+
+    if (data.settings.email !== undefined) {
+      if (typeof data.settings.email === 'boolean') {
+        data.settings.email_notif = data.settings.email;
+      }
+    }
+    delete data.settings.email;
+
+    try {
+      var dashRaw = localStorage.getItem('ml_dash_state');
+      if (dashRaw) {
+        var dashState = JSON.parse(dashRaw);
+        if (dashState && typeof dashState === 'object') {
+          data.dashboard = {
+            quests: dashState.quests || {},
+          };
+        }
+        localStorage.removeItem('ml_dash_state');
+      }
+    } catch(e) {}
+
+    if (!data.dashboard || typeof data.dashboard !== 'object') {
+      data.dashboard = { quests: {} };
+    }
+
+    if (!data.progress.lessons) data.progress.lessons = {};
+
+    data.version = 1;
+    return data;
+  }
+
   /* ---------- ЗАГРУЗКА ---------- */
 
   function getData() {
     if (_cache) return _cache;
     var data = loadRaw();
     if (!data) {
-      data = migrate();
+      data = migrateLegacy();
     }
     if (!data) {
       data = clone(DEFAULTS);
+      data.version = VERSION;
+      data.user.id = 'user_' + Date.now();
+      data.user.createdAt = Date.now();
+      data.user.lastVisit = Date.now();
+      saveRaw(data);
+    } else if (!data.version || data.version < VERSION) {
+      data = runMigrations(data);
       saveRaw(data);
     }
     _cache = data;
@@ -216,9 +275,33 @@ const ML = (function() {
     _cache = null;
   }
 
-  /* ---------- API ---------- */
+  /* ---------- ОСНОВНОЙ (ПЕРВИЧНЫЙ) API ---------- */
 
-  // --- User ---
+  function get(path, defaultVal) {
+    var d = getData();
+    var parts = path.split('.');
+    var current = d;
+    for (var i = 0; i < parts.length; i++) {
+      if (current === null || current === undefined || typeof current !== 'object') return defaultVal;
+      current = current[parts[i]];
+    }
+    return current !== undefined && current !== null ? current : defaultVal;
+  }
+
+  function set(path, value) {
+    var d = getData();
+    var parts = path.split('.');
+    var current = d;
+    for (var i = 0; i < parts.length - 1; i++) {
+      if (!current[parts[i]] || typeof current[parts[i]] !== 'object') current[parts[i]] = {};
+      current = current[parts[i]];
+    }
+    current[parts[parts.length - 1]] = value;
+    saveData(d);
+  }
+
+  /* ---------- USER ---------- */
+
   function getUser() {
     var d = getData();
     return d.user ? clone(d.user) : null;
@@ -243,7 +326,8 @@ const ML = (function() {
     return d.user && d.user.loggedIn === true;
   }
 
-  // --- Language ---
+  /* ---------- LANGUAGE ---------- */
+
   function getLang() {
     var d = getData();
     return d.settings.lang || 'kz';
@@ -255,7 +339,8 @@ const ML = (function() {
     saveData(d);
   }
 
-  // --- Progress / Subtopics ---
+  /* ---------- PROGRESS ---------- */
+
   function getSubtopics() {
     var d = getData();
     return d.progress.subtopics || {};
@@ -267,55 +352,30 @@ const ML = (function() {
     saveData(d);
   }
 
-  function resetSubtopics() {
-    var d = getData();
-    d.progress.subtopics = {};
-    saveData(d);
-  }
+  /* ---------- ALIASES (обратная совместимость) ---------- */
 
-  // --- Profile (generic deep get/set) ---
   function getProfile(path, defaultVal) {
-    var d = getData();
-    var parts = path.split('.');
-    var current = d;
-    for (var i = 0; i < parts.length; i++) {
-      if (current === null || current === undefined || typeof current !== 'object') return defaultVal;
-      current = current[parts[i]];
-    }
-    return current !== undefined && current !== null ? current : defaultVal;
+    return get(path, defaultVal);
   }
 
   function setProfile(path, value) {
-    var d = getData();
-    var parts = path.split('.');
-    var current = d;
-    for (var i = 0; i < parts.length - 1; i++) {
-      if (!current[parts[i]] || typeof current[parts[i]] !== 'object') current[parts[i]] = {};
-      current = current[parts[i]];
-    }
-    current[parts[parts.length - 1]] = value;
-    saveData(d);
+    set(path, value);
   }
 
-  // --- Stats shortcuts ---
-  function getStat(key, defaultVal) {
-    return getProfile('stats.' + key, defaultVal);
+  function getProfileStat(key, defaultVal) {
+    return get('stats.' + key, defaultVal);
   }
 
-  function setStat(key, value) {
-    setProfile('stats.' + key, value);
-  }
-
-  // --- Settings shortcuts ---
   function getSetting(key, defaultVal) {
-    return getProfile('settings.' + key, defaultVal);
+    return get('settings.' + key, defaultVal);
   }
 
   function setSetting(key, value) {
-    setProfile('settings.' + key, value);
+    set('settings.' + key, value);
   }
 
-  // --- Reset all ---
+  /* ---------- RESET ---------- */
+
   function resetAll() {
     try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
     _cache = null;
@@ -325,29 +385,7 @@ const ML = (function() {
     return clone(getData());
   }
 
-  // ===== НОВЫЕ ФУНКЦИИ ИНТЕГРАЦИИ =====
-
-  function calcLevel(xp) {
-    return Math.max(1, Math.floor(Math.sqrt(xp / 100)) + 1);
-  }
-
-  function calcXpForLevel(level) {
-    return level * level * 100;
-  }
-
-  function calcXpToNext(level, xp) {
-    return calcXpForLevel(level + 1) - xp;
-  }
-
-  function awardXP(amount, reason) {
-    if (!amount || amount <= 0) return;
-    var d = getData();
-    d.user.xp = (d.user.xp || 0) + amount;
-    d.user.level = calcLevel(d.user.xp);
-    d.user.xpToNext = calcXpToNext(d.user.level, d.user.xp);
-    d.stats.xp_earned = (d.stats.xp_earned || 0) + amount;
-    saveData(d);
-  }
+  /* ===== СИСТЕМНЫЕ ФУНКЦИИ ===== */
 
   function completeLesson(lessonId, result) {
     var d = getData();
@@ -431,10 +469,7 @@ const ML = (function() {
   function calcOverallProgress() {
     var d = getData();
     var completed = d.progress.subtopics || {};
-    if (typeof DATA === 'undefined' || !DATA) {
-      var total = Object.keys(completed).length;
-      return total > 0 ? Math.min(total * 5, 100) : 0;
-    }
+    if (typeof DATA === 'undefined' || !DATA) return 0;
     var total = 0, done = 0;
     try {
       Object.keys(DATA).forEach(function(sKey) {
@@ -474,26 +509,23 @@ const ML = (function() {
   return {
     // Core
     getData, saveData, resetCache,
+    // Primary API
+    get, set,
     // User
     getUser, setUser, clearUser, isLoggedIn,
     // Language
     getLang, setLang,
     // Progress
-    getSubtopics, setSubtopics, resetSubtopics,
-    // Generic paths
+    getSubtopics, setSubtopics,
+    // Aliases (обратная совместимость)
     getProfile, setProfile,
-    // Stats
-    getStat, setStat,
-    // Settings
     getSetting, setSetting,
-    // Integration
-    calcLevel, calcXpForLevel, calcXpToNext,
-    awardXP, completeLesson, getCompletedLessons,
+    getProfileStat,
+    // System
+    completeLesson, getCompletedLessons,
     markSubtopicsDone, updateLastVisit, addTimelineEntry,
     calcOverallProgress, applySettings,
     // Utilities
     resetAll, exportAll,
-    // Backward-compat aliases
-    getProfileStat: getStat,
   };
 })();

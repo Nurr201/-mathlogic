@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Тақырып — math·logic</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+  tailwind.config = {
+    theme: { extend: { colors: { blue: { 50: '#EEF2FF', 100: '#E0E7FF', 200: '#C7D2FE', 300: '#A5B4FC', 400: '#818CF8', 500: '#6366F1', 600: '#4F46E5', 700: '#4338CA' }, purple: { 50: '#F5F3FF', 600: '#7C3AED' }, }, fontFamily: { head: ['Rubik', 'sans-serif'] }, borderRadius: { '2xl': '16px', '3xl': '20px' } } } }
+  </script>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/components.css">
@@ -17,10 +21,15 @@
     <a href="dashboard.html" class="btn px-8 py-4 font-bold text-sm shadow-xl">Бақылау тақтасына қайту →</a>
   </div>
   <script src="js/storage.js"></script>
+  <script src="js/events.js"></script>
+  <script src="js/xp.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/learning.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/navigation.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/animations.js"></script>
+  <script src="js/achievements.js"></script>
   <script src="js/app.js"></script>
   <script>ANIME.initPageTransitions();</script>
 </body>

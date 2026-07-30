@@ -30,8 +30,8 @@
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(29, 78, 216, 0.15); }
-  50% { box-shadow: 0 0 0 12px rgba(29, 78, 216, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.15); }
+  50% { box-shadow: 0 0 0 12px rgba(79, 70, 229, 0); }
 }
 
 @keyframes fadeIn {
@@ -384,7 +384,7 @@
   top: 0;
   left: 0;
   height: 3px;
-  background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+  background: linear-gradient(90deg, #4F46E5, #8B5CF6);
   z-index: 100;
   width: 0%;
   transition: width 0.1s linear;
@@ -402,10 +402,10 @@
   transition: background 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .toggle:focus-visible {
-  outline: 2px solid #1D4ED8;
+  outline: 2px solid #4F46E5;
   outline-offset: 2px;
 }
-.toggle.active { background: #1D4ED8; }
+.toggle.active { background: #4F46E5; }
 .toggle::after {
   content: '';
   position: absolute;
@@ -433,7 +433,7 @@
 /* --- MATH FORMULA HOVER --- */
 .formula-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(29, 78, 216, 0.08);
+  box-shadow: 0 12px 40px rgba(79, 70, 229, 0.08);
 }
 
 /* --- HERO FLOATING ELEMENTS --- */
