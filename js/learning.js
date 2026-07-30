@@ -578,6 +578,15 @@ window.Learning = (function() {
 
     var states = {};
     setLessonStates(states);
+
+    var d = ML.getData();
+    if (d && d.lesson && d.lesson.v2) {
+      d.lesson.v2 = {};
+      ML.saveData(d);
+      console.log('CACHE', JSON.stringify(d.lesson.v2));
+      console.log('LS', JSON.stringify(JSON.parse(localStorage.getItem('mathlogic_data')).lesson.v2));
+    }
+
     resetCache();
     initStates();
     emit('progress:update', { reset: true });

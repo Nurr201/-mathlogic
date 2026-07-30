@@ -1328,26 +1328,20 @@
 
     function syncFromML() {
       try {
-        ML.getData();
-        var completedLessons = ML.getCompletedLessons();
-        if (completedLessons && Object.keys(completedLessons).length > 0) {
-          DASH_SUBJECTS.forEach(function(subj) {
-            subj.done = 0;
-            subj.topics.forEach(function(t, i) {
-              var subjKey = subj.id;
-              var topicKey = TOPIC_LESSON_MAP[subjKey];
-              if (t.implemented && topicKey && topicKey[i]) {
-                var lessonId = topicKey[i];
-                var lessonState = Learning.getLessonState(lessonId);
-                if (lessonState === 'completed') {
-                  t.status = 'done';
-                }
-              }
-              if (t.status === 'done') subj.done++;
-            });
-            subj.pct = subj.total > 0 ? Math.round((subj.done / subj.total) * 100) : 0;
+        DASH_SUBJECTS.forEach(function(subj) {
+          subj.done = 0;
+          subj.topics.forEach(function(t, i) {
+            var topicKey = TOPIC_LESSON_MAP[subj.id];
+            var isDone = false;
+            if (t.implemented && topicKey && topicKey[i]) {
+              var lessonState = Learning.getLessonState(topicKey[i]);
+              if (lessonState === 'completed') isDone = true;
+            }
+            t.status = isDone ? 'done' : 'new';
+            if (isDone) subj.done++;
           });
-        }
+          subj.pct = subj.total > 0 ? Math.round((subj.done / subj.total) * 100) : 0;
+        });
       } catch(e) { console.warn('[Dash] ML sync error:', e); }
     }
 
@@ -1561,6 +1555,7 @@
     };
 
     function renderSubjects() {
+      syncFromML();
       const grid = document.getElementById('subjectsGrid');
 
       grid.innerHTML = DASH_SUBJECTS.map(s => {
