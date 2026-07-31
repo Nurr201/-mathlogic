@@ -121,8 +121,8 @@ function testDashboard() {
   assert.ok(app.document.getElementById('route-modules').innerHTML.includes('status-locked'));
 }
 
-function testLesson(id, expectedTitle) {
-  const app = environment('?id=' + encodeURIComponent(id));
+function testLesson(id, expectedTitle, initialStorage) {
+  const app = environment('?id=' + encodeURIComponent(id), initialStorage);
   app.document.body.classList.add('axis-app');
   app.document.getElementById('lesson-active').hidden = true;
   app.document.getElementById('lesson-error').hidden = true;
@@ -131,6 +131,19 @@ function testLesson(id, expectedTitle) {
   assert.equal(app.document.getElementById('lesson-active').hidden, false);
   assert.equal(app.document.getElementById('lesson-title').textContent, expectedTitle);
   assert.equal(vm.runInContext('__EngineInternal.state.lessonId', app.context), id);
+  return app;
+}
+
+function testBilingualLessonContent() {
+  const kk = testLesson('algebra.exponents.basics', 'Негіздері бірдей дәрежелерді көбейту және бөлу');
+  assert.equal(vm.runInContext("__EngineInternal.state.lesson.blocks[1].title", kk.context), 'Сабақтың мақсаты');
+  assert.equal(vm.runInContext("__EngineInternal.state.lesson.blocks[4].title", kk.context), 'Көбейту: көрсеткіштер қосылады');
+  assert.ok(vm.runInContext("__EngineInternal.state.lesson.blocks[6].content[3].text.includes('a ≠ 0')", kk.context));
+
+  const ru = testLesson('algebra.exponents.basics', 'Умножение и деление степеней с одинаковым основанием', { math_logic_lang: 'ru' });
+  assert.equal(vm.runInContext("__EngineInternal.state.lesson.blocks[1].title", ru.context), 'Цель урока');
+  assert.equal(vm.runInContext("__EngineInternal.state.lesson.blocks[4].title", ru.context), 'Умножение: показатели складываются');
+  assert.ok(vm.runInContext("__EngineInternal.state.lesson.blocks[6].content[3].text.includes('a ≠ 0')", ru.context));
 }
 
 function testUnknownLesson() {
@@ -154,8 +167,11 @@ function testCompletionBridge() {
   while (vm.runInContext("__EngineInternal.state.finished", app.context) === false && guard-- > 0) {
     const type = vm.runInContext("__EngineInternal.getCurrentBlock().type", app.context);
     const assessed = ['warmup', 'quiz', 'input', 'challenge'].includes(type);
+    const taskCount = type === 'challenge'
+      ? vm.runInContext('__EngineInternal.getCurrentBlock().tasks.length', app.context)
+      : 0;
     const result = type === 'challenge'
-      ? '{correct:true,correctAnswers:3,totalQuestions:3,attempts:3,answers:[0,"1/8",1],points:30}'
+      ? '{correct:true,correctAnswers:' + taskCount + ',totalQuestions:' + taskCount + ',attempts:' + taskCount + ',answers:[],points:' + (taskCount * 10) + '}'
       : assessed ? '{correct:true,correctAnswers:1,totalQuestions:1,attempts:1,answers:"ok",points:10}' : 'undefined';
     vm.runInContext('LessonEngine.next(' + result + ')', app.context);
   }
@@ -181,8 +197,11 @@ function testCompletionBridge() {
   while (vm.runInContext('__EngineInternal.state.finished', repeat.context) === false && guard-- > 0) {
     const type = vm.runInContext('__EngineInternal.getCurrentBlock().type', repeat.context);
     const assessed = ['warmup', 'quiz', 'input', 'challenge'].includes(type);
+    const taskCount = type === 'challenge'
+      ? vm.runInContext('__EngineInternal.getCurrentBlock().tasks.length', repeat.context)
+      : 0;
     const result = type === 'challenge'
-      ? '{correct:true,correctAnswers:3,totalQuestions:3,attempts:3,answers:[],points:30}'
+      ? '{correct:true,correctAnswers:' + taskCount + ',totalQuestions:' + taskCount + ',attempts:' + taskCount + ',answers:[],points:' + (taskCount * 10) + '}'
       : assessed ? '{correct:true,correctAnswers:1,totalQuestions:1,attempts:1,answers:"ok",points:10}' : 'undefined';
     vm.runInContext('LessonEngine.next(' + result + ')', repeat.context);
   }
@@ -261,8 +280,8 @@ function testResume() {
 
 testDashboardShell();
 testDashboard();
-testLesson('algebra.exponents.basics', 'Дәрежелер және олардың қасиеттері');
 testLesson('algebra.vieta.intro', 'Виет теоремасы');
+testBilingualLessonContent();
 testUnknownLesson();
 testCompletionBridge();
 testRepeatAnswerUx();

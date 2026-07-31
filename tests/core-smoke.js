@@ -81,6 +81,10 @@ function testRegistryAndConfigs() {
   assert.deepEqual(Array.from(ids), ['algebra.exponents.basics', 'algebra.vieta.intro']);
   assert.equal(new Set(ids).size, ids.length);
   assert.equal(app.run("LessonValidator.validate(LESSON_EXPONENTS).valid"), true);
+  assert.equal(app.run("LessonValidator.validate(LESSON_EXPONENTS).warnings.length"), 0);
+  assert.equal(app.run("LESSON_EXPONENTS.blocks.length"), 15);
+  assert.equal(app.run("LESSON_EXPONENTS.blocks.filter(function(block){return block.type==='challenge';}).length"), 2);
+  assert.equal(app.run("LESSON_EXPONENTS.title.kk"), 'Негіздері бірдей дәрежелерді көбейту және бөлу');
   assert.equal(app.run("LessonValidator.validate(LESSON_VIETA).valid"), true);
   assert.equal(app.run("Learning.resolveLessonId('algebra_1')"), 'algebra.exponents.basics');
   assert.equal(app.run("Learning.resolveLessonId('lesson.html')"), 'algebra.vieta.intro');
