@@ -48,7 +48,7 @@ function handleModalAction(action) {
   var d;
   if (action === 'clear-data') {
     d = ML.getData();
-    d.settings = { theme: 'light', accent: '#4F46E5', font_size: 'medium', lang: 'kz', daily_goal: 3, reminders: true, autosave: true, solutions: 'after_answer', push: false, email_notif: true, sound: true, animations: true };
+    d.settings = { theme: 'light', accent: '#4F46E5', font_size: 'medium', lang: 'kk', daily_goal: 3, reminders: true, autosave: true, solutions: 'after_answer', push: false, email_notif: true, sound: true, animations: true };
     ML.saveData(d);
     showToast('Данные очищены', 'success');
     loadAllSettings();
@@ -150,10 +150,12 @@ function setFontSize(size) {
 }
 
 function setLang(lang) {
-  ML.setSetting('lang', lang);
-  ML.setLang(lang === 'kz' ? 'kz' : 'ru');
+  lang = ML.normalizeLang(lang);
+  ML.setLang(lang);
   document.querySelectorAll('#lang-options .option-btn').forEach(function(b) { b.classList.remove('active'); });
-  document.querySelector('#lang-options .option-btn[data-lang="' + lang + '"]').classList.add('active');
+  var active = document.querySelector('#lang-options .option-btn[data-lang="' + lang + '"]');
+  if (active) active.classList.add('active');
+  ML.applySettings();
   showToast('Язык изменён на ' + lang, 'success');
 }
 
@@ -274,7 +276,7 @@ function loadAllSettings() {
   var sizes = { small: '14px', medium: '16px', large: '18px' };
   document.documentElement.style.fontSize = sizes[fontSize] || '16px';
 
-  var lang = ML.getSetting('lang', 'ru');
+  var lang = ML.getLang();
   document.querySelectorAll('#lang-options .option-btn').forEach(function(b) {
     b.classList.toggle('active', b.dataset.lang === lang);
   });

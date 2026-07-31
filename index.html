@@ -337,7 +337,7 @@ tailwind.config = {
 
     <div class="flex items-center gap-3">
       <div class="flex gap-1 rounded-full p-0.5 bg-slate-100 text-xs font-head font-semibold border border-slate-200/60 shadow-sm">
-        <button id="btn-kz" onclick="setLang('kz')" class="px-3 py-1 rounded-full transition-all duration-300 text-white bg-blue-700">KZ</button>
+        <button id="btn-kz" onclick="setLang('kk')" class="px-3 py-1 rounded-full transition-all duration-300 text-white bg-blue-700">KZ</button>
         <button id="btn-ru" onclick="setLang('ru')" class="px-3 py-1 rounded-full transition-all duration-300 text-slate-500 hover:text-slate-700">RU</button>
       </div>
 
@@ -634,7 +634,7 @@ tailwind.config = {
     setTimeout(function() {
       grid.innerHTML = '';
       var currentLang = getLang();
-      var list = TOPICS_LANDING[activeTab][currentLang];
+      var list = TOPICS_LANDING[activeTab][currentLang] || TOPICS_LANDING[activeTab].ru || [];
       list.forEach(function(item, i) {
         var p = document.createElement('p');
         p.className = "transition-all duration-200 hover:text-blue-600 cursor-default flex items-center gap-2";

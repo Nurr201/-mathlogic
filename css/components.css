@@ -241,6 +241,9 @@
 .lesson-heading h1 { max-width:16ch; margin:13px 0 13px; color:var(--axis-text); font-size:clamp(34px,4vw,44px); line-height:1.05; letter-spacing:-.035em; font-weight:760; }
 .lesson-heading > p { max-width:66ch; margin:0; color:var(--axis-text-2); font-size:16px; line-height:1.65; }
 .lesson-meta { display:flex; flex-wrap:wrap; gap:18px; margin-top:18px; color:var(--axis-text-3); font-size:10px; text-transform:uppercase; }
+.lesson-mode-badge { display:inline-flex; align-items:center; min-height:24px; padding:3px 8px; color:var(--axis-text-2); background:var(--axis-sunken); border:1px solid var(--axis-line-strong); border-radius:4px; line-height:1.35; }
+.lesson-mode-badge.is-repeat { color:var(--axis-gold-deep); background:var(--axis-gold-wash); border-color:color-mix(in srgb,var(--axis-gold) 55%,var(--axis-line)); }
+.lesson-mode-badge[hidden] { display:none; }
 .lesson-engine-content { color:var(--axis-text); }
 .lesson-engine-content { min-width:0; overflow-x:hidden; }
 .lesson-engine-content > div { max-width:100% !important; padding-left:0 !important; padding-right:0 !important; }
@@ -266,6 +269,14 @@
 .lesson-engine-content p { line-height:1.65; }
 .lesson-engine-content button { border-radius:8px !important; box-shadow:none !important; transform:none !important; }
 .lesson-engine-content input { color:var(--axis-text); background:var(--axis-surface) !important; border-color:var(--axis-line-strong) !important; }
+.lesson-engine-content .lesson-option { min-width:0; }
+.lesson-engine-content .lesson-option > span { min-width:0; overflow-wrap:break-word; word-break:normal; }
+.lesson-engine-content .lesson-option.is-selected { background:var(--axis-algebra-wash) !important; border-color:var(--axis-algebra) !important; }
+.lesson-engine-content .lesson-option.is-correct { background:var(--axis-logic-wash) !important; border-color:var(--axis-logic) !important; }
+.lesson-engine-content .lesson-option.is-incorrect { background:var(--axis-danger-wash) !important; border-color:var(--axis-danger) !important; }
+.lesson-engine-content .lesson-option input:disabled { opacity:1; }
+.lesson-engine-content .lesson-input-state.is-correct { background:var(--axis-logic-wash) !important; border-color:var(--axis-logic) !important; }
+.lesson-engine-content .lesson-input-state.is-incorrect { background:var(--axis-danger-wash) !important; border-color:var(--axis-danger) !important; }
 .lesson-engine-content .rounded-2xl, .lesson-engine-content .rounded-3xl { border-radius:10px !important; }
 .lesson-engine-content .shadow-sm, .lesson-engine-content .shadow-md, .lesson-engine-content .shadow-lg { box-shadow:none !important; }
 .lesson-finish-mark { display:grid; place-items:center; width:64px; height:64px; margin:0 auto 24px; color:var(--axis-gold-deep); background:var(--axis-gold-wash); border:1px solid var(--axis-gold); font-size:25px; }
@@ -285,6 +296,15 @@
 .lesson-error-mark { display:grid; place-items:center; width:36px; height:36px; color:var(--axis-danger); border:1px solid var(--axis-danger); font:700 16px "JetBrains Mono",monospace; }
 .lesson-error h1 { margin:22px 0 8px; font-size:32px; }
 .lesson-error p { margin:0 0 24px; color:var(--axis-text-2); }
+
+html[lang="kk"] .axis-app :is(.dashboard-hero h2,.subject-segment strong,.route-module h3,.route-lesson-copy strong,.lesson-heading h1,.lesson-engine-content h1,.lesson-engine-content h2,.lesson-engine-content h3) {
+  text-wrap:balance; overflow-wrap:break-word; word-break:normal; hyphens:auto;
+}
+html[lang="kk"] .axis-app :is(.dashboard-hero-copy > p,.subject-segment small,.route-lesson-description,.route-lesson-meta,.lesson-heading > p,.lesson-engine-content p,.lesson-engine-content li,.lesson-engine-content label,.lesson-tip p) {
+  text-wrap:pretty; overflow-wrap:break-word; word-break:normal; hyphens:auto;
+}
+html[lang="kk"] .axis-lesson-page .lesson-heading h1 { max-width:19ch; }
+html[lang="kk"] .axis-app button, html[lang="kk"] .axis-app .axis-button { white-space:normal; line-height:1.35; }
 
 @media (max-width:1079px) {
   .lesson-layout { grid-template-columns:190px minmax(0,720px); }

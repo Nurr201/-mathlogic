@@ -8,7 +8,7 @@ const vm = require('node:vm');
 
 const ROOT = path.resolve(__dirname, '..');
 const SOURCES = [
-  'js/data.js', 'js/storage.js', 'js/xp.js', 'js/events.js', 'js/learning.js',
+  'js/data.js', 'js/storage.js', 'js/i18n.js', 'js/xp.js', 'js/events.js', 'js/learning.js',
   'data/lesson-schema.js', 'data/lessons/exponents.js',
 ];
 
@@ -122,6 +122,28 @@ function testScatteredLegacyMigration() {
   assert.equal(app.context.localStorage.getItem('profile_streak_data'), null);
 }
 
+function testLanguageCompatibility() {
+  const app = boot();
+  assert.equal(app.run('ML.getLang()'), 'kk');
+  app.run("ML.setLang('kz')");
+  assert.equal(app.run('ML.getLang()'), 'kk');
+  assert.equal(app.run("ML.get('settings.lang')"), 'kk');
+  app.run("ML.setSetting('lang','kk')");
+  assert.equal(app.run('I18N.getLang()'), 'kk');
+  assert.equal(app.run("I18N.t('lesson.repeat','kz')"), 'Қайталау · XP есептелмейді');
+  assert.equal(app.run("I18N.localize({title:'RU',titleKz:'KK'},'title','kk')"), 'KK');
+  app.run("ML.setSetting('lang','ru')");
+  assert.equal(app.run('ML.getLang()'), 'ru');
+
+  const legacy = boot({ math_logic_lang: 'kz' });
+  assert.equal(legacy.run('ML.getLang()'), 'kk');
+  assert.equal(legacy.run("ML.get('settings.lang')"), 'kk');
+
+  const savedLegacy = boot({ mathlogic_data: JSON.stringify({ version: 2, settings: { lang: 'kz' } }) });
+  assert.equal(savedLegacy.run('ML.getLang()'), 'kk');
+  assert.equal(savedLegacy.run("ML.get('settings.lang')"), 'kk');
+}
+
 function testXpBoundariesAndReset() {
   const app = boot();
   [[0, 1], [99, 1], [100, 2], [399, 2], [400, 3]].forEach(function(pair) {
@@ -167,6 +189,7 @@ testCanonicalLifecycle();
 testRegistryAndConfigs();
 testLegacyMigration();
 testScatteredLegacyMigration();
+testLanguageCompatibility();
 testXpBoundariesAndReset();
 testSubjectReset();
 testCorruptStorageFallback();

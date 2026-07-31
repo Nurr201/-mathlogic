@@ -1,7 +1,7 @@
 /* Shared RU/KZ localization. Legacy global getLang/setLang are preserved. */
 
 const I18N_DICTIONARY = {
-  kz: {
+  kk: {
     nav_dashboard: 'Дашборд', nav_subjects: 'Тақырыптар', nav_login: 'Кіру', nav_register: 'Тіркелу',
     hero_title: 'Математиканы <span style="color:#1D4ED8">түсініп</span> үйрен',
     hero_desc: 'Қазақ тіліндегі интерактивті сабақтар, тесттер және тапсырмалар. Теориядан практикаға — бір платформада.',
@@ -22,9 +22,9 @@ const I18N_DICTIONARY = {
     'dashboard.interactive': 'интерактивті сабақ', 'dashboard.saved': 'қадам сақталды', 'dashboard.minutes': 'мин', 'dashboard.greeting': 'Сәлем', 'dashboard.repeat': 'Қайталау', 'dashboard.open': 'Ашу',
     'dashboard.noContent': 'Сабақ әлі дайын емес', 'dashboard.profile': 'Профиль', 'dashboard.error': 'Dashboard деректерін жүктеу мүмкін болмады', 'dashboard.retry': 'Қайталап көру',
 
-    'lesson.back': 'Маршрутқа оралу', 'lesson.route': 'Маршрут', 'lesson.progress': 'Прогресс', 'lesson.remaining': 'Қалғаны',
+    'lesson.back': 'Маршрутқа оралу', 'lesson.route': 'Маршрут', 'lesson.progress': 'Прогресс', 'lesson.remaining': 'Қалғаны', 'lesson.minutes': 'мин',
     'lesson.tip': 'Кеңес', 'lesson.tipText': 'Шығуға болады: ағымдағы қадам мен жауаптар автоматты түрде сақталады.',
-    'lesson.steps': 'қадам', 'lesson.repeat': 'Қайталау режимі · XP берілмейді', 'lesson.resume': 'Сақталған қадамнан жалғастыру',
+    'lesson.steps': 'қадам', 'lesson.repeat': 'Қайталау · XP есептелмейді', 'lesson.resume': 'Сақталған қадамнан жалғастыру',
     'lesson.completed': 'Сабақ аяқталды', 'lesson.unavailable': 'Сабақ әлі дайын емес', 'lesson.notFound': 'Сабақ табылмады',
     'lesson.notFoundText': 'Сілтемені тексеріңіз немесе маршрутқа оралыңыз.', 'lesson.dashboard': 'Dashboard-қа оралу',
     'lesson.stageStart': 'Бастау', 'lesson.stageRule': 'Ереже', 'lesson.stageExample': 'Талдау', 'lesson.stagePractice': 'Жаттығу', 'lesson.stageFinish': 'Нәтиже'
@@ -50,35 +50,62 @@ const I18N_DICTIONARY = {
     'dashboard.interactive': 'интерактивный урок', 'dashboard.saved': 'шагов сохранено', 'dashboard.minutes': 'мин', 'dashboard.greeting': 'Привет', 'dashboard.repeat': 'Повторить', 'dashboard.open': 'Открыть',
     'dashboard.noContent': 'Урок пока не готов', 'dashboard.profile': 'Профиль', 'dashboard.error': 'Не удалось загрузить данные Dashboard', 'dashboard.retry': 'Повторить',
 
-    'lesson.back': 'К маршруту', 'lesson.route': 'Маршрут', 'lesson.progress': 'Прогресс', 'lesson.remaining': 'Что осталось',
+    'lesson.back': 'К маршруту', 'lesson.route': 'Маршрут', 'lesson.progress': 'Прогресс', 'lesson.remaining': 'Что осталось', 'lesson.minutes': 'мин',
     'lesson.tip': 'Подсказка', 'lesson.tipText': 'Можно выйти: текущий шаг и ответы сохраняются автоматически.',
-    'lesson.steps': 'шагов', 'lesson.repeat': 'Режим повторения · XP не начисляется', 'lesson.resume': 'Продолжение с сохранённого шага',
+    'lesson.steps': 'шагов', 'lesson.repeat': 'Повторение · XP не начисляется', 'lesson.resume': 'Продолжение с сохранённого шага',
     'lesson.completed': 'Урок завершён', 'lesson.unavailable': 'Урок пока не готов', 'lesson.notFound': 'Урок не найден',
     'lesson.notFoundText': 'Проверьте ссылку или вернитесь к маршруту.', 'lesson.dashboard': 'Вернуться на Dashboard',
     'lesson.stageStart': 'Старт', 'lesson.stageRule': 'Правило', 'lesson.stageExample': 'Разбор', 'lesson.stagePractice': 'Практика', 'lesson.stageFinish': 'Результат'
   }
 };
 
+function normalizeI18nLang(lang) {
+  if (typeof ML !== 'undefined' && ML.normalizeLang) return ML.normalizeLang(lang);
+  return String(lang || '').toLowerCase() === 'ru' ? 'ru' : 'kk';
+}
+
 window.I18N = {
   getLang: function() {
-    try { return ML.getLang() === 'ru' ? 'ru' : 'kz'; }
-    catch (error) { return 'kz'; }
+    try { return normalizeI18nLang(ML.getLang()); }
+    catch (error) { return 'kk'; }
   },
   t: function(key, lang) {
-    lang = lang === 'ru' ? 'ru' : lang === 'kz' ? 'kz' : this.getLang();
+    lang = lang === undefined || lang === null ? this.getLang() : normalizeI18nLang(lang);
     return I18N_DICTIONARY[lang][key] || I18N_DICTIONARY.ru[key] || key;
+  },
+  localize: function(record, key, lang) {
+    if (!record) return '';
+    lang = normalizeI18nLang(lang === undefined ? this.getLang() : lang);
+    var direct = record[key];
+    if (direct && typeof direct === 'object' && !Array.isArray(direct)) {
+      var directLocalized = lang === 'kk'
+        ? (direct.kk !== undefined ? direct.kk : direct.kz !== undefined ? direct.kz : direct.ru)
+        : (direct.ru !== undefined ? direct.ru : direct.kk !== undefined ? direct.kk : direct.kz);
+      if (directLocalized !== undefined && directLocalized !== null) return directLocalized;
+    }
+    var candidates = lang === 'kk'
+      ? [key + 'Kk', key + 'KK', key + 'Kz', key + 'KZ', key + 'Kazakh', key + '_kk', key + '_kz']
+      : [key + 'Ru', key + 'RU', key + '_ru'];
+    for (var i = 0; i < candidates.length; i++) {
+      if (record[candidates[i]] !== undefined && record[candidates[i]] !== null && record[candidates[i]] !== '') {
+        return record[candidates[i]];
+      }
+    }
+    if (direct === undefined || direct === null) return '';
+    if (typeof direct === 'object' && !Array.isArray(direct)) return '';
+    return direct;
   },
   apply: function(root, lang) {
     root = root || document;
-    lang = lang || this.getLang();
+    lang = normalizeI18nLang(lang || this.getLang());
     root.querySelectorAll('[data-i18n]').forEach(function(element) {
       var key = element.getAttribute('data-i18n');
       element.innerHTML = I18N.t(key, lang);
     });
-    document.documentElement.lang = lang === 'ru' ? 'ru' : 'kk';
+    document.documentElement.lang = lang;
   },
   setLang: function(lang) {
-    lang = lang === 'ru' ? 'ru' : 'kz';
+    lang = normalizeI18nLang(lang);
     try { ML.setLang(lang); } catch (error) { console.warn('[I18N] language was not saved', error); }
     this.apply(document, lang);
     return lang;
@@ -91,13 +118,13 @@ function setLang(lang) {
   var btnKz = document.getElementById('btn-kz');
   var btnRu = document.getElementById('btn-ru');
   if (btnKz && btnRu) {
-    btnKz.className = lang === 'kz' ? 'px-3 py-1 rounded-full transition-all duration-300 text-white bg-blue-700 font-semibold' : 'px-3 py-1 rounded-full transition-all duration-300 text-blue-700 font-semibold hover:bg-blue-50';
+    btnKz.className = lang === 'kk' ? 'px-3 py-1 rounded-full transition-all duration-300 text-white bg-blue-700 font-semibold' : 'px-3 py-1 rounded-full transition-all duration-300 text-blue-700 font-semibold hover:bg-blue-50';
     btnRu.className = lang === 'ru' ? 'px-3 py-1 rounded-full transition-all duration-300 text-white bg-blue-700 font-semibold' : 'px-3 py-1 rounded-full transition-all duration-300 text-blue-700 font-semibold hover:bg-blue-50';
   }
   if (typeof TAB_NAMES !== 'undefined') {
     Object.keys(TAB_NAMES).forEach(function(tabKey) {
       var tab = document.getElementById('tab-' + tabKey);
-      if (tab) tab.textContent = TAB_NAMES[tabKey][lang];
+      if (tab) tab.textContent = TAB_NAMES[tabKey][lang] || TAB_NAMES[tabKey].ru;
     });
   }
   if (typeof renderLandingTopics === 'function') renderLandingTopics();

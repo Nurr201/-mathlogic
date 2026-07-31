@@ -24,7 +24,7 @@ const ML = (function() {
     theme: 'light',
     accent: '#4F46E5',
     font_size: 'medium',
-    lang: 'kz',
+    lang: 'kk',
     daily_goal: 3,
     reminders: true,
     autosave: true,
@@ -86,6 +86,13 @@ const ML = (function() {
   function clone(value) {
     if (value === undefined) return undefined;
     return JSON.parse(JSON.stringify(value));
+  }
+
+  function normalizeLang(lang) {
+    const value = String(lang || '').toLowerCase();
+    if (value === 'ru') return 'ru';
+    if (value === 'kk' || value === 'kz') return 'kk';
+    return 'kk';
   }
 
   function deepMerge(defaults, saved) {
@@ -165,6 +172,7 @@ const ML = (function() {
     if (!isPlainObject(data.lesson)) data.lesson = clone(DEFAULTS.lesson);
     if (!isPlainObject(data.lesson.sessions)) data.lesson.sessions = {};
     if (!isPlainObject(data.settings)) data.settings = clone(DEFAULT_SETTINGS);
+    data.settings.lang = normalizeLang(data.settings.lang);
     if (!isPlainObject(data.stats)) data.stats = clone(DEFAULT_STATS);
     if (!Array.isArray(data.achievements)) data.achievements = [];
     if (!Array.isArray(data.timeline)) data.timeline = [];
@@ -406,15 +414,15 @@ const ML = (function() {
 
   function clearUser() { set('user.loggedIn', false); }
   function isLoggedIn() { return get('user.loggedIn', false) === true; }
-  function getLang() { return get('settings.lang', 'kz'); }
-  function setLang(lang) { set('settings.lang', lang === 'ru' ? 'ru' : 'kz'); }
+  function getLang() { return normalizeLang(get('settings.lang', 'kk')); }
+  function setLang(lang) { set('settings.lang', normalizeLang(lang)); }
   function getSubtopics() { return get('progress.subtopics', {}); }
   function setSubtopics(value) { set('progress.subtopics', isPlainObject(value) ? value : {}); }
   function getProfile(path, fallback) { return get(path, fallback); }
   function setProfile(path, value) { set(path, value); }
   function getProfileStat(key, fallback) { return get('stats.' + key, fallback); }
   function getSetting(key, fallback) { return get('settings.' + key, fallback); }
-  function setSetting(key, value) { set('settings.' + key, value); }
+  function setSetting(key, value) { set('settings.' + key, key === 'lang' ? normalizeLang(value) : value); }
 
   function getCompletedLessons() {
     const lessons = get('progress.lessons', {});
@@ -623,7 +631,7 @@ const ML = (function() {
       (settings.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
     body.classList.toggle('dark', dark);
     document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-    document.documentElement.lang = settings.lang === 'ru' ? 'ru' : 'kk';
+    document.documentElement.lang = normalizeLang(settings.lang);
     document.documentElement.style.setProperty('--primary', settings.accent || '#4F46E5');
     const sizes = { small: '14px', medium: '16px', large: '18px' };
     document.documentElement.style.fontSize = sizes[settings.font_size] || '16px';
@@ -641,6 +649,7 @@ const ML = (function() {
     setUser: setUser,
     clearUser: clearUser,
     isLoggedIn: isLoggedIn,
+    normalizeLang: normalizeLang,
     getLang: getLang,
     setLang: setLang,
     getSubtopics: getSubtopics,

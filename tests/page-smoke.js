@@ -176,6 +176,7 @@ function testCompletionBridge() {
   repeat.document.getElementById('lesson-error').hidden = true;
   load(repeat, CORE.concat(LESSON));
   assert.equal(vm.runInContext('__EngineInternal.state.repeatMode', repeat.context), true);
+  assert.equal(repeat.document.getElementById('lesson-mode').textContent, 'Қайталау · XP есептелмейді');
   guard = 100;
   while (vm.runInContext('__EngineInternal.state.finished', repeat.context) === false && guard-- > 0) {
     const type = vm.runInContext('__EngineInternal.getCurrentBlock().type', repeat.context);
@@ -186,7 +187,55 @@ function testCompletionBridge() {
     vm.runInContext('LessonEngine.next(' + result + ')', repeat.context);
   }
   assert.equal(vm.runInContext('XP.getXP()', repeat.context), 90);
+  assert.equal(vm.runInContext("ML.get('stats.xp_earned')", repeat.context), 90);
   assert.equal(vm.runInContext("ML.getLessonSession('algebra.exponents.basics')", repeat.context), null);
+}
+
+function testRepeatAnswerUx() {
+  const app = environment('?id=algebra.exponents.basics');
+  app.document.body.classList.add('axis-app');
+  app.document.getElementById('lesson-active').hidden = true;
+  app.document.getElementById('lesson-error').hidden = true;
+  load(app, CORE.concat(LESSON));
+
+  const freshQuiz = vm.runInContext("LessonBlocks.render('quiz',{question:'Q',options:['A','B'],answer:1,explanation:'E'},{index:3,total:5,repeatMode:true,savedResult:null})", app.context);
+  assert.ok(freshQuiz.includes('LessonBlocks._submitQuiz'));
+  assert.ok(freshQuiz.includes('lesson-option'));
+  assert.equal(freshQuiz.includes(' disabled'), false);
+
+  const savedQuiz = vm.runInContext("LessonBlocks.render('quiz',{question:'Q',options:['A','B'],answer:1,explanation:'E'},{index:3,total:5,repeatMode:true,savedResult:{answers:'1',correct:true,explanation:'E'}})", app.context);
+  assert.ok(savedQuiz.includes('checked'));
+  assert.ok(savedQuiz.includes('is-selected'));
+  assert.ok(savedQuiz.includes('is-correct'));
+  assert.ok(savedQuiz.includes('disabled'));
+  assert.ok(savedQuiz.includes('LessonEngine.next()'));
+
+  const freshWarmup = vm.runInContext("LessonBlocks.render('warmup',{question:'Q',options:['A','B'],answer:0},{index:2,total:5,repeatMode:true,savedResult:null})", app.context);
+  assert.ok(freshWarmup.includes('LessonBlocks._submitWarmup'));
+  assert.equal(freshWarmup.includes(' disabled'), false);
+}
+
+function testEmptyOpenAnswerCannotSubmit() {
+  const app = environment('?id=algebra.exponents.basics');
+  app.document.body.classList.add('axis-app');
+  app.document.getElementById('lesson-active').hidden = true;
+  app.document.getElementById('lesson-error').hidden = true;
+  load(app, CORE.concat(LESSON));
+  let nextCalls = 0;
+  let toastCalls = 0;
+  app.context.LessonEngine.next = function() { nextCalls++; };
+  app.context.UI = { showToast() { toastCalls++; } };
+  app.context.document.querySelectorAll = function(selector) {
+    return selector.indexOf('[id^="input_4_"') === 0 ? [{ value: '   ' }] : [];
+  };
+  vm.runInContext("LessonBlocks._checkInput('input_4',[8],'Explanation',false)", app.context);
+  assert.equal(nextCalls, 0);
+  assert.equal(toastCalls, 1);
+
+  const repeatInput = vm.runInContext("LessonBlocks.render('input',{question:'Q',fields:[{type:'text'}],answer:['x']},{index:4,total:5,repeatMode:true,savedResult:null})", app.context);
+  assert.ok(repeatInput.includes('LessonBlocks._checkInput'));
+  assert.ok(repeatInput.includes('required'));
+  assert.equal(repeatInput.includes('LessonEngine.next()'), false);
 }
 
 function testResume() {
@@ -216,5 +265,7 @@ testLesson('algebra.exponents.basics', 'Дәрежелер және оларды
 testLesson('algebra.vieta.intro', 'Виет теоремасы');
 testUnknownLesson();
 testCompletionBridge();
+testRepeatAnswerUx();
+testEmptyOpenAnswerCannotSubmit();
 testResume();
 console.log('page-smoke: ok');

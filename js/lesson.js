@@ -6,11 +6,54 @@
   var activeConfig = null;
   var completionHandled = false;
 
-  function language() { return ML.getLang() === 'ru' ? 'ru' : 'kz'; }
+  function language() { return ML.getLang(); }
   function text(key) { return I18N.t('lesson.' + key, language()); }
+  function localized(record, key) { return I18N.localize(record, key, language()); }
+
+  function mergeLocalized(base, overlay) {
+    if (!overlay || typeof overlay !== 'object' || Array.isArray(overlay)) return base;
+    Object.keys(overlay).forEach(function(key) {
+      if (base[key] && typeof base[key] === 'object' && !Array.isArray(base[key]) && typeof overlay[key] === 'object' && !Array.isArray(overlay[key])) {
+        mergeLocalized(base[key], overlay[key]);
+      } else {
+        base[key] = overlay[key];
+      }
+    });
+    return base;
+  }
+
+  function localizeContent(value) {
+    if (Array.isArray(value)) return value.map(localizeContent);
+    if (!value || typeof value !== 'object') return value;
+    var lang = language();
+    if ((value.kk !== undefined || value.kz !== undefined || value.ru !== undefined) &&
+        Object.keys(value).every(function(key) { return ['kk', 'kz', 'ru'].indexOf(key) > -1; })) {
+      var translated = lang === 'kk'
+        ? (value.kk !== undefined ? value.kk : value.kz !== undefined ? value.kz : value.ru)
+        : (value.ru !== undefined ? value.ru : value.kk !== undefined ? value.kk : value.kz);
+      return localizeContent(translated);
+    }
+    var source = mergeLocalized({}, value);
+    var translations = value.translations;
+    if (translations && typeof translations === 'object') {
+      var overlay = lang === 'kk' ? (translations.kk || translations.kz) : translations.ru;
+      if (overlay && typeof overlay === 'object') source = mergeLocalized(source, overlay);
+    }
+    var result = {};
+    Object.keys(source).forEach(function(key) {
+      if (key === 'translations') return;
+      result[key] = localizeContent(source[key]);
+    });
+    Object.keys(source).forEach(function(key) {
+      if (/((Kk|KK|Kz|KZ|Kazakh|Ru|RU)|_(kk|kz|ru))$/.test(key)) return;
+      var selected = I18N.localize(source, key, lang);
+      if (selected !== undefined && selected !== null) result[key] = localizeContent(selected);
+    });
+    return result;
+  }
 
   function setShellCopy() {
-    document.documentElement.lang = language() === 'ru' ? 'ru' : 'kk';
+    document.documentElement.lang = language();
     var keys = {
       'lesson.back': 'back', 'lesson.route': 'route', 'lesson.progress': 'progress',
       'lesson.remaining': 'remaining', 'lesson.tip': 'tip', 'lesson.tipText': 'tipText'
@@ -44,10 +87,10 @@
     if (!meta || !meta.config) return null;
     var source = window[meta.config];
     if (!source) return null;
-    var config = JSON.parse(JSON.stringify(source));
+    var config = localizeContent(JSON.parse(JSON.stringify(source)));
     config.id = meta.id;
-    config.title = meta.title;
-    config.description = meta.description;
+    config.title = localized(meta, 'title');
+    config.description = localized(meta, 'description');
     config.xp = meta.xp;
     var resultBlock = config.blocks && config.blocks.find(function(block) { return block.type === 'result'; });
     if (resultBlock) {
@@ -55,7 +98,7 @@
       var nextId = Learning.getNextLessonId(meta.id);
       var next = nextId ? Learning.getRegistryEntry(nextId) : null;
       resultBlock.nextLesson = next
-        ? { title: language() === 'kz' ? next.titleKz : next.title, link: next.route }
+        ? { title: localized(next, 'title'), link: next.route }
         : null;
     }
     return config;
@@ -131,7 +174,14 @@
     var mode = '';
     if (state.repeatMode) mode = text('repeat');
     else if (state.completedBlocks.length) mode = text('resume');
-    document.getElementById('lesson-mode').textContent = mode;
+    setMode(mode, state.repeatMode);
+  }
+
+  function setMode(mode, isRepeat) {
+    var element = document.getElementById('lesson-mode');
+    element.textContent = mode || '';
+    element.hidden = !mode;
+    element.classList.toggle('is-repeat', !!isRepeat);
   }
 
   function completeFromEngine(data) {
@@ -140,7 +190,7 @@
     var state = LessonEngine.getState();
     if (state.repeatMode) {
       LessonEngine.clearProgress();
-      document.getElementById('lesson-mode').textContent = text('repeat');
+      setMode(text('repeat'), true);
       return;
     }
     var result = Learning.completeLesson(activeLesson.id, {
@@ -155,7 +205,7 @@
       answers: data.answers || {},
       xpEarned: activeLesson.xp,
     });
-    document.getElementById('lesson-mode').textContent = text('completed');
+    setMode(text('completed'), false);
     showToast('+' + ((result && result.xpEarned) || 0) + ' XP');
   }
 
@@ -179,13 +229,12 @@
   }
 
   function fillHeading(meta) {
-    var kz = language() === 'kz';
-    var title = kz ? meta.titleKz : meta.title;
-    var description = kz ? meta.descriptionKz : meta.description;
+    var title = localized(meta, 'title');
+    var description = localized(meta, 'description');
     document.title = title + ' — MathLogic';
     document.getElementById('lesson-title').textContent = title;
     document.getElementById('lesson-description').textContent = description;
-    document.getElementById('lesson-duration').textContent = meta.duration + ' мин';
+    document.getElementById('lesson-duration').textContent = meta.duration + ' ' + text('minutes');
     document.getElementById('lesson-xp').textContent = '+' + meta.xp + ' XP';
     document.getElementById('lesson-breadcrumb').textContent = meta.subjectId.toUpperCase() + ' / ' + meta.topicId.toUpperCase();
     document.getElementById('lesson-top-context').textContent = meta.subjectId.toUpperCase() + ' / ' + title;

@@ -4,19 +4,25 @@ window.__BlockRenderers = (function() {
   var _selected = {};
   var _pendingResult = null;
 
+  function _escapeAttr(value) {
+    return String(value === undefined || value === null ? '' : value)
+      .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
   /* ------------------------------------------
      RADIO OPTIONS RENDERER (shared)
      ------------------------------------------ */
 
-  function _renderOptions(options, name, repeatMode, savedValue) {
+  function _renderOptions(options, name, locked, savedValue, correctAnswer) {
     return options.map(function(opt, i) {
-      var selected = '';
-      if (repeatMode && savedValue !== null && parseInt(savedValue) === i) {
-        selected = ' border-blue-600 bg-blue-50';
-      }
-      return '<label class="flex items-center gap-3 p-4 rounded-2xl bg-white border-2 border-slate-200 hover:border-blue-300 hover:bg-blue-50/30 transition-all cursor-pointer group' + selected + '">' +
+      var isSelected = savedValue !== null && savedValue !== undefined && parseInt(savedValue) === i;
+      var stateClasses = ' lesson-option';
+      if (isSelected) stateClasses += ' is-selected border-blue-600 bg-blue-50';
+      if (locked && parseInt(correctAnswer) === i) stateClasses += ' is-correct';
+      if (locked && isSelected && parseInt(correctAnswer) !== i) stateClasses += ' is-incorrect';
+      return '<label class="flex items-center gap-3 p-4 rounded-2xl bg-white border-2 border-slate-200 hover:border-blue-300 hover:bg-blue-50/30 transition-all cursor-pointer group' + stateClasses + '">' +
         '<input type="radio" name="' + name + '" value="' + i + '" onchange="LessonBlocks._selectOption(this)"' +
-        (repeatMode ? ' disabled' : '') +
+        (isSelected ? ' checked' : '') + (locked ? ' disabled' : '') +
         ' class="w-5 h-5 text-blue-600 accent-blue-600">' +
         '<span class="text-lg font-bold text-slate-700 group-hover:text-slate-900">' + opt + '</span>' +
         '</label>';
@@ -78,7 +84,13 @@ window.__BlockRenderers = (function() {
 
   function renderWarmup(block, ctx) {
     var name = 'warmup_' + ctx.index;
-    var optionsHtml = _renderOptions(block.options || [], name, false, null);
+    var locked = !!ctx.savedResult;
+    var savedValue = locked ? ctx.savedResult.answers : null;
+    var optionsHtml = _renderOptions(block.options || [], name, locked, savedValue, block.answer);
+    var escapedExplanation = (block.explanation || '').replace(/'/g, "\\'");
+    var action = locked
+      ? H.btnPrimary('\u0414\u0430\u043B\u0435\u0435', 'LessonEngine.next()')
+      : '<button onclick="LessonBlocks._submitWarmup(\'' + name + '\', ' + block.answer + ', 5, \'' + escapedExplanation + '\')" class="bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg py-4 px-10 rounded-2xl transition-all shadow-md">\u041F\u0440\u043E\u0432\u0435\u0440\u0438\u0442\u044C</button>';
 
     return H.wrap(
       '<div class="py-8">' +
@@ -89,9 +101,9 @@ window.__BlockRenderers = (function() {
         '<div class="space-y-3 mb-8" id="warmup-options-' + ctx.index + '">' +
           optionsHtml +
         '</div>' +
-        '<div id="warmup-feedback-' + ctx.index + '"></div>' +
+        '<div id="warmup-feedback-' + ctx.index + '">' + (locked ? H.feedbackBlock(ctx.savedResult.correct, ctx.savedResult.explanation || block.explanation) : '') + '</div>' +
         '<div class="flex justify-end">' +
-          '<button onclick="LessonBlocks._submitWarmup(\'' + name + '\', ' + block.answer + ', 5)" class="bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg py-4 px-10 rounded-2xl transition-all shadow-md">\u041F\u0440\u043E\u0432\u0435\u0440\u0438\u0442\u044C</button>' +
+          action +
         '</div>' +
       '</div>'
     );
@@ -178,14 +190,14 @@ window.__BlockRenderers = (function() {
      ------------------------------------------ */
 
   function _renderQuizFeedback(block, ctx) {
-    if (ctx.repeatMode && ctx.savedResult) {
+    if (ctx.savedResult) {
       return H.feedbackBlock(ctx.savedResult.correct, ctx.savedResult.explanation || block.explanation);
     }
     return '';
   }
 
   function _renderQuizButton(name, block, ctx) {
-    if (ctx.repeatMode) {
+    if (ctx.savedResult) {
       return H.btnPrimary('\u0414\u0430\u043B\u0435\u0435', 'LessonEngine.next()');
     }
     var escapedExplanation = (block.explanation || '').replace(/'/g, "\\'");
@@ -194,8 +206,8 @@ window.__BlockRenderers = (function() {
 
   function renderQuiz(block, ctx) {
     var name = 'quiz_' + ctx.index;
-    var savedValue = ctx.repeatMode && ctx.savedResult ? ctx.savedResult.answers : null;
-    var optionsHtml = _renderOptions(block.options || [], name, ctx.repeatMode, savedValue);
+    var savedValue = ctx.savedResult ? ctx.savedResult.answers : null;
+    var optionsHtml = _renderOptions(block.options || [], name, !!ctx.savedResult, savedValue, block.answer);
 
     return H.wrap(
       '<div class="py-8">' +
@@ -215,23 +227,23 @@ window.__BlockRenderers = (function() {
      INPUT
      ------------------------------------------ */
 
-  function _renderInputFields(fields, name, repeatMode, savedResult) {
+  function _renderInputFields(fields, name, savedResult) {
     return (fields || []).map(function(field, i) {
       var val = '';
-      if (repeatMode && savedResult && savedResult.values) {
+      if (savedResult && savedResult.values) {
         val = savedResult.values[i] || '';
       }
       return '<div class="flex items-center gap-4">' +
         (field.label ? '<span class="text-xl font-mono font-bold text-slate-500">' + field.label + '</span>' : '') +
         '<input type="' + (field.type || 'number') + '" id="' + name + '_' + i + '" value="' + val + '" ' +
-        (repeatMode && savedResult ? 'disabled' : '') +
+        (savedResult ? 'disabled' : '') + ' required aria-required="true" ' +
         ' class="w-28 h-16 bg-white text-center text-2xl font-bold font-mono border-2 border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 rounded-2xl outline-none shadow-sm transition-all text-slate-900" placeholder="' + (field.placeholder || '') + '">' +
         '</div>';
     }).join('');
   }
 
   function _renderInputButton(name, block, ctx) {
-    if (ctx.repeatMode) {
+    if (ctx.savedResult) {
       return H.btnPrimary('\u0414\u0430\u043B\u0435\u0435', 'LessonEngine.next()');
     }
     var escapedExplanation = (block.explanation || '').replace(/'/g, "\\'");
@@ -240,7 +252,7 @@ window.__BlockRenderers = (function() {
 
   function renderInput(block, ctx) {
     var name = 'input_' + ctx.index;
-    var fieldsHtml = _renderInputFields(block.fields, name, ctx.repeatMode, ctx.savedResult);
+    var fieldsHtml = _renderInputFields(block.fields, name, ctx.savedResult);
 
     return H.wrap(
       '<div class="py-8">' +
@@ -249,7 +261,7 @@ window.__BlockRenderers = (function() {
         '<h2 class="text-2xl font-extrabold text-slate-900 mb-2">' + (block.question || '') + '</h2>' +
         (block.equation ? H.formulaBlock(block.equation) : '') +
         '<div class="flex justify-center items-center gap-6 mb-8 flex-wrap">' + fieldsHtml + '</div>' +
-        '<div id="input-feedback-' + ctx.index + '">' + (ctx.repeatMode && ctx.savedResult ? H.feedbackBlock(ctx.savedResult.correct, ctx.savedResult.explanation) : '') + '</div>' +
+        '<div id="input-feedback-' + ctx.index + '">' + (ctx.savedResult ? H.feedbackBlock(ctx.savedResult.correct, ctx.savedResult.explanation || block.explanation) : '') + '</div>' +
         '<div class="flex justify-end">' + _renderInputButton(name, block, ctx) + '</div>' +
       '</div>'
     );
@@ -329,10 +341,16 @@ window.__BlockRenderers = (function() {
 
   function _renderChallengeQuizTask(task, i, ctx, index) {
     var name = 'challenge_q_' + index + '_' + i;
+    var taskResult = ctx.savedResult && ctx.savedResult.taskResults ? ctx.savedResult.taskResults[i] : null;
     var opts = (task.options || []).map(function(o, oi) {
-      return '<label class="flex items-center gap-3 p-3 rounded-xl bg-white border border-slate-200 hover:border-blue-300 transition-all cursor-pointer">' +
-        '<input type="radio" name="' + name + '" value="' + oi + '" data-task-index="' + i + '" class="w-4 h-4 accent-blue-600"' +
-        (ctx.repeatMode ? ' disabled' : '') +
+      var selected = taskResult && Number(taskResult.answer) === oi;
+      var classes = ' lesson-option';
+      if (selected) classes += ' is-selected';
+      if (taskResult && Number(task.answer) === oi) classes += ' is-correct';
+      if (taskResult && selected && Number(task.answer) !== oi) classes += ' is-incorrect';
+      return '<label class="flex items-center gap-3 p-3 rounded-xl bg-white border border-slate-200 hover:border-blue-300 transition-all cursor-pointer' + classes + '">' +
+        '<input type="radio" name="' + name + '" value="' + oi + '" data-task-index="' + i + '" onchange="LessonBlocks._selectOption(this)" class="w-4 h-4 accent-blue-600"' +
+        (selected ? ' checked' : '') + (taskResult ? ' disabled' : '') +
         '>' +
         '<span class="text-sm font-bold text-slate-700">' + o + '</span></label>';
     }).join('');
@@ -347,20 +365,22 @@ window.__BlockRenderers = (function() {
   }
 
   function _renderChallengeInputTask(task, i, ctx) {
+    var taskResult = ctx.savedResult && ctx.savedResult.taskResults ? ctx.savedResult.taskResults[i] : null;
+    var stateClass = taskResult ? (taskResult.correct ? ' is-correct' : ' is-incorrect') : '';
     return '<div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">' +
       '<div class="flex items-center justify-between mb-3">' +
       '<span class="text-xs font-extrabold text-slate-400 uppercase">\u0417\u0430\u0434\u0430\u043D\u0438\u0435 ' + (i + 1) + '</span>' +
       _renderTaskCheck(task, i, ctx) +
       '</div>' +
       '<p class="font-bold text-slate-900 mb-3">' + task.question + '</p>' +
-      '<input type="text" inputmode="decimal" data-challenge-input="' + i + '" class="w-28 h-12 bg-white text-center text-lg font-bold font-mono border-2 border-slate-300 focus:border-blue-500 rounded-xl outline-none"' +
-      (ctx.repeatMode ? ' disabled' : '') +
+      '<input type="text" inputmode="decimal" data-challenge-input="' + i + '" value="' + _escapeAttr(taskResult ? taskResult.answer : '') + '" class="lesson-input-state' + stateClass + ' w-28 h-12 bg-white text-center text-lg font-bold font-mono border-2 border-slate-300 focus:border-blue-500 rounded-xl outline-none"' +
+      (taskResult ? ' disabled' : '') +
       ' placeholder="' + (task.placeholder || '') + '">' +
       '</div>';
   }
 
   function _renderTaskCheck(task, i, ctx) {
-    if (!ctx.repeatMode || !ctx.savedResult || !ctx.savedResult.taskResults) return '';
+    if (!ctx.savedResult || !ctx.savedResult.taskResults) return '';
     var tr = ctx.savedResult.taskResults[i];
     if (!tr) return '';
     return tr.correct
@@ -375,7 +395,7 @@ window.__BlockRenderers = (function() {
       return '';
     }).join('');
 
-    var actionBtn = ctx.repeatMode
+    var actionBtn = ctx.savedResult
       ? H.btnPrimary('\u0414\u0430\u043B\u0435\u0435', 'LessonEngine.next()')
       : '<button onclick="LessonBlocks._submitChallenge(' + ctx.index + ')" class="bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg py-4 px-10 rounded-2xl transition-all shadow-md">\u041F\u0440\u043E\u0432\u0435\u0440\u0438\u0442\u044C \u0432\u0441\u0451</button>';
 
@@ -385,6 +405,7 @@ window.__BlockRenderers = (function() {
         H.blockBadge('\u0424\u0438\u043D\u0430\u043B\u044C\u043D\u044B\u0439 \u0432\u044B\u0437\u043E\u0432') +
         '<h2 class="text-2xl font-extrabold text-slate-900 mb-6">' + (block.title || '\u0418\u0442\u043E\u0433\u043E\u0432\u043E\u0435 \u0437\u0430\u0434\u0430\u043D\u0438\u0435') + '</h2>' +
         '<div class="space-y-4 mb-8">' + tasksHtml + '</div>' +
+        '<div id="challenge-feedback-' + ctx.index + '">' + (ctx.savedResult ? H.feedbackBlock(ctx.savedResult.correct, ctx.savedResult.explanation || block.explanation) : '') + '</div>' +
         '<div class="flex justify-end">' + actionBtn + '</div>' +
       '</div>'
     );
@@ -534,7 +555,7 @@ window.__BlockRenderers = (function() {
       return;
     }
     var correctCount = results.filter(function(result) { return result.correct; }).length;
-    LessonEngine.next({
+    var result = {
       correct: correctCount === results.length,
       correctAnswers: correctCount,
       totalQuestions: results.length,
@@ -542,7 +563,44 @@ window.__BlockRenderers = (function() {
       taskResults: results,
       answers: results.map(function(result) { return result.answer; }),
       points: correctCount * 10,
+      explanation: block.explanation || '',
+    };
+    var state = window.__EngineInternal && window.__EngineInternal.state;
+    if (state && state.repeatMode) {
+      _pendingResult = result;
+      _markChallengeResult(index, block, results, result.correct);
+      return;
+    }
+    LessonEngine.next(result);
+  }
+
+  function _markChallengeResult(index, block, results, correct) {
+    (block.tasks || []).forEach(function(task, taskIndex) {
+      var taskResult = results[taskIndex];
+      if (task.type === 'quiz') {
+        document.querySelectorAll('input[name="challenge_q_' + index + '_' + taskIndex + '"]').forEach(function(input) {
+          input.disabled = true;
+          var label = input.closest('label');
+          if (!label) return;
+          label.classList.remove('is-correct', 'is-incorrect');
+          if (Number(input.value) === Number(task.answer)) label.classList.add('is-correct');
+          if (input.checked && Number(input.value) !== Number(task.answer)) label.classList.add('is-incorrect');
+        });
+      } else if (task.type === 'input') {
+        var field = document.querySelector('[data-challenge-input="' + taskIndex + '"]');
+        if (field) {
+          field.disabled = true;
+          field.classList.add(taskResult.correct ? 'is-correct' : 'is-incorrect');
+        }
+      }
     });
+    var feedback = document.getElementById('challenge-feedback-' + index);
+    if (feedback) {
+      feedback.innerHTML = H.feedbackBlock(correct, block.explanation || '') +
+        '<div class="mt-6 flex justify-end">' + H.btnPrimary('\u0414\u0430\u043B\u0435\u0435', 'LessonBlocks._submitPendingResult()') + '</div>';
+    }
+    var button = document.querySelector('button[onclick="LessonBlocks._submitChallenge(' + index + ')"]');
+    if (button) button.style.display = 'none';
   }
 
   function _submitReflection(index) {
@@ -563,8 +621,10 @@ window.__BlockRenderers = (function() {
       var label = radio.closest('label');
       if (label) {
         if (radio === el) {
+          label.classList.add('is-selected');
           label.classList.add('border-blue-600', 'bg-blue-50');
         } else {
+          label.classList.remove('is-selected');
           label.classList.remove('border-blue-600', 'bg-blue-50');
         }
       }
@@ -587,6 +647,7 @@ window.__BlockRenderers = (function() {
       explanation: explanation,
       points: points,
     };
+    _markOptionResult(name, selected, correctAnswer);
 
     var feedbackEl = document.getElementById('quiz-feedback-' + index);
     if (feedbackEl) {
@@ -602,7 +663,7 @@ window.__BlockRenderers = (function() {
     }
   }
 
-  function _submitWarmup(name, correctAnswer, points) {
+  function _submitWarmup(name, correctAnswer, points, explanation) {
     var selected = _getSelected(name);
     if (selected === null) {
       _showToast('\u0421\u043D\u0430\u0447\u0430\u043B\u0430 \u0432\u044B\u0431\u0435\u0440\u0438\u0442\u0435 \u043E\u0442\u0432\u0435\u0442');
@@ -615,12 +676,14 @@ window.__BlockRenderers = (function() {
     _pendingResult = {
       correct: correct,
       answers: selected,
+      explanation: explanation || '',
       points: points,
     };
+    _markOptionResult(name, selected, correctAnswer);
 
     var feedbackEl = document.getElementById('warmup-feedback-' + index);
     if (feedbackEl) {
-      feedbackEl.innerHTML = H.feedbackBlock(correct, null) +
+      feedbackEl.innerHTML = H.feedbackBlock(correct, explanation || null) +
         '<div class="mt-6 flex justify-end">' +
         H.btnPrimary('\u0414\u0430\u043B\u0435\u0435', 'LessonBlocks._submitPendingResult()') +
         '</div>';
@@ -636,10 +699,23 @@ window.__BlockRenderers = (function() {
     return _selected[name] || null;
   }
 
+  function _markOptionResult(name, selected, correctAnswer) {
+    document.querySelectorAll('input[name="' + name + '"]').forEach(function(radio) {
+      radio.disabled = true;
+      var label = radio.closest('label');
+      if (!label) return;
+      label.classList.remove('is-correct', 'is-incorrect');
+      if (parseInt(radio.value) === parseInt(correctAnswer)) label.classList.add('is-correct');
+      if (parseInt(radio.value) === parseInt(selected) && parseInt(selected) !== parseInt(correctAnswer)) {
+        label.classList.add('is-incorrect');
+      }
+    });
+  }
+
   function _getInputValues(name) {
     var fields = document.querySelectorAll('[id^="' + name + '_"]');
     var values = [];
-    var allFilled = true;
+    var allFilled = fields.length > 0;
     fields.forEach(function(el) {
       var val = el.value.trim();
       if (val === '') allFilled = false;

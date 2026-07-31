@@ -6,7 +6,7 @@
   'use strict';
 
   const state = {
-    lang: ML.getLang() === 'ru' ? 'ru' : 'kz',
+    lang: ML.getLang(),
     currentSubject: 'algebra'
   };
 
@@ -18,8 +18,9 @@
   }
   function pct(value) { return Math.max(0, Math.min(100, Number(value) || 0)); }
   function subjectName(subject) { return I18N.t('subjects.' + subject.key, state.lang) || subject.name; }
-  function lessonTitle(lesson) { return state.lang === 'kz' && lesson.titleKz ? lesson.titleKz : lesson.title; }
-  function lessonDescription(lesson) { return state.lang === 'kz' && lesson.descriptionKz ? lesson.descriptionKz : lesson.description; }
+  function localized(record, key) { return I18N.localize(record, key, state.lang); }
+  function lessonTitle(lesson) { return localized(lesson, 'title'); }
+  function lessonDescription(lesson) { return localized(lesson, 'description'); }
 
   function setText(id, value) {
     const node = document.getElementById(id);
@@ -27,7 +28,7 @@
   }
 
   function applyCopy() {
-    document.documentElement.lang = state.lang === 'ru' ? 'ru' : 'kk';
+    document.documentElement.lang = state.lang;
     document.querySelectorAll('[data-copy]').forEach(function(node) {
       node.textContent = t(node.dataset.copy);
     });
@@ -104,7 +105,7 @@
     hero.hidden = false;
     empty.hidden = true;
     const subject = Learning.getSubject(next.subjectKey);
-    setText('hero-path', (subject ? ' · ' + subjectName(subject) : '') + (next.sectionTitle ? ' / ' + next.sectionTitle : ''));
+    setText('hero-path', (subject ? ' · ' + subjectName(subject) : '') + (localized(next, 'sectionTitle') ? ' / ' + localized(next, 'sectionTitle') : ''));
     setText('hero-title', lessonTitle(next));
     setText('hero-description', lessonDescription(next));
     setText('hero-duration', next.duration ? next.duration + ' ' + t('minutes') : t('interactive'));
@@ -141,7 +142,7 @@
     if (lesson.status === 'comingSoon' && lesson.releaseDate) {
       return new Intl.DateTimeFormat(state.lang === 'ru' ? 'ru-RU' : 'kk-KZ', { day: 'numeric', month: 'short' }).format(new Date(lesson.releaseDate));
     }
-    if (lesson.status === 'locked') return lesson.unlockReason || t('noContent');
+    if (lesson.status === 'locked') return localized(lesson, 'unlockReason') || t('noContent');
     return lesson.duration ? lesson.duration + ' ' + t('minutes') + ' · +' + lesson.xp + ' XP' : statusText(lesson.status);
   }
 
@@ -163,7 +164,7 @@
           '<span class="route-status mono">' + esc(statusText(lesson.status)) + '</span>' +
           (canOpen ? '<a class="route-action" href="' + esc(lesson.route) + '" aria-label="' + esc(action + ': ' + lessonTitle(lesson)) + '">' + esc(action) + ' →</a>' : '<span class="route-action disabled" aria-hidden="true">—</span>') + '</li>';
       }).join('');
-      return '<article class="route-module"><header><span class="route-module-number mono">' + String(index + 1).padStart(2, '0') + '</span><div><span class="axis-eyebrow">' + esc(topic.level || '') + '</span><h3>' + esc(topic.title) + '</h3></div><b class="mono">' + topic.progress + '%</b></header><ol>' + rows + '</ol></article>';
+      return '<article class="route-module"><header><span class="route-module-number mono">' + String(index + 1).padStart(2, '0') + '</span><div><span class="axis-eyebrow">' + esc(localized(topic, 'level') || '') + '</span><h3>' + esc(localized(topic, 'title')) + '</h3></div><b class="mono">' + topic.progress + '%</b></header><ol>' + rows + '</ol></article>';
     }).join('');
   }
 
@@ -207,7 +208,7 @@
 
   document.querySelectorAll('[data-lang]').forEach(function(button) {
     button.addEventListener('click', function() {
-      state.lang = button.dataset.lang === 'ru' ? 'ru' : 'kz';
+      state.lang = ML.normalizeLang(button.dataset.lang);
       ML.setLang(state.lang);
       renderSafely();
     });
