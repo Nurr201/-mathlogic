@@ -48,21 +48,12 @@ function handleModalAction(action) {
   var d;
   if (action === 'clear-data') {
     d = ML.getData();
-    d.settings = { theme: 'light', accent: '#4F46E5', font_size: 'medium', lang: 'kz', daily_goal: 3, reminders: true, autosave: true, solutions: 'after_answer', push: false, email: true, sound: true, animations: true };
+    d.settings = { theme: 'light', accent: '#4F46E5', font_size: 'medium', lang: 'kz', daily_goal: 3, reminders: true, autosave: true, solutions: 'after_answer', push: false, email_notif: true, sound: true, animations: true };
     ML.saveData(d);
     showToast('Данные очищены', 'success');
     loadAllSettings();
   } else if (action === 'reset-progress') {
-    d = ML.getData();
-    d.progress.subtopics = {};
-    d.user.loggedIn = false;
-    d.stats = { lessons_completed: 0, modules_completed: 0, xp_earned: 0, study_time: 0, problems_solved: 0, avg_score: 0, best_streak: 0, achievements_count: 0 };
-    delete d.achievements;
-    delete d.streak_data;
-    delete d.timeline;
-    delete d.goals;
-    delete d.analytics;
-    ML.saveData(d);
+    ML.resetLearning();
     showToast('Прогресс сброшен', 'success');
   } else if (action === 'logout') {
     ML.clearUser();

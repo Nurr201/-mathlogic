@@ -43,6 +43,8 @@ window.LessonBlocks = (function() {
     _submitQuiz: R._submitQuiz,
     _submitWarmup: R._submitWarmup,
     _submitPendingResult: R._submitPendingResult,
+    _submitChallenge: R._submitChallenge,
+    _submitReflection: R._submitReflection,
   };
 
 })();

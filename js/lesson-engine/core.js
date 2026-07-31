@@ -1,7 +1,7 @@
 window.__EngineInternal = window.__EngineInternal || {};
 (function(I) {
 
-  var EVENTS = {
+  var ENGINE_EVENTS = {
     BLOCK_START: 'lesson:blockStart',
     BLOCK_COMPLETE: 'lesson:blockComplete',
     LESSON_FINISHED: 'lesson:finished',
@@ -19,6 +19,7 @@ window.__EngineInternal = window.__EngineInternal || {};
     var minParts = I.MIN_SCHEMA_VERSION.split('.').map(Number);
     var svParts = sv.split('.').map(Number);
     for (var i = 0; i < 3; i++) {
+      if ((svParts[i] || 0) > (minParts[i] || 0)) return true;
       if ((svParts[i] || 0) < (minParts[i] || 0)) return false;
     }
     return true;
@@ -67,6 +68,7 @@ window.__EngineInternal = window.__EngineInternal || {};
 
   function _buildContext(block) {
     var isRepeat = I.state.repeatMode;
+    var assessment = I.getAssessmentSummary();
     return {
       index: I.state.currentIndex,
       total: I.state.blocks.length,
@@ -76,6 +78,11 @@ window.__EngineInternal = window.__EngineInternal || {};
       repeatMode: isRepeat,
       savedResult: isRepeat ? (I.state.blockResults[I.state.currentIndex] || null) : null,
       duration: I.blockDuration(),
+      timeSpent: I.state.timeSpent,
+      correctAnswers: assessment.correctAnswers,
+      totalQuestions: assessment.totalQuestions,
+      percentage: assessment.percentage,
+      attempts: assessment.attempts,
     };
   }
 
@@ -148,7 +155,7 @@ window.__EngineInternal = window.__EngineInternal || {};
 
     var blockId = block.id || block.type + '_' + I.state.currentIndex;
 
-    I.emit(EVENTS.BLOCK_START, {
+    I.emit(ENGINE_EVENTS.BLOCK_START, {
       blockIndex: I.state.currentIndex,
       blockType: block.type,
       blockId: blockId,
@@ -169,18 +176,19 @@ window.__EngineInternal = window.__EngineInternal || {};
 
   function _processBlockResult(result) {
     I.state.blockResults[I.state.currentIndex] = result;
-
-    if (result.correct !== undefined) {
-      if (result.correct) {
-        I.state.score += result.points || DEFAULT_POINTS;
-      } else {
-        I.state.mistakes++;
-      }
-    }
-
     if (result.answers) {
       I.state.answers[I.state.currentIndex] = result.answers;
     }
+
+    /* Повторная отправка заменяет результат блока, а не прибавляет score. */
+    I.state.score = 0;
+    I.state.mistakes = 0;
+    Object.keys(I.state.blockResults).forEach(function(key) {
+      var saved = I.state.blockResults[key];
+      if (!saved || saved.correct === undefined) return;
+      if (saved.correct) I.state.score += saved.points || DEFAULT_POINTS;
+      else I.state.mistakes++;
+    });
   }
 
   /* ------------------------------------------
@@ -201,7 +209,7 @@ window.__EngineInternal = window.__EngineInternal || {};
   function _emitBlockComplete(result) {
     I.saveProgress();
 
-    I.emit(EVENTS.BLOCK_COMPLETE, {
+    I.emit(ENGINE_EVENTS.BLOCK_COMPLETE, {
       blockIndex: I.state.currentIndex,
       blockType: I.getCurrentBlock().type,
       result: result,
@@ -265,6 +273,12 @@ window.__EngineInternal = window.__EngineInternal || {};
 
     I.state.currentIndex++;
     I.render();
+    I.saveProgress();
+
+    /* Result — подтверждённый финальный экран. Достижение фиксируется при
+       входе на него, а не после ухода со страницы. */
+    var nextBlock = I.getCurrentBlock();
+    if (nextBlock && nextBlock.type === 'result') I.finish();
   };
 
   /* ------------------------------------------
@@ -275,6 +289,7 @@ window.__EngineInternal = window.__EngineInternal || {};
     if (!I.hasPrev()) return;
     I.state.currentIndex--;
     I.render();
+    I.saveProgress();
   };
 
   I.goTo = function(index) {
@@ -282,6 +297,7 @@ window.__EngineInternal = window.__EngineInternal || {};
     if (index > I.state.currentIndex + 1) return;
     I.state.currentIndex = index;
     I.render();
+    I.saveProgress();
   };
 
   /* ------------------------------------------
@@ -289,23 +305,36 @@ window.__EngineInternal = window.__EngineInternal || {};
      ------------------------------------------ */
 
   I.finish = function() {
+    if (I.state.finished) return false;
     I.state.finished = true;
     I.updateTime();
 
-    I.trigger('beforeLesson', {
+    var current = I.getCurrentBlock();
+    if (current && current.type === 'result') _markComplete();
+    I.saveProgress();
+
+    var assessment = I.getAssessmentSummary();
+
+    I.trigger('beforeFinish', {
       lessonId: I.state.lessonId,
       score: I.state.score,
       mistakes: I.state.mistakes,
       timeSpent: I.state.timeSpent,
+      assessment: assessment,
     });
 
-    I.emit(EVENTS.LESSON_FINISHED, {
+    I.emit(ENGINE_EVENTS.LESSON_FINISHED, {
       score: I.state.score,
       mistakes: I.state.mistakes,
       timeSpent: I.state.timeSpent,
       totalBlocks: I.state.blocks.length,
       completedBlocks: I.state.completedBlocks.length,
       answers: I.state.answers,
+      startedAt: I.state.startedAt,
+      correctAnswers: assessment.correctAnswers,
+      totalQuestions: assessment.totalQuestions,
+      percentage: assessment.percentage,
+      attempts: assessment.attempts,
     });
 
     I.triggerAnalytics('onLessonFinish', {
@@ -315,16 +344,23 @@ window.__EngineInternal = window.__EngineInternal || {};
       timeSpent: I.state.timeSpent,
       totalBlocks: I.state.blocks.length,
       completedBlocks: I.state.completedBlocks.length,
+      startedAt: I.state.startedAt,
+      correctAnswers: assessment.correctAnswers,
+      totalQuestions: assessment.totalQuestions,
+      percentage: assessment.percentage,
+      attempts: assessment.attempts,
     });
 
-    I.trigger('afterLesson', {
+    I.trigger('afterFinish', {
       lessonId: I.state.lessonId,
       score: I.state.score,
       mistakes: I.state.mistakes,
       timeSpent: I.state.timeSpent,
+      assessment: assessment,
     });
 
     I.renderDebugPanel();
+    return true;
   };
 
   /* ------------------------------------------
@@ -356,7 +392,9 @@ window.__EngineInternal = window.__EngineInternal || {};
     I.state.completedBlocks = [];
     I.state.blockResults = {};
     I.state.finished = false;
+    I.state.startedAt = Date.now();
     I.state.startTime = Date.now();
+    I.state.elapsedBeforeSession = 0;
     I.state.blockStartTime = null;
     I.state.repeatMode = false;
 
@@ -369,11 +407,11 @@ window.__EngineInternal = window.__EngineInternal || {};
     var restored = I.loadProgress();
     if (restored) {
       I.debugLog('Progress restored');
-      I.state.currentIndex = I.state.completedBlocks.length;
       if (I.state.currentIndex >= I.state.blocks.length) {
-        I.state.currentIndex = 0;
-        I.state.completedBlocks = [];
+        I.state.currentIndex = I.state.blocks.length - 1;
       }
+      I.state.finished = false;
+      I.state.startTime = Date.now();
     }
     return restored;
   }

@@ -4,6 +4,7 @@ window.LessonEngine = (function() {
   return {
     load: I.load,
     next: I.next,
+    finish: I.finish,
     prev: I.prev,
     goTo: I.goTo,
     render: I.render,

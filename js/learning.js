@@ -1,808 +1,562 @@
 /* ============================================
    LEARNING ENGINE — math·logic
-   ============================================
-   Центральная система управления обучением.
-   Всё — Subjects, Topics, Lessons, Progress —
-   рассчитывается только здесь.
-   Dashboard и Profile только отображают данные.
+   Канонический каталог, статусы и completion
    ============================================ */
 
 window.Learning = (function() {
+  'use strict';
 
-  /* ==========================================
-     КОНСТАНТЫ
-     ========================================== */
+  const LESSON_XP_BASE = 50;
+  let _course = null;
 
-  var LS_KEY = 'progress.lessonStates';
-  var LESSON_XP_BASE = 50;
+  function registry() {
+    return typeof LESSON_REGISTRY !== 'undefined' ? LESSON_REGISTRY : {};
+  }
 
-  /* ==========================================
-     ВНУТРЕННЕЕ: ПОСТРОЕНИЕ КУРСА
-     ==========================================
-     Строим Subject → Topic (section) → Lesson (module)
-     из DATA + SUBJECTS.
-     ========================================== */
+  function legacyMap() {
+    return typeof LESSON_LEGACY_MAP !== 'undefined' ? LESSON_LEGACY_MAP : {};
+  }
+
+  function stableSlug(value) {
+    let hash = 2166136261;
+    const text = String(value || 'lesson');
+    for (let i = 0; i < text.length; i++) {
+      hash ^= text.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }
+    return (hash >>> 0).toString(36);
+  }
+
+  function resolveLessonId(id) {
+    if (!id) return '';
+    return legacyMap()[id] || id;
+  }
+
+  function getRegistryEntry(id) {
+    return registry()[resolveLessonId(id)] || null;
+  }
 
   function buildCourse() {
-    var subjects = [];
-    try {
-      if (typeof DATA === 'undefined' || typeof SUBJECTS === 'undefined') return subjects;
+    const subjects = [];
+    if (typeof DATA === 'undefined' || typeof SUBJECTS === 'undefined') return subjects;
+    const subjectMap = {};
+    SUBJECTS.forEach(function(subject) { subjectMap[subject.key] = subject; });
 
-      var subjectMap = {};
-      SUBJECTS.forEach(function(s) { subjectMap[s.key] = s; });
+    Object.keys(DATA).forEach(function(subjectKey) {
+      const meta = subjectMap[subjectKey];
+      if (!meta || !Array.isArray(DATA[subjectKey])) return;
+      const topics = [];
+      const allLessons = [];
+      let legacyOrder = 0;
 
-      Object.keys(DATA).forEach(function(subjectKey) {
-        var meta = subjectMap[subjectKey];
-        if (!meta) return;
-
-        var dataSections = DATA[subjectKey];
-        if (!dataSections || !Array.isArray(dataSections)) return;
-
-        var topics = [];
-        var allLessons = [];
-        var globalOrder = 0;
-
-        dataSections.forEach(function(section, si) {
-          var topicLessons = [];
-
-          (section.modules || []).forEach(function(mod, mi) {
-            globalOrder++;
-            var lessonId = subjectKey + '_' + globalOrder;
-
-            var lesson = {
-              id: lessonId,
-              order: globalOrder,
-              sectionIndex: si,
-              sectionTitle: section.title,
-              sectionLevel: section.level || '',
-              name: mod.name,
-              link: mod.link || null,
-              subtopics: mod.subtopics || [],
-              subjectKey: subjectKey,
-            };
-
-            topicLessons.push(lesson);
-            allLessons.push(lesson);
-          });
-
-          topics.push({
-            title: section.title,
-            level: section.level || '',
-            order: si,
-            lessons: topicLessons,
-            totalLessons: topicLessons.length,
-          });
+      DATA[subjectKey].forEach(function(section, sectionIndex) {
+        const topicId = section.id || subjectKey + '.topic.' + stableSlug(section.title);
+        const lessons = [];
+        (section.modules || []).forEach(function(module, moduleIndex) {
+          legacyOrder++;
+          const id = module.id || subjectKey + '.catalog.' + stableSlug(section.title + '|' + module.name);
+          const reg = registry()[id] || null;
+          const lesson = {
+            id: id,
+            legacyId: subjectKey + '_' + legacyOrder,
+            order: legacyOrder,
+            moduleIndex: moduleIndex,
+            sectionIndex: sectionIndex,
+            sectionTitle: section.title,
+            sectionLevel: section.level || '',
+            name: module.name,
+            title: reg ? reg.title : module.name,
+            titleKz: reg ? reg.titleKz : module.name,
+            description: reg ? reg.description : '',
+            descriptionKz: reg ? reg.descriptionKz : '',
+            route: reg ? reg.route : null,
+            link: reg ? reg.route : null,
+            duration: reg ? reg.duration : null,
+            xp: reg ? reg.xp : null,
+            availability: reg ? reg.availability : 'unavailable',
+            prerequisites: reg && Array.isArray(reg.prerequisites) ? reg.prerequisites.slice() : [],
+            unlockReason: reg ? reg.unlockReason : '',
+            releaseDate: reg ? reg.releaseDate : null,
+            hasContent: !!reg,
+            subtopics: module.subtopics || [],
+            subjectKey: subjectKey,
+            topicId: reg ? reg.topicId : topicId,
+          };
+          lessons.push(lesson);
+          allLessons.push(lesson);
         });
-
-        subjects.push({
-          key: subjectKey,
-          name: meta.name,
-          icon: meta.icon || '',
-          mainColor: meta.mainColor || '#4F46E5',
-          bgActive: meta.bgActive || '#EEF2FF',
-          topics: topics,
-          lessons: allLessons,
-          totalLessons: allLessons.length,
-          firstLessonId: allLessons.length > 0 ? allLessons[0].id : null,
+        topics.push({
+          id: topicId,
+          title: section.title,
+          level: section.level || '',
+          order: sectionIndex,
+          lessons: lessons,
+          totalLessons: lessons.length,
         });
       });
-    } catch(e) {
-      console.error('[Learning] buildCourse error:', e);
-    }
+
+      subjects.push({
+        key: subjectKey,
+        name: meta.name,
+        icon: meta.icon || '',
+        mainColor: meta.mainColor || '#4F46E5',
+        bgActive: meta.bgActive || '#EEF2FF',
+        topics: topics,
+        lessons: allLessons,
+        totalLessons: allLessons.length,
+        firstLessonId: allLessons.length ? allLessons[0].id : null,
+      });
+    });
     return subjects;
   }
 
-  var _course = null;
-
   function getCourse() {
-    if (_course) return _course;
-    _course = buildCourse();
+    if (!_course) _course = buildCourse();
     return _course;
   }
 
-  function resetCache() {
-    _course = null;
-  }
-
-  /* ==========================================
-     ВНУТРЕННЕЕ: СОСТОЯНИЯ УРОКОВ
-     ========================================== */
-
-  function getLessonStates() {
-    var states = ML.get(LS_KEY, {});
-    if (typeof states !== 'object' || Array.isArray(states)) return {};
-    return states;
-  }
-
-  function setLessonStates(states) {
-    ML.set(LS_KEY, states);
-  }
-
-  function getLessonState(lessonId) {
-    var states = getLessonStates();
-    return states[lessonId] || 'locked';
-  }
-
-  function setLessonState(lessonId, state) {
-    var states = getLessonStates();
-    states[lessonId] = state;
-    setLessonStates(states);
-  }
-
-  /* ==========================================
-     ВНУТРЕННЕЕ: ПОИСК
-     ========================================== */
+  function resetCache() { _course = null; }
 
   function findSubject(subjectKey) {
-    var course = getCourse();
-    for (var i = 0; i < course.length; i++) {
-      if (course[i].key === subjectKey) return course[i];
-    }
-    return null;
+    return getCourse().find(function(subject) { return subject.key === subjectKey; }) || null;
   }
 
   function findLesson(lessonId) {
-    var course = getCourse();
-    for (var si = 0; si < course.length; si++) {
-      var subj = course[si];
-      for (var li = 0; li < subj.lessons.length; li++) {
-        if (subj.lessons[li].id === lessonId) {
-          return { lesson: subj.lessons[li], subject: subj };
-        }
-      }
+    const id = resolveLessonId(lessonId);
+    const course = getCourse();
+    for (let si = 0; si < course.length; si++) {
+      const lesson = course[si].lessons.find(function(item) { return item.id === id; });
+      if (lesson) return { lesson: lesson, subject: course[si] };
+    }
+    const reg = registry()[id];
+    if (reg) {
+      return {
+        lesson: {
+          id: id,
+          name: reg.title,
+          title: reg.title,
+          titleKz: reg.titleKz,
+          description: reg.description,
+          descriptionKz: reg.descriptionKz,
+          subjectKey: reg.subjectId,
+          topicId: reg.topicId,
+          sectionTitle: '',
+          subtopics: [],
+          route: reg.route,
+          link: reg.route,
+          duration: reg.duration,
+          xp: reg.xp,
+          availability: reg.availability,
+          prerequisites: Array.isArray(reg.prerequisites) ? reg.prerequisites.slice() : [],
+          releaseDate: reg.releaseDate,
+          unlockReason: reg.unlockReason,
+          hasContent: true,
+          order: reg.order,
+        },
+        subject: findSubject(reg.subjectId),
+      };
     }
     return null;
   }
 
-  function findNextLessonId(currentId) {
-    var course = getCourse();
-    for (var si = 0; si < course.length; si++) {
-      var subj = course[si];
-      for (var li = 0; li < subj.lessons.length; li++) {
-        if (subj.lessons[li].id === currentId) {
-          return li + 1 < subj.lessons.length ? subj.lessons[li + 1].id : null;
-        }
-      }
+  function getRecord(lessonId) {
+    const lessons = ML.get('progress.lessons', {});
+    return lessons[resolveLessonId(lessonId)] || null;
+  }
+
+  function getLessonStatus(lessonId) {
+    const found = findLesson(lessonId);
+    if (!found) return 'locked';
+    const lesson = found.lesson;
+    const record = getRecord(lesson.id);
+    if (record && record.status === 'completed') return 'completed';
+    const session = ML.getLessonSession(lesson.id);
+    if (session && Array.isArray(session.completedBlocks) && session.completedBlocks.length > 0) return 'current';
+    if (lesson.releaseDate) {
+      const release = new Date(lesson.releaseDate);
+      if (!isNaN(release.getTime()) && release.getTime() > Date.now()) return 'comingSoon';
     }
-    return null;
-  }
-
-  /* ==========================================
-     ВНУТРЕННЕЕ: ИНИЦИАЛИЗАЦИЯ СОСТОЯНИЙ
-     ========================================== */
-
-  function initStates() {
-    var course = getCourse();
-    if (!course || course.length === 0) return;
-    var states = getLessonStates();
-    var changed = false;
-    var completedLessons = ML.getCompletedLessons();
-
-    course.forEach(function(subj) {
-      subj.lessons.forEach(function(lesson) {
-        var existing = states[lesson.id];
-
-        if (existing === 'completed') return;
-
-        if (completedLessons[lesson.id] || (lesson.link && completedLessons[lesson.link])) {
-          states[lesson.id] = 'completed';
-          changed = true;
-          return;
-        }
-
-        if (!existing) {
-          states[lesson.id] = lesson.order === 1 ? 'available' : 'locked';
-          changed = true;
-        }
-      });
+    const prerequisites = Array.isArray(lesson.prerequisites) ? lesson.prerequisites : [];
+    const missingPrerequisite = prerequisites.some(function(id) {
+      const prerequisite = getRecord(id);
+      return !prerequisite || prerequisite.status !== 'completed';
     });
-
-    if (changed) {
-      setLessonStates(states);
-    }
+    if (missingPrerequisite) return 'locked';
+    if (!lesson.hasContent || lesson.availability === 'unavailable' || lesson.availability === 'locked') return 'locked';
+    return 'available';
   }
 
-  function syncStates() {
-    var course = getCourse();
-    if (!course || course.length === 0) return;
-    var states = getLessonStates();
-    var completed = ML.getCompletedLessons();
-    var changed = false;
-
-    course.forEach(function(subj) {
-      subj.lessons.forEach(function(lesson) {
-        if (completed[lesson.id] || (lesson.link && completed[lesson.link])) {
-          if (states[lesson.id] !== 'completed') {
-            states[lesson.id] = 'completed';
-            changed = true;
-          }
-        }
-      });
-    });
-
-    if (changed) {
-      setLessonStates(states);
-    }
+  /* Старый API оставляет три состояния. Новый UI использует getLessonStatus(). */
+  function getLessonState(lessonId) {
+    const status = getLessonStatus(lessonId);
+    if (status === 'completed') return 'completed';
+    if (status === 'current' || status === 'available') return 'available';
+    return 'locked';
   }
 
-  /* ==========================================
-     ВНУТРЕННЕЕ: СОБЫТИЯ
-     ========================================== */
-
-  function emit(eventName, detail) {
-    try {
-      if (typeof EVENTS !== 'undefined' && EVENTS.emit) {
-        EVENTS.emit(eventName, detail || {});
-      }
-    } catch(e) { /* silent */ }
+  function lessonView(lesson) {
+    const status = getLessonStatus(lesson.id);
+    const record = getRecord(lesson.id);
+    const session = ML.getLessonSession(lesson.id);
+    return {
+      id: lesson.id,
+      name: lesson.name,
+      title: lesson.title,
+      titleKz: lesson.titleKz,
+      description: lesson.description,
+      descriptionKz: lesson.descriptionKz,
+      order: lesson.order,
+      sectionTitle: lesson.sectionTitle,
+      sectionLevel: lesson.sectionLevel,
+      subjectKey: lesson.subjectKey,
+      topicId: lesson.topicId,
+      status: status,
+      state: getLessonState(lesson.id),
+      route: lesson.route,
+      link: lesson.route,
+      duration: lesson.duration,
+      xp: lesson.xp,
+      releaseDate: lesson.releaseDate,
+      unlockReason: lesson.unlockReason || (
+        status === 'locked' && lesson.prerequisites && lesson.prerequisites.length
+          ? 'Сначала завершите предыдущий урок'
+          : (!lesson.hasContent ? 'Урок пока не готов' : '')
+      ),
+      prerequisites: lesson.prerequisites || [],
+      hasContent: lesson.hasContent,
+      subtopics: lesson.subtopics,
+      result: record,
+      session: session,
+    };
   }
-
-  /* ==========================================
-     ВНУТРЕННЕЕ: ПРОВЕРКИ ЗАВЕРШЕНИЯ
-     ========================================== */
-
-  function isSectionCompleted(sectionTitle) {
-    if (!sectionTitle) return false;
-    var course = getCourse();
-    var states = getLessonStates();
-    var ids = [];
-
-    course.forEach(function(subj) {
-      subj.lessons.forEach(function(lesson) {
-        if (lesson.sectionTitle === sectionTitle) {
-          ids.push(lesson.id);
-        }
-      });
-    });
-
-    if (ids.length === 0) return false;
-    return ids.every(function(id) { return states[id] === 'completed'; });
-  }
-
-  function isSubjectCompleted(subjectKey) {
-    if (!subjectKey) return false;
-    var subj = findSubject(subjectKey);
-    if (!subj || subj.lessons.length === 0) return false;
-    var states = getLessonStates();
-    return subj.lessons.every(function(lesson) { return states[lesson.id] === 'completed'; });
-  }
-
-  /* ==========================================
-     ПУБЛИЧНЫЙ API
-     ========================================== */
-
-  /* ---------- SUBJECTS ---------- */
 
   function getSubjects() {
-    var course = getCourse();
-    var states = getLessonStates();
-
-    return course.map(function(subj) {
-      var completed = 0;
-      subj.lessons.forEach(function(lesson) {
-        if (states[lesson.id] === 'completed') completed++;
-      });
-
+    return getCourse().map(function(subject) {
+      const completed = subject.lessons.filter(function(lesson) {
+        return getLessonStatus(lesson.id) === 'completed';
+      }).length;
       return {
-        key: subj.key,
-        name: subj.name,
-        icon: subj.icon,
-        mainColor: subj.mainColor,
-        bgActive: subj.bgActive,
-        totalLessons: subj.totalLessons,
+        key: subject.key,
+        name: subject.name,
+        icon: subject.icon,
+        mainColor: subject.mainColor,
+        bgActive: subject.bgActive,
+        totalLessons: subject.totalLessons,
         completedLessons: completed,
-        progress: subj.totalLessons > 0
-          ? Math.round((completed / subj.totalLessons) * 100)
-          : 0,
+        progress: subject.totalLessons ? Math.round(completed / subject.totalLessons * 100) : 0,
       };
     });
   }
 
   function getSubject(subjectKey) {
-    var subj = findSubject(subjectKey);
-    if (!subj) return null;
-
-    var states = getLessonStates();
-    var completed = 0;
-    subj.lessons.forEach(function(lesson) {
-      if (states[lesson.id] === 'completed') completed++;
-    });
-
-    return {
-      key: subj.key,
-      name: subj.name,
-      icon: subj.icon,
-      mainColor: subj.mainColor,
-      bgActive: subj.bgActive,
-      topics: subj.topics.map(function(topic) {
-        var topicCompleted = 0;
-        topic.lessons.forEach(function(lesson) {
-          if (states[lesson.id] === 'completed') topicCompleted++;
-        });
+    const subject = findSubject(subjectKey);
+    if (!subject) return null;
+    const summary = getSubjects().find(function(item) { return item.key === subjectKey; });
+    return Object.assign({}, summary, {
+      topics: subject.topics.map(function(topic) {
+        const completed = topic.lessons.filter(function(lesson) {
+          return getLessonStatus(lesson.id) === 'completed';
+        }).length;
         return {
+          id: topic.id,
           title: topic.title,
           level: topic.level,
           order: topic.order,
           totalLessons: topic.totalLessons,
-          completedLessons: topicCompleted,
-          progress: topic.totalLessons > 0
-            ? Math.round((topicCompleted / topic.totalLessons) * 100)
-            : 0,
+          completedLessons: completed,
+          progress: topic.totalLessons ? Math.round(completed / topic.totalLessons * 100) : 0,
         };
       }),
-      totalLessons: subj.totalLessons,
-      completedLessons: completed,
-      progress: subj.totalLessons > 0
-        ? Math.round((completed / subj.totalLessons) * 100)
-        : 0,
-      firstLessonId: subj.firstLessonId,
-    };
+      firstLessonId: subject.firstLessonId,
+    });
   }
 
-  /* ---------- TOPICS ---------- */
-
   function getTopics(subjectKey) {
-    var subj = findSubject(subjectKey);
-    if (!subj) return [];
-
-    var states = getLessonStates();
-
-    return subj.topics.map(function(topic) {
-      var lessonList = topic.lessons.map(function(lesson) {
-        return {
-          id: lesson.id,
-          name: lesson.name,
-          state: states[lesson.id] || 'locked',
-          link: lesson.link,
-          order: lesson.order,
-          subtopics: lesson.subtopics,
-        };
-      });
-
-      var completed = lessonList.filter(function(l) { return l.state === 'completed'; }).length;
-
+    const subject = findSubject(subjectKey);
+    if (!subject) return [];
+    return subject.topics.map(function(topic) {
+      const lessons = topic.lessons.map(lessonView);
+      const completed = lessons.filter(function(lesson) { return lesson.status === 'completed'; }).length;
       return {
+        id: topic.id,
         title: topic.title,
         level: topic.level,
         order: topic.order,
-        progress: topic.totalLessons > 0
-          ? Math.round((completed / topic.totalLessons) * 100)
-          : 0,
         totalLessons: topic.totalLessons,
         completedLessons: completed,
-        lessons: lessonList,
+        progress: topic.totalLessons ? Math.round(completed / topic.totalLessons * 100) : 0,
+        lessons: lessons,
       };
     });
   }
 
-  function getTopic(subjectKey, topicTitle) {
-    var topics = getTopics(subjectKey);
-    for (var i = 0; i < topics.length; i++) {
-      if (topics[i].title === topicTitle) return topics[i];
-    }
-    return null;
+  function getTopic(subjectKey, topicTitleOrId) {
+    return getTopics(subjectKey).find(function(topic) {
+      return topic.id === topicTitleOrId || topic.title === topicTitleOrId;
+    }) || null;
   }
-
-  /* ---------- LESSONS ---------- */
 
   function getLessons(subjectKey) {
-    var subj = findSubject(subjectKey);
-    if (!subj) return [];
-
-    var states = getLessonStates();
-
-    return subj.lessons.map(function(lesson) {
-      return {
-        id: lesson.id,
-        name: lesson.name,
-        order: lesson.order,
-        sectionTitle: lesson.sectionTitle,
-        sectionLevel: lesson.sectionLevel,
-        state: states[lesson.id] || 'locked',
-        link: lesson.link,
-        subtopics: lesson.subtopics,
-      };
-    });
+    const subject = findSubject(subjectKey);
+    return subject ? subject.lessons.map(lessonView) : [];
   }
 
   function getLesson(lessonId) {
-    var found = findLesson(lessonId);
-    if (!found) return null;
-
-    var lesson = found.lesson;
-    var states = getLessonStates();
-
-    return {
-      id: lesson.id,
-      name: lesson.name,
-      order: lesson.order,
-      sectionTitle: lesson.sectionTitle,
-      sectionLevel: lesson.sectionLevel,
-      state: states[lesson.id] || 'locked',
-      link: lesson.link,
-      subtopics: lesson.subtopics,
-      subjectKey: lesson.subjectKey,
-    };
+    const found = findLesson(lessonId);
+    return found ? lessonView(found.lesson) : null;
   }
-
-  /* ---------- STATUS ---------- */
 
   function isUnlocked(lessonId) {
-    var state = getLessonState(lessonId);
-    return state === 'available' || state === 'completed';
+    const status = getLessonStatus(lessonId);
+    return status === 'available' || status === 'current' || status === 'completed';
   }
 
-  function unlock(lessonId) {
-    var current = getLessonState(lessonId);
-    if (current === 'locked') {
-      setLessonState(lessonId, 'available');
-      return true;
-    }
-    return false;
+  function findNextLessonId(currentId) {
+    const entries = Object.keys(registry()).map(function(id) { return registry()[id]; })
+      .sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
+    const canonical = resolveLessonId(currentId);
+    const index = entries.findIndex(function(entry) { return entry.id === canonical; });
+    return index > -1 && entries[index + 1] ? entries[index + 1].id : null;
   }
-
-  /* ---------- COMPLETION ---------- */
 
   function completeLesson(lessonId, result) {
-    result = result || {};
-    var found = findLesson(lessonId);
-    if (!found) {
-      console.warn('[Learning] Unknown lesson:', lessonId);
+    const id = resolveLessonId(lessonId);
+    const found = findLesson(id);
+    if (!found || !found.lesson.hasContent) {
+      console.warn('[Learning] Unknown or unavailable lesson:', lessonId);
       return null;
     }
-
-    var lesson = found.lesson;
-    var lessonName = lesson.name;
-
-    if (getLessonState(lessonId) === 'completed') {
-      return {
-        lessonId: lessonId,
-        xpEarned: 0,
-        score: 0,
-        grade: '',
-        alreadyCompleted: true,
-      };
+    const previous = getRecord(id);
+    if (previous && previous.status === 'completed') {
+      return { lessonId: id, xpEarned: 0, score: previous.score || 0, grade: previous.grade || '', alreadyCompleted: true };
     }
 
-    var score = result.score || 0;
-    var correct = result.correct || 0;
-    var total = result.total || 0;
-    var xpToAward = result.xpEarned > 0 ? result.xpEarned : (LESSON_XP_BASE + correct * 10);
-    var grade = result.grade || '';
-    if (!grade) {
-      grade = score >= 90 ? 'S' : score >= 80 ? 'A' : score >= 60 ? 'B' : score >= 40 ? 'C' : 'D';
-    }
-
-    var storageKey = lesson.link ? lesson.link : lessonId;
-
-    setLessonState(lessonId, 'completed');
-
-    ML.completeLesson(storageKey, {
-      score: score,
-      correct: correct,
-      total: total,
-      attempts: result.attempts || 0,
-      time: result.time || 0,
-      xpEarned: xpToAward,
+    result = result || {};
+    const now = Date.now();
+    const total = Math.max(0, Math.floor(Number(result.totalQuestions !== undefined ? result.totalQuestions : result.total) || 0));
+    const rawCorrect = Math.max(0, Math.floor(Number(result.correctAnswers !== undefined ? result.correctAnswers : result.correct) || 0));
+    const correct = total > 0 ? Math.min(total, rawCorrect) : rawCorrect;
+    const percentage = Math.max(0, Math.min(100, Number(result.percentage !== undefined ? result.percentage : result.score) || 0));
+    const rewardKey = 'lesson:' + id;
+    const requestedXp = Math.max(0, Number(found.lesson.xp) || (LESSON_XP_BASE + correct * 10));
+    const rewardExists = !!((ML.getData().rewards || {})[rewardKey]);
+    const xpEarned = rewardExists ? 0 : requestedXp;
+    const grade = result.grade || (percentage >= 90 ? 'S' : percentage >= 80 ? 'A' : percentage >= 60 ? 'B' : percentage >= 40 ? 'C' : 'D');
+    const record = {
+      lessonId: id,
+      status: 'completed',
+      score: percentage,
+      percentage: percentage,
+      correctAnswers: correct,
+      totalQuestions: total,
+      duration: Math.max(0, Number(result.duration !== undefined ? result.duration : result.time) || 0),
+      startedAt: Number(result.startedAt) || now,
+      completedAt: Number(result.completedAt) || now,
+      attempts: Math.max(0, Number(result.attempts) || 0),
+      answers: result.answers || {},
       grade: grade,
-    });
-
-    if (lesson.subtopics && lesson.subtopics.length > 0) {
-      ML.markSubtopicsDone(lesson.subtopics);
-    }
-
-    ML.addTimelineEntry({
-      icon: '📘',
-      title: 'Завершил урок "' + lessonName + '"',
-      desc: 'Результат: ' + score + '% | +' + xpToAward + ' XP',
-      color: 'bg-blue-500',
-    });
-
-    /* ----- Начисляем XP ----- */
-    if (typeof XP !== 'undefined' && XP.addXP) {
-      XP.addXP(xpToAward, 'lesson:' + lessonId);
-    }
-
-    /* ----- Открываем следующий урок ----- */
-    var nextId = findNextLessonId(lessonId);
-    if (nextId) {
-      unlock(nextId);
-    }
-
-    /* ----- События (без прямого вызова XP) ----- */
-    var eventDetail = {
-      lessonId: lessonId,
-      lessonName: lessonName,
-      score: score,
-      xpEarned: xpToAward,
-      correct: correct,
-      total: total,
-      grade: grade,
+      xpEarned: xpEarned,
     };
 
-    emit('lesson:completed', eventDetail);
-    emit('progress:update', eventDetail);
-
-    if (lesson.sectionTitle) {
-      var sectionDone = isSectionCompleted(lesson.sectionTitle);
-      if (sectionDone) {
-        emit('topic:completed', {
-          topicTitle: lesson.sectionTitle,
-          subjectKey: lesson.subjectKey,
-        });
+    ML.update(function(data) {
+      const current = data.progress.lessons[id];
+      if (current && current.status === 'completed') return;
+      data.progress.lessons[id] = record;
+      (found.lesson.subtopics || []).forEach(function(name) { data.progress.subtopics[name] = true; });
+      if (!data.rewards[rewardKey]) {
+        data.rewards[rewardKey] = { amount: xpEarned, awardedAt: record.completedAt, reason: 'lesson' };
       }
-    }
-
-    var subjectDone = isSubjectCompleted(lesson.subjectKey);
-    if (subjectDone) {
-      emit('subject:completed', {
-        subjectKey: lesson.subjectKey,
+      XP.applyToData(data, (data.user.xp || 0) + xpEarned);
+      data.stats.xp_earned = (data.stats.xp_earned || 0) + xpEarned;
+      data.stats.study_time = (data.stats.study_time || 0) + record.duration;
+      data.stats.problems_solved = (data.stats.problems_solved || 0) + correct;
+      const completed = Object.keys(data.progress.lessons).filter(function(key) {
+        return data.progress.lessons[key] && data.progress.lessons[key].status === 'completed';
       });
-    }
-
-    return {
-      lessonId: lessonId,
-      xpEarned: xpToAward,
-      score: score,
-      grade: grade,
-    };
-  }
-
-  /* ---------- RESET ---------- */
-
-  function resetSubject(subjectKey) {
-    var subj = findSubject(subjectKey);
-    if (!subj) return;
-
-    var states = getLessonStates();
-    var changed = false;
-
-    subj.lessons.forEach(function(lesson, index) {
-      if (states[lesson.id] === 'completed') {
-        delete states[lesson.id];
-        changed = true;
-      }
+      data.stats.lessons_completed = completed.length;
+      const scores = completed.map(function(key) { return Number(data.progress.lessons[key].percentage) || 0; });
+      data.stats.avg_score = scores.length ? Math.round(scores.reduce(function(sum, score) { return sum + score; }, 0) / scores.length) : 0;
+      data.user.lastLesson = found.lesson.title;
+      data.user.lastSubject = found.subject ? found.subject.name : found.lesson.subjectKey;
+      data.timeline.unshift({
+        icon: '◇',
+        title: 'Завершён урок «' + found.lesson.title + '»',
+        desc: percentage + '% · +' + xpEarned + ' XP',
+        time: record.completedAt,
+        color: 'bg-blue-500',
+      });
+      if (data.timeline.length > 50) data.timeline = data.timeline.slice(0, 50);
     });
 
-    if (changed) {
-      setLessonStates(states);
-      resetCache();
-      initStates();
-      emit('progress:update', { subjectKey: subjectKey });
-    }
+    ML.setLessonSession(id, null);
+    ML.recordLearningActivity(record.duration, record.completedAt);
+    XP.dispatch({ amount: xpEarned, reason: 'lesson:' + id, xp: XP.getXP(), level: XP.getLevel() });
+
+    const detail = {
+      lessonId: id,
+      lessonName: found.lesson.title,
+      score: percentage,
+      percentage: percentage,
+      xpEarned: xpEarned,
+      correct: correct,
+      correctAnswers: correct,
+      total: total,
+      totalQuestions: total,
+      grade: grade,
+      completedAt: record.completedAt,
+    };
+    emit('lesson:completed', detail);
+    emit('progress:update', detail);
+    return { lessonId: id, xpEarned: xpEarned, score: percentage, grade: grade, alreadyCompleted: false };
   }
 
-  function resetAll() {
-    var course = getCourse();
-    if (!course || course.length === 0) return;
+  function emit(name, detail) {
+    try {
+      if (typeof EVENTS !== 'undefined' && EVENTS.emit) EVENTS.emit(name, detail || {});
+    } catch (error) { console.warn('[Learning] event failed', error); }
+  }
 
-    var states = {};
-    setLessonStates(states);
-
-    var d = ML.getData();
-    if (d && d.lesson && d.lesson.v2) {
-      d.lesson.v2 = {};
-      ML.saveData(d);
-      console.log('CACHE', JSON.stringify(d.lesson.v2));
-      console.log('LS', JSON.stringify(JSON.parse(localStorage.getItem('mathlogic_data')).lesson.v2));
-    }
-
-    resetCache();
-    initStates();
-    emit('progress:update', { reset: true });
+  function recalculateResultStats(data) {
+    const completedIds = Object.keys(data.progress.lessons).filter(function(key) {
+      return data.progress.lessons[key] && data.progress.lessons[key].status === 'completed';
+    });
+    const completedLookup = {};
+    completedIds.forEach(function(id) { completedLookup[id] = true; });
+    const subtopics = {};
+    getCourse().forEach(function(subject) {
+      subject.lessons.forEach(function(lesson) {
+        if (!completedLookup[lesson.id]) return;
+        (lesson.subtopics || []).forEach(function(name) { subtopics[name] = true; });
+      });
+    });
+    data.progress.subtopics = subtopics;
+    data.stats.lessons_completed = completedIds.length;
+    data.stats.study_time = completedIds.reduce(function(sum, id) { return sum + (Number(data.progress.lessons[id].duration) || 0); }, 0);
+    data.stats.problems_solved = completedIds.reduce(function(sum, id) { return sum + (Number(data.progress.lessons[id].correctAnswers) || 0); }, 0);
+    const scores = completedIds.map(function(id) { return Number(data.progress.lessons[id].percentage) || 0; });
+    data.stats.avg_score = scores.length ? Math.round(scores.reduce(function(sum, score) { return sum + score; }, 0) / scores.length) : 0;
   }
 
   function resetLesson(lessonId) {
-    if (!lessonId) return;
-
-    var states = getLessonStates();
-    if (states[lessonId]) {
-      delete states[lessonId];
-      setLessonStates(states);
-    }
-
-    var enginePrefix = (window.__EngineInternal && window.__EngineInternal.STORAGE_PREFIX) || 'lesson.v2.';
-    try { ML.set(enginePrefix + lessonId, null); } catch(e) {}
-
-    try {
-      var d = ML.getData();
-      if (d && d.progress && d.progress.lessons && d.progress.lessons[lessonId]) {
-        delete d.progress.lessons[lessonId];
-        ML.saveData(d);
-      }
-    } catch(e) {}
-
-    resetCache();
-    initStates();
-    emit('progress:update', { lessonId: lessonId, reset: true });
+    const id = resolveLessonId(lessonId);
+    ML.update(function(data) {
+      delete data.progress.lessons[id];
+      delete data.lesson.sessions[id];
+      /* Награда сохраняется: reset результата не должен позволять farm XP. */
+      recalculateResultStats(data);
+    });
+    emit('progress:update', { lessonId: id, reset: true });
   }
 
-  /* ---------- PROGRESS ---------- */
+  function resetSubject(subjectKey) {
+    const subject = findSubject(subjectKey);
+    if (!subject) return;
+    const ids = subject.lessons.map(function(lesson) { return lesson.id; });
+    ML.update(function(data) {
+      ids.forEach(function(id) {
+        delete data.progress.lessons[id];
+        delete data.lesson.sessions[id];
+      });
+      recalculateResultStats(data);
+    });
+    emit('progress:update', { subjectKey: subjectKey, reset: true });
+  }
+
+  function resetAll() {
+    ML.resetLearning();
+    XP.reconcile();
+    emit('progress:update', { reset: true });
+  }
 
   function getOverallProgress() {
-    var subjects = getSubjects();
-    var total = 0;
-    var done = 0;
-    subjects.forEach(function(s) {
-      total += s.totalLessons;
-      done += s.completedLessons;
-    });
-    return total > 0 ? Math.round((done / total) * 100) : 0;
+    const subjects = getSubjects();
+    const total = subjects.reduce(function(sum, subject) { return sum + subject.totalLessons; }, 0);
+    const completed = subjects.reduce(function(sum, subject) { return sum + subject.completedLessons; }, 0);
+    return total ? Math.round(completed / total * 100) : 0;
   }
 
   function getSubjectProgress(subjectKey) {
-    var subjects = getSubjects();
-    for (var i = 0; i < subjects.length; i++) {
-      if (subjects[i].key === subjectKey) return subjects[i].progress;
-    }
-    return 0;
+    const subject = getSubjects().find(function(item) { return item.key === subjectKey; });
+    return subject ? subject.progress : 0;
   }
 
-  function getTopicProgress(subjectKey, topicTitle) {
-    var topics = getTopics(subjectKey);
-    for (var i = 0; i < topics.length; i++) {
-      if (topics[i].title === topicTitle) return topics[i].progress;
-    }
-    return 0;
+  function getTopicProgress(subjectKey, topicTitleOrId) {
+    const topic = getTopic(subjectKey, topicTitleOrId);
+    return topic ? topic.progress : 0;
   }
 
-  /* ---------- NAVIGATION ---------- */
+  function availableRegistryLessons() {
+    return Object.keys(registry()).map(function(id) { return getLesson(id); })
+      .filter(Boolean)
+      .sort(function(a, b) { return (registry()[a.id].order || 0) - (registry()[b.id].order || 0); });
+  }
 
   function getNextLesson() {
-    var course = getCourse();
-    var states = getLessonStates();
-
-    for (var si = 0; si < course.length; si++) {
-      var subj = course[si];
-      for (var li = 0; li < subj.lessons.length; li++) {
-        var lesson = subj.lessons[li];
-        if (states[lesson.id] === 'available') {
-          return {
-            id: lesson.id,
-            name: lesson.name,
-            subjectKey: subj.key,
-            subjectName: subj.name,
-            link: lesson.link,
-            sectionTitle: lesson.sectionTitle,
-          };
-        }
-      }
-    }
-    return null;
-  }
-
-  function getNextLessonId(currentLessonId) {
-    return findNextLessonId(currentLessonId);
-  }
-
-  function unlockNextLesson(currentLessonId) {
-    var nextId = findNextLessonId(currentLessonId);
-    if (nextId) {
-      unlock(nextId);
-      return nextId;
-    }
-    return null;
+    const lessons = availableRegistryLessons();
+    return lessons.find(function(lesson) { return lesson.status === 'current'; }) ||
+      lessons.find(function(lesson) { return lesson.status === 'available'; }) || null;
   }
 
   function getLastCompletedLesson() {
-    var course = getCourse();
-    var states = getLessonStates();
-    var last = null;
-    var lastOrder = 0;
-
-    course.forEach(function(subj) {
-      subj.lessons.forEach(function(lesson) {
-        if (states[lesson.id] === 'completed' && lesson.order > lastOrder) {
-          lastOrder = lesson.order;
-          last = {
-            id: lesson.id,
-            name: lesson.name,
-            subjectKey: subj.key,
-            subjectName: subj.name,
-            link: lesson.link,
-            sectionTitle: lesson.sectionTitle,
-          };
-        }
-      });
+    const lessons = availableRegistryLessons().filter(function(lesson) { return lesson.status === 'completed'; });
+    lessons.sort(function(a, b) {
+      return ((b.result && b.result.completedAt) || 0) - ((a.result && a.result.completedAt) || 0);
     });
-
-    return last;
+    return lessons[0] || null;
   }
 
-  function getTotalCompletedLessons() {
-    var subjects = getSubjects();
-    var total = 0;
-    subjects.forEach(function(s) { total += s.completedLessons; });
-    return total;
-  }
-
-  function getTotalLessons() {
-    var course = getCourse();
-    var total = 0;
-    course.forEach(function(s) { total += s.totalLessons; });
-    return total;
-  }
-
-  /* ==========================================
-     ИНИЦИАЛИЗАЦИЯ
-     ========================================== */
+  function getTotalCompletedLessons() { return Object.keys(ML.getCompletedLessons()).length; }
+  function getTotalLessons() { return getCourse().reduce(function(sum, subject) { return sum + subject.totalLessons; }, 0); }
+  function unlock() { return false; }
+  function unlockNextLesson(currentId) { return findNextLessonId(currentId); }
 
   function init() {
+    ML.migrateLessonIds(legacyMap());
+    resetCache();
     getCourse();
-    initStates();
-    syncStates();
   }
 
   init();
-
-  window.addEventListener('storage', function(e) {
-    if (e.key === 'mathlogic_data') {
+  window.addEventListener('storage', function(event) {
+    if (event.key === 'mathlogic_data') {
+      ML.resetCache();
       resetCache();
-      init();
+      emit('progress:update', { external: true });
     }
   });
 
-  /* ==========================================
-     ПУБЛИЧНЫЙ ИНТЕРФЕЙС
-     ========================================== */
-
-  var api = {
-    /* Course */
+  return {
     getCourse: getCourse,
+    getRegistry: function() { return JSON.parse(JSON.stringify(registry())); },
+    getRegistryEntry: getRegistryEntry,
+    resolveLessonId: resolveLessonId,
     resetCache: resetCache,
-
-    /* Subjects */
     getSubjects: getSubjects,
     getSubject: getSubject,
-
-    /* Topics */
     getTopics: getTopics,
     getTopic: getTopic,
-
-    /* Lessons */
     getLessons: getLessons,
     getLesson: getLesson,
     getLessonState: getLessonState,
-
-    /* Status */
+    getLessonStatus: getLessonStatus,
     isUnlocked: isUnlocked,
     unlock: unlock,
     unlockLesson: unlock,
     unlockNextLesson: unlockNextLesson,
-    getNextLessonId: getNextLessonId,
-
-    /* Completion */
+    getNextLessonId: findNextLessonId,
     completeLesson: completeLesson,
-
-    /* Reset */
     resetSubject: resetSubject,
     resetAll: resetAll,
     resetLesson: resetLesson,
-
-    /* Progress */
     getOverallProgress: getOverallProgress,
     getSubjectProgress: getSubjectProgress,
     getTopicProgress: getTopicProgress,
     getTotalCompletedLessons: getTotalCompletedLessons,
     getTotalLessons: getTotalLessons,
-
-    /* Navigation */
     getNextLesson: getNextLesson,
     getLastCompletedLesson: getLastCompletedLesson,
-
-    /* Init */
     init: init,
   };
-
-  return api;
-
 })();
-
-/* ============================================
-   ОБРАТНАЯ СОВМЕСТИМОСТЬ
-   ============================================
-   Все существующие страницы используют COURSE.
-   Learning полностью заменяет его.
-   ============================================ */
 
 window.COURSE = window.Learning;

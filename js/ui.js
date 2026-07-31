@@ -8,6 +8,16 @@ const UI = (function() {
   // --- Toast ---
   function showToast(message, type) {
     type = type || 'info';
+    if (document.body && document.body.classList.contains('axis-app')) {
+      var axisToast = document.querySelector('.axis-toast');
+      if (axisToast) {
+        axisToast.textContent = String(message);
+        axisToast.classList.add('is-visible');
+        clearTimeout(axisToast._timer);
+        axisToast._timer = setTimeout(function() { axisToast.classList.remove('is-visible'); }, 3000);
+        return;
+      }
+    }
     const colors = {
       info: 'bg-blue-600',
       success: 'bg-emerald-600',

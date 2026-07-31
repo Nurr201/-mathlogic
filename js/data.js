@@ -31,18 +31,20 @@ const SUBJECTS = [
 /* КРУПНЫЕ МОДУЛИ И ПОДТЕМЫ */
 const DATA = {
   algebra: [
-    { 
+    {
+      id: "algebra.base-equations",
       title: "База және Теңдеулер", level: "Жеңіл", 
       modules: [
-        { name: "Алгебралық өрнектер", link: "topic-1-expressions.html", subtopics: ["Санды және әріпті өрнектер", "Одночлен мен многочлен", "Жақшаны ашу мен ұқсас мүшелер", "Қысқаша көбейту формулалары (ФСУ)", "Алгебралық бөлшектер мен ОДЗ"] },
+        { name: "Алгебралық өрнектер", subtopics: ["Санды және әріпті өрнектер", "Одночлен мен многочлен", "Жақшаны ашу мен ұқсас мүшелер", "Қысқаша көбейту формулалары (ФСУ)", "Алгебралық бөлшектер мен ОДЗ"] },
         { name: "Сызықтық теңдеулер мен жүйелер", subtopics: ["Бір айнымалысы бар теңдеулер", "Мәндес теңдеулер қасиеттері", "Екі айнымалысы бар жүйелер", "Алмастыру және қосу тәсілдері", "Модулі бар сызықтық теңдеулер"] },
-        { name: "Квадрат теңдеулер мен Үшмүше (Виет теоремасы)", link: "lesson.html", subtopics: ["Толық емес квадрат теңдеулер", "Дискриминант формуласы", "Виет теоремасы мен қолдану", "Квадрат үшмүшені көбейткіштерге жіктеу", "Квадрат теңдеуге келтірілетін биквадрат теңдеулер"] }
+        { id: "algebra.vieta.intro", name: "Квадрат теңдеулер мен Үшмүше (Виет теоремасы)", route: "lesson.html?id=algebra.vieta.intro", subtopics: ["Толық емес квадрат теңдеулер", "Дискриминант формуласы", "Виет теоремасы мен қолдану", "Квадрат үшмүшені көбейткіштерге жіктеу", "Квадрат теңдеуге келтірілетін биквадрат теңдеулер"] }
       ]
     },
-    { 
+    {
+      id: "algebra.powers-roots-logs",
       title: "Дәреже, Түбір және Логарифм", level: "Орташа", 
       modules: [
-        { name: "Дәреже мен Арифметикалық түбір", link: "topic-1-expressions.html", subtopics: ["Бүтін көрсеткішті дәреже қасиеттері", "n-ші дәрежелі түбір қасиеттері", "Рационал көрсеткішті дәреже", "Иррационал өрнектерді түрлендіру"] },
+        { id: "algebra.exponents.basics", name: "Дәреже мен Арифметикалық түбір", route: "lesson.html?id=algebra.exponents.basics", subtopics: ["Бүтін көрсеткішті дәреже қасиеттері", "n-ші дәрежелі түбір қасиеттері", "Рационал көрсеткішті дәреже", "Иррационал өрнектерді түрлендіру"] },
         { name: "Көрсеткіштік және Логарифмдік өрнектер", subtopics: ["Логарифм анықтамасы мен негізгі теңдік", "Логарифм қасиеттері (қосу, азайту, дәреже)", "Негізді ауыстыру формуласы", "Көрсеткіштік мен логарифмдік теңдеулер"] },
         { name: "Теңсіздіктер мен Интервалдар", subtopics: ["Сызықтық теңсіздіктер", "Интервалдар әдісі", "Квадраттық теңсіздіктер", "Бөлшек-рационал теңсіздіктер"] }
       ]
@@ -178,3 +180,57 @@ const TAB_NAMES = {
   logic: { kz: "Логика", ru: "Логика" },
   numbers: { kz: "Сандар", ru: "Числа" }
 };
+
+/* КАНОНИЧЕСКИЙ РЕЕСТР РЕАЛЬНО РЕАЛИЗОВАННЫХ УРОКОВ.
+   Каталог DATA может содержать будущие модули, но только записи отсюда
+   считаются доступным интерактивным контентом. */
+const LESSON_REGISTRY = {
+  'algebra.exponents.basics': {
+    id: 'algebra.exponents.basics',
+    subjectId: 'algebra',
+    topicId: 'algebra.powers-roots-logs',
+    title: 'Степени и их свойства',
+    titleKz: 'Дәрежелер және олардың қасиеттері',
+    description: 'Свойства степеней: произведение, частное, степень степени и нулевая степень.',
+    descriptionKz: 'Дәрежелердің көбейтінді, бөлінді, дәреже дәрежесі және нөлдік дәреже қасиеттері.',
+    duration: 18,
+    xp: 90,
+    availability: 'available',
+    prerequisites: [],
+    unlockReason: '',
+    releaseDate: null,
+    config: 'LESSON_EXPONENTS',
+    route: 'lesson.html?id=algebra.exponents.basics',
+    order: 1,
+    legacyIds: ['algebra_1', 'algebra_4', 'topic-1-expressions.html'],
+  },
+  'algebra.vieta.intro': {
+    id: 'algebra.vieta.intro',
+    subjectId: 'algebra',
+    topicId: 'algebra.base-equations',
+    title: 'Теорема Виета',
+    titleKz: 'Виет теоремасы',
+    description: 'Решение приведённых квадратных уравнений через сумму и произведение корней.',
+    descriptionKz: 'Келтірілген квадрат теңдеулерді түбірлер қосындысы мен көбейтіндісі арқылы шешу.',
+    duration: 12,
+    xp: 70,
+    availability: 'available',
+    prerequisites: [],
+    unlockReason: '',
+    releaseDate: null,
+    config: 'LESSON_VIETA',
+    route: 'lesson.html?id=algebra.vieta.intro',
+    order: 2,
+    legacyIds: ['algebra_3', 'lesson.html'],
+  },
+};
+
+const LESSON_LEGACY_MAP = (function() {
+  var map = {};
+  Object.keys(LESSON_REGISTRY).forEach(function(id) {
+    (LESSON_REGISTRY[id].legacyIds || []).forEach(function(legacyId) {
+      map[legacyId] = id;
+    });
+  });
+  return map;
+})();

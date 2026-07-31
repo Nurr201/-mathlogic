@@ -57,6 +57,81 @@
   --border-light: #F1F5F9;
 }
 
+/* ============================================================
+   AXIS DESIGN TOKENS — Dashboard + Lesson
+   Scoped to .axis-app so legacy pages remain unchanged.
+   ============================================================ */
+.axis-app {
+  --axis-canvas: #F6F5F2;
+  --axis-surface: #FDFCFA;
+  --axis-sunken: #EFEEE9;
+  --axis-line: #E2DFD8;
+  --axis-line-strong: #C8C4BA;
+  --axis-ink: #16181F;
+  --axis-ink-2: #252832;
+  --axis-text: #15171E;
+  --axis-text-2: #4B505C;
+  --axis-text-3: #666B79;
+  --axis-on-ink: #F7F6F2;
+  --axis-on-ink-2: #C6C8CF;
+  --axis-gold: #EFAE3B;
+  --axis-gold-deep: #8A5A05;
+  --axis-gold-wash: #FFF4D7;
+  --axis-algebra: #2F55D4;
+  --axis-algebra-wash: #EEF2FF;
+  --axis-logic: #0D6E56;
+  --axis-logic-wash: #E2F1EC;
+  --axis-danger: #A9432B;
+  --axis-danger-wash: #F8EAE5;
+  --axis-focus: #2F55D4;
+  --axis-radius: 12px;
+  --axis-fast: 120ms cubic-bezier(.25,1,.5,1);
+  margin: 0;
+  min-height: 100vh;
+  color: var(--axis-text);
+  background: var(--axis-canvas);
+  font-family: "Onest", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+[data-theme="dark"] .axis-app {
+  --axis-canvas: #0F1117;
+  --axis-surface: #161922;
+  --axis-sunken: #12141B;
+  --axis-line: #2A2F3A;
+  --axis-line-strong: #3A4150;
+  --axis-ink: #1E222C;
+  --axis-ink-2: #272C38;
+  --axis-text: #E9EAEE;
+  --axis-text-2: #A5AAB7;
+  --axis-text-3: #7E8595;
+  --axis-on-ink: #E9EAEE;
+  --axis-on-ink-2: #A5AAB7;
+  --axis-gold: #F2B94F;
+  --axis-gold-deep: #F2B94F;
+  --axis-gold-wash: #2A2418;
+  --axis-algebra: #7E9AFF;
+  --axis-algebra-wash: #1A2033;
+  --axis-logic: #3FB894;
+  --axis-logic-wash: #12261F;
+  --axis-danger: #E8886A;
+  --axis-danger-wash: #2C1F1A;
+  --axis-focus: #7E9AFF;
+  font-weight: 350;
+}
+
+.axis-app *, .axis-app *::before, .axis-app *::after { box-sizing: border-box; }
+.axis-app a { color: inherit; text-decoration: none; }
+.axis-app button, .axis-app input { font: inherit; }
+.axis-app button { color: inherit; }
+.axis-app .mono, .axis-app code, .axis-app .font-mono {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, monospace !important;
+}
+.axis-app :focus-visible {
+  outline: 2px solid var(--axis-focus);
+  outline-offset: 3px;
+}
+
 *, *::before, *::after { box-sizing: border-box; }
 
 body {
@@ -209,79 +284,6 @@ label {
 .transition-base { transition: all 0.25s ease; }
 .transition-slow { transition: all 0.35s ease; }
 
-.subj-card {
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  background: var(--color-surface);
-  border: 1.5px solid var(--color-border);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
-}
-.subj-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--color-border-hover);
-  box-shadow: 0 8px 24px -8px rgba(79, 70, 229, 0.10);
-}
-.subj-card.active {
-  border-color: var(--color-primary);
-  background: linear-gradient(180deg, #FFFFFF 0%, var(--color-primary-light) 100%);
-  box-shadow: 0 4px 16px -4px rgba(79, 70, 229, 0.12);
-}
-
-.section-block {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
-}
-.section-block:hover { border-color: #CBD5E1; }
-
-.topic-chip {
-  background: var(--color-surface);
-  border-radius: var(--radius-md);
-  border: 1.5px solid var(--color-border);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  user-select: none;
-}
-.topic-chip:hover {
-  transform: translateY(-1px);
-  border-color: #94A3B8;
-  box-shadow: var(--shadow-md);
-}
-.topic-chip.completed {
-  background-color: var(--color-success-bg);
-  border-color: var(--color-success-border);
-}
-
-.bottom-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 60px;
-  background: rgba(15, 23, 42, 0.92);
-  backdrop-filter: blur(16px);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  z-index: 50;
-  display: flex;
-  align-items: center;
-}
-.bottom-item {
-  color: #94A3B8;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  padding: 0.5rem 1.125rem;
-  border-radius: var(--radius-sm);
-  transition: all 0.2s ease;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.bottom-item:hover { color: #F8FAFC; }
-.bottom-item.active { color: #FFFFFF; background: #334155; }
-
 .brilliant-card {
   border: 2px solid var(--color-border);
   background: var(--color-surface);
@@ -339,12 +341,6 @@ label {
   border:1px solid rgba(255,255,255,.15);
 }
 
-.section-title{
-  font-family:'Rubik',sans-serif;
-  font-size:40px;
-  font-weight:800;
-  line-height:1.1;
-}
 .section-desc{
   margin-top:12px;
   color:#64748b;

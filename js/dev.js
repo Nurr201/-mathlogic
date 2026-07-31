@@ -36,7 +36,7 @@
       '<button onclick="(function(){' +
       'var id=window.__EngineInternal&&window.__EngineInternal.state' +
       '?window.__EngineInternal.state.lessonId:null;' +
-      'if(id){ML.set(\'lesson.v2.\'+id,null);location.reload()}' +
+      'if(id){ML.setLessonSession(id,null);location.reload()}' +
       '})()" style="' + btn + '">' +
       '\u0421\u0431\u0440\u043E\u0441\u0438\u0442\u044C \u0442\u043E\u043B\u044C\u043A\u043E \u043E\u0442\u0432\u0435\u0442\u044B' +
       '</button>' +

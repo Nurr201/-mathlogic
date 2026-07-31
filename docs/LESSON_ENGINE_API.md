@@ -1,6 +1,6 @@
 # Lesson Engine v2 — API Reference
 
-Version: 2.1.0 · Schema: 2.0.0
+Version: 2.2.0 · Schema: 2.0.0
 
 ---
 
@@ -69,6 +69,11 @@ LessonEngine.next({ correct: true, answers: '3', points: 10 });
   completedBlocks: [0, 1, 2, 3],
   repeatMode: false,
   finished: false,
+  correctAnswers: 3,
+  totalQuestions: 4,
+  percentage: 75,
+  attempts: 4,
+  startedAt: 1712345678000,
   hasNext: true,
   hasPrev: true,
 }
@@ -155,13 +160,15 @@ unsub(); // отписаться
 | `beforeComplete` | `{ block, blockIndex, result, score, mistakes }` | Перед завершением блока |
 | `afterComplete` | `{ block, blockIndex, result, score, mistakes }` | После завершения блока |
 | `beforeLesson` | `{ config, lessonId }` | Перед загрузкой урока |
-| `afterLesson` | `{ config, lessonId, restored, currentIndex }` | После загрузки и восстановления прогресса (НО перед рендером первого блока) |
+| `afterLesson` | `{ config, lessonId, currentIndex }` | После загрузки и восстановления прогресса (до рендера блока) |
+| `beforeFinish` | `{ lessonId, score, mistakes, timeSpent, assessment }` | Перед финальным событием |
+| `afterFinish` | `{ lessonId, score, mistakes, timeSpent, assessment }` | После финального события |
 
 Порядок вызова:
 ```
 beforeLesson → loadProgress → afterLesson → render → beforeRender → afterRender
   → next → beforeComplete → afterComplete → render → ...
-  → finish → afterLesson (повторно)
+  → finish → beforeFinish → onLessonFinish → afterFinish
 ```
 
 ---
@@ -189,7 +196,7 @@ LessonEngine.analytics.on('onLessonFinish', function(data) {
 |---------|------|-------|
 | `onBlockStart` | `{ blockIndex, blockType, blockId }` | Блок показан |
 | `onBlockFinish` | `{ blockIndex, blockType, result, score, mistakes }` | Блок завершён |
-| `onLessonFinish` | `{ lessonId, score, mistakes, timeSpent, totalBlocks, completedBlocks }` | Урок завершён |
+| `onLessonFinish` | `{ lessonId, score, mistakes, timeSpent, totalBlocks, completedBlocks, startedAt, correctAnswers, totalQuestions, percentage, attempts }` | Урок завершён |
 | `onAnswer` | `{ blockIndex, blockType, correct, answers, points }` | Дан ответ |
 
 ---
@@ -222,7 +229,7 @@ LessonEngine.analytics.on('onLessonFinish', function(data) {
 
 ```js
 var saved = LessonEngine.exportState();
-// → '{"version":"2.1.0","lessonId":"vieta_theorem","currentIndex":5,...}'
+// → '{"version":"2.2.0","lessonId":"algebra.vieta.intro","currentIndex":5,...}'
 ```
 
 ### LessonEngine.importState(json)
@@ -233,7 +240,7 @@ LessonEngine.importState(saved);
 // → true (или false при ошибке)
 ```
 
-Поля в экспорте: `version, exportedAt, lessonId, currentIndex, score, mistakes, timeSpent, completedBlocks, answers, blockResults, finished`.
+Поля в экспорте: `version, exportedAt, lessonId, currentIndex, score, mistakes, timeSpent, startedAt, completedBlocks, answers, blockResults, finished`.
 
 ---
 
@@ -332,7 +339,7 @@ console.log(result.warnings); // массив строк — предупреж�
 
 ```js
 LessonEngine.version
-// → '2.1.0'
+// → '2.2.0'
 ```
 
 При загрузке урока проверяется `schemaVersion`:
@@ -345,7 +352,7 @@ LessonEngine.version
 ## 11. Вспомогательное
 
 ### LessonEngine.version
-Строка версии движка: `'2.1.0'`
+Строка версии движка: `'2.2.0'`
 
 ---
 

@@ -1,3 +1,5 @@
+/* @deprecated Совместимый API для старых страниц. Новый Lesson lifecycle
+   использует LessonEngine -> Learning.completeLesson напрямую. */
 window.QuizEngine = (function() {
 
   function calcGrade(scorePct) {

@@ -202,7 +202,7 @@ window.__BlockRenderers = (function() {
         H.progress(ctx.index, ctx.total) +
         H.blockBadge('\u0412\u043E\u043F\u0440\u043E\u0441') +
         '<h2 class="text-2xl font-extrabold text-slate-900 mb-2">' + (block.question || '') + '</h2>' +
-        (block.hint ? '<p class="text-sm text-slate-400 mb-6">' + block.hint + '</p>' : '') +
+        (block.hint ? '<div class="lesson-hint mb-6"><button type="button" class="lesson-hint-toggle" onclick="this.nextElementSibling.hidden=false;this.hidden=true">Показать подсказку</button><p hidden class="text-sm text-slate-500 mt-2" role="status">' + block.hint + '</p></div>' : '') +
         (block.equation ? H.formulaBlock(block.equation) : '') +
         '<div class="space-y-3 mb-8">' + optionsHtml + '</div>' +
         '<div id="quiz-feedback-' + ctx.index + '">' + _renderQuizFeedback(block, ctx) + '</div>' +
@@ -235,7 +235,7 @@ window.__BlockRenderers = (function() {
       return H.btnPrimary('\u0414\u0430\u043B\u0435\u0435', 'LessonEngine.next()');
     }
     var escapedExplanation = (block.explanation || '').replace(/'/g, "\\'");
-    return '<button onclick="LessonBlocks._checkInput(\'' + name + '\', ' + JSON.stringify(block.answer) + ', \'' + escapedExplanation + '\')" class="bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg py-4 px-10 rounded-2xl transition-all shadow-md">\u041F\u0440\u043E\u0432\u0435\u0440\u0438\u0442\u044C</button>';
+    return '<button onclick="LessonBlocks._checkInput(\'' + name + '\', ' + JSON.stringify(block.answer) + ', \'' + escapedExplanation + '\', ' + (block.unordered === true) + ')" class="bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg py-4 px-10 rounded-2xl transition-all shadow-md">\u041F\u0440\u043E\u0432\u0435\u0440\u0438\u0442\u044C</button>';
   }
 
   function renderInput(block, ctx) {
@@ -331,7 +331,7 @@ window.__BlockRenderers = (function() {
     var name = 'challenge_q_' + index + '_' + i;
     var opts = (task.options || []).map(function(o, oi) {
       return '<label class="flex items-center gap-3 p-3 rounded-xl bg-white border border-slate-200 hover:border-blue-300 transition-all cursor-pointer">' +
-        '<input type="radio" name="' + name + '" value="' + oi + '" class="w-4 h-4 accent-blue-600"' +
+        '<input type="radio" name="' + name + '" value="' + oi + '" data-task-index="' + i + '" class="w-4 h-4 accent-blue-600"' +
         (ctx.repeatMode ? ' disabled' : '') +
         '>' +
         '<span class="text-sm font-bold text-slate-700">' + o + '</span></label>';
@@ -353,7 +353,7 @@ window.__BlockRenderers = (function() {
       _renderTaskCheck(task, i, ctx) +
       '</div>' +
       '<p class="font-bold text-slate-900 mb-3">' + task.question + '</p>' +
-      '<input type="number" class="w-28 h-12 bg-white text-center text-lg font-bold font-mono border-2 border-slate-300 focus:border-blue-500 rounded-xl outline-none"' +
+      '<input type="text" inputmode="decimal" data-challenge-input="' + i + '" class="w-28 h-12 bg-white text-center text-lg font-bold font-mono border-2 border-slate-300 focus:border-blue-500 rounded-xl outline-none"' +
       (ctx.repeatMode ? ' disabled' : '') +
       ' placeholder="' + (task.placeholder || '') + '">' +
       '</div>';
@@ -377,7 +377,7 @@ window.__BlockRenderers = (function() {
 
     var actionBtn = ctx.repeatMode
       ? H.btnPrimary('\u0414\u0430\u043B\u0435\u0435', 'LessonEngine.next()')
-      : '<button onclick="LessonEngine.next({points: 20})" class="bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg py-4 px-10 rounded-2xl transition-all shadow-md">\u041F\u0440\u043E\u0432\u0435\u0440\u0438\u0442\u044C \u0432\u0441\u0451</button>';
+      : '<button onclick="LessonBlocks._submitChallenge(' + ctx.index + ')" class="bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg py-4 px-10 rounded-2xl transition-all shadow-md">\u041F\u0440\u043E\u0432\u0435\u0440\u0438\u0442\u044C \u0432\u0441\u0451</button>';
 
     return H.wrap(
       '<div class="py-8">' +
@@ -403,9 +403,9 @@ window.__BlockRenderers = (function() {
     return '<div class="mb-4"><p class="font-bold text-slate-900 mb-2">' + q.text + '</p><div class="space-y-1">' + opts + '</div></div>';
   }
 
-  function _renderRateQuestion(q) {
+  function _renderRateQuestion(q, i, ctx) {
     var buttons = [1, 2, 3, 4, 5].map(function(s) {
-      return '<button onclick="this.parentElement.querySelectorAll(\'button\').forEach(function(b){b.classList.remove(\'bg-blue-600\',\'text-white\')}); this.classList.add(\'bg-blue-600\',\'text-white\')" class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 font-bold text-sm border border-slate-200 hover:bg-blue-100 transition-all">' + s + '</button>';
+      return '<button type="button" data-reflect-rate="' + ctx.index + '_' + i + '" data-value="' + s + '" onclick="this.parentElement.querySelectorAll(\'button\').forEach(function(b){b.classList.remove(\'bg-blue-600\',\'text-white\')}); this.classList.add(\'bg-blue-600\',\'text-white\')" class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 font-bold text-sm border border-slate-200 hover:bg-blue-100 transition-all">' + s + '</button>';
     }).join('');
     return '<div class="mb-4"><p class="font-bold text-slate-900 mb-2">' + q.text + '</p>' +
       '<div class="flex gap-2">' + buttons + '</div></div>';
@@ -414,7 +414,7 @@ window.__BlockRenderers = (function() {
   function renderReflection(block, ctx) {
     var questionsHtml = (block.questions || []).map(function(q, i) {
       if (q.type === 'choice') return _renderChoiceQuestion(q, i, ctx);
-      if (q.type === 'rate') return _renderRateQuestion(q);
+      if (q.type === 'rate') return _renderRateQuestion(q, i, ctx);
       return '';
     }).join('');
 
@@ -425,7 +425,7 @@ window.__BlockRenderers = (function() {
         '<h2 class="text-2xl font-extrabold text-slate-900 mb-6">' + (block.title || '\u041E\u0441\u043C\u044B\u0441\u043B\u0438\u043C \u043F\u0440\u043E\u0439\u0434\u0435\u043D\u043D\u043E\u0435') + '</h2>' +
         '<div class="space-y-4 mb-8">' + questionsHtml + '</div>' +
         '<div class="flex justify-end">' +
-          H.btnPrimary('\u0417\u0430\u0432\u0435\u0440\u0448\u0438\u0442\u044C', 'LessonEngine.next({answers: {}})') +
+          H.btnPrimary('\u0417\u0430\u0432\u0435\u0440\u0448\u0438\u0442\u044C', 'LessonBlocks._submitReflection(' + ctx.index + ')') +
         '</div>' +
       '</div>'
     );
@@ -437,10 +437,6 @@ window.__BlockRenderers = (function() {
 
   function _calcGrade(pct) {
     return pct >= 90 ? 'S' : pct >= 80 ? 'A' : pct >= 60 ? 'B' : pct >= 40 ? 'C' : 'D';
-  }
-
-  function _calcEmoji(pct) {
-    return pct >= 90 ? '\uD83C\uDF89' : pct >= 70 ? '\uD83D\uDC4F' : pct >= 50 ? '\uD83D\uDCAA' : '\uD83D\uDCD6';
   }
 
   function _formatTime(seconds) {
@@ -476,16 +472,17 @@ window.__BlockRenderers = (function() {
   }
 
   function renderResult(block, ctx) {
-    var totalQuestions = ctx.total;
-    var pct = totalQuestions > 0 ? Math.round((ctx.score / (totalQuestions * 10)) * 100) : 0;
+    var pct = ctx.percentage || 0;
     var grade = _calcGrade(pct);
-    var emoji = _calcEmoji(pct);
-    var xpEarned = block.xp || 50;
-    var timeStr = _formatTime(ctx.duration || 0);
+    var state = window.__EngineInternal && window.__EngineInternal.state;
+    var rewardKey = state && state.lessonId ? 'lesson:' + state.lessonId : '';
+    var rewardExists = rewardKey && typeof ML !== 'undefined' && !!(ML.get('rewards', {})[rewardKey]);
+    var xpEarned = ctx.repeatMode || rewardExists ? 0 : (block.xp || 50);
+    var timeStr = _formatTime(ctx.timeSpent || 0);
 
     return H.wrap(
       '<div class="text-center py-8">' +
-        '<div class="text-7xl mb-6 animate-bounce-in">' + emoji + '</div>' +
+        '<div class="lesson-finish-mark" aria-hidden="true">◆</div>' +
         '<h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-2">\u0423\u0440\u043E\u043A \u0437\u0430\u0432\u0435\u0440\u0448\u0451\u043D!</h2>' +
         '<p class="text-lg text-slate-500 mb-8">' + (block.description || '\u041E\u0442\u043B\u0438\u0447\u043D\u0430\u044F \u0440\u0430\u0431\u043E\u0442\u0430!') + '</p>' +
         _renderStatsGrid(pct, xpEarned, timeStr, grade) +
@@ -505,6 +502,58 @@ window.__BlockRenderers = (function() {
       _pendingResult = null;
       LessonEngine.next(r);
     }
+  }
+
+  function _normaliseAnswer(value) {
+    return String(value === undefined || value === null ? '' : value).trim().replace(/\s+/g, '').replace(',', '.');
+  }
+
+  function _submitChallenge(index) {
+    var block = window.__EngineInternal && window.__EngineInternal.state.blocks[index];
+    if (!block || !Array.isArray(block.tasks)) return;
+    var results = [];
+    var allAnswered = true;
+    block.tasks.forEach(function(task, taskIndex) {
+      var value = '';
+      if (task.type === 'quiz') {
+        var selected = document.querySelector('input[name="challenge_q_' + index + '_' + taskIndex + '"]:checked');
+        if (!selected) allAnswered = false;
+        value = selected ? Number(selected.value) : null;
+        results.push({ correct: value === task.answer, answer: value });
+      } else if (task.type === 'input') {
+        var input = document.querySelector('[data-challenge-input="' + taskIndex + '"]');
+        value = input ? _normaliseAnswer(input.value) : '';
+        if (!value) allAnswered = false;
+        var accepted = Array.isArray(task.answer) ? task.answer : [task.answer];
+        var correct = accepted.some(function(answer) { return _normaliseAnswer(answer) === value; });
+        results.push({ correct: correct, answer: value });
+      }
+    });
+    if (!allAnswered) {
+      _showToast('Ответьте на все задания');
+      return;
+    }
+    var correctCount = results.filter(function(result) { return result.correct; }).length;
+    LessonEngine.next({
+      correct: correctCount === results.length,
+      correctAnswers: correctCount,
+      totalQuestions: results.length,
+      attempts: results.length,
+      taskResults: results,
+      answers: results.map(function(result) { return result.answer; }),
+      points: correctCount * 10,
+    });
+  }
+
+  function _submitReflection(index) {
+    var answers = {};
+    document.querySelectorAll('input[name^="reflect_' + index + '_"]:checked').forEach(function(input) {
+      answers[input.name] = input.value;
+    });
+    document.querySelectorAll('[data-reflect-rate^="' + index + '_"].bg-blue-600').forEach(function(button) {
+      answers[button.dataset.reflectRate] = button.dataset.value;
+    });
+    LessonEngine.next({ answers: answers, reflection: true });
   }
 
   function _selectOption(el) {
@@ -599,7 +648,11 @@ window.__BlockRenderers = (function() {
     return { values: values, allFilled: allFilled };
   }
 
-  function _compareAnswers(values, correctAnswers) {
+  function _compareAnswers(values, correctAnswers, unordered) {
+    if (unordered) {
+      values = values.map(Number).sort(function(a, b) { return a - b; });
+      correctAnswers = correctAnswers.map(Number).sort(function(a, b) { return a - b; });
+    }
     for (var i = 0; i < correctAnswers.length; i++) {
       if (parseInt(values[i]) !== correctAnswers[i]) return false;
     }
@@ -636,14 +689,14 @@ window.__BlockRenderers = (function() {
     }, 800);
   }
 
-  function _checkInput(name, correctAnswers, explanation) {
+  function _checkInput(name, correctAnswers, explanation, unordered) {
     var result = _getInputValues(name);
     if (!result.allFilled) {
       _showToast('\u0417\u0430\u043F\u043E\u043B\u043D\u0438\u0442\u0435 \u0432\u0441\u0435 \u043F\u043E\u043B\u044F');
       return;
     }
 
-    var correct = _compareAnswers(result.values, correctAnswers);
+    var correct = _compareAnswers(result.values, correctAnswers, unordered === true);
     var idx = name.split('_')[1];
     _showInputFeedback(idx, correct, explanation, name);
     _submitInputResult(correct, result.values, explanation);
@@ -651,20 +704,29 @@ window.__BlockRenderers = (function() {
 
   function _updateSandbox(index) {
     var params = document.querySelectorAll('[id^="sandbox-param-' + index + '-"]');
+    var values = [];
+    var labels = [];
     params.forEach(function(el) {
       var valId = el.id.replace('sandbox-param-', 'sandbox-val-');
       var valEl = document.getElementById(valId);
       if (valEl) valEl.textContent = el.value;
+      values.push(Number(el.value));
+      var label = el.parentElement && el.parentElement.querySelector('label');
+      labels.push(label ? label.textContent.trim().toLowerCase() : '');
     });
 
     var outputEl = document.getElementById('sandbox-output-' + index);
-    if (outputEl && outputEl.dataset.updateFn) {
-      try {
-        var fn = new Function('return ' + outputEl.dataset.updateFn)();
-        var values = [];
-        params.forEach(function(el) { values.push(parseInt(el.value)); });
-        outputEl.textContent = fn.apply(null, values);
-      } catch (e) { /* silent */ }
+    if (outputEl && values.length >= 2) {
+      if (labels[0] === 'a' && labels[1] === 'n') {
+        outputEl.textContent = values[0] + '^' + values[1] + ' = ' + Math.pow(values[0], values[1]);
+      } else if (labels[0] === 'p' && labels[1] === 'q') {
+        var discriminant = values[0] * values[0] - 4 * values[1];
+        outputEl.textContent = discriminant >= 0
+          ? 'D = ' + discriminant
+          : 'D = ' + discriminant + ' · действительных корней нет';
+      } else {
+        outputEl.textContent = values.join(' · ');
+      }
     }
   }
 
@@ -693,6 +755,8 @@ window.__BlockRenderers = (function() {
     _submitQuiz: _submitQuiz,
     _submitWarmup: _submitWarmup,
     _submitPendingResult: _submitPendingResult,
+    _submitChallenge: _submitChallenge,
+    _submitReflection: _submitReflection,
   };
 
 })();

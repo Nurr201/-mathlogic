@@ -13,6 +13,17 @@
   html { scroll-behavior: auto !important; }
 }
 
+@keyframes axisPulse { 0%,100% { opacity:.62; } 50% { opacity:1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .axis-app *, .axis-app *::before, .axis-app *::after {
+    scroll-behavior:auto !important;
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+  }
+}
+
 /* --- KEYFRAMES --- */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
@@ -276,9 +287,9 @@
 }
 
 /* --- BUTTON HOVER ENHANCEMENTS --- */
-.btn, .subj-card, .topic-chip, .stat-card, .achv-card,
+.btn, .stat-card, .achv-card,
 .continue-card, .goal-card, .chart-card, .settings-card,
-.formula-card, .quiz-answer, .nav-link, .bottom-item,
+.quiz-answer, .nav-link,
 .theme-btn, .lang-btn, .color-swatch, .period-btn, .achv-filter-btn {
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -339,11 +350,6 @@
   animation: fadeIn 0.2s ease reverse forwards;
 }
 
-/* --- STEP TRANSITIONS (dashboard sections) --- */
-#sections-wrap { transition: opacity 0.25s ease, transform 0.25s ease; }
-.fade-out { opacity: 0; transform: translateY(10px); }
-.fade-in { opacity: 1; transform: translateY(0); }
-
 /* --- PROGRESS BAR SMOOTH --- */
 .xp-bar-fill, .main-progress-fill, .subj-progress-fill,
 .achv-progress-fill, .level-progress-fill, .progress-fill,
@@ -355,27 +361,6 @@
 /* --- COUNTER ANIMATION --- */
 .stat-value, .count-up {
   font-variant-numeric: tabular-nums;
-}
-
-/* --- BOTTOM BAR ITEMS --- */
-.bottom-item {
-  position: relative;
-}
-.bottom-item::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%) scaleX(0);
-  width: 60%;
-  height: 2px;
-  background: white;
-  border-radius: 999px;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.bottom-item.active::after,
-.bottom-item:hover::after {
-  transform: translateX(-50%) scaleX(1);
 }
 
 /* --- SCROLL PROGRESS INDICATOR --- */
@@ -428,12 +413,6 @@
 .cal-day:hover {
   transform: scale(1.25);
   z-index: 2;
-}
-
-/* --- MATH FORMULA HOVER --- */
-.formula-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(79, 70, 229, 0.08);
 }
 
 /* --- HERO FLOATING ELEMENTS --- */

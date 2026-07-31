@@ -1,323 +1,119 @@
-# Learning Engine — Архитектура
+# MathLogic Learning Architecture
 
-## Обзор
+Актуальный контракт после перехода на канонические уроки и storage schema v2.
 
-`js/learning.js` — центральная система обучения платформы MathLogic.
+## Источники данных
 
-Learning Engine — единственный модуль, который:
-- строит структуру курса (Subject → Topic → Lesson)
-- управляет состояниями уроков (locked / available / completed)
-- рассчитывает прогресс (общий, по предмету, по теме)
-- генерирует события после завершения урока
+- `js/data.js` содержит каталог `DATA` и реестр реально реализованных уроков `LESSON_REGISTRY`.
+- Каталог описывает весь будущий курс. Наличие строки в `DATA` не означает, что контент готов.
+- Только урок из `LESSON_REGISTRY` с `availability: "available"` и выполненными optional `prerequisites` открывается в `lesson.html?id=...`.
+- `LESSON_LEGACY_MAP` явно сопоставляет старые ID и старые URL с постоянными ID. ID больше не выводится из позиции элемента в массиве.
+- `js/learning.js` объединяет каталог, реестр и пользовательские данные и является публичным read/write API учебного домена.
 
-Dashboard, Profile и другие страницы **не вычисляют** прогресс самостоятельно — они только отображают данные, полученные через API Learning.
+Сейчас зарегистрированы:
 
----
+| Канонический ID | Конфиг | Маршрут |
+|---|---|---|
+| `algebra.exponents.basics` | `LESSON_EXPONENTS` | `lesson.html?id=algebra.exponents.basics` |
+| `algebra.vieta.intro` | `LESSON_VIETA` | `lesson.html?id=algebra.vieta.intro` |
 
-## Структура данных
+`topic-1-expressions.html` сохранён только как redirect для старых ссылок.
 
+## Storage schema v2
+
+Все пользовательские данные хранятся под одним ключом `mathlogic_data`:
+
+```js
+{
+  version: 2,
+  user: { xp, level, streak, ... },
+  progress: {
+    lessons: {
+      "algebra.exponents.basics": {
+        status: "completed",
+        percentage: 80,
+        correctAnswers: 4,
+        totalQuestions: 5,
+        duration: 320,
+        startedAt: 0,
+        completedAt: 0,
+        xpEarned: 90
+      }
+    },
+    subtopics: {}
+  },
+  lesson: {
+    sessions: {
+      "algebra.vieta.intro": { currentIndex, completedBlocks, answers, blockResults, timeSpent }
+    }
+  },
+  activity: { dates: [], studySecondsByDate: {} },
+  rewards: { "lesson:algebra.exponents.basics": { amount, awardedAt, reason } },
+  settings: {}, stats: {}, achievements: [], timeline: []
+}
 ```
-Subject
-├── key          — идентификатор (algebra, geometry, logic, numbers)
-├── name         — название
-├── icon         — SVG-иконка
-├── mainColor    — основной цвет
-├── bgActive     — цвет фона
-├── totalLessons — общее количество уроков
-├── firstLessonId — ID первого урока
-├── topics[]
-│   ├── title         — название темы (раздела)
-│   ├── level         — уровень сложности
-│   ├── order         — порядковый номер
-│   ├── totalLessons  — количество уроков
-│   └── lessons[]
-│       ├── id        — уникальный ID (subjectKey_order)
-│       ├── name      — название урока
-│       ├── order     — порядковый номер
-│       ├── link      — ссылка на HTML-страницу (если есть)
-│       ├── subtopics — массив подтем
-│       ├── subjectKey — привязка к предмету
-│       ├── sectionTitle  — название темы
-│       └── sectionLevel  — уровень темы
-└── lessons[]   — плоский список всех уроков
+
+`ML.get()` возвращает копию данных. Согласованные изменения выполняются через `ML.update(mutator)`. Сессии с ID, содержащими точки, читаются только через `getLessonSession` / `setLessonSession`, а не через dotted path.
+
+При чтении применяются defaults, проверяются основные типы и выполняются идемпотентные миграции:
+
+- `progress.lessonStates` → `progress.lessons`;
+- `lesson.v2` → `lesson.sessions`;
+- старые lesson ID → канонические ID;
+- `ml_streak_dates` → `activity.dates`.
+
+Ошибки чтения/записи не скрываются полностью: они доступны через `ML.getDiagnostics()` и выводятся в console. При повреждённом JSON приложение безопасно стартует с defaults.
+
+## Статусы урока
+
+`Learning.getLessonStatus(id)` возвращает ровно одно состояние:
+
+| Статус | Основание |
+|---|---|
+| `completed` | есть завершённый result в `progress.lessons` |
+| `current` | есть незавершённая session с пройденными блоками |
+| `available` | контент зарегистрирован и доступен |
+| `comingSoon` | задана валидная будущая `releaseDate` |
+| `locked` | контент отсутствует или явно заблокирован |
+
+Для незарегистрированных модулей не создаются фиктивные даты. Dashboard показывает честную причину «урок пока не готов».
+
+## Completion и XP
+
+`Learning.completeLesson(id, result)` — единственный product-level lifecycle завершения урока. В одной транзакции он:
+
+1. проверяет первое завершение;
+2. сохраняет нормализованный result;
+3. помечает подтемы;
+4. фиксирует одноразовую награду `lesson:{id}`;
+5. обновляет XP и производные level-поля;
+6. обновляет stats и timeline.
+
+После транзакции очищается session, отмечается единый день активности и отправляются `xp:update`, `lesson:completed`, `progress:update`.
+
+Повторное прохождение возвращает `xpEarned: 0`. `resetLesson()` удаляет result/session, но сохраняет reward ledger, поэтому локальный reset результата нельзя использовать для фарма XP. `resetAll()` очищает прогресс, XP, награды, активность и аналитику, сохраняя профиль, авторизацию и настройки.
+
+Модель уровней едина во всех экранах:
+
+```js
+xpAtLevel(level) = (level - 1) ** 2 * 100
+level(xp) = floor(sqrt(xp / 100)) + 1
 ```
-
-### Статусы уроков
-
-| Статус      | Описание                          |
-|-------------|-----------------------------------|
-| `locked`    | Урок заблокирован                 |
-| `available` | Урок доступен для прохождения     |
-| `completed` | Урок успешно завершён             |
-
-Хранятся в `localStorage` по пути `progress.lessonStates` через ML (storage.js).
-
----
 
 ## Публичный API
 
-### Subjects
+Основное чтение: `getSubjects`, `getSubject`, `getTopics`, `getLessons`, `getLesson`, `getLessonStatus`, `getNextLesson`, `getLastCompletedLesson`, методы progress.
 
-```js
-Learning.getSubjects()
-// → [{ key, name, icon, mainColor, bgActive, totalLessons, completedLessons, progress }]
+Основная запись: `completeLesson`, `resetLesson`, `resetSubject`, `resetAll`.
 
-Learning.getSubject(subjectKey)
-// → { key, name, icon, mainColor, bgActive, topics: [...], totalLessons, completedLessons, progress, firstLessonId }
-```
+Старый `getLessonState()` оставлен совместимым и сводит новые статусы к трём старым. `unlock()` оставлен no-op: готовность контента не должна создаваться пользовательским состоянием.
 
-### Topics
+## Добавление урока
 
-```js
-Learning.getTopics(subjectKey)
-// → [{ title, level, order, progress, totalLessons, completedLessons, lessons: [...] }]
+1. Добавить постоянный namespaced ID, метаданные, route и имя config в `LESSON_REGISTRY`.
+2. Если раньше был другой ID/URL, внести его в `legacyIds`.
+3. Добавить этот ID соответствующему module в `DATA`.
+4. Создать config по schema и подключить его до `js/lesson.js`.
+5. Проверить `LessonValidator.validate(config)` и выполнить `node tests/core-smoke.js`.
 
-Learning.getTopic(subjectKey, topicTitle)
-// → { title, level, order, progress, totalLessons, completedLessons, lessons: [...] }
-```
-
-### Lessons
-
-```js
-Learning.getLessons(subjectKey)
-// → [{ id, name, order, sectionTitle, sectionLevel, state, link, subtopics }]
-
-Learning.getLesson(lessonId)
-// → { id, name, order, sectionTitle, sectionLevel, state, link, subtopics, subjectKey }
-
-Learning.getLessonState(lessonId)
-// → 'locked' | 'available' | 'completed'
-```
-
-### Status
-
-```js
-Learning.isUnlocked(lessonId)
-// → true | false
-
-Learning.unlock(lessonId)
-// → true (если разблокирован) | false (уже доступен или не найден)
-```
-
-### Completion
-
-```js
-Learning.completeLesson(lessonId, result)
-// result: { score, correct, total, attempts, time, xpEarned, grade }
-// → { lessonId, xpEarned, score, grade }
-```
-
-`completeLesson`:
-1. Проверяет, не завершён ли уже урок
-2. Устанавливает статус `completed`
-3. Сохраняет результат через `ML.completeLesson()`
-4. Отмечает подтемы как выполненные
-5. Добавляет запись в timeline
-6. Разблокирует следующий урок
-7. **Генерирует события** (не вызывает XP напрямую)
-
-### Reset
-
-```js
-Learning.resetSubject(subjectKey)
-// Сбрасывает все уроки предмета в начальное состояние
-
-Learning.resetAll()
-// Сбрасывает прогресс по всем предметам
-```
-
-### Progress
-
-```js
-Learning.getOverallProgress()
-// → 0–100 (процент)
-
-Learning.getSubjectProgress(subjectKey)
-// → 0–100
-
-Learning.getTopicProgress(subjectKey, topicTitle)
-// → 0–100
-```
-
-### Navigation
-
-```js
-Learning.getNextLesson()
-// → { id, name, subjectKey, subjectName, link, sectionTitle } | null
-
-Learning.getNextLessonId(currentLessonId)
-// → id | null
-
-Learning.unlockNextLesson(currentLessonId)
-// → id | null
-
-Learning.getLastCompletedLesson()
-// → { id, name, ... } | null
-
-Learning.getTotalCompletedLessons()
-// → number
-
-Learning.getTotalLessons()
-// → number
-```
-
----
-
-## События
-
-После завершения урока Learning **не вызывает XP напрямую**.
-Вместо этого он генерирует события, на которые подписываются другие модули.
-
-### Список событий
-
-| Событие              | Детали                                                   | Когда срабатывает                |
-|----------------------|----------------------------------------------------------|----------------------------------|
-| `lesson:completed`   | `{ lessonId, lessonName, score, xpEarned, correct, total, grade }` | Урок завершён                    |
-| `progress:update`    | `{ lessonId, lessonName, score, xpEarned, correct, total, grade }` | Прогресс изменён                 |
-| `topic:completed`    | `{ topicTitle, subjectKey }`                             | Все уроки темы завершены         |
-| `subject:completed`  | `{ subjectKey }`                                         | Все уроки предмета завершены     |
-
-### Как подписаться
-
-```js
-document.addEventListener('lesson:completed', function(e) {
-  console.log('Урок завершён:', e.detail);
-});
-
-document.addEventListener('progress:update', function(e) {
-  console.log('Прогресс обновлён:', e.detail);
-});
-```
-
----
-
-## Взаимодействие с модулями
-
-### storage.js (ML)
-
-Learning использует ML для:
-- чтения и записи состояний уроков (`ML.get('progress.lessonStates')` / `ML.set(...)`)
-- сохранения результата урока (`ML.completeLesson()`)
-- отметки подтем (`ML.markSubtopicsDone()`)
-- добавления записи в ленту (`ML.addTimelineEntry()`)
-- чтения старых завершённых уроков (`ML.getCompletedLessons()`)
-
-### events.js (EVENTS)
-
-Learning использует `EVENTS.emit(name, detail)` для отправки событий.
-Никаких прямых вызовов XP не происходит.
-
-### xp.js (XP)
-
-Learning **не вызывает** `XP.addXP()`.
-XP-система должна подписаться на события и начислять XP самостоятельно.
-
-Пример для XP-модуля:
-
-```js
-document.addEventListener('lesson:completed', function(e) {
-  var detail = e.detail;
-  XP.addXP(detail.xpEarned, 'lesson:' + detail.lessonId);
-});
-```
-
----
-
-## Как подключить будущие системы
-
-### XP
-
-Подписаться на `lesson:completed`.
-При получении события вызвать `XP.addXP(detail.xpEarned, ...)`.
-
-### Achievements
-
-Подписаться на `lesson:completed`, `topic:completed`, `subject:completed`.
-Проверять условия достижений и разблокировать.
-
-### Streak
-
-Подписаться на `lesson:completed`.
-Отмечать день как активный.
-
-### Progress (аналитика)
-
-Подписаться на `progress:update`.
-Обновлять графики и статистику.
-
-### Leaderboard
-
-Подписаться на `lesson:completed`.
-Отправлять данные на сервер.
-
-### Cloud Sync
-
-Читать данные через ML API. Синхронизировать при изменении.
-
-### AI Tutor
-
-Использовать `Learning.getLesson(id)` для получения
-контекста урока и `Learning.getSubjectProgress(key)` для
-адаптации сложности.
-
----
-
-## Примеры использования
-
-### Получить все предметы с прогрессом
-
-```js
-var subjects = Learning.getSubjects();
-subjects.forEach(function(s) {
-  console.log(s.name + ': ' + s.progress + '% (' + s.completedLessons + '/' + s.totalLessons + ')');
-});
-```
-
-### Завершить урок
-
-```js
-Learning.completeLesson('algebra_3', {
-  score: 85,
-  correct: 4,
-  total: 5,
-  attempts: 1,
-  time: 340,
-  xpEarned: 90,
-  grade: 'A',
-});
-```
-
-### Проверить, доступен ли урок
-
-```js
-if (Learning.isUnlocked('geometry_5')) {
-  window.location.href = 'lesson.html';
-}
-```
-
-### Получить следующий доступный урок
-
-```js
-var next = Learning.getNextLesson();
-if (next) {
-  console.log('Следующий:', next.name, '(' + next.subjectName + ')');
-}
-```
-
-### Получить прогресс по теме
-
-```js
-var pct = Learning.getTopicProgress('algebra', 'Функциялар, Графиктер және Туынды');
-console.log('Прогресс темы:', pct + '%');
-```
-
----
-
-## Принципы
-
-1. **Единый источник истины** — Learning Engine централизует все данные о курсе и прогрессе
-2. **События вместо прямых вызовов** — модули не вызывают друг друга напрямую
-3. **Никаких вычислений на страницах** — Dashboard, Profile только отображают данные
-4. **Никакой магии** — каждая функция делает только то, что написано в её названии
-5. **Никаких циклических зависимостей** — Learning зависит только от ML (storage.js)
-6. **Полная обратная совместимость** — `window.COURSE` = `window.Learning`
+Не добавлять отдельную HTML-реализацию completion и не начислять lesson XP из renderer/page.

@@ -1,0 +1,220 @@
+/* Minimal DOM smoke checks for the two active controllers. No external packages. */
+'use strict';
+
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+
+const ROOT = path.resolve(__dirname, '..');
+
+function classList() {
+  const values = new Set();
+  return {
+    add() { Array.from(arguments).forEach(function(value) { values.add(value); }); },
+    remove() { Array.from(arguments).forEach(function(value) { values.delete(value); }); },
+    contains(value) { return values.has(value); },
+    toggle(value, force) {
+      const next = force === undefined ? !values.has(value) : !!force;
+      if (next) values.add(value); else values.delete(value);
+      return next;
+    },
+  };
+}
+
+function element(id) {
+  const child = { dataset: {}, textContent: '', setAttribute() {} };
+  return {
+    id,
+    hidden: false,
+    textContent: '',
+    innerHTML: '',
+    href: '',
+    scrollTop: 0,
+    dataset: {},
+    style: { width: '', setProperty() {} },
+    classList: classList(),
+    setAttribute() {},
+    addEventListener() {},
+    querySelector() { return child; },
+    querySelectorAll() { return []; },
+  };
+}
+
+function environment(search, initialStorage) {
+  const nodes = {};
+  const values = Object.assign({}, initialStorage || {});
+  const storage = {
+    get length() { return Object.keys(values).length; },
+    key(index) { return Object.keys(values)[index] || null; },
+    getItem(key) { return Object.prototype.hasOwnProperty.call(values, key) ? values[key] : null; },
+    setItem(key, value) { values[key] = String(value); },
+    removeItem(key) { delete values[key]; },
+  };
+  const document = {
+    readyState: 'complete',
+    body: element('body'),
+    documentElement: { dataset: {}, lang: '', style: { fontSize: '', setProperty() {} } },
+    getElementById(id) { return nodes[id] || (nodes[id] = element(id)); },
+    querySelectorAll() { return []; },
+    querySelector() { return null; },
+    addEventListener() {},
+    dispatchEvent() {},
+    createElement(tag) { return element(tag); },
+  };
+  const context = {
+    console,
+    document,
+    localStorage: storage,
+    location: { search: search || '', hostname: 'example.test' },
+    URLSearchParams,
+    Intl,
+    Date,
+    Math,
+    JSON,
+    CustomEvent: function(name, options) { this.type = name; this.detail = options && options.detail; },
+    matchMedia() { return { matches: false }; },
+    addEventListener() {},
+    setTimeout() { return 1; },
+    clearTimeout() {},
+  };
+  context.window = context;
+  vm.createContext(context);
+  return { context, nodes, document, storage };
+}
+
+function load(app, files) {
+  files.forEach(function(file) {
+    vm.runInContext(fs.readFileSync(path.join(ROOT, file), 'utf8'), app.context, { filename: file });
+  });
+}
+
+const CORE = ['js/data.js', 'js/storage.js', 'js/i18n.js', 'js/xp.js', 'js/events.js', 'js/learning.js'];
+const LESSON = [
+  'js/lesson-engine/state.js', 'js/lesson-engine/hooks.js', 'js/lesson-engine/storage.js',
+  'js/lesson-engine/debug.js', 'js/lesson-engine/serializer.js', 'js/lesson-engine/core.js', 'js/lesson-engine.js',
+  'js/lesson-blocks/helpers.js', 'js/lesson-blocks/registry.js', 'js/lesson-blocks/renderers.js', 'js/lesson-blocks.js',
+  'data/lesson-schema.js', 'data/lessons/exponents.js', 'js/lesson.js',
+];
+
+function testDashboardShell() {
+  const html = fs.readFileSync(path.join(ROOT, 'dashboard.html'), 'utf8');
+  const scripts = Array.from(html.matchAll(/<script\s+src="([^"]+)"\s*><\/script>/g), function(match) { return match[1]; });
+  assert.deepEqual(scripts, [
+    'js/data.js', 'js/storage.js', 'js/i18n.js', 'js/xp.js',
+    'js/learning.js', 'js/dashboard.js',
+  ]);
+  assert.equal((html.match(/js\/dashboard\.js/g) || []).length, 1);
+  assert.equal(/<style\b/i.test(html), false);
+  assert.equal(/<script(?!\s+src=)[^>]*>/i.test(html), false);
+}
+
+function testDashboard() {
+  const app = environment('');
+  app.document.body.classList.add('axis-app');
+  app.document.getElementById('dashboard-content').hidden = true;
+  app.document.getElementById('dashboard-error').hidden = true;
+  load(app, CORE.concat(['js/dashboard.js']));
+  assert.equal(app.document.getElementById('dashboard-content').hidden, false);
+  assert.equal(app.document.getElementById('dashboard-error').hidden, true);
+  assert.equal(app.document.getElementById('hero-primary').href, 'lesson.html?id=algebra.exponents.basics');
+  assert.ok(app.document.getElementById('route-modules').innerHTML.includes('status-locked'));
+}
+
+function testLesson(id, expectedTitle) {
+  const app = environment('?id=' + encodeURIComponent(id));
+  app.document.body.classList.add('axis-app');
+  app.document.getElementById('lesson-active').hidden = true;
+  app.document.getElementById('lesson-error').hidden = true;
+  load(app, CORE.concat(LESSON));
+  assert.equal(app.document.getElementById('lesson-error').hidden, true);
+  assert.equal(app.document.getElementById('lesson-active').hidden, false);
+  assert.equal(app.document.getElementById('lesson-title').textContent, expectedTitle);
+  assert.equal(vm.runInContext('__EngineInternal.state.lessonId', app.context), id);
+}
+
+function testUnknownLesson() {
+  const app = environment('?id=unknown.lesson');
+  app.document.body.classList.add('axis-app');
+  app.document.getElementById('lesson-active').hidden = true;
+  app.document.getElementById('lesson-error').hidden = true;
+  load(app, CORE.concat(LESSON));
+  assert.equal(app.document.getElementById('lesson-error').hidden, false);
+  assert.equal(app.document.getElementById('lesson-active').hidden, true);
+  assert.equal(app.document.getElementById('lesson-error-title').textContent, 'Сабақ табылмады');
+}
+
+function testCompletionBridge() {
+  const app = environment('?id=algebra.exponents.basics');
+  app.document.body.classList.add('axis-app');
+  app.document.getElementById('lesson-active').hidden = true;
+  app.document.getElementById('lesson-error').hidden = true;
+  load(app, CORE.concat(LESSON));
+  let guard = 100;
+  while (vm.runInContext("__EngineInternal.state.finished", app.context) === false && guard-- > 0) {
+    const type = vm.runInContext("__EngineInternal.getCurrentBlock().type", app.context);
+    const assessed = ['warmup', 'quiz', 'input', 'challenge'].includes(type);
+    const result = type === 'challenge'
+      ? '{correct:true,correctAnswers:3,totalQuestions:3,attempts:3,answers:[0,"1/8",1],points:30}'
+      : assessed ? '{correct:true,correctAnswers:1,totalQuestions:1,attempts:1,answers:"ok",points:10}' : 'undefined';
+    vm.runInContext('LessonEngine.next(' + result + ')', app.context);
+  }
+  assert.ok(guard > 0, 'lesson must reach result');
+  assert.equal(vm.runInContext("Learning.getLessonStatus('algebra.exponents.basics')", app.context), 'completed');
+  assert.equal(vm.runInContext('XP.getXP()', app.context), 90);
+  assert.equal(vm.runInContext("ML.getLessonSession('algebra.exponents.basics')", app.context), null);
+  assert.equal(vm.runInContext("ML.get('progress.lessons')['algebra.exponents.basics'].percentage", app.context), 100);
+  assert.equal(vm.runInContext('LessonEngine.finish()', app.context), false);
+  assert.equal(vm.runInContext('XP.getXP()', app.context), 90);
+  assert.equal(vm.runInContext('Learning.getNextLesson().id', app.context), 'algebra.vieta.intro');
+
+  const repeat = environment('?id=algebra.exponents.basics', {
+    mathlogic_data: app.storage.getItem('mathlogic_data'),
+  });
+  repeat.document.body.classList.add('axis-app');
+  repeat.document.getElementById('lesson-active').hidden = true;
+  repeat.document.getElementById('lesson-error').hidden = true;
+  load(repeat, CORE.concat(LESSON));
+  assert.equal(vm.runInContext('__EngineInternal.state.repeatMode', repeat.context), true);
+  guard = 100;
+  while (vm.runInContext('__EngineInternal.state.finished', repeat.context) === false && guard-- > 0) {
+    const type = vm.runInContext('__EngineInternal.getCurrentBlock().type', repeat.context);
+    const assessed = ['warmup', 'quiz', 'input', 'challenge'].includes(type);
+    const result = type === 'challenge'
+      ? '{correct:true,correctAnswers:3,totalQuestions:3,attempts:3,answers:[],points:30}'
+      : assessed ? '{correct:true,correctAnswers:1,totalQuestions:1,attempts:1,answers:"ok",points:10}' : 'undefined';
+    vm.runInContext('LessonEngine.next(' + result + ')', repeat.context);
+  }
+  assert.equal(vm.runInContext('XP.getXP()', repeat.context), 90);
+  assert.equal(vm.runInContext("ML.getLessonSession('algebra.exponents.basics')", repeat.context), null);
+}
+
+function testResume() {
+  const first = environment('?id=algebra.vieta.intro');
+  first.document.body.classList.add('axis-app');
+  first.document.getElementById('lesson-active').hidden = true;
+  first.document.getElementById('lesson-error').hidden = true;
+  load(first, CORE.concat(LESSON));
+  vm.runInContext('LessonEngine.next();LessonEngine.next()', first.context);
+  assert.equal(vm.runInContext('__EngineInternal.state.currentIndex', first.context), 2);
+
+  const resumed = environment('?id=algebra.vieta.intro', {
+    mathlogic_data: first.storage.getItem('mathlogic_data'),
+  });
+  resumed.document.body.classList.add('axis-app');
+  resumed.document.getElementById('lesson-active').hidden = true;
+  resumed.document.getElementById('lesson-error').hidden = true;
+  load(resumed, CORE.concat(LESSON));
+  assert.equal(vm.runInContext('__EngineInternal.state.currentIndex', resumed.context), 2);
+  assert.equal(vm.runInContext('__EngineInternal.state.completedBlocks.length', resumed.context), 2);
+  assert.equal(vm.runInContext("Learning.getLessonStatus('algebra.vieta.intro')", resumed.context), 'current');
+}
+
+testDashboardShell();
+testDashboard();
+testLesson('algebra.exponents.basics', 'Дәрежелер және олардың қасиеттері');
+testLesson('algebra.vieta.intro', 'Виет теоремасы');
+testUnknownLesson();
+testCompletionBridge();
+testResume();
+console.log('page-smoke: ok');

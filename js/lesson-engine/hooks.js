@@ -8,6 +8,8 @@ window.__EngineInternal = window.__EngineInternal || {};
     afterComplete: [],
     beforeLesson: [],
     afterLesson: [],
+    beforeFinish: [],
+    afterFinish: [],
   };
 
   I.ANALYTIC_EVENTS = {

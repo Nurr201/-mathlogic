@@ -229,28 +229,6 @@ window.Achievements = (function() {
       hidden: false,
     },
 
-    // --- КВЕСТЫ ---
-    {
-      id: 'first_quest',
-      title: '\u041F\u0435\u0440\u0432\u044B\u0439 \u043A\u0432\u0435\u0441\u0442',
-      desc: '\u0412\u044B \u0432\u044B\u043F\u043E\u043B\u043D\u0438\u043B\u0438 \u0441\u0432\u043E\u0439 \u043F\u0435\u0440\u0432\u044B\u0439 Daily Quest.',
-      condition: '\u0412\u044B\u043F\u043E\u043B\u043D\u0438\u0442\u044C 1 Daily Quest',
-      icon: '\uD83C\uDFF7',
-      rarity: 'common',
-      target: 1,
-      hidden: false,
-    },
-    {
-      id: 'thirty_quests',
-      title: '30 \u043A\u0432\u0435\u0441\u0442\u043E\u0432',
-      desc: '\u0412\u044B \u0432\u044B\u043F\u043E\u043B\u043D\u0438\u043B\u0438 30 Daily Quest. \u041D\u0430\u0441\u0442\u043E\u044F\u0449\u0438\u0439 \u0442\u0440\u0443\u0434\u043E\u043B\u044E\u0431!',
-      condition: '\u0412\u044B\u043F\u043E\u043B\u043D\u0438\u0442\u044C 30 Daily Quest',
-      icon: '\uD83C\uDF1F',
-      rarity: 'epic',
-      target: 30,
-      hidden: false,
-    },
-
     // --- ПРЕДМЕТЫ ---
     {
       id: 'algebra_master',
@@ -353,8 +331,16 @@ window.Achievements = (function() {
      ========================================== */
 
   function define() {
-    var existing = loadAll();
-    if (existing.length >= DEFINITIONS.length) return;
+    var stored = loadAll();
+    var retired = { first_quest: true, thirty_quests: true };
+    var existing = stored.filter(function(item) { return !retired[item.id]; });
+    var complete = DEFINITIONS.every(function(def) {
+      return existing.some(function(item) { return item.id === def.id; });
+    });
+    if (complete) {
+      if (existing.length !== stored.length) saveAll(existing);
+      return;
+    }
 
     var merged = DEFINITIONS.map(function(def) {
       for (var i = 0; i < existing.length; i++) {
@@ -478,9 +464,7 @@ window.Achievements = (function() {
      ЯДРО: ПРОВЕРКА ВСЕХ ДОСТИЖЕНИЙ
      ========================================== */
 
-  function check(eventName, payload) {
-    payload = payload || {};
-
+  function check() {
     var completedLessons = 0;
     var user = null;
     var xp = 0;
@@ -488,8 +472,6 @@ window.Achievements = (function() {
     var streak = 0;
     var problemsSolved = 0;
     var aGradeCount = 0;
-    var achievementsUnlocked = 0;
-
     /* --- Собираем текущее состояние --- */
     if (typeof Learning !== 'undefined' && Learning.getTotalCompletedLessons) {
       completedLessons = Learning.getTotalCompletedLessons();
@@ -588,19 +570,6 @@ window.Achievements = (function() {
           progress = streak;
           break;
 
-        /* --- Квесты --- */
-        case 'first_quest':
-          if (eventName === 'quest:completed') {
-            progress = 1;
-          }
-          break;
-        case 'thirty_quests':
-          if (eventName === 'quest:completed') {
-            progress = (payload.totalCompleted || 0) + 1;
-            target = 30;
-          }
-          break;
-
         /* --- Предметы --- */
         case 'algebra_master':
           progress = isSubjectFullyCompleted('algebra') ? 1 : 0;
@@ -671,8 +640,8 @@ window.Achievements = (function() {
 
   function unlockReward(ach) {
     /* --- Начисляем XP --- */
-    if (typeof XP !== 'undefined' && XP.addXP) {
-      XP.addXP(ach.rewardXP, 'achievement:' + ach.id);
+    if (typeof XP !== 'undefined' && XP.awardOnce) {
+      XP.awardOnce('achievement:' + ach.id, ach.rewardXP, 'achievement:' + ach.id);
     }
 
     /* --- Запись в timeline --- */
@@ -721,24 +690,20 @@ window.Achievements = (function() {
      ========================================== */
 
   function listen() {
-    document.addEventListener('lesson:completed', function(e) {
-      check('lesson:completed', e.detail || {});
+    document.addEventListener('lesson:completed', function() {
+      check();
     });
 
     document.addEventListener('xp:update', function() {
-      check('xp:update', {});
+      check();
     });
 
     document.addEventListener('progress:update', function() {
-      check('progress:update', {});
+      check();
     });
 
-    document.addEventListener('quest:completed', function(e) {
-      check('quest:completed', e.detail || {});
-    });
-
-    document.addEventListener('streak:update', function(e) {
-      check('streak:update', e.detail || {});
+    document.addEventListener('streak:update', function() {
+      check();
     });
   }
 
@@ -749,7 +714,7 @@ window.Achievements = (function() {
   function init() {
     define();
     listen();
-    check('init', {});
+    check();
   }
 
   /* --- Автоинициализация при загрузке --- */
@@ -762,9 +727,7 @@ window.Achievements = (function() {
   return {
     init: init,
 
-    check: function(eventName, payload) {
-      check(eventName, payload);
-    },
+    check: check,
 
     unlock: function(id) {
       var data = loadAll();

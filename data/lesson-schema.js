@@ -24,7 +24,7 @@ window.LESSON_SCHEMA = (function() {
     anchor: ['id', 'type', 'visual', 'title', 'problem', 'question'],
     theory: ['id', 'type', 'title', 'content', 'formula', 'formulaLabel', 'examples'],
     quiz: ['id', 'type', 'question', 'equation', 'options', 'answer', 'explanation', 'hint', 'points'],
-    input: ['id', 'type', 'question', 'equation', 'fields', 'answer', 'explanation', 'points'],
+    input: ['id', 'type', 'question', 'equation', 'fields', 'answer', 'explanation', 'points', 'unordered'],
     mistake: ['id', 'type', 'title', 'problem', 'wrongSolution', 'correctSolution', 'explanation'],
     sandbox: ['id', 'type', 'title', 'description', 'task', 'params', 'initialOutput'],
     challenge: ['id', 'type', 'title', 'tasks'],
@@ -221,7 +221,7 @@ window.LESSON_SCHEMA = (function() {
 
     example: {
       schemaVersion: SCHEMA_VERSION,
-      id: 'vieta_theorem',
+      id: 'algebra.vieta.intro',
       title: '\u0412\u0438\u0435\u0442 \u0442\u0435\u043E\u0440\u0435\u043C\u0430\u0441\u044B',
       description: '\u0420\u0435\u0448\u0435\u043D\u0438\u0435 \u043A\u0432\u0430\u0434\u0440\u0430\u0442\u043D\u044B\u0445 \u0443\u0440\u0430\u0432\u043D\u0435\u043D\u0438\u0439 \u0447\u0435\u0440\u0435\u0437 \u0442\u0435\u043E\u0440\u0435\u043C\u0443 \u0412\u0438\u0435\u0442\u0430',
       subject: 'algebra',
@@ -349,6 +349,7 @@ window.LESSON_SCHEMA = (function() {
             { label: 'x\u2082 =', type: 'number', placeholder: '?' },
           ],
           answer: [3, 5],
+          unordered: true,
           explanation: '\u0421\u0443\u043C\u043C\u0430 = 8, \u043F\u0440\u043E\u0438\u0437\u0432\u0435\u0434\u0435\u043D\u0438\u0435 = 15. \u041F\u043E\u0434\u0445\u043E\u0434\u044F\u0442 3 \u0438 5.',
         },
 
@@ -415,7 +416,7 @@ window.LESSON_SCHEMA = (function() {
           xp: 50,
           nextLesson: {
             title: '\u041F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u0438\u0435 \u0442\u0435\u043E\u0440\u0435\u043C\u044B \u0412\u0438\u0435\u0442\u0430',
-            link: 'lesson.html?id=algebra_vieta_2',
+            link: 'dashboard.html',
           },
         },
       ],
@@ -439,3 +440,7 @@ window.LessonValidator = {
     return LESSON_SCHEMA.validate(config);
   },
 };
+
+/* Production-конфигурация примера. Отдельное имя позволяет реестру
+   загрузить урок без копирования его HTML или схемы. */
+window.LESSON_VIETA = JSON.parse(JSON.stringify(LESSON_SCHEMA.example));

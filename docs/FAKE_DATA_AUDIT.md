@@ -1,63 +1,39 @@
-# Fake Data Audit — `math·logic`
+# Runtime Data Audit
 
-## Итог: dashboard.html — гибрид (hardcoded темплейт + ML data)
+Актуально для Axis Dashboard и Lesson.
 
-### `dashboard.html`
-| Что | Статус |
-|---|---|
-| `DASH_SUBJECTS` (46 topics, hardcoded — визуальный шаблон) | Жёсткая структура для отображения; прогресс подтягивается из `ML`/`Learning` |
-| `QUEST_DATA` (4 daily quests) | Работают, XP синхронизируется через `XP.addXP()` |
-| `state.xp` заменён на `XP.getXP()` | ✅ |
-| `state.level` заменён на `XP.getLevel()` | ✅ |
-| `updateStats()` — `ML.getCompletedLessons()`, `XP.getXP()` | ✅ |
-| Topic status (`done`) — из `Learning.getLessonState()` | ✅ |
-| `syncFromML()` — обновляет прогресс при загрузке | ✅ |
-| `rememberFormula()` — `XP.addXP(10)` | ✅ |
-| `TOPIC_LESSON_MAP` — маппинг тем на уроки | ✅ |
-| Quest-состояния хранятся в `ml_dash_state` | ✅ |
+## Удалено из активного Dashboard
 
-### `profile.html`
-| Что было | Что стало |
-|---|---|
-| `data-target="68"` / `data-target="24"` / `data-target="752"` | `data-target="0"` (заполняется в `loadProfileData()`) |
-| `68%` / `72%` в HTML-разметке | `0%` (заполняется в `loadProfileData()`) |
-| `data-target="17"` / строчка "42" / "186" (streak) | `data-target="0"`, JS обновляет из `ML.getUser()` |
-| `getSubjectData()` — `[0,0,0,0]` | `Learning.getSubjects().progress` |
-| `todayTasks: [{...},{...},{...}]` — fake ежедневные задачи | `[]` |
-| `rewards: [{...},{...},{...}]` — fake награды | Показ "Нет данных о наградах" |
-| `renderAnalytics()` — `return` при пустых данных (не рисовал doughnut) | Doughnut рисуется всегда; insights — с проверкой |
-| `const ACHV_DATA = []` (мёртвый код) | Удалён |
-| `querySelector('[data-target="68"]')` | `document.getElementById('overall-progress-pct-val')` |
-| Лейбл "12 Наград" в HTML | `id="achv-total-label"`, обновляется из `getAchievements()` |
+- hardcoded проценты, XP, streak и количество завершённых уроков;
+- `DASH_SUBJECTS`, `TOPIC_LESSON_MAP` и отдельное dashboard storage;
+- ежедневные квесты без backend/правил выполнения;
+- фиктивные даты разблокировки;
+- XP за декоративные действия вроде «запомнить формулу»;
+- inline page logic и отдельная completion-логика старого урока;
+- legacy-компоненты `.subj-card`, `.topic-chip`, `.bottom-bar`, `.bottom-item`, `.section-block`, `.section-title` и `.formula-card`;
+- невозможные достижения `first_quest`/`thirty_quests` и обработчик `quest:completed`.
 
-### `settings.html`
-| Что было | Что стало |
-|---|---|
-| `<input value="Нұрбол Абдазов">` | `value="" placeholder="Ваше имя"` |
-| `<input value="@nurbek_dev">` | `value="" placeholder="@username"` |
-| `<input value="nurbek@example.com">` | `value="" placeholder="email@example.com"` |
-| `showToast('... в демо', ...)` 6 раз | `showToast('Функция временно недоступна', ...)` |
-| `renderAboutStats()` — `[27, 4, '60+', '2.4']` | Подсчёт из `DATA` (модули, разделы, темы) |
+Dashboard читает только `Learning`, `ML`, `XP` и `I18N`. Его единственный контроллер — `js/dashboard.js`; `events.js`, `ui.js` и `achievements.js` больше не подключаются к `dashboard.html`. Каталог будущих тем из `DATA` показывается как locked/unavailable, а интерактивные ссылки создаются только для `LESSON_REGISTRY`.
 
-### `lesson.html`
-| Что было | Что стало |
-|---|---|
-| `const moduleSubtopics = [5 hardcoded строчек]` | `lookupModuleSubtopics()` — поиск в `DATA` по `location.pathname` |
-| `if (scorePct === 100) grade = 'S'` | `if (scorePct >= 90) grade = 'S'` (синхронизация с `learning.js`) |
+Нормализация storage удаляет старые поля `dashboard` и `dailyQuests`, а отдельный ключ `ml_dash_state` оставлен только в списке миграционной очистки.
 
-### `topic-1-expressions.html`
-| Что было | Что стало |
-|---|---|
-| `const moduleSubtopics = [5 hardcoded строчек]` | `lookupModuleSubtopics()` — поиск в `DATA` |
-| `if(scorePct===100)grade='S'` | `if(scorePct>=90)grade='S'` |
-| `if(solved===5)grade="S"` | `if(solved>=5)grade="S"` |
+## Реальные данные
 
-### `js/learning.js`
-Без изменений — порог S (≥90) уже был корректным. HTML-страницы синхронизированы под него.
+- профиль и настройки из `mathlogic_data`;
+- lesson results и незавершённые sessions;
+- XP, уровень и одноразовые reward records;
+- streak из единого `activity.dates`;
+- stats/timeline, созданные реальным completion;
+- две существующие JSON-конфигурации уроков.
 
-## Принципы замены
-1. Ни одна HTML-страница не должна содержать собственных вычислений — только отображение.
-2. Данные запрашиваются через `ML.*()`, `XP.*()`, `Learning.*()`.
-3. Fake-константы (массивы, объекты) удалены.
-4. При отсутствии данных показывается "Нет данных" или '0'.
-5. Исключение: конфигурационные константы (цветовые схемы, размеры шрифта) остаются — они не являются данными.
+## Прототипные области
+
+- большинство модулей в `DATA` — продуктовый каталог без lesson config;
+- auth остаётся локальным демо без backend;
+- профиль/аналитика используют локальные данные и не синхронизируются с сервером;
+- lesson content сейчас только на русском, хотя shell поддерживает RU/KZ;
+- внешние CDN (шрифты, Tailwind на Lesson) требуют сеть и production bundling.
+
+`topic.html` остаётся честной страницей «в разработке». `topic-1-expressions.html` — только redirect для обратной совместимости.
+
+`js/topic.js` и `js/quiz.js` помечены deprecated и не подключаются к новому Lesson. Они сохранены как совместимый код до отдельной проверки старых внешних ссылок. `js/navigation.js` продолжает обслуживать legacy-страницы, но не подключается к Axis Dashboard/Lesson.

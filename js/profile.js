@@ -155,17 +155,14 @@ function renderAchievements() {
 }
 
 function getStreakData() {
-  var stored = ML.getProfile('streak_data');
-  if (stored && stored.days) return stored;
   var u = ML.getUser() || {};
-  var result = {
+  var activity = ML.get('activity', { dates: [] });
+  return {
     current: u.streak || 0,
     best: u.streakBest || 0,
     total: u.streakTotal || 0,
-    days: []
+    days: Array.isArray(activity.dates) ? activity.dates : []
   };
-  ML.setProfile('streak_data', result);
-  return result;
 }
 
 function renderCalendar() {
@@ -236,13 +233,11 @@ function renderTimeline() {
 
 function getGoalsData() {
   var stored = ML.getProfile('goals');
-  var currentLevel = XP.getLevel();
-  var currentXp = XP.getXP();
-  var xpToNext = XP.calcXpForLevel(currentLevel + 1);
+  var levelProgress = XP.getLevelProgress();
   var goalsResult = {
-    currentLevel: currentLevel,
-    currentXp: currentXp,
-    xpToNext: xpToNext,
+    currentLevel: levelProgress.level,
+    currentXp: levelProgress.levelXp,
+    xpToNext: levelProgress.levelSpan,
     goals: (stored && stored.goals) || [],
     todayTasks: [],
     motivation: ''

@@ -1,14 +1,39 @@
 /* ========================================
    STORAGE — math·logic
-   Единое ядро данных пользователя
-   Все данные в одном ключе localStorage
-   Версия схемы: 1
+   Единое версионированное хранилище данных
    ======================================== */
 
 const ML = (function() {
+  'use strict';
 
-  const VERSION = 1;
+  const VERSION = 2;
   const STORAGE_KEY = 'mathlogic_data';
+
+  const DEFAULT_STATS = {
+    lessons_completed: 0,
+    modules_completed: 0,
+    xp_earned: 0,
+    study_time: 0,
+    problems_solved: 0,
+    avg_score: 0,
+    best_streak: 0,
+    achievements_count: 0,
+  };
+
+  const DEFAULT_SETTINGS = {
+    theme: 'light',
+    accent: '#4F46E5',
+    font_size: 'medium',
+    lang: 'kz',
+    daily_goal: 3,
+    reminders: true,
+    autosave: true,
+    solutions: 'after_answer',
+    push: false,
+    email_notif: true,
+    sound: true,
+    animations: true,
+  };
 
   const DEFAULTS = {
     version: VERSION,
@@ -31,501 +56,614 @@ const ML = (function() {
       age: null,
     },
     progress: {
-      subtopics: {},
       lessons: {},
+      subtopics: {},
     },
-    settings: {
-      theme: 'light',
-      accent: '#4F46E5',
-      font_size: 'medium',
-      lang: 'kz',
-      daily_goal: 3,
-      reminders: true,
-      autosave: true,
-      solutions: 'after_answer',
-      push: false,
-      email_notif: true,
-      sound: true,
-      animations: true,
+    lesson: {
+      sessions: {},
     },
-    stats: {
-      lessons_completed: 0,
-      modules_completed: 0,
-      xp_earned: 0,
-      study_time: 0,
-      problems_solved: 0,
-      avg_score: 0,
-      best_streak: 0,
-      achievements_count: 0,
-    },
+    settings: DEFAULT_SETTINGS,
+    stats: DEFAULT_STATS,
     achievements: [],
-    streak_data: null,
+    activity: {
+      dates: [],
+      studySecondsByDate: {},
+    },
     timeline: [],
     goals: null,
     analytics: {},
-    dashboard: {
-      quests: {},
-    },
+    rewards: {},
   };
 
   let _cache = null;
+  const _diagnostics = [];
+  let _pendingLegacyCleanup = [];
 
-  /* ---------- ВНУТРЕННИЕ ---------- */
+  function isPlainObject(value) {
+    return value !== null && typeof value === 'object' && !Array.isArray(value);
+  }
 
-  function deepMerge(target, source) {
-    var result = {};
-    for (var k in target) result[k] = target[k];
-    for (var k in source) {
-      if (source[k] !== null && typeof source[k] === 'object' && !Array.isArray(source[k]) && typeof result[k] === 'object' && !Array.isArray(result[k])) {
-        result[k] = deepMerge(result[k], source[k]);
+  function clone(value) {
+    if (value === undefined) return undefined;
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  function deepMerge(defaults, saved) {
+    if (!isPlainObject(defaults)) return saved === undefined ? clone(defaults) : clone(saved);
+    const result = {};
+    Object.keys(defaults).forEach(function(key) {
+      result[key] = clone(defaults[key]);
+    });
+    if (!isPlainObject(saved)) return result;
+    Object.keys(saved).forEach(function(key) {
+      if (isPlainObject(saved[key]) && isPlainObject(defaults[key])) {
+        result[key] = deepMerge(defaults[key], saved[key]);
       } else {
-        result[k] = source[k];
+        result[key] = clone(saved[key]);
       }
-    }
+    });
     return result;
   }
 
-  function clone(obj) {
-    return JSON.parse(JSON.stringify(obj));
+  function diagnostic(code, error) {
+    const entry = {
+      code: code,
+      message: error ? (error.message || String(error)) : '',
+      at: Date.now(),
+    };
+    _diagnostics.push(entry);
+    if (_diagnostics.length > 20) _diagnostics.shift();
+    if (typeof console !== 'undefined' && console.warn) {
+      console.warn('[ML:' + code + ']', entry.message);
+    }
   }
 
   function loadRaw() {
     try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : null;
-    } catch(e) { return null; }
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!isPlainObject(parsed)) {
+        diagnostic('invalid-root', new Error('Stored root is not an object'));
+        return null;
+      }
+      return parsed;
+    } catch (error) {
+      diagnostic('read-failed', error);
+      return null;
+    }
   }
 
   function saveRaw(data) {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      return true;
+    } catch (error) {
+      diagnostic('write-failed', error);
+      return false;
+    }
   }
 
-  /* ---------- МИГРАЦИЯ ---------- */
-
-  function migrateLegacy() {
-    var data = loadRaw();
-    if (data) return data;
-
-    var oldUser = null;
-    try {
-      var raw = localStorage.getItem('math_logic_user');
-      if (raw) oldUser = JSON.parse(raw);
-    } catch(e) {}
-
-    var oldSubtopics = null;
-    try {
-      var raw = localStorage.getItem('math_logic_subtopics');
-      if (raw) oldSubtopics = JSON.parse(raw);
-    } catch(e) {}
-
-    var oldLang = localStorage.getItem('math_logic_lang');
-
-    var oldProfile = {};
-    for (var i = 0; i < localStorage.length; i++) {
-      var key = localStorage.key(i);
-      if (key && key.indexOf('profile_') === 0) {
-        try { oldProfile[key.replace('profile_', '')] = JSON.parse(localStorage.getItem(key)); }
-        catch(e) { oldProfile[key.replace('profile_', '')] = localStorage.getItem(key); }
-      }
-      if (key && key.indexOf('profile_stat_') === 0) {
-        try { oldProfile[key.replace('profile_stat_', '')] = parseInt(localStorage.getItem(key), 10); }
-        catch(e) {}
-      }
+  function persist(data) {
+    const saved = saveRaw(data);
+    if (saved && _pendingLegacyCleanup.length) {
+      const unique = {};
+      _pendingLegacyCleanup.forEach(function(key) { unique[key] = true; });
+      Object.keys(unique).forEach(function(key) {
+        try { localStorage.removeItem(key); } catch (error) { diagnostic('legacy-cleanup', error); }
+      });
+      _pendingLegacyCleanup = [];
     }
+    return saved;
+  }
 
-    if (!oldUser && !oldSubtopics && !oldLang && Object.keys(oldProfile).length === 0) {
-      return null;
-    }
-
-    data = clone(DEFAULTS);
+  function ensureTypes(data) {
+    if (!isPlainObject(data.user)) data.user = clone(DEFAULTS.user);
+    if (!isPlainObject(data.progress)) data.progress = clone(DEFAULTS.progress);
+    if (!isPlainObject(data.progress.lessons)) data.progress.lessons = {};
+    if (!isPlainObject(data.progress.subtopics)) data.progress.subtopics = {};
+    if (!isPlainObject(data.lesson)) data.lesson = clone(DEFAULTS.lesson);
+    if (!isPlainObject(data.lesson.sessions)) data.lesson.sessions = {};
+    if (!isPlainObject(data.settings)) data.settings = clone(DEFAULT_SETTINGS);
+    if (!isPlainObject(data.stats)) data.stats = clone(DEFAULT_STATS);
+    if (!Array.isArray(data.achievements)) data.achievements = [];
+    if (!Array.isArray(data.timeline)) data.timeline = [];
+    if (!isPlainObject(data.activity)) data.activity = clone(DEFAULTS.activity);
+    if (!Array.isArray(data.activity.dates)) data.activity.dates = [];
+    if (!isPlainObject(data.activity.studySecondsByDate)) data.activity.studySecondsByDate = {};
+    if (!isPlainObject(data.rewards)) data.rewards = {};
+    data.user.xp = Math.max(0, Number(data.user.xp) || 0);
+    data.user.level = Math.max(1, Number(data.user.level) || 1);
     data.version = VERSION;
-
-    if (oldUser) {
-      data.user.name = oldUser.name || '';
-      data.user.email = oldUser.email || '';
-      data.user.loggedIn = oldUser.loggedIn || false;
-      data.user.level = oldUser.level || 1;
-      data.user.id = oldUser.id || null;
-    }
-
-    if (oldSubtopics) {
-      data.progress.subtopics = oldSubtopics;
-    }
-
-    if (oldLang) {
-      data.settings.lang = oldLang;
-    }
-
-    for (var sk in oldProfile) {
-      if (sk.indexOf('settings_') === 0) {
-        var skName = sk.replace('settings_', '');
-        var skVal = oldProfile[sk];
-        if (typeof skVal === 'boolean' || skVal === 'true' || skVal === 'false') {
-          data.settings[skName] = skVal === true || skVal === 'true';
-        } else if (!isNaN(parseInt(skVal, 10)) && skVal !== '' && ['name','username','email','lang','theme','accent','font_size','solutions'].indexOf(skName) === -1) {
-          data.settings[skName] = parseInt(skVal, 10);
-        } else {
-          data.settings[skName] = skVal;
-        }
-      }
-    }
-
-    var statKeys = ['lessons_completed','modules_completed','xp_earned','study_time','problems_solved','avg_score','best_streak','achievements_count'];
-    statKeys.forEach(function(k) {
-      if (oldProfile[k] !== undefined) data.stats[k] = parseInt(oldProfile[k], 10);
-    });
-
-    if (oldProfile.achievements) data.achievements = oldProfile.achievements;
-    if (oldProfile.streak_data) data.streak_data = oldProfile.streak_data;
-    if (oldProfile.timeline) data.timeline = oldProfile.timeline;
-    if (oldProfile.goals) data.goals = oldProfile.goals;
-    if (oldProfile.analytics) data.analytics = oldProfile.analytics;
-
-    var oldKeys = ['math_logic_user','math_logic_subtopics','math_logic_lang'];
-    for (var j = 0; j < localStorage.length; j++) {
-      var k2 = localStorage.key(j);
-      if (k2 && (k2.indexOf('profile_') === 0 || k2.indexOf('math_logic_') === 0)) {
-        oldKeys.push(k2);
-      }
-    }
-    oldKeys.forEach(function(k) {
-      try { localStorage.removeItem(k); } catch(e) {}
-    });
-
-    saveRaw(data);
     return data;
   }
 
-  function runMigrations(data) {
-    var v = data.version || 0;
-
-    if (v < 1) {
-      data = migrateV0toV1(data);
-    }
-
-    return data;
-  }
-
-  function migrateV0toV1(data) {
-    data = data || {};
-
-    delete data.settings.name;
-    delete data.settings.username;
-    delete data.settings.name_err;
-
-    if (data.settings.email !== undefined) {
-      if (typeof data.settings.email === 'boolean') {
-        data.settings.email_notif = data.settings.email;
-      }
-    }
-    delete data.settings.email;
+  function migrateLegacyKeys(data) {
+    if (data) return data;
+    const migrated = clone(DEFAULTS);
+    let found = false;
+    const keysToRemove = [];
 
     try {
-      var dashRaw = localStorage.getItem('ml_dash_state');
-      if (dashRaw) {
-        var dashState = JSON.parse(dashRaw);
-        if (dashState && typeof dashState === 'object') {
-          data.dashboard = {
-            quests: dashState.quests || {},
-          };
-        }
-        localStorage.removeItem('ml_dash_state');
+      const oldUser = JSON.parse(localStorage.getItem('math_logic_user') || 'null');
+      if (oldUser) {
+        migrated.user = deepMerge(migrated.user, oldUser);
+        found = true;
+        keysToRemove.push('math_logic_user');
       }
-    } catch(e) {}
+    } catch (error) { diagnostic('legacy-user', error); }
 
-    if (!data.dashboard || typeof data.dashboard !== 'object') {
-      data.dashboard = { quests: {} };
+    try {
+      const oldSubtopics = JSON.parse(localStorage.getItem('math_logic_subtopics') || 'null');
+      if (isPlainObject(oldSubtopics)) {
+        migrated.progress.subtopics = oldSubtopics;
+        found = true;
+        keysToRemove.push('math_logic_subtopics');
+      }
+    } catch (error) { diagnostic('legacy-subtopics', error); }
+
+    try {
+      const oldLang = localStorage.getItem('math_logic_lang');
+      if (oldLang) {
+        migrated.settings.lang = oldLang;
+        found = true;
+        keysToRemove.push('math_logic_lang');
+      }
+    } catch (error) { diagnostic('legacy-language', error); }
+
+    /* Старые profile_* данные существовали до единого storage key. */
+    try {
+      const profile = {};
+      if (typeof localStorage.length === 'number' && typeof localStorage.key === 'function') {
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (!key || key.indexOf('profile_') !== 0) continue;
+          const raw = localStorage.getItem(key);
+          let value = raw;
+          try { value = JSON.parse(raw); } catch (error) { /* plain legacy value */ }
+          const profileKey = key.indexOf('profile_stat_') === 0
+            ? key.replace('profile_stat_', '')
+            : key.replace('profile_', '');
+          profile[profileKey] = value;
+          keysToRemove.push(key);
+        }
+      }
+      Object.keys(profile).forEach(function(key) {
+        if (key.indexOf('settings_') === 0) {
+          const setting = key.replace('settings_', '');
+          migrated.settings[setting] = profile[key];
+          found = true;
+        }
+      });
+      Object.keys(DEFAULT_STATS).forEach(function(key) {
+        if (profile[key] !== undefined) {
+          migrated.stats[key] = Number(profile[key]) || 0;
+          found = true;
+        }
+      });
+      if (Array.isArray(profile.achievements)) { migrated.achievements = profile.achievements; found = true; }
+      if (Array.isArray(profile.timeline)) { migrated.timeline = profile.timeline; found = true; }
+      if (profile.goals) { migrated.goals = profile.goals; found = true; }
+      if (isPlainObject(profile.analytics)) { migrated.analytics = profile.analytics; found = true; }
+      if (isPlainObject(profile.streak_data)) {
+        const streak = profile.streak_data;
+        migrated.user.streak = Number(streak.current) || migrated.user.streak;
+        migrated.user.streakBest = Number(streak.best) || migrated.user.streakBest;
+        migrated.user.streakTotal = Number(streak.total) || migrated.user.streakTotal;
+        if (Array.isArray(streak.days)) migrated.activity.dates = streak.days.map(normalizeDateKey).filter(Boolean);
+        found = true;
+      }
+    } catch (error) { diagnostic('legacy-profile', error); }
+
+    if (found) {
+      _pendingLegacyCleanup = _pendingLegacyCleanup.concat(keysToRemove, ['ml_dash_state']);
     }
 
-    if (!data.progress.lessons) data.progress.lessons = {};
+    return found ? migrated : null;
+  }
 
-    data.version = 1;
+  function migrateToV2(data) {
+    data = isPlainObject(data) ? data : {};
+    /* Старые Dashboard-квесты больше не являются частью продуктовой схемы. */
+    delete data.dashboard;
+    delete data.dailyQuests;
+    _pendingLegacyCleanup.push('ml_dash_state');
+    data.progress = isPlainObject(data.progress) ? data.progress : {};
+    data.progress.lessons = isPlainObject(data.progress.lessons) ? data.progress.lessons : {};
+
+    const oldStates = isPlainObject(data.progress.lessonStates) ? data.progress.lessonStates : {};
+    Object.keys(oldStates).forEach(function(id) {
+      const existing = isPlainObject(data.progress.lessons[id]) ? data.progress.lessons[id] : {};
+      if (oldStates[id] === 'completed') existing.status = 'completed';
+      else if (!existing.status && oldStates[id] === 'available') existing.status = 'available';
+      data.progress.lessons[id] = existing;
+    });
+    delete data.progress.lessonStates;
+
+    data.lesson = isPlainObject(data.lesson) ? data.lesson : {};
+    data.lesson.sessions = isPlainObject(data.lesson.sessions) ? data.lesson.sessions : {};
+    if (isPlainObject(data.lesson.v2)) {
+      Object.keys(data.lesson.v2).forEach(function(id) {
+        if (!data.lesson.sessions[id] && data.lesson.v2[id]) {
+          data.lesson.sessions[id] = data.lesson.v2[id];
+        }
+      });
+      delete data.lesson.v2;
+    }
+
+    data.activity = isPlainObject(data.activity) ? data.activity : { dates: [], studySecondsByDate: {} };
+    if (!Array.isArray(data.activity.dates)) data.activity.dates = [];
+    if (!isPlainObject(data.activity.studySecondsByDate)) data.activity.studySecondsByDate = {};
+    if (isPlainObject(data.streak_data)) {
+      const streak = data.streak_data;
+      data.user = isPlainObject(data.user) ? data.user : {};
+      data.user.streak = Number(streak.current) || data.user.streak || 0;
+      data.user.streakBest = Number(streak.best) || data.user.streakBest || 0;
+      data.user.streakTotal = Number(streak.total) || data.user.streakTotal || 0;
+      if (Array.isArray(streak.days)) {
+        streak.days.forEach(function(date) {
+          const key = normalizeDateKey(date);
+          if (key && data.activity.dates.indexOf(key) === -1) data.activity.dates.push(key);
+        });
+      }
+    }
+    delete data.streak_data;
+    try {
+      const legacyDates = JSON.parse(localStorage.getItem('ml_streak_dates') || '[]');
+      if (Array.isArray(legacyDates)) {
+        legacyDates.forEach(function(date) {
+          const key = normalizeDateKey(date);
+          if (key && data.activity.dates.indexOf(key) === -1) data.activity.dates.push(key);
+        });
+      }
+      _pendingLegacyCleanup.push('ml_streak_dates');
+    } catch (error) { diagnostic('legacy-streak', error); }
+
+    data.version = VERSION;
     return data;
   }
 
-  /* ---------- ЗАГРУЗКА ---------- */
+  function normalize(data) {
+    /* Миграция идемпотентна и также очищает legacy-поля в частично
+       обновлённых записях, ошибочно уже помеченных как version 2. */
+    data = migrateToV2(data);
+    data = deepMerge(DEFAULTS, data || {});
+    return ensureTypes(data);
+  }
+
+  function mutableData() {
+    if (_cache) return _cache;
+    let data = loadRaw();
+    if (!data) data = migrateLegacyKeys(data);
+    const isNew = !data;
+    data = normalize(data || clone(DEFAULTS));
+    if (!data.user.id) data.user.id = 'user_' + Date.now();
+    if (!data.user.createdAt) data.user.createdAt = Date.now();
+    if (isNew && !data.user.lastVisit) data.user.lastVisit = Date.now();
+    _cache = data;
+    persist(data);
+    return _cache;
+  }
 
   function getData() {
-    if (_cache) return _cache;
-    var data = loadRaw();
-    if (!data) {
-      data = migrateLegacy();
-    }
-    if (!data) {
-      data = clone(DEFAULTS);
-      data.version = VERSION;
-      data.user.id = 'user_' + Date.now();
-      data.user.createdAt = Date.now();
-      data.user.lastVisit = Date.now();
-      saveRaw(data);
-    } else if (!data.version || data.version < VERSION) {
-      data = runMigrations(data);
-      saveRaw(data);
-    }
-    _cache = data;
-    return data;
+    return clone(mutableData());
   }
 
   function saveData(data) {
-    _cache = data;
-    saveRaw(data);
+    _cache = normalize(clone(data));
+    persist(_cache);
+    return clone(_cache);
   }
 
-  function resetCache() {
-    _cache = null;
+  function update(mutator) {
+    const next = clone(mutableData());
+    let result;
+    try {
+      result = mutator(next);
+    } catch (error) {
+      diagnostic('update-failed', error);
+      throw error;
+    }
+    _cache = normalize(next);
+    persist(_cache);
+    return result;
   }
 
-  /* ---------- ОСНОВНОЙ (ПЕРВИЧНЫЙ) API ---------- */
+  function resetCache() { _cache = null; }
 
   function get(path, defaultVal) {
-    var d = getData();
-    var parts = path.split('.');
-    var current = d;
-    for (var i = 0; i < parts.length; i++) {
-      if (current === null || current === undefined || typeof current !== 'object') return defaultVal;
+    const parts = path.split('.');
+    let current = mutableData();
+    for (let i = 0; i < parts.length; i++) {
+      if (!isPlainObject(current) && !Array.isArray(current)) return clone(defaultVal);
       current = current[parts[i]];
+      if (current === undefined || current === null) return clone(defaultVal);
     }
-    return current !== undefined && current !== null ? current : defaultVal;
+    return clone(current);
   }
 
   function set(path, value) {
-    var d = getData();
-    var parts = path.split('.');
-    var current = d;
-    for (var i = 0; i < parts.length - 1; i++) {
-      if (!current[parts[i]] || typeof current[parts[i]] !== 'object') current[parts[i]] = {};
-      current = current[parts[i]];
-    }
-    current[parts[parts.length - 1]] = value;
-    saveData(d);
+    update(function(data) {
+      const parts = path.split('.');
+      let current = data;
+      for (let i = 0; i < parts.length - 1; i++) {
+        if (!isPlainObject(current[parts[i]])) current[parts[i]] = {};
+        current = current[parts[i]];
+      }
+      current[parts[parts.length - 1]] = clone(value);
+    });
   }
 
-  /* ---------- USER ---------- */
-
-  function getUser() {
-    var d = getData();
-    return d.user ? clone(d.user) : null;
-  }
+  function getUser() { return get('user', null); }
 
   function setUser(userData) {
-    var d = getData();
-    d.user = deepMerge(d.user || {}, userData);
-    if (!d.user.id) d.user.id = 'user_' + Date.now();
-    if (!d.user.createdAt) d.user.createdAt = Date.now();
-    saveData(d);
+    update(function(data) {
+      data.user = deepMerge(data.user || {}, userData || {});
+      if (!data.user.id) data.user.id = 'user_' + Date.now();
+      if (!data.user.createdAt) data.user.createdAt = Date.now();
+    });
   }
 
-  function clearUser() {
-    var d = getData();
-    d.user.loggedIn = false;
-    saveData(d);
-  }
-
-  function isLoggedIn() {
-    var d = getData();
-    return d.user && d.user.loggedIn === true;
-  }
-
-  /* ---------- LANGUAGE ---------- */
-
-  function getLang() {
-    var d = getData();
-    return d.settings.lang || 'kz';
-  }
-
-  function setLang(lang) {
-    var d = getData();
-    d.settings.lang = lang;
-    saveData(d);
-  }
-
-  /* ---------- PROGRESS ---------- */
-
-  function getSubtopics() {
-    var d = getData();
-    return d.progress.subtopics || {};
-  }
-
-  function setSubtopics(data) {
-    var d = getData();
-    d.progress.subtopics = data || {};
-    saveData(d);
-  }
-
-  /* ---------- ALIASES (обратная совместимость) ---------- */
-
-  function getProfile(path, defaultVal) {
-    return get(path, defaultVal);
-  }
-
-  function setProfile(path, value) {
-    set(path, value);
-  }
-
-  function getProfileStat(key, defaultVal) {
-    return get('stats.' + key, defaultVal);
-  }
-
-  function getSetting(key, defaultVal) {
-    return get('settings.' + key, defaultVal);
-  }
-
-  function setSetting(key, value) {
-    set('settings.' + key, value);
-  }
-
-  /* ---------- RESET ---------- */
-
-  function resetAll() {
-    try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
-    _cache = null;
-  }
-
-  function exportAll() {
-    return clone(getData());
-  }
-
-  /* ===== СИСТЕМНЫЕ ФУНКЦИИ ===== */
-
-  function completeLesson(lessonId, result) {
-    var d = getData();
-    if (!d.progress.lessons) d.progress.lessons = {};
-    d.progress.lessons[lessonId] = {
-      completedAt: Date.now(),
-      score: result.score || 0,
-      correct: result.correct || 0,
-      total: result.total || 0,
-      attempts: result.attempts || 0,
-      time: result.time || 0,
-      xpEarned: result.xpEarned || 0,
-      grade: result.grade || '',
-    };
-    d.stats.lessons_completed = Object.keys(d.progress.lessons).length;
-    if (result.time) d.stats.study_time = (d.stats.study_time || 0) + result.time;
-    if (result.correct) d.stats.problems_solved = (d.stats.problems_solved || 0) + result.correct;
-    if (result.score !== undefined) {
-      var totalScore = 0, count = 0;
-      for (var k in d.progress.lessons) {
-        totalScore += d.progress.lessons[k].score;
-        count++;
-      }
-      d.stats.avg_score = count > 0 ? Math.round(totalScore / count) : 0;
-    }
-    saveData(d);
-  }
+  function clearUser() { set('user.loggedIn', false); }
+  function isLoggedIn() { return get('user.loggedIn', false) === true; }
+  function getLang() { return get('settings.lang', 'kz'); }
+  function setLang(lang) { set('settings.lang', lang === 'ru' ? 'ru' : 'kz'); }
+  function getSubtopics() { return get('progress.subtopics', {}); }
+  function setSubtopics(value) { set('progress.subtopics', isPlainObject(value) ? value : {}); }
+  function getProfile(path, fallback) { return get(path, fallback); }
+  function setProfile(path, value) { set(path, value); }
+  function getProfileStat(key, fallback) { return get('stats.' + key, fallback); }
+  function getSetting(key, fallback) { return get('settings.' + key, fallback); }
+  function setSetting(key, value) { set('settings.' + key, value); }
 
   function getCompletedLessons() {
-    var d = getData();
-    return d.progress.lessons || {};
+    const lessons = get('progress.lessons', {});
+    const completed = {};
+    Object.keys(lessons).forEach(function(id) {
+      if (lessons[id] && lessons[id].status === 'completed') completed[id] = lessons[id];
+    });
+    return completed;
   }
 
-  function markSubtopicsDone(subtopicArray) {
-    var d = getData();
-    if (!d.progress.subtopics) d.progress.subtopics = {};
-    subtopicArray.forEach(function(st) {
-      d.progress.subtopics[st] = true;
+  function completeLesson(lessonId, result) {
+    let response = null;
+    update(function(data) {
+      const previous = data.progress.lessons[lessonId];
+      if (previous && previous.status === 'completed') {
+        response = { firstCompletion: false, record: clone(previous) };
+        return;
+      }
+      const now = Date.now();
+      const record = deepMerge(previous || {}, result || {});
+      record.lessonId = lessonId;
+      record.status = 'completed';
+      record.completedAt = Number(record.completedAt) || now;
+      data.progress.lessons[lessonId] = record;
+      response = { firstCompletion: true, record: clone(record) };
     });
-    saveData(d);
+    return response;
+  }
+
+  function getLessonSession(lessonId) {
+    const sessions = get('lesson.sessions', {});
+    return clone(sessions[lessonId] || null);
+  }
+
+  function setLessonSession(lessonId, session) {
+    update(function(data) {
+      if (session === null || session === undefined) delete data.lesson.sessions[lessonId];
+      else data.lesson.sessions[lessonId] = clone(session);
+    });
+  }
+
+  function markSubtopicsDone(subtopics) {
+    update(function(data) {
+      (subtopics || []).forEach(function(name) { data.progress.subtopics[name] = true; });
+    });
+  }
+
+  function normalizeDateKey(value) {
+    if (!value) return '';
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+    const date = new Date(value);
+    if (isNaN(date.getTime())) return '';
+    return localDateKey(date);
+  }
+
+  function localDateKey(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return y + '-' + m + '-' + d;
+  }
+
+  function calculateStreak(dates) {
+    const unique = {};
+    dates.forEach(function(date) { unique[date] = true; });
+    let cursor = new Date();
+    let key = localDateKey(cursor);
+    if (!unique[key]) {
+      cursor.setDate(cursor.getDate() - 1);
+      key = localDateKey(cursor);
+      if (!unique[key]) return 0;
+    }
+    let streak = 0;
+    while (unique[localDateKey(cursor)]) {
+      streak++;
+      cursor.setDate(cursor.getDate() - 1);
+    }
+    return streak;
+  }
+
+  function recordLearningActivity(seconds, timestamp) {
+    update(function(data) {
+      const date = new Date(timestamp || Date.now());
+      const key = localDateKey(date);
+      if (data.activity.dates.indexOf(key) === -1) data.activity.dates.push(key);
+      if (seconds > 0) {
+        data.activity.studySecondsByDate[key] = (data.activity.studySecondsByDate[key] || 0) + Math.floor(seconds);
+      }
+      const current = calculateStreak(data.activity.dates);
+      data.user.streak = current;
+      data.user.streakBest = Math.max(data.user.streakBest || 0, current);
+      data.user.streakTotal = data.activity.dates.length;
+      data.stats.best_streak = data.user.streakBest;
+    });
   }
 
   function updateLastVisit() {
-    var d = getData();
-    var now = Date.now();
-    var today = new Date().toISOString().slice(0, 10);
-    if (d.user.lastVisit) {
-      var lastDate = new Date(d.user.lastVisit).toISOString().slice(0, 10);
-      if (lastDate !== today) {
-        var yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
-        if (lastDate === yesterday) {
-          d.user.streak = (d.user.streak || 0) + 1;
-        } else {
-          d.user.streak = 1;
-        }
-        d.user.streakBest = Math.max(d.user.streakBest || 0, d.user.streak);
-        d.user.streakTotal = (d.user.streakTotal || 0) + 1;
-        d.stats.best_streak = d.user.streakBest;
-      }
-    } else {
-      d.user.streak = 1;
-    }
-    d.user.lastVisit = now;
-    saveData(d);
+    set('user.lastVisit', Date.now());
   }
 
   function addTimelineEntry(entry) {
-    var d = getData();
-    if (!d.timeline) d.timeline = [];
-    d.timeline.unshift({
-      icon: entry.icon || '📘',
-      title: entry.title || '',
-      desc: entry.desc || '',
-      time: Date.now(),
-      color: entry.color || 'bg-blue-500',
+    update(function(data) {
+      data.timeline.unshift({
+        icon: entry.icon || '•',
+        title: entry.title || '',
+        desc: entry.desc || '',
+        time: entry.time || Date.now(),
+        color: entry.color || 'bg-blue-500',
+      });
+      if (data.timeline.length > 50) data.timeline = data.timeline.slice(0, 50);
     });
-    if (d.timeline.length > 50) d.timeline = d.timeline.slice(0, 50);
-    saveData(d);
   }
 
-  function calcOverallProgress() {
-    var d = getData();
-    var completed = d.progress.subtopics || {};
-    if (typeof DATA === 'undefined' || !DATA) return 0;
-    var total = 0, done = 0;
-    try {
-      Object.keys(DATA).forEach(function(sKey) {
-        (DATA[sKey] || []).forEach(function(sec) {
-          (sec.modules || []).forEach(function(mod) {
-            (mod.subtopics || []).forEach(function(st) {
-              total++;
-              if (completed[st]) done++;
-            });
-          });
-        });
+  function migrateLessonIds(mapping) {
+    if (!isPlainObject(mapping)) return;
+    update(function(data) {
+      Object.keys(mapping).forEach(function(legacyId) {
+        const canonicalId = mapping[legacyId];
+        if (!canonicalId || canonicalId === legacyId) return;
+
+        const oldRecord = data.progress.lessons[legacyId];
+        const current = data.progress.lessons[canonicalId];
+        if (oldRecord) {
+          if (!current || (oldRecord.completedAt || 0) > (current.completedAt || 0)) {
+            const migrated = deepMerge(current || {}, oldRecord);
+            migrated.lessonId = canonicalId;
+            data.progress.lessons[canonicalId] = migrated;
+          }
+          delete data.progress.lessons[legacyId];
+        }
+
+        const oldSession = data.lesson.sessions[legacyId];
+        if (oldSession && !data.lesson.sessions[canonicalId]) {
+          data.lesson.sessions[canonicalId] = oldSession;
+        }
+        delete data.lesson.sessions[legacyId];
       });
-    } catch(e) {}
-    return total > 0 ? Math.round((done / total) * 100) : 0;
+      const canonicalIds = {};
+      Object.keys(mapping).forEach(function(legacyId) { canonicalIds[mapping[legacyId]] = true; });
+      Object.keys(canonicalIds).forEach(function(id) {
+        const record = data.progress.lessons[id];
+        const rewardKey = 'lesson:' + id;
+        if (record && record.status === 'completed' && !data.rewards[rewardKey]) {
+          data.rewards[rewardKey] = {
+            amount: Math.max(0, Number(record.xpEarned) || 0),
+            awardedAt: Number(record.completedAt) || Date.now(),
+            reason: 'legacy-lesson',
+          };
+        }
+      });
+    });
+  }
+
+  function resetLearning() {
+    update(function(data) {
+      data.progress = clone(DEFAULTS.progress);
+      data.lesson = clone(DEFAULTS.lesson);
+      data.stats = clone(DEFAULT_STATS);
+      data.activity = clone(DEFAULTS.activity);
+      data.achievements = [];
+      data.timeline = [];
+      data.goals = null;
+      data.analytics = {};
+      data.rewards = {};
+      data.user.xp = 0;
+      data.user.level = 1;
+      data.user.xpToNext = 100;
+      data.user.streak = 0;
+      data.user.streakBest = 0;
+      data.user.streakTotal = 0;
+      data.user.lastLesson = '';
+    });
+  }
+
+  function resetAll() {
+    try {
+      const legacyKeys = ['math_logic_user', 'math_logic_subtopics', 'math_logic_lang', 'ml_dash_state', 'ml_streak_dates'];
+      if (typeof localStorage.length === 'number' && typeof localStorage.key === 'function') {
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.indexOf('profile_') === 0) legacyKeys.push(key);
+        }
+      }
+      legacyKeys.forEach(function(key) { localStorage.removeItem(key); });
+      localStorage.removeItem(STORAGE_KEY);
+    }
+    catch (error) { diagnostic('reset-failed', error); }
+    _cache = null;
+    _pendingLegacyCleanup = [];
+  }
+
+  function exportAll() { return getData(); }
+
+  function calcOverallProgress() {
+    if (typeof Learning !== 'undefined' && Learning.getOverallProgress) {
+      return Learning.getOverallProgress();
+    }
+    return 0;
   }
 
   function applySettings() {
-    var d = getData();
-    var s = d.settings || {};
-    var body = document.body;
-    if (s.theme === 'dark') {
-      body.classList.add('dark');
-    } else if (s.theme === 'light') {
-      body.classList.remove('dark');
-    } else if (s.theme === 'system') {
-      body.classList.toggle('dark', window.matchMedia('(prefers-color-scheme: dark)').matches);
-    }
-    if (s.accent) {
-      document.documentElement.style.setProperty('--primary', s.accent);
-    }
-    if (s.font_size) {
-      var sizes = { small: '14px', medium: '16px', large: '18px' };
-      document.documentElement.style.fontSize = sizes[s.font_size] || '16px';
-    }
+    const settings = get('settings', DEFAULT_SETTINGS);
+    const body = document.body;
+    if (!body) return;
+    const dark = settings.theme === 'dark' ||
+      (settings.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    body.classList.toggle('dark', dark);
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    document.documentElement.lang = settings.lang === 'ru' ? 'ru' : 'kk';
+    document.documentElement.style.setProperty('--primary', settings.accent || '#4F46E5');
+    const sizes = { small: '14px', medium: '16px', large: '18px' };
+    document.documentElement.style.fontSize = sizes[settings.font_size] || '16px';
   }
 
   return {
-    // Core
-    getData, saveData, resetCache,
-    // Primary API
-    get, set,
-    // User
-    getUser, setUser, clearUser, isLoggedIn,
-    // Language
-    getLang, setLang,
-    // Progress
-    getSubtopics, setSubtopics,
-    // Aliases (обратная совместимость)
-    getProfile, setProfile,
-    getSetting, setSetting,
-    getProfileStat,
-    // System
-    completeLesson, getCompletedLessons,
-    markSubtopicsDone, updateLastVisit, addTimelineEntry,
-    calcOverallProgress, applySettings,
-    // Utilities
-    resetAll, exportAll,
+    VERSION: VERSION,
+    getData: getData,
+    saveData: saveData,
+    update: update,
+    resetCache: resetCache,
+    get: get,
+    set: set,
+    getUser: getUser,
+    setUser: setUser,
+    clearUser: clearUser,
+    isLoggedIn: isLoggedIn,
+    getLang: getLang,
+    setLang: setLang,
+    getSubtopics: getSubtopics,
+    setSubtopics: setSubtopics,
+    getProfile: getProfile,
+    setProfile: setProfile,
+    getSetting: getSetting,
+    setSetting: setSetting,
+    getProfileStat: getProfileStat,
+    completeLesson: completeLesson,
+    getCompletedLessons: getCompletedLessons,
+    getLessonSession: getLessonSession,
+    setLessonSession: setLessonSession,
+    markSubtopicsDone: markSubtopicsDone,
+    recordLearningActivity: recordLearningActivity,
+    updateLastVisit: updateLastVisit,
+    addTimelineEntry: addTimelineEntry,
+    migrateLessonIds: migrateLessonIds,
+    calcOverallProgress: calcOverallProgress,
+    applySettings: applySettings,
+    resetLearning: resetLearning,
+    resetAll: resetAll,
+    exportAll: exportAll,
+    getDiagnostics: function() { return clone(_diagnostics); },
   };
 })();

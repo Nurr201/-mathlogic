@@ -10,6 +10,7 @@ window.__EngineInternal = window.__EngineInternal || {};
       score: I.state.score,
       mistakes: I.state.mistakes,
       timeSpent: I.state.timeSpent,
+      startedAt: I.state.startedAt,
       completedBlocks: I.state.completedBlocks,
       answers: I.state.answers,
       blockResults: I.state.blockResults,
@@ -28,6 +29,8 @@ window.__EngineInternal = window.__EngineInternal || {};
       I.state.score = data.score || 0;
       I.state.mistakes = data.mistakes || 0;
       I.state.timeSpent = data.timeSpent || 0;
+      I.state.elapsedBeforeSession = I.state.timeSpent;
+      I.state.startedAt = Number(data.startedAt) || Date.now();
       I.state.completedBlocks = data.completedBlocks || [];
       I.state.answers = data.answers || {};
       I.state.blockResults = data.blockResults || {};

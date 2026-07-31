@@ -1,3 +1,5 @@
+/* @deprecated Старый автономный урок. Файл не подключается новым маршрутом;
+   старый URL перенаправляет на lesson.html?id=algebra.exponents.basics. */
 const questions = [
   { q: "2³ · 2⁵ = ?", answers: ["2⁸","2¹⁵","4⁸","2²"], correct: 0 },
   { q: "5⁹ : 5⁴ = ?", answers: ["5¹³","5⁵","25⁵","5⁴"], correct: 1 },

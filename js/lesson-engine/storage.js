@@ -1,19 +1,20 @@
 window.__EngineInternal = window.__EngineInternal || {};
 (function(I) {
 
-  function _storageKey() {
-    return I.STORAGE_PREFIX + I.state.lessonId;
-  }
-
   I.loadProgress = function() {
     if (!I.state.lessonId) return null;
-    var saved = ML.get(_storageKey(), null);
+    var saved = ML.getLessonSession(I.state.lessonId);
     if (saved && saved.completedBlocks) {
       I.state.completedBlocks = saved.completedBlocks || [];
       I.state.score = saved.score || 0;
       I.state.mistakes = saved.mistakes || 0;
       I.state.answers = saved.answers || {};
       I.state.blockResults = saved.blockResults || {};
+      I.state.currentIndex = Math.max(0, Number(saved.currentIndex) || 0);
+      I.state.timeSpent = Math.max(0, Number(saved.timeSpent) || 0);
+      I.state.elapsedBeforeSession = I.state.timeSpent;
+      I.state.startedAt = Number(saved.startedAt) || Date.now();
+      I.state.finished = saved.finished === true;
       return true;
     }
     return false;
@@ -21,19 +22,25 @@ window.__EngineInternal = window.__EngineInternal || {};
 
   I.saveProgress = function() {
     if (!I.state.lessonId) return;
-    ML.set(_storageKey(), {
+    I.updateTime();
+    var session = {
       completedBlocks: I.state.completedBlocks,
+      currentIndex: I.state.currentIndex,
       score: I.state.score,
       mistakes: I.state.mistakes,
       answers: I.state.answers,
       blockResults: I.state.blockResults,
+      timeSpent: I.state.timeSpent,
+      startedAt: I.state.startedAt,
+      finished: I.state.finished,
       updatedAt: Date.now(),
-    });
+    };
+    ML.setLessonSession(I.state.lessonId, session);
   };
 
   I.clearProgressInternal = function() {
     if (!I.state.lessonId) return;
-    ML.set(_storageKey(), null);
+    ML.setLessonSession(I.state.lessonId, null);
   };
 
 })(window.__EngineInternal);
