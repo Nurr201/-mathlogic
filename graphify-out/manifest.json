@@ -1,0 +1,182 @@
+{
+  "data/lesson-schema.js": {
+    "mtime": 1785613327.0953746,
+    "ast_hash": "4c8f1e86a0711a85809b9928ed27e425",
+    "semantic_hash": "4c8f1e86a0711a85809b9928ed27e425"
+  },
+  "data/lessons/exponents.js": {
+    "mtime": 1785519345.4184346,
+    "ast_hash": "95a4312a0604d34ad6fecd98e4ccde61",
+    "semantic_hash": "95a4312a0604d34ad6fecd98e4ccde61"
+  },
+  "data/lessons/expressions-experiment.js": {
+    "mtime": 1785612917.4351811,
+    "ast_hash": "8a4071e2a332988fb2288d21e96a87db",
+    "semantic_hash": "8a4071e2a332988fb2288d21e96a87db"
+  },
+  "js/achievements.js": {
+    "mtime": 1785513671.6545863,
+    "ast_hash": "a37069fa050c314492bf56db2f732f6c",
+    "semantic_hash": "a37069fa050c314492bf56db2f732f6c"
+  },
+  "js/animations.js": {
+    "mtime": 1785315537.0,
+    "ast_hash": "7899ecb7a1e3ebd7240f51a32d3e5b5c",
+    "semantic_hash": "7899ecb7a1e3ebd7240f51a32d3e5b5c"
+  },
+  "js/app.js": {
+    "mtime": 1785328990.0,
+    "ast_hash": "8bfc069fcae58ab96bc93a0733c53717",
+    "semantic_hash": "8bfc069fcae58ab96bc93a0733c53717"
+  },
+  "js/dashboard.js": {
+    "mtime": 1785516969.1042116,
+    "ast_hash": "9af8850ae89526a2b9321e2afaf0c621",
+    "semantic_hash": "9af8850ae89526a2b9321e2afaf0c621"
+  },
+  "js/data.js": {
+    "mtime": 1785612432.963693,
+    "ast_hash": "a37010aa82b3c6445d9bd61f9b962170",
+    "semantic_hash": "a37010aa82b3c6445d9bd61f9b962170"
+  },
+  "js/dev.js": {
+    "mtime": 1785510886.9035408,
+    "ast_hash": "8321ae06fee749c7144153ac0e024779",
+    "semantic_hash": "8321ae06fee749c7144153ac0e024779"
+  },
+  "js/events.js": {
+    "mtime": 1785328981.0,
+    "ast_hash": "2ba3772581c2ae005373b3219702e0b1",
+    "semantic_hash": "2ba3772581c2ae005373b3219702e0b1"
+  },
+  "js/i18n.js": {
+    "mtime": 1785517566.4939036,
+    "ast_hash": "0619fc761abc89014ec63f025289d169",
+    "semantic_hash": "0619fc761abc89014ec63f025289d169"
+  },
+  "js/learning.js": {
+    "mtime": 1785517032.4011998,
+    "ast_hash": "dcb840192177bf969ca30dfda15b45f1",
+    "semantic_hash": "dcb840192177bf969ca30dfda15b45f1"
+  },
+  "js/lesson-blocks.js": {
+    "mtime": 1785510143.367456,
+    "ast_hash": "c4d762f51eec267cd0074af9733294c0",
+    "semantic_hash": "c4d762f51eec267cd0074af9733294c0"
+  },
+  "js/lesson-blocks/decision.js": {
+    "mtime": 1785613496.283515,
+    "ast_hash": "78510357020aef40bd029dcbc8fa423a",
+    "semantic_hash": "78510357020aef40bd029dcbc8fa423a"
+  },
+  "js/lesson-blocks/helpers.js": {
+    "mtime": 1785396139.0,
+    "ast_hash": "179087d9308c746817d00d1f2258f480",
+    "semantic_hash": "179087d9308c746817d00d1f2258f480"
+  },
+  "js/lesson-blocks/registry.js": {
+    "mtime": 1785396193.0,
+    "ast_hash": "250f3522113e2877229bfa69ba63bde8",
+    "semantic_hash": "250f3522113e2877229bfa69ba63bde8"
+  },
+  "js/lesson-blocks/renderers.js": {
+    "mtime": 1785612917.3442492,
+    "ast_hash": "95a8567dcec9b3afbc511df3e07a86e9",
+    "semantic_hash": "95a8567dcec9b3afbc511df3e07a86e9"
+  },
+  "js/lesson-engine.js": {
+    "mtime": 1785510093.6222088,
+    "ast_hash": "777e26b217fa297f7b028173e1d7c87a",
+    "semantic_hash": "777e26b217fa297f7b028173e1d7c87a"
+  },
+  "js/lesson-engine/core.js": {
+    "mtime": 1785511593.3212118,
+    "ast_hash": "87d16e6a8dda643e34d99af4b97bde72",
+    "semantic_hash": "87d16e6a8dda643e34d99af4b97bde72"
+  },
+  "js/lesson-engine/debug.js": {
+    "mtime": 1785396099.0,
+    "ast_hash": "745da7d5eca5b261e500f086deffd492",
+    "semantic_hash": "745da7d5eca5b261e500f086deffd492"
+  },
+  "js/lesson-engine/hooks.js": {
+    "mtime": 1785510060.0828986,
+    "ast_hash": "40f0190373a78152841a007d1a12941d",
+    "semantic_hash": "40f0190373a78152841a007d1a12941d"
+  },
+  "js/lesson-engine/serializer.js": {
+    "mtime": 1785510964.4729807,
+    "ast_hash": "430e97b69088a39bfc7ad890cb790aba",
+    "semantic_hash": "430e97b69088a39bfc7ad890cb790aba"
+  },
+  "js/lesson-engine/state.js": {
+    "mtime": 1785510964.299363,
+    "ast_hash": "036b6153c1ca6b4b1e35a1aecd2975b2",
+    "semantic_hash": "036b6153c1ca6b4b1e35a1aecd2975b2"
+  },
+  "js/lesson-engine/storage.js": {
+    "mtime": 1785510964.3862154,
+    "ast_hash": "2b06be0b1395e29aeb07c3bf3aebc728",
+    "semantic_hash": "2b06be0b1395e29aeb07c3bf3aebc728"
+  },
+  "js/lesson.js": {
+    "mtime": 1785613327.0068622,
+    "ast_hash": "5192f491050b7e247d41ea406229b773",
+    "semantic_hash": "5192f491050b7e247d41ea406229b773"
+  },
+  "js/navigation.js": {
+    "mtime": 1785328986.0,
+    "ast_hash": "5f1bf69eb653dc70a529502d8141437a",
+    "semantic_hash": "5f1bf69eb653dc70a529502d8141437a"
+  },
+  "js/profile.js": {
+    "mtime": 1785510886.9927158,
+    "ast_hash": "f13b4148b2ffb2293dc267848d9dc70e",
+    "semantic_hash": "f13b4148b2ffb2293dc267848d9dc70e"
+  },
+  "js/quiz.js": {
+    "mtime": 1785511534.4125998,
+    "ast_hash": "d09ae91c7db0d23d673c83f44e49443c",
+    "semantic_hash": "d09ae91c7db0d23d673c83f44e49443c"
+  },
+  "js/settings.js": {
+    "mtime": 1785516928.2300096,
+    "ast_hash": "ba99ae61ad15af733ad943496f4e1b71",
+    "semantic_hash": "ba99ae61ad15af733ad943496f4e1b71"
+  },
+  "js/storage.js": {
+    "mtime": 1785516927.6879368,
+    "ast_hash": "f4e0a17328e5e92a1efa0bfa5fe85fd3",
+    "semantic_hash": "f4e0a17328e5e92a1efa0bfa5fe85fd3"
+  },
+  "js/topic.js": {
+    "mtime": 1785511534.5003972,
+    "ast_hash": "80ab6bcad69f1a89df4efb57e46bc74b",
+    "semantic_hash": "80ab6bcad69f1a89df4efb57e46bc74b"
+  },
+  "js/ui.js": {
+    "mtime": 1785511572.1103816,
+    "ast_hash": "dcef727b37c514c337a8df4ecdd5eb9d",
+    "semantic_hash": "dcef727b37c514c337a8df4ecdd5eb9d"
+  },
+  "js/utils.js": {
+    "mtime": 1785328978.0,
+    "ast_hash": "56b6f988a5dd9a5ab2e5d84c714b222b",
+    "semantic_hash": "56b6f988a5dd9a5ab2e5d84c714b222b"
+  },
+  "js/xp.js": {
+    "mtime": 1785509824.3708475,
+    "ast_hash": "2f788ed43ed057d2751405f9ba460111",
+    "semantic_hash": "2f788ed43ed057d2751405f9ba460111"
+  },
+  "tests/core-smoke.js": {
+    "mtime": 1785612516.7415242,
+    "ast_hash": "9e38714947379dc1fd62030158a787a7",
+    "semantic_hash": "9e38714947379dc1fd62030158a787a7"
+  },
+  "tests/page-smoke.js": {
+    "mtime": 1785613519.5473676,
+    "ast_hash": "8bb2b0dd310fca41d93c0e27e0ac8372",
+    "semantic_hash": "8bb2b0dd310fca41d93c0e27e0ac8372"
+  }
+}
