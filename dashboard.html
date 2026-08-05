@@ -20,7 +20,7 @@
     <nav class="dashboard-nav" aria-label="Основная навигация">
       <a href="dashboard.html" aria-current="page"><span class="nav-glyph">◇</span><span data-copy="navLearning">Обучение</span></a>
       <a href="#learning-route"><span class="nav-glyph">＋</span><span data-copy="navPractice">Практика</span></a>
-      <a href="profile.html"><span class="nav-glyph">△</span><span data-copy="navAchievements">Достижения</span></a>
+      <a href="profile.html"><span class="nav-glyph">△</span><span data-copy="navJournal">Учебный журнал</span></a>
       <a href="profile.html"><span class="nav-glyph">○</span><span data-copy="navProfile">Профиль</span></a>
       <a href="settings.html"><span class="nav-glyph">□</span><span data-copy="navSettings">Настройки</span></a>
     </nav>
@@ -31,7 +31,7 @@
     </div>
 
     <div class="dashboard-rail-footer">
-      <div class="rail-streak"><span class="gold-diamond">◆</span><strong class="mono" id="rail-streak">0</strong><span data-copy="days">дней подряд</span></div>
+      <div class="rail-streak"><span class="gold-diamond">✓</span><strong class="mono" id="rail-completed">0</strong><span data-copy="completedLessons">уроков пройдено</span></div>
       <div class="rail-controls">
         <div class="axis-segment" role="group" aria-label="Язык">
           <button type="button" data-lang="ru">РУС</button>
@@ -66,8 +66,8 @@
           <p id="dashboard-context"></p>
         </div>
         <div class="dashboard-top-actions">
-          <span class="axis-chip axis-chip-gold"><span aria-hidden="true">◆</span><b class="mono" id="top-xp">0</b> XP</span>
-          <span class="axis-chip"><span aria-hidden="true">◇</span><b class="mono" id="top-streak">0</b></span>
+          <span class="axis-chip axis-chip-gold"><span aria-hidden="true">✓</span><b class="mono" id="top-completed">0</b><span data-copy="passedShort">пройдено</span></span>
+          <span class="axis-chip"><span aria-hidden="true">◇</span><b class="mono" id="top-active">0</b><span data-copy="inProgressShort">в процессе</span></span>
           <a class="dashboard-avatar" href="profile.html" id="dashboard-avatar" aria-label="Профиль">М</a>
         </div>
       </header>
@@ -78,7 +78,7 @@
           <h2 id="hero-title">—</h2>
           <p id="hero-description"></p>
           <div class="hero-meta mono">
-            <span id="hero-duration">—</span><span id="hero-reward">— XP</span><span id="hero-steps">—</span>
+            <span id="hero-duration">—</span><span id="hero-status">—</span><span id="hero-steps">—</span>
           </div>
           <div class="hero-actions">
             <a class="axis-button axis-button-gold" id="hero-primary" href="dashboard.html"><span class="hero-play-icon" aria-hidden="true">▶</span><span data-copy="continue">Продолжить урок</span></a>
@@ -98,9 +98,9 @@
       </section>
 
       <section class="dashboard-stats" aria-label="Статистика">
-        <div><span class="axis-eyebrow" data-copy="level">Уровень</span><strong class="mono" id="stat-level">1</strong><small id="stat-level-copy"></small><div class="axis-track"><span id="stat-level-fill"></span></div></div>
-        <div><span class="axis-eyebrow">XP</span><strong class="mono" id="stat-xp">0</strong><small id="stat-xp-copy"></small><div class="axis-track gold"><span id="stat-xp-fill"></span></div></div>
-        <div><span class="axis-eyebrow" data-copy="streak">Серия</span><strong class="mono" id="stat-streak">0</strong><small data-copy="learningDays">учебных дней</small><div class="axis-track gold"><span id="stat-streak-fill"></span></div></div>
+        <div><span class="axis-eyebrow" data-copy="completed">Пройдено</span><strong class="mono" id="stat-completed">0</strong><small id="stat-completed-copy"></small><div class="axis-track"><span id="stat-completed-fill"></span></div></div>
+        <div><span class="axis-eyebrow" data-copy="inProgress">В процессе</span><strong class="mono" id="stat-active">0</strong><small id="stat-active-copy"></small><div class="axis-track gold"><span id="stat-active-fill"></span></div></div>
+        <div><span class="axis-eyebrow" data-copy="availableLessons">Доступно</span><strong class="mono" id="stat-available">0</strong><small id="stat-available-copy"></small><div class="axis-track gold"><span id="stat-available-fill"></span></div></div>
         <div><span class="axis-eyebrow" data-copy="course">Курс</span><strong class="mono" id="stat-course">0%</strong><small id="stat-course-copy"></small><div class="axis-track"><span id="stat-course-fill"></span></div></div>
       </section>
 
@@ -119,14 +119,13 @@
   <nav class="dashboard-mobile-tabs" aria-label="Мобильная навигация">
     <a href="dashboard.html" aria-current="page"><span>◇</span><small data-copy="navLearning">Обучение</small></a>
     <a href="#learning-route"><span>＋</span><small data-copy="navPractice">Практика</small></a>
-    <a href="profile.html"><span>△</span><small data-copy="navAchievements">Награды</small></a>
+    <a href="profile.html"><span>△</span><small data-copy="navJournal">Журнал</small></a>
     <a href="profile.html"><span>○</span><small data-copy="navProfile">Профиль</small></a>
   </nav>
   <script src="js/data.js"></script>
-  <script src="js/storage.js"></script>
-  <script src="js/i18n.js"></script>
-  <script src="js/xp.js"></script>
-  <script src="js/learning.js"></script>
-  <script src="js/dashboard.js"></script>
+  <script src="js/storage.js?v=nogame"></script>
+  <script src="js/i18n.js?v=nogame"></script>
+  <script src="js/learning.js?v=nogame"></script>
+  <script src="js/dashboard.js?v=nogame"></script>
 </body>
 </html>

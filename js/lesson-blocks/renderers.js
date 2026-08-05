@@ -4,6 +4,10 @@ window.__BlockRenderers = (function() {
   var _selected = {};
   var _pendingResult = null;
 
+  function _copy(ru, kk) {
+    return typeof ML !== 'undefined' && ML.getLang && ML.getLang() === 'kk' ? kk : ru;
+  }
+
   function _escapeAttr(value) {
     return String(value === undefined || value === null ? '' : value)
       .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -456,10 +460,6 @@ window.__BlockRenderers = (function() {
      RESULT
      ------------------------------------------ */
 
-  function _calcGrade(pct) {
-    return pct >= 90 ? 'S' : pct >= 80 ? 'A' : pct >= 60 ? 'B' : pct >= 40 ? 'C' : 'D';
-  }
-
   function _formatTime(seconds) {
     if (seconds >= 60) {
       return Math.floor(seconds / 60) + '\u00A0\u043C\u0438\u043D ' + (seconds % 60) + '\u00A0\u0441\u0435\u043A';
@@ -477,12 +477,12 @@ window.__BlockRenderers = (function() {
     return '<a href="dashboard.html" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg py-4 px-10 rounded-2xl shadow-[0_8px_20px_rgba(79,70,229,0.25)] transition-all hover:-translate-y-0.5">\u0411\u0430\u049B\u044B\u043B\u0430\u0443 \u0442\u0430\u049B\u0442\u0430\u0441\u044B\u043D\u0430 \u049B\u0430\u0439\u0442\u0443 \u2192</a>';
   }
 
-  function _renderStatsGrid(pct, xpEarned, timeStr, grade) {
+  function _renderStatsGrid(pct, correct, total, timeStr, steps) {
     return '<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-lg mx-auto mb-8">' +
-      '<div class="bg-blue-50 rounded-2xl p-4 border border-blue-100"><div class="text-2xl font-black text-blue-700">' + pct + '%</div><div class="text-xs font-bold text-blue-500 mt-1">\u0420\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442</div></div>' +
-      '<div class="bg-amber-50 rounded-2xl p-4 border border-amber-100"><div class="text-2xl font-black text-amber-700">+' + xpEarned + '</div><div class="text-xs font-bold text-amber-500 mt-1">XP</div></div>' +
-      '<div class="bg-emerald-50 rounded-2xl p-4 border border-emerald-100"><div class="text-2xl font-black text-emerald-700">' + timeStr + '</div><div class="text-xs font-bold text-emerald-500 mt-1">\u0412\u0440\u0435\u043C\u044F</div></div>' +
-      '<div class="bg-purple-50 rounded-2xl p-4 border border-purple-100"><div class="text-2xl font-black text-purple-700">' + grade + '</div><div class="text-xs font-bold text-purple-500 mt-1">\u041E\u0446\u0435\u043D\u043A\u0430</div></div>' +
+      '<div class="bg-blue-50 rounded-2xl p-4 border border-blue-100"><div class="text-2xl font-black text-blue-700">' + pct + '%</div><div class="text-xs font-bold text-blue-500 mt-1">' + _copy('\u0420\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442', '\u041D\u04D9\u0442\u0438\u0436\u0435') + '</div></div>' +
+      '<div class="bg-amber-50 rounded-2xl p-4 border border-amber-100"><div class="text-2xl font-black text-amber-700">' + correct + ' / ' + total + '</div><div class="text-xs font-bold text-amber-500 mt-1">' + _copy('\u0417\u0430\u0434\u0430\u0447\u0438', '\u0422\u0430\u043F\u0441\u044B\u0440\u043C\u0430\u043B\u0430\u0440') + '</div></div>' +
+      '<div class="bg-emerald-50 rounded-2xl p-4 border border-emerald-100"><div class="text-2xl font-black text-emerald-700">' + timeStr + '</div><div class="text-xs font-bold text-emerald-500 mt-1">' + _copy('\u0412\u0440\u0435\u043C\u044F', '\u0423\u0430\u049B\u044B\u0442') + '</div></div>' +
+      '<div class="bg-purple-50 rounded-2xl p-4 border border-purple-100"><div class="text-2xl font-black text-purple-700">' + steps + '</div><div class="text-xs font-bold text-purple-500 mt-1">' + _copy('\u0428\u0430\u0433\u043E\u0432', '\u049A\u0430\u0434\u0430\u043C') + '</div></div>' +
       '</div>';
   }
 
@@ -494,19 +494,18 @@ window.__BlockRenderers = (function() {
 
   function renderResult(block, ctx) {
     var pct = ctx.percentage || 0;
-    var grade = _calcGrade(pct);
     var state = window.__EngineInternal && window.__EngineInternal.state;
-    var rewardKey = state && state.lessonId ? 'lesson:' + state.lessonId : '';
-    var rewardExists = rewardKey && typeof ML !== 'undefined' && !!(ML.get('rewards', {})[rewardKey]);
-    var xpEarned = ctx.repeatMode || rewardExists ? 0 : (block.xp || 50);
     var timeStr = _formatTime(ctx.timeSpent || 0);
+    var correct = Math.max(0, Number(ctx.correctAnswers) || 0);
+    var total = Math.max(correct, Number(ctx.totalQuestions) || 0);
+    var steps = state ? state.totalBlocks : ctx.total;
 
     return H.wrap(
       '<div class="text-center py-8">' +
         '<div class="lesson-finish-mark" aria-hidden="true">◆</div>' +
         '<h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-2">\u0423\u0440\u043E\u043A \u0437\u0430\u0432\u0435\u0440\u0448\u0451\u043D!</h2>' +
         '<p class="text-lg text-slate-500 mb-8">' + (block.description || '\u041E\u0442\u043B\u0438\u0447\u043D\u0430\u044F \u0440\u0430\u0431\u043E\u0442\u0430!') + '</p>' +
-        _renderStatsGrid(pct, xpEarned, timeStr, grade) +
+        _renderStatsGrid(pct, correct, total, timeStr, steps) +
         _renderMistakesWarning(ctx.mistakes) +
         '<div class="flex justify-center">' + _renderNextLessonLink(block.nextLesson) + '</div>' +
       '</div>'

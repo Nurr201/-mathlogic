@@ -91,10 +91,10 @@
     config.id = meta.id;
     config.title = localized(meta, 'title');
     config.description = localized(meta, 'description');
-    config.xp = meta.xp;
+    config.xp = 0;
     var resultBlock = config.blocks && config.blocks.find(function(block) { return block.type === 'result'; });
     if (resultBlock) {
-      resultBlock.xp = meta.xp;
+      resultBlock.xp = 0;
       var nextId = Learning.getNextLessonId(meta.id);
       var next = nextId ? Learning.getRegistryEntry(nextId) : null;
       resultBlock.nextLesson = next
@@ -203,18 +203,9 @@
       completedAt: Date.now(),
       attempts: data.attempts,
       answers: data.answers || {},
-      xpEarned: activeLesson.xp,
+      xpEarned: 0,
     });
     setMode(text('completed'), false);
-    showToast('+' + ((result && result.xpEarned) || 0) + ' XP');
-  }
-
-  function showToast(message) {
-    var toast = document.getElementById('lesson-toast');
-    toast.textContent = message;
-    toast.classList.add('is-visible');
-    clearTimeout(toast._timer);
-    toast._timer = setTimeout(function() { toast.classList.remove('is-visible'); }, 2400);
   }
 
   function bindEngine() {
@@ -235,7 +226,7 @@
     document.getElementById('lesson-title').textContent = title;
     document.getElementById('lesson-description').textContent = description;
     document.getElementById('lesson-duration').textContent = meta.duration + ' ' + text('minutes');
-    document.getElementById('lesson-xp').textContent = '+' + meta.xp + ' XP';
+    document.getElementById('lesson-length').textContent = activeConfig.blocks.length + ' ' + text('steps');
     document.getElementById('lesson-breadcrumb').textContent = meta.subjectId.toUpperCase() + ' / ' + meta.topicId.toUpperCase();
     document.getElementById('lesson-top-context').textContent = meta.subjectId.toUpperCase() + ' / ' + title;
   }

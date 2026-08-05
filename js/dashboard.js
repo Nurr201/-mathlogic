@@ -39,30 +39,31 @@
 
   function renderTop() {
     const user = ML.getUser() || {};
-    const xp = XP.getLevelProgress();
     const subjects = Learning.getSubjects();
-    const available = Object.keys(Learning.getRegistry()).map(function(id) { return Learning.getLesson(id); })
-      .filter(function(lesson) { return lesson && (lesson.status === 'available' || lesson.status === 'current'); }).length;
+    const lessons = Object.keys(Learning.getRegistry()).map(function(id) { return Learning.getLesson(id); }).filter(Boolean);
+    const completed = lessons.filter(function(lesson) { return lesson.status === 'completed'; }).length;
+    const active = lessons.filter(function(lesson) { return lesson.status === 'current'; }).length;
+    const available = lessons.filter(function(lesson) { return lesson.status === 'available' || lesson.status === 'current'; }).length;
+    const total = lessons.length;
     const name = user.name || user.username || '';
     setText('dashboard-greeting', t('greeting') + (name ? ', ' + name.split(' ')[0] : ''));
     const date = new Intl.DateTimeFormat(state.lang === 'ru' ? 'ru-RU' : 'kk-KZ', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
     setText('dashboard-context', date.charAt(0).toUpperCase() + date.slice(1) + ' · ' + available + ' ' + t('availableCount'));
-    setText('top-xp', xp.xp);
-    setText('top-streak', user.streak || 0);
-    setText('rail-streak', user.streak || 0);
+    setText('top-completed', completed);
+    setText('top-active', active);
+    setText('rail-completed', completed);
     setText('dashboard-avatar', (name || t('profile')).charAt(0).toUpperCase());
 
-    setText('stat-level', xp.level);
-    setText('stat-level-copy', xp.remaining + ' XP ' + t('remaining'));
-    document.getElementById('stat-level-fill').style.width = pct(xp.progress) + '%';
-    setText('stat-xp', xp.xp);
-    setText('stat-xp-copy', xp.levelXp + ' / ' + xp.levelSpan + ' XP');
-    document.getElementById('stat-xp-fill').style.width = pct(xp.progress) + '%';
-    setText('stat-streak', user.streak || 0);
-    document.getElementById('stat-streak-fill').style.width = pct((user.streak || 0) / 7 * 100) + '%';
+    setText('stat-completed', completed);
+    setText('stat-completed-copy', completed + ' / ' + total + ' ' + t('lessons'));
+    document.getElementById('stat-completed-fill').style.width = pct(total ? completed / total * 100 : 0) + '%';
+    setText('stat-active', active);
+    setText('stat-active-copy', active ? t('savedProgress') : t('nothingStarted'));
+    document.getElementById('stat-active-fill').style.width = pct(total ? active / total * 100 : 0) + '%';
+    setText('stat-available', available);
+    setText('stat-available-copy', total + ' ' + t('preparedLessons'));
+    document.getElementById('stat-available-fill').style.width = pct(total ? available / total * 100 : 0) + '%';
     const overall = Learning.getOverallProgress();
-    const completed = subjects.reduce(function(sum, item) { return sum + item.completedLessons; }, 0);
-    const total = subjects.reduce(function(sum, item) { return sum + item.totalLessons; }, 0);
     setText('stat-course', overall + '%');
     setText('stat-course-copy', completed + ' / ' + total + ' ' + t('lessons'));
     document.getElementById('stat-course-fill').style.width = pct(overall) + '%';
@@ -109,7 +110,7 @@
     setText('hero-title', lessonTitle(next));
     setText('hero-description', lessonDescription(next));
     setText('hero-duration', next.duration ? next.duration + ' ' + t('minutes') : t('interactive'));
-    setText('hero-reward', '+' + (next.xp || 0) + ' XP');
+    setText('hero-status', statusText(next.status));
     const completedBlocks = next.session && Array.isArray(next.session.completedBlocks) ? next.session.completedBlocks.length : 0;
     setText('hero-steps', completedBlocks ? completedBlocks + ' ' + t('saved') : t('interactive'));
     const primary = document.getElementById('hero-primary');
@@ -143,7 +144,7 @@
       return new Intl.DateTimeFormat(state.lang === 'ru' ? 'ru-RU' : 'kk-KZ', { day: 'numeric', month: 'short' }).format(new Date(lesson.releaseDate));
     }
     if (lesson.status === 'locked') return localized(lesson, 'unlockReason') || t('noContent');
-    return lesson.duration ? lesson.duration + ' ' + t('minutes') + ' · +' + lesson.xp + ' XP' : statusText(lesson.status);
+    return lesson.duration ? lesson.duration + ' ' + t('minutes') : statusText(lesson.status);
   }
 
   function renderRoute() {
@@ -219,7 +220,6 @@
       renderSafely();
     });
   });
-  document.addEventListener('xp:update', renderSafely);
   document.addEventListener('progress:update', renderSafely);
   window.addEventListener('storage', function(event) { if (event.key === 'mathlogic_data') renderSafely(); });
   document.getElementById('dashboard-retry').addEventListener('click', renderSafely);

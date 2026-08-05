@@ -13,7 +13,7 @@
 - legacy-компоненты `.subj-card`, `.topic-chip`, `.bottom-bar`, `.bottom-item`, `.section-block`, `.section-title` и `.formula-card`;
 - невозможные достижения `first_quest`/`thirty_quests` и обработчик `quest:completed`.
 
-Dashboard читает только `Learning`, `ML`, `XP` и `I18N`. Его единственный контроллер — `js/dashboard.js`; `events.js`, `ui.js` и `achievements.js` больше не подключаются к `dashboard.html`. Каталог будущих тем из `DATA` показывается как locked/unavailable, а интерактивные ссылки создаются только для `LESSON_REGISTRY`.
+Dashboard читает только `Learning`, `ML` и `I18N`. Его единственный контроллер — `js/dashboard.js`; игровые модули удалены. Каталог будущих тем из `DATA` показывается как locked/unavailable, а интерактивные ссылки создаются только для `LESSON_REGISTRY`.
 
 Нормализация storage удаляет старые поля `dashboard` и `dailyQuests`, а отдельный ключ `ml_dash_state` оставлен только в списке миграционной очистки.
 
@@ -21,8 +21,8 @@ Dashboard читает только `Learning`, `ML`, `XP` и `I18N`. Его е�
 
 - профиль и настройки из `mathlogic_data`;
 - lesson results и незавершённые sessions;
-- XP, уровень и одноразовые reward records;
-- streak из единого `activity.dates`;
+- количество завершённых и незавершённых уроков;
+- реальные учебные дни из `activity.dates`;
 - stats/timeline, созданные реальным completion;
 - две существующие JSON-конфигурации уроков.
 

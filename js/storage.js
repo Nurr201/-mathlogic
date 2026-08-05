@@ -485,24 +485,6 @@ const ML = (function() {
     return y + '-' + m + '-' + d;
   }
 
-  function calculateStreak(dates) {
-    const unique = {};
-    dates.forEach(function(date) { unique[date] = true; });
-    let cursor = new Date();
-    let key = localDateKey(cursor);
-    if (!unique[key]) {
-      cursor.setDate(cursor.getDate() - 1);
-      key = localDateKey(cursor);
-      if (!unique[key]) return 0;
-    }
-    let streak = 0;
-    while (unique[localDateKey(cursor)]) {
-      streak++;
-      cursor.setDate(cursor.getDate() - 1);
-    }
-    return streak;
-  }
-
   function recordLearningActivity(seconds, timestamp) {
     update(function(data) {
       const date = new Date(timestamp || Date.now());
@@ -511,11 +493,6 @@ const ML = (function() {
       if (seconds > 0) {
         data.activity.studySecondsByDate[key] = (data.activity.studySecondsByDate[key] || 0) + Math.floor(seconds);
       }
-      const current = calculateStreak(data.activity.dates);
-      data.user.streak = current;
-      data.user.streakBest = Math.max(data.user.streakBest || 0, current);
-      data.user.streakTotal = data.activity.dates.length;
-      data.stats.best_streak = data.user.streakBest;
     });
   }
 
@@ -559,19 +536,6 @@ const ML = (function() {
           data.lesson.sessions[canonicalId] = oldSession;
         }
         delete data.lesson.sessions[legacyId];
-      });
-      const canonicalIds = {};
-      Object.keys(mapping).forEach(function(legacyId) { canonicalIds[mapping[legacyId]] = true; });
-      Object.keys(canonicalIds).forEach(function(id) {
-        const record = data.progress.lessons[id];
-        const rewardKey = 'lesson:' + id;
-        if (record && record.status === 'completed' && !data.rewards[rewardKey]) {
-          data.rewards[rewardKey] = {
-            amount: Math.max(0, Number(record.xpEarned) || 0),
-            awardedAt: Number(record.completedAt) || Date.now(),
-            reason: 'legacy-lesson',
-          };
-        }
       });
     });
   }

@@ -1,4 +1,4 @@
-/* Dependency-free smoke checks for storage, XP and canonical lesson lifecycle. */
+/* Dependency-free smoke checks for storage and canonical lesson lifecycle. */
 'use strict';
 
 const assert = require('node:assert/strict');
@@ -8,7 +8,7 @@ const vm = require('node:vm');
 
 const ROOT = path.resolve(__dirname, '..');
 const SOURCES = [
-  'js/data.js', 'js/storage.js', 'js/i18n.js', 'js/xp.js', 'js/events.js', 'js/learning.js',
+  'js/data.js', 'js/storage.js', 'js/i18n.js', 'js/events.js', 'js/learning.js',
   'data/lesson-schema.js', 'data/lessons/exponents.js',
 ];
 
@@ -59,20 +59,19 @@ function testCanonicalLifecycle() {
   assert.equal(app.run("Learning.getLessonStatus('algebra.exponents.basics')"), 'current');
 
   const first = app.run("Learning.completeLesson('algebra.exponents.basics',{percentage:80,correctAnswers:4,totalQuestions:5,duration:30})");
-  assert.equal(first.xpEarned, 90);
-  assert.equal(app.run('XP.getXP()'), 90);
+  assert.equal(first.xpEarned, 0);
   assert.equal(app.run("ML.getLessonSession('algebra.exponents.basics')"), null);
   assert.ok(app.run("Object.keys(ML.get('progress.subtopics')).length") > 0);
   const repeated = app.run("Learning.completeLesson('algebra.exponents.basics',{percentage:100,correctAnswers:5,totalQuestions:5})");
   assert.equal(repeated.xpEarned, 0);
-  assert.equal(app.run('XP.getXP()'), 90);
-  assert.equal(app.run("ML.get('stats.xp_earned')"), 90);
+  assert.equal(app.run("ML.get('user.xp')"), 0);
+  assert.equal(app.run("Object.keys(ML.get('rewards',{})).length"), 0);
   app.run("Learning.resetLesson('algebra.exponents.basics')");
   assert.equal(app.run("Object.keys(ML.get('progress.subtopics')).length"), 0);
   assert.equal(app.run("ML.get('stats.lessons_completed')"), 0);
   const afterReset = app.run("Learning.completeLesson('algebra.exponents.basics',{percentage:100,correctAnswers:5,totalQuestions:5})");
   assert.equal(afterReset.xpEarned, 0);
-  assert.equal(app.run('XP.getXP()'), 90);
+  assert.equal(app.run("ML.get('user.xp')"), 0);
 }
 
 function testRegistryAndConfigs() {
@@ -105,7 +104,7 @@ function testLegacyMigration() {
   assert.equal(app.run("Learning.getLessonStatus('algebra.exponents.basics')"), 'completed');
   assert.equal(app.run("ML.get('progress.lessons.algebra_1',null)"), null);
   assert.equal(app.run("ML.getLessonSession('algebra.exponents.basics').currentIndex"), 2);
-  assert.equal(app.run("ML.get('rewards')['lesson:algebra.exponents.basics'].reason"), 'legacy-lesson');
+  assert.equal(app.run("Object.keys(ML.get('rewards',{})).length"), 0);
   assert.equal(app.run("ML.get('dashboard',null)"), null);
   assert.equal(app.run("ML.get('dailyQuests',null)"), null);
   assert.equal(app.context.localStorage.getItem('ml_dash_state'), null);
@@ -134,7 +133,7 @@ function testLanguageCompatibility() {
   assert.equal(app.run("ML.get('settings.lang')"), 'kk');
   app.run("ML.setSetting('lang','kk')");
   assert.equal(app.run('I18N.getLang()'), 'kk');
-  assert.equal(app.run("I18N.t('lesson.repeat','kz')"), 'Қайталау · XP есептелмейді');
+  assert.equal(app.run("I18N.t('lesson.repeat','kz')"), 'Қайталап оқу');
   assert.equal(app.run("I18N.localize({title:'RU',titleKz:'KK'},'title','kk')"), 'KK');
   app.run("ML.setSetting('lang','ru')");
   assert.equal(app.run('ML.getLang()'), 'ru');
@@ -148,14 +147,9 @@ function testLanguageCompatibility() {
   assert.equal(savedLegacy.run("ML.get('settings.lang')"), 'kk');
 }
 
-function testXpBoundariesAndReset() {
+function testLearningReset() {
   const app = boot();
-  [[0, 1], [99, 1], [100, 2], [399, 2], [400, 3]].forEach(function(pair) {
-    app.run('XP.setXP(' + pair[0] + ')');
-    assert.equal(app.run('XP.getLevel()'), pair[1]);
-  });
   app.run("ML.setUser({name:'Test',loggedIn:true});ML.setLang('ru');Learning.completeLesson('algebra.vieta.intro',{percentage:100,correctAnswers:3,totalQuestions:3});Learning.resetAll()");
-  assert.equal(app.run('XP.getXP()'), 0);
   assert.equal(app.run("ML.get('settings.lang')"), 'ru');
   assert.equal(app.run("ML.get('user.name')"), 'Test');
   assert.equal(app.run("ML.get('user.loggedIn')"), true);
@@ -166,13 +160,11 @@ function testXpBoundariesAndReset() {
 function testSubjectReset() {
   const app = boot();
   app.run("Learning.completeLesson('algebra.exponents.basics',{percentage:100,correctAnswers:5,totalQuestions:5});Learning.completeLesson('algebra.vieta.intro',{percentage:100,correctAnswers:3,totalQuestions:3})");
-  assert.equal(app.run('XP.getXP()'), 160);
   app.run("Learning.resetSubject('algebra')");
   assert.equal(app.run('Object.keys(ML.getCompletedLessons()).length'), 0);
   assert.equal(app.run("Object.keys(ML.get('progress.subtopics')).length"), 0);
   assert.equal(app.run("ML.get('stats.lessons_completed')"), 0);
-  assert.equal(app.run('XP.getXP()'), 160);
-  assert.equal(app.run("Object.keys(ML.get('rewards')).length"), 2);
+  assert.equal(app.run("Object.keys(ML.get('rewards')).length"), 0);
 }
 
 function testCorruptStorageFallback() {
@@ -181,12 +173,14 @@ function testCorruptStorageFallback() {
   assert.ok(app.run('ML.getDiagnostics().length') > 0);
 }
 
-function testRetiredDashboardAchievements() {
-  const app = boot();
-  app.run("XP.setXP(75);ML.set('achievements',[{id:'first_quest',completed:true,rewardXP:50}])");
-  vm.runInContext(fs.readFileSync(path.join(ROOT, 'js/achievements.js'), 'utf8'), app.context, { filename: 'js/achievements.js' });
-  assert.equal(app.run("ML.get('achievements').some(function(item){return item.id==='first_quest'||item.id==='thirty_quests';})"), false);
-  assert.equal(app.run('XP.getXP()'), 75);
+function testCompletionDoesNotMutateLegacyGameFields() {
+  const app = boot({ mathlogic_data: JSON.stringify({ version: 2, user: { xp: 125, streak: 4 }, rewards: { legacy: { amount: 10 } }, achievements: [{ id: 'legacy' }] }) });
+  app.run("Learning.completeLesson('algebra.exponents.basics',{percentage:100,correctAnswers:5,totalQuestions:5,duration:20})");
+  assert.equal(app.run("ML.get('user.xp')"), 125);
+  assert.equal(app.run("ML.get('user.streak')"), 4);
+  assert.equal(app.run("Object.keys(ML.get('rewards')).length"), 1);
+  assert.equal(app.run("ML.get('achievements').length"), 1);
+  assert.equal(app.run("ML.get('activity.dates').length"), 1);
 }
 
 testCanonicalLifecycle();
@@ -194,8 +188,8 @@ testRegistryAndConfigs();
 testLegacyMigration();
 testScatteredLegacyMigration();
 testLanguageCompatibility();
-testXpBoundariesAndReset();
+testLearningReset();
 testSubjectReset();
 testCorruptStorageFallback();
-testRetiredDashboardAchievements();
+testCompletionDoesNotMutateLegacyGameFields();
 console.log('core-smoke: ok');

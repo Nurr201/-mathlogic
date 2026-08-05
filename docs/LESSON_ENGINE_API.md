@@ -269,7 +269,7 @@ LessonEngine.importState(saved);
   title: 'Название',         // название урока
   description: 'Описание',   // краткое описание
   subject: 'algebra',        // предмет
-  xp: 50,                    // XP за прохождение
+  xp: 0,                     // устаревшее совместимое поле; награды не начисляются
   debug: true,               // опционально — включает debug-панель
   meta: {                    // метаданные
     difficulty: 2,

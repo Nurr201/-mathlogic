@@ -6,7 +6,6 @@
 window.Learning = (function() {
   'use strict';
 
-  const LESSON_XP_BASE = 50;
   let _course = null;
 
   function registry() {
@@ -366,7 +365,7 @@ window.Learning = (function() {
     }
     const previous = getRecord(id);
     if (previous && previous.status === 'completed') {
-      return { lessonId: id, xpEarned: 0, score: previous.score || 0, grade: previous.grade || '', alreadyCompleted: true };
+      return { lessonId: id, xpEarned: 0, score: previous.score || 0, grade: '', alreadyCompleted: true };
     }
 
     result = result || {};
@@ -375,11 +374,6 @@ window.Learning = (function() {
     const rawCorrect = Math.max(0, Math.floor(Number(result.correctAnswers !== undefined ? result.correctAnswers : result.correct) || 0));
     const correct = total > 0 ? Math.min(total, rawCorrect) : rawCorrect;
     const percentage = Math.max(0, Math.min(100, Number(result.percentage !== undefined ? result.percentage : result.score) || 0));
-    const rewardKey = 'lesson:' + id;
-    const requestedXp = Math.max(0, Number(found.lesson.xp) || (LESSON_XP_BASE + correct * 10));
-    const rewardExists = !!((ML.getData().rewards || {})[rewardKey]);
-    const xpEarned = rewardExists ? 0 : requestedXp;
-    const grade = result.grade || (percentage >= 90 ? 'S' : percentage >= 80 ? 'A' : percentage >= 60 ? 'B' : percentage >= 40 ? 'C' : 'D');
     const record = {
       lessonId: id,
       status: 'completed',
@@ -392,8 +386,8 @@ window.Learning = (function() {
       completedAt: Number(result.completedAt) || now,
       attempts: Math.max(0, Number(result.attempts) || 0),
       answers: result.answers || {},
-      grade: grade,
-      xpEarned: xpEarned,
+      grade: '',
+      xpEarned: 0,
     };
 
     ML.update(function(data) {
@@ -401,11 +395,6 @@ window.Learning = (function() {
       if (current && current.status === 'completed') return;
       data.progress.lessons[id] = record;
       (found.lesson.subtopics || []).forEach(function(name) { data.progress.subtopics[name] = true; });
-      if (!data.rewards[rewardKey]) {
-        data.rewards[rewardKey] = { amount: xpEarned, awardedAt: record.completedAt, reason: 'lesson' };
-      }
-      XP.applyToData(data, (data.user.xp || 0) + xpEarned);
-      data.stats.xp_earned = (data.stats.xp_earned || 0) + xpEarned;
       data.stats.study_time = (data.stats.study_time || 0) + record.duration;
       data.stats.problems_solved = (data.stats.problems_solved || 0) + correct;
       const completed = Object.keys(data.progress.lessons).filter(function(key) {
@@ -419,7 +408,7 @@ window.Learning = (function() {
       data.timeline.unshift({
         icon: '◇',
         title: 'Завершён урок «' + found.lesson.title + '»',
-        desc: percentage + '% · +' + xpEarned + ' XP',
+        desc: correct + ' / ' + total + ' задач · ' + percentage + '%',
         time: record.completedAt,
         color: 'bg-blue-500',
       });
@@ -428,24 +417,22 @@ window.Learning = (function() {
 
     ML.setLessonSession(id, null);
     ML.recordLearningActivity(record.duration, record.completedAt);
-    XP.dispatch({ amount: xpEarned, reason: 'lesson:' + id, xp: XP.getXP(), level: XP.getLevel() });
-
     const detail = {
       lessonId: id,
       lessonName: found.lesson.title,
       score: percentage,
       percentage: percentage,
-      xpEarned: xpEarned,
+      xpEarned: 0,
       correct: correct,
       correctAnswers: correct,
       total: total,
       totalQuestions: total,
-      grade: grade,
+      grade: '',
       completedAt: record.completedAt,
     };
     emit('lesson:completed', detail);
     emit('progress:update', detail);
-    return { lessonId: id, xpEarned: xpEarned, score: percentage, grade: grade, alreadyCompleted: false };
+    return { lessonId: id, xpEarned: 0, score: percentage, grade: '', alreadyCompleted: false };
   }
 
   function emit(name, detail) {
@@ -480,7 +467,6 @@ window.Learning = (function() {
     ML.update(function(data) {
       delete data.progress.lessons[id];
       delete data.lesson.sessions[id];
-      /* Награда сохраняется: reset результата не должен позволять farm XP. */
       recalculateResultStats(data);
     });
     emit('progress:update', { lessonId: id, reset: true });
@@ -502,7 +488,6 @@ window.Learning = (function() {
 
   function resetAll() {
     ML.resetLearning();
-    XP.reconcile();
     emit('progress:update', { reset: true });
   }
 

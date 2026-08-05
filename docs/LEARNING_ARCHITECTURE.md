@@ -26,7 +26,7 @@
 ```js
 {
   version: 2,
-  user: { xp, level, streak, ... },
+  user: { xp, level, streak, ... }, // legacy compatibility; active UI does not use these fields
   progress: {
     lessons: {
       "algebra.exponents.basics": {
@@ -37,7 +37,7 @@
         duration: 320,
         startedAt: 0,
         completedAt: 0,
-        xpEarned: 90
+        xpEarned: 0
       }
     },
     subtopics: {}
@@ -48,7 +48,7 @@
     }
   },
   activity: { dates: [], studySecondsByDate: {} },
-  rewards: { "lesson:algebra.exponents.basics": { amount, awardedAt, reason } },
+  rewards: {}, // legacy compatibility
   settings: {}, stats: {}, achievements: [], timeline: []
 }
 ```
@@ -78,27 +78,18 @@
 
 Для незарегистрированных модулей не создаются фиктивные даты. Dashboard показывает честную причину «урок пока не готов».
 
-## Completion и XP
+## Completion
 
 `Learning.completeLesson(id, result)` — единственный product-level lifecycle завершения урока. В одной транзакции он:
 
 1. проверяет первое завершение;
 2. сохраняет нормализованный result;
 3. помечает подтемы;
-4. фиксирует одноразовую награду `lesson:{id}`;
-5. обновляет XP и производные level-поля;
-6. обновляет stats и timeline.
+4. обновляет учебные stats и timeline.
 
-После транзакции очищается session, отмечается единый день активности и отправляются `xp:update`, `lesson:completed`, `progress:update`.
+После транзакции очищается session, отмечается день активности и отправляются `lesson:completed`, `progress:update`.
 
-Повторное прохождение возвращает `xpEarned: 0`. `resetLesson()` удаляет result/session, но сохраняет reward ledger, поэтому локальный reset результата нельзя использовать для фарма XP. `resetAll()` очищает прогресс, XP, награды, активность и аналитику, сохраняя профиль, авторизацию и настройки.
-
-Модель уровней едина во всех экранах:
-
-```js
-xpAtLevel(level) = (level - 1) ** 2 * 100
-level(xp) = floor(sqrt(xp / 100)) + 1
-```
+Новое прохождение и repeat возвращают `xpEarned: 0`; XP, streak, rewards и achievements больше не обновляются. Их старые storage-поля сохраняются только для чтения существующих пользовательских данных. `resetLesson()` удаляет result/session, а `resetAll()` очищает учебный прогресс, активность и аналитику, сохраняя профиль, авторизацию и настройки.
 
 ## Публичный API
 
@@ -116,4 +107,4 @@ level(xp) = floor(sqrt(xp / 100)) + 1
 4. Создать config по schema и подключить его до `js/lesson.js`.
 5. Проверить `LessonValidator.validate(config)` и выполнить `node tests/core-smoke.js`.
 
-Не добавлять отдельную HTML-реализацию completion и не начислять lesson XP из renderer/page.
+Не добавлять отдельную HTML-реализацию completion и не начислять игровые награды из renderer/page.

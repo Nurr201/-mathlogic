@@ -89,7 +89,7 @@ function load(app, files) {
   });
 }
 
-const CORE = ['js/data.js', 'js/storage.js', 'js/i18n.js', 'js/xp.js', 'js/events.js', 'js/learning.js'];
+const CORE = ['js/data.js', 'js/storage.js', 'js/i18n.js', 'js/events.js', 'js/learning.js'];
 const LESSON = [
   'js/lesson-engine/state.js', 'js/lesson-engine/hooks.js', 'js/lesson-engine/storage.js',
   'js/lesson-engine/debug.js', 'js/lesson-engine/serializer.js', 'js/lesson-engine/core.js', 'js/lesson-engine.js',
@@ -99,9 +99,9 @@ const LESSON = [
 
 function testDashboardShell() {
   const html = fs.readFileSync(path.join(ROOT, 'dashboard.html'), 'utf8');
-  const scripts = Array.from(html.matchAll(/<script\s+src="([^"]+)"\s*><\/script>/g), function(match) { return match[1]; });
+  const scripts = Array.from(html.matchAll(/<script\s+src="([^"]+)"\s*><\/script>/g), function(match) { return match[1].split('?')[0]; });
   assert.deepEqual(scripts, [
-    'js/data.js', 'js/storage.js', 'js/i18n.js', 'js/xp.js',
+    'js/data.js', 'js/storage.js', 'js/i18n.js',
     'js/learning.js', 'js/dashboard.js',
   ]);
   assert.equal((html.match(/js\/dashboard\.js/g) || []).length, 1);
@@ -177,11 +177,11 @@ function testCompletionBridge() {
   }
   assert.ok(guard > 0, 'lesson must reach result');
   assert.equal(vm.runInContext("Learning.getLessonStatus('algebra.exponents.basics')", app.context), 'completed');
-  assert.equal(vm.runInContext('XP.getXP()', app.context), 90);
+  assert.equal(vm.runInContext("ML.get('user.xp')", app.context), 0);
   assert.equal(vm.runInContext("ML.getLessonSession('algebra.exponents.basics')", app.context), null);
   assert.equal(vm.runInContext("ML.get('progress.lessons')['algebra.exponents.basics'].percentage", app.context), 100);
   assert.equal(vm.runInContext('LessonEngine.finish()', app.context), false);
-  assert.equal(vm.runInContext('XP.getXP()', app.context), 90);
+  assert.equal(vm.runInContext("Object.keys(ML.get('rewards',{})).length", app.context), 0);
   assert.equal(vm.runInContext('Learning.getNextLesson().id', app.context), 'algebra.vieta.intro');
 
   const repeat = environment('?id=algebra.exponents.basics', {
@@ -192,7 +192,7 @@ function testCompletionBridge() {
   repeat.document.getElementById('lesson-error').hidden = true;
   load(repeat, CORE.concat(LESSON));
   assert.equal(vm.runInContext('__EngineInternal.state.repeatMode', repeat.context), true);
-  assert.equal(repeat.document.getElementById('lesson-mode').textContent, 'Қайталау · XP есептелмейді');
+  assert.equal(repeat.document.getElementById('lesson-mode').textContent, 'Қайталап оқу');
   guard = 100;
   while (vm.runInContext('__EngineInternal.state.finished', repeat.context) === false && guard-- > 0) {
     const type = vm.runInContext('__EngineInternal.getCurrentBlock().type', repeat.context);
@@ -205,8 +205,7 @@ function testCompletionBridge() {
       : assessed ? '{correct:true,correctAnswers:1,totalQuestions:1,attempts:1,answers:"ok",points:10}' : 'undefined';
     vm.runInContext('LessonEngine.next(' + result + ')', repeat.context);
   }
-  assert.equal(vm.runInContext('XP.getXP()', repeat.context), 90);
-  assert.equal(vm.runInContext("ML.get('stats.xp_earned')", repeat.context), 90);
+  assert.equal(vm.runInContext("ML.get('user.xp')", repeat.context), 0);
   assert.equal(vm.runInContext("ML.getLessonSession('algebra.exponents.basics')", repeat.context), null);
 }
 

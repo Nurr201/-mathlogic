@@ -102,7 +102,7 @@
               <h1 id="profile-name" class="font-head font-extrabold text-3xl sm:text-4xl text-slate-900 tracking-tight">
                 Пользователь
               </h1>
-              <span id="profile-level" class="level-badge">Lv. 1</span>
+              <span id="profile-journal" class="level-badge">Учебный журнал</span>
             </div>
             <div class="flex items-center gap-2 mt-2">
               <span class="username-dot"></span>
@@ -120,12 +120,12 @@
                 <svg class="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                <span id="profile-xp" class="text-slate-700">0 XP</span>
+                <span id="profile-completed" class="text-slate-700">0 уроков</span>
               </span>
 
               <span class="stat-badge">
-                <span style="font-size: 1.1rem; line-height: 1;">🔥</span>
-                <span id="profile-streak" class="text-slate-700">Streak 0 күн</span>
+                <span style="font-size: 1.1rem; line-height: 1;">◇</span>
+                <span id="profile-active" class="text-slate-700">0 в процессе</span>
               </span>
 
               <span class="stat-badge">
@@ -138,14 +138,14 @@
             </div>
           </div>
 
-          <!-- XP BAR -->
+          <!-- COURSE PROGRESS -->
           <div class="animate-slide-up delay-300">
             <div class="flex items-center justify-between text-xs font-bold font-mono mb-1.5">
-              <span id="profile-xp-bar-text" class="text-slate-500">0 / 0 XP</span>
-              <span id="profile-next-level" class="text-blue-600">Lv. 2</span>
+              <span id="profile-course-bar-text" class="text-slate-500">0 / 0 уроков</span>
+              <span id="profile-course-next" class="text-blue-600">Курс</span>
             </div>
             <div class="xp-bar-track">
-              <div id="profile-xp-bar-fill" class="xp-bar-fill" style="width: 0%;"></div>
+              <div id="profile-course-bar-fill" class="xp-bar-fill" style="width: 0%;"></div>
             </div>
           </div>
 
@@ -251,9 +251,9 @@
                   <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
                 </svg>
               </div>
-              <span class="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider">Осталось XP</span>
+              <span class="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider">Доступно уроков</span>
             </div>
-            <span class="font-head font-extrabold text-3xl text-slate-900 tracking-tight count-up" id="remaining-xp-val" data-target="0" data-suffix="" data-duration="1200">0</span>
+            <span class="font-head font-extrabold text-3xl text-slate-900 tracking-tight count-up" id="available-lessons-val" data-target="0" data-suffix="" data-duration="1200">0</span>
           </div>
 
           <div class="bg-white/60 rounded-2xl p-5 border border-slate-200/60 hover:border-slate-300/80 transition-all hover:bg-white/80">
@@ -298,38 +298,38 @@
     </div>
   </section>
 
-  <!-- 🔥 ЕЖЕДНЕВНАЯ СЕРИЯ -->
+  <!-- УЧЕБНЫЕ ДНИ -->
   <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
     <div class="flex items-center gap-3 mb-8 animate-slide-up">
       <div class="w-1 h-6 rounded-full bg-gradient-to-b from-orange-500 to-red-500"></div>
       <h2 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">
-        Ежедневная серия
+        Учебные дни
       </h2>
-      <span class="text-xs font-bold text-orange-500 bg-orange-50 px-3 py-1 rounded-full font-mono">🔥 Streak</span>
+      <span class="text-xs font-bold text-orange-500 bg-orange-50 px-3 py-1 rounded-full font-mono">История занятий</span>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
 
-      <!-- БОЛЬШАЯ КАРТОЧКА СЕРИИ -->
+      <!-- СВОДКА УЧЕБНЫХ ДНЕЙ -->
       <div class="lg:col-span-2 glass-card-strong rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-900/5 animate-scale-in flex flex-col items-center justify-center text-center flame-glow">
-        <div class="text-7xl sm:text-8xl mb-4 flame-icon">🔥</div>
-        <div class="font-head font-extrabold text-5xl sm:text-6xl text-slate-900 tracking-tight count-up" id="streak-current" data-target="0" data-duration="1000">0</div>
-        <div class="text-sm font-bold text-slate-400 mt-1 mb-6">дней подряд</div>
+        <div class="text-7xl sm:text-8xl mb-4 flame-icon">◫</div>
+        <div class="font-head font-extrabold text-5xl sm:text-6xl text-slate-900 tracking-tight count-up" id="study-days-total" data-target="0" data-duration="1000">0</div>
+        <div class="text-sm font-bold text-slate-400 mt-1 mb-6">дней с занятиями</div>
 
         <div class="flex gap-6 sm:gap-10">
           <div>
-            <div class="font-head font-extrabold text-2xl text-slate-900" id="streak-best">0</div>
-            <div class="text-xs font-bold text-slate-400">Лучший рекорд</div>
+            <div class="font-head font-extrabold text-base text-slate-900" id="study-first-date">—</div>
+            <div class="text-xs font-bold text-slate-400">Первое занятие</div>
           </div>
           <div class="w-px bg-slate-200"></div>
           <div>
-            <div class="font-head font-extrabold text-2xl text-slate-900" id="streak-total">0</div>
-            <div class="text-xs font-bold text-slate-400">Всего дней</div>
+            <div class="font-head font-extrabold text-base text-slate-900" id="study-last-date">—</div>
+            <div class="text-xs font-bold text-slate-400">Последнее занятие</div>
           </div>
         </div>
       </div>
 
-      <!-- КАЛЕНДАРЬ + НАГРАДА -->
+      <!-- КАЛЕНДАРЬ + ПОСЛЕДНЕЕ ЗАНЯТИЕ -->
       <div class="lg:col-span-3 flex flex-col gap-5">
 
         <!-- КАЛЕНДАРЬ -->
@@ -350,30 +350,30 @@
           <div class="cal-grid" id="cal-grid"></div>
         </div>
 
-        <!-- НАГРАДА -->
+        <!-- ПОСЛЕДНЕЕ ЗАНЯТИЕ -->
         <div class="reward-card rounded-2xl p-5 sm:p-6 animate-scale-in delay-200">
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-400 to-rose-500 flex items-center justify-center text-2xl shadow-lg shadow-orange-500/20">
               🎯
             </div>
             <div>
-              <div class="text-sm font-bold text-slate-400">Следующая награда</div>
-              <div class="font-head font-extrabold text-lg sm:text-xl text-slate-900 mt-0.5" id="next-reward">
-                До награды «30 дней подряд» осталось 13 дней
+              <div class="text-sm font-bold text-slate-400">Последнее занятие</div>
+              <div class="font-head font-extrabold text-lg sm:text-xl text-slate-900 mt-0.5" id="last-study-note">
+                Занятий пока не было
               </div>
             </div>
           </div>
         </div>
 
-        <!-- МОТИВАЦИЯ -->
+        <!-- ПОЯСНЕНИЕ -->
         <div class="bg-white/60 border border-slate-200/60 rounded-2xl p-5 animate-scale-in delay-300">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-100 flex items-center justify-center text-lg">
-              💪
+              i
             </div>
             <div>
-              <div class="font-head font-bold text-base text-slate-900">Зайди завтра и сохрани серию</div>
-              <div class="text-xs font-semibold text-slate-400 mt-0.5">Каждый день без пропуска приближает к новой награде</div>
+              <div class="font-head font-bold text-base text-slate-900">История строится по фактическим занятиям</div>
+              <div class="text-xs font-semibold text-slate-400 mt-0.5">В календаре отмечаются только дни, когда был завершён урок.</div>
             </div>
           </div>
         </div>
@@ -389,7 +389,7 @@
       <h2 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">
         Последняя активность
       </h2>
-      <span class="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full font-mono">7 Действий</span>
+      <span class="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full font-mono" id="timeline-count">0 записей</span>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
@@ -443,7 +443,7 @@
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
-            <span>Осталось ~<span id="continue-time">—</span> минут</span>
+            <span><span id="continue-time">—</span> минут на весь урок</span>
           </div>
 
           <button onclick="window.location.href='lesson.html'" class="continue-btn w-full py-3.5 rounded-2xl text-white font-head font-bold text-sm shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2 ripple">
@@ -454,7 +454,7 @@
           </button>
 
           <div class="text-center mt-3">
-            <span class="text-[11px] font-semibold text-slate-400">Лучше сделать сегодня, чем откладывать на завтра</span>
+            <span class="text-[11px] font-semibold text-slate-400">Ответы и текущий шаг сохраняются автоматически</span>
           </div>
         </div>
 
@@ -483,73 +483,73 @@
     </div>
   </section>
 
-  <!-- ДОСТИЖЕНИЯ -->
+  <!-- ИЗУЧЕННЫЕ ТЕМЫ -->
   <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
     <div class="flex items-center gap-3 mb-8 animate-slide-up">
       <div class="w-1 h-6 rounded-full bg-gradient-to-b from-amber-500 to-rose-500"></div>
       <h2 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">
-        Достижения
+        Изученные темы
       </h2>
-      <span class="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full font-mono" id="achv-total-label">Наград</span>
+      <span class="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full font-mono" id="topic-total-label">0 тем</span>
     </div>
 
-    <!-- СТАТИСТИКА ДОСТИЖЕНИЙ -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8 animate-slide-up delay-100" id="achv-stats"></div>
+    <!-- СТАТИСТИКА ТЕМ -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8 animate-slide-up delay-100" id="topic-stats"></div>
 
     <!-- ФИЛЬТРЫ -->
-    <div class="flex flex-wrap gap-2 mb-7 animate-slide-up delay-150" id="achv-filters">
-      <button class="achv-filter-btn active" data-filter="all" onclick="filterAchv('all')">Все</button>
-      <button class="achv-filter-btn" data-filter="unlocked" onclick="filterAchv('unlocked')">Полученные</button>
-      <button class="achv-filter-btn" data-filter="in-progress" onclick="filterAchv('in-progress')">В процессе</button>
-      <button class="achv-filter-btn" data-filter="locked" onclick="filterAchv('locked')">Заблокированные</button>
+    <div class="flex flex-wrap gap-2 mb-7 animate-slide-up delay-150" id="topic-filters">
+      <button class="achv-filter-btn active" data-filter="all" onclick="filterTopics('all')">Все</button>
+      <button class="achv-filter-btn" data-filter="completed" onclick="filterTopics('completed')">Изучено</button>
+      <button class="achv-filter-btn" data-filter="current" onclick="filterTopics('current')">В процессе</button>
+      <button class="achv-filter-btn" data-filter="planned" onclick="filterTopics('planned')">Планируется</button>
     </div>
 
     <!-- СЕТКА -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="achv-grid"></div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="topic-history-grid"></div>
   </section>
 
-  <!-- ЦЕЛИ И СЛЕДУЮЩИЙ УРОВЕНЬ -->
+  <!-- ТЕКУЩИЙ МАРШРУТ -->
   <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
     <div class="flex items-center gap-3 mb-8 animate-slide-up">
       <div class="w-1 h-6 rounded-full bg-gradient-to-b from-blue-500 to-emerald-500"></div>
       <h2 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">
-        Цели и следующий уровень
+        Текущий маршрут
       </h2>
-      <span class="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full font-mono">Level Up</span>
+      <span class="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full font-mono">По программе</span>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
 
-      <!-- ЛЕВАЯ КОЛОНКА: УРОВЕНЬ + ЦЕЛИ -->
+      <!-- ЛЕВАЯ КОЛОНКА: ТЕМЫ И МАРШРУТ -->
       <div class="lg:col-span-3 flex flex-col gap-5">
 
-        <!-- КАРТОЧКА УРОВНЯ -->
+        <!-- ТЕКУЩАЯ И СЛЕДУЮЩАЯ ТЕМА -->
         <div class="glass-card-strong rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-900/5 animate-scale-in">
           <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8">
             <div class="flex items-center gap-4">
-              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-head font-extrabold text-2xl shadow-lg shadow-blue-600/20" id="current-level-display">1</div>
+              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-head font-extrabold text-2xl shadow-lg shadow-blue-600/20" id="current-topic-mark">01</div>
               <div>
-                <div class="text-xs font-bold text-slate-400">Текущий уровень</div>
-                <div class="font-head font-extrabold text-lg text-slate-900">Уровень <span id="current-level-label">1</span></div>
+                <div class="text-xs font-bold text-slate-400">Текущая тема</div>
+                <div class="font-head font-extrabold text-lg text-slate-900" id="current-topic-label">—</div>
               </div>
             </div>
             <div class="hidden sm:block text-slate-300 text-2xl font-head font-extrabold">→</div>
             <div class="flex items-center gap-4">
-              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-rose-500 flex items-center justify-center text-white font-head font-extrabold text-2xl shadow-lg shadow-amber-500/20 opacity-70" id="next-level-display">2</div>
+              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-rose-500 flex items-center justify-center text-white font-head font-extrabold text-2xl shadow-lg shadow-amber-500/20 opacity-70" id="next-topic-mark">02</div>
               <div>
-                <div class="text-xs font-bold text-slate-400">Следующий</div>
-                <div class="font-head font-extrabold text-lg text-slate-900">Уровень <span id="next-level-label">2</span></div>
+                <div class="text-xs font-bold text-slate-400">Следующая тема</div>
+                <div class="font-head font-extrabold text-lg text-slate-900" id="next-topic-label">—</div>
               </div>
             </div>
           </div>
 
           <div class="mt-6">
             <div class="flex items-center justify-between text-xs font-bold font-mono mb-2">
-              <span class="text-slate-500" id="xp-progress-label">700 / 2 000 XP</span>
-              <span class="text-blue-600" id="level-progress-pct">0%</span>
+              <span class="text-slate-500" id="route-progress-label">0 / 0 уроков</span>
+              <span class="text-blue-600" id="route-progress-pct">0%</span>
             </div>
             <div class="xp-bar-track h-3">
-              <div class="xp-bar-fill" id="level-progress-bar" data-progress="0" style="width: 0%;"></div>
+              <div class="xp-bar-fill" id="route-progress-bar" data-progress="0" style="width: 0%;"></div>
             </div>
           </div>
 
@@ -557,7 +557,7 @@
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
             </svg>
-            <span id="xp-remaining-text">Осталось 1 300 XP до уровня 13</span>
+            <span id="route-remaining-text">Следующий урок определится по сохранённому прогрессу</span>
           </div>
         </div>
 
@@ -569,16 +569,16 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
             </div>
-            <span class="font-head font-bold text-base text-slate-800">Ближайшие цели</span>
+            <span class="font-head font-bold text-base text-slate-800">Ближайшие темы</span>
           </div>
           <div class="space-y-4" id="goals-container"></div>
         </div>
       </div>
 
-      <!-- ПРАВАЯ КОЛОНКА: СЕГОДНЯ + МОТИВАЦИЯ + НАГРАДА -->
+      <!-- ПРАВАЯ КОЛОНКА: ТЕКУЩИЙ УРОК + ПОЯСНЕНИЕ + ДОСТУПНЫЕ УРОКИ -->
       <div class="lg:col-span-2 flex flex-col gap-5">
 
-        <!-- СЕГОДНЯШНЯЯ ЦЕЛЬ -->
+        <!-- ТЕКУЩИЙ УРОК -->
         <div class="glass-card-strong rounded-3xl p-6 sm:p-7 shadow-xl shadow-slate-900/5 animate-scale-in delay-150">
           <div class="flex items-center gap-2.5 mb-5">
             <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600">
@@ -586,7 +586,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
             </div>
-            <span class="font-head font-bold text-base text-slate-800">Сегодняшняя цель</span>
+            <span class="font-head font-bold text-base text-slate-800">Текущий урок</span>
             <span class="text-xs font-bold font-mono text-emerald-600 ml-auto" id="today-progress-label">0%</span>
           </div>
 
@@ -602,15 +602,15 @@
           <div class="flex items-start gap-4">
             <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-xl shadow-md shrink-0">💪</div>
             <div>
-              <div class="font-head font-bold text-base text-slate-900">Почти у цели!</div>
+              <div class="font-head font-bold text-base text-slate-900">Как продолжить</div>
               <div class="text-sm font-semibold text-slate-500 mt-1 leading-relaxed" id="motivation-text">
-                До следующего уровня осталось совсем немного! Заверши ещё один урок и приблизься к новой награде.
+                Открой текущий урок — сохранённые ответы и шаг будут восстановлены автоматически.
               </div>
             </div>
           </div>
         </div>
 
-        <!-- НАГРАДА СЛЕДУЮЩЕГО УРОВНЯ -->
+        <!-- ДОСТУПНЫЕ УРОКИ -->
         <div class="bg-white/60 border border-slate-200/60 rounded-3xl p-6 sm:p-7 animate-scale-in delay-250 hover:border-slate-300/80 transition-all hover:bg-white/80 shadow-sm">
           <div class="flex items-center gap-2.5 mb-4">
             <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600">
@@ -618,9 +618,9 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
               </svg>
             </div>
-            <span class="font-head font-bold text-base text-slate-800">Награда уровня 13</span>
+            <span class="font-head font-bold text-base text-slate-800">Доступные уроки</span>
           </div>
-          <div class="space-y-2.5" id="reward-preview"></div>
+          <div class="space-y-2.5" id="available-preview"></div>
         </div>
 
       </div>
@@ -651,10 +651,10 @@
           <div class="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
           </div>
-          <span class="text-sm font-bold text-slate-700">Получено XP</span>
+          <span class="text-sm font-bold text-slate-700">Завершённые уроки</span>
         </div>
         <div class="chart-wrap">
-          <canvas id="xpChart"></canvas>
+          <canvas id="completionChart"></canvas>
         </div>
       </div>
       <div class="chart-card animate-scale-in delay-100">
@@ -694,17 +694,16 @@
     </div>
   </div>
 
-  <script src="js/storage.js"></script>
-  <script src="js/events.js"></script>
-  <script src="js/xp.js"></script>
+  <script src="js/storage.js?v=nogame"></script>
+  <script src="js/events.js?v=nogame"></script>
   <script src="js/data.js"></script>
-  <script src="js/learning.js"></script>
+  <script src="js/i18n.js?v=nogame"></script>
+  <script src="js/learning.js?v=nogame"></script>
   <script src="js/ui.js"></script>
   <script src="js/navigation.js"></script>
   <script src="js/utils.js"></script>
-  <script src="js/animations.js"></script>
-  <script src="js/achievements.js"></script>
+  <script src="js/animations.js?v=nogame"></script>
   <script src="js/app.js"></script>
-  <script src="js/profile.js"></script>
+  <script src="js/profile.js?v=nogame2"></script>
 </body>
 </html>

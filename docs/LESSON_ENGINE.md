@@ -1,6 +1,6 @@
 # Lesson Engine 2.2
 
-Lesson Engine отображает JSON-конфиг урока, управляет блоками и незавершённой session. Он не начисляет XP и не записывает product result самостоятельно.
+Lesson Engine отображает JSON-конфиг урока, управляет блоками и незавершённой session. Он не записывает product result самостоятельно.
 
 ## Состав
 
@@ -39,7 +39,7 @@ finish() [идемпотентно]
   → сохранить финальный runtime state
   → emit lesson:finished / onLessonFinish
   → js/lesson.js вызывает Learning.completeLesson один раз
-  → Learning сохраняет result, XP, stats, activity и очищает session
+  → Learning сохраняет result, учебные stats, activity и очищает session
 ```
 
 Completion фиксируется при входе на подтверждённый экран `result`; уход со страницы после появления результата не теряет завершение.
@@ -56,7 +56,7 @@ Completion фиксируется при входе на подтверждён�
 
 Незавершённое состояние лежит в `mathlogic_data.lesson.sessions[canonicalLessonId]` и содержит текущий индекс, completed blocks, ответы, результаты блоков, прошедшее время и `startedAt`.
 
-У завершённого урока `Learning` хранит product result в `progress.lessons`. При новом открытии Engine включает `repeatMode`; внешний controller не начисляет XP, а временная repeat-session очищается после результата.
+У завершённого урока `Learning` хранит product result в `progress.lessons`. При новом открытии Engine включает `repeatMode`, а временная repeat-session очищается после результата. Повтор не изменяет ранее сохранённый результат.
 
 ## Блоки
 
@@ -77,4 +77,4 @@ const result = LessonValidator.validate(config);
 if (!result.valid) console.error(result.errors);
 ```
 
-Проверить оба маршрута в браузере, resume после reload, завершение, repeat без XP и отображение результата на Dashboard. Ядро: `node tests/core-smoke.js`.
+Проверить оба маршрута в браузере, resume после reload, завершение, repeat без изменения результата и отображение результата на Dashboard. Ядро: `node tests/core-smoke.js`.
