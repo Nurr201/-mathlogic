@@ -1,712 +1,129 @@
-<!DOCTYPE html>
-<html lang="kk">
+<!doctype html>
+<html lang="ru" data-theme="light">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>math·logic — Қазақша математика платформасы</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        blue: { 50: '#EEF2FF', 100: '#E0E7FF', 200: '#C7D2FE', 300: '#A5B4FC', 400: '#818CF8', 500: '#6366F1', 600: '#4F46E5', 700: '#4338CA', 800: '#3730A3', 900: '#312E81' },
-        indigo: { 50: '#EEF2FF', 100: '#E0E7FF', 200: '#C7D2FE', 300: '#A5B4FC', 400: '#818CF8', 500: '#6366F1', 600: '#4F46E5', 700: '#4338CA', 800: '#3730A3', 900: '#312E81' },
-        purple: { 50: '#F5F3FF', 100: '#EDE9FE', 200: '#DDD6FE', 300: '#C4B5FD', 400: '#A78BFA', 500: '#8B5CF6', 600: '#7C3AED', 700: '#6D28D9' },
-        emerald: { 50: '#F0FDF4', 100: '#D1FAE5', 200: '#A7F3D0', 300: '#6EE7B7', 400: '#34D399', 500: '#10B981', 600: '#059669' },
-        sky: { 100: '#E0E7FF', 200: '#C7D2FE', 300: '#A5B4FC', 400: '#818CF8', 500: '#6366F1', 600: '#4F46E5' },
-        amber: { 50: '#FFFBEB', 100: '#FEF3C7', 200: '#FDE68A', 300: '#FCD34D', 400: '#FBBF24', 500: '#F59E0B' },
-        rose: { 500: '#F43F5E' },
-      },
-      fontFamily: {
-        head: ['Rubik', 'sans-serif'],
-      },
-      borderRadius: {
-        '2xl': '16px',
-        '3xl': '20px',
-      },
-    }
-  }
-}
-</script>
-<link rel="stylesheet" href="css/styles.css">
-<link rel="stylesheet" href="css/animations.css">
-<link rel="stylesheet" href="css/components.css">
-<style>
-  .hero-gradient {
-    background: linear-gradient(135deg, #EEF2FF 0%, #F5F3FF 40%, #FAF5FF 100%);
-  }
-  .hero-math-float {
-    animation: float 6s ease-in-out infinite;
-  }
-  .hero-math-float-delayed {
-    animation: float 6s ease-in-out 1.5s infinite;
-  }
-  @keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    33% { transform: translateY(-12px) rotate(1deg); }
-    66% { transform: translateY(6px) rotate(-1deg); }
-  }
-  .hero-grid-bg {
-    background-image:
-      radial-gradient(circle at 20% 50%, rgba(79,70,229,0.03) 0%, transparent 50%),
-      radial-gradient(circle at 80% 50%, rgba(124,58,237,0.03) 0%, transparent 50%),
-      radial-gradient(circle at 50% 0%, rgba(129,140,248,0.04) 0%, transparent 40%);
-  }
-  .hero-cta {
-    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .hero-cta:hover {
-    transform: translateY(-3px) scale(1.02);
-  }
-  .hero-cta-secondary {
-    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .hero-cta-secondary:hover {
-    transform: translateY(-2px);
-  }
-  .nav-link {
-    position: relative;
-    font-family: 'Rubik', sans-serif;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #64748B;
-    transition: color 0.2s ease;
-    text-decoration: none;
-    padding: 0.375rem 0;
-  }
-  .nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 0;
-    height: 2px;
-      background: #4F46E5;
-      border-radius: 2px;
-      transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .nav-link:hover { color: #4F46E5; }
-    .nav-link:hover::after { width: 100%; }
-    .nav-link.active { color: #4F46E5; }
-  .nav-link.active::after { width: 100%; }
-
-  .feature-card {
-    background: rgba(255,255,255,0.85);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(226,232,240,0.6);
-    border-radius: 24px;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    position: relative;
-    overflow: hidden;
-  }
-  .feature-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--card-accent, #4F46E5), var(--card-accent-secondary, #818CF8));
-    opacity: 0;
-    transition: opacity 0.4s ease;
-  }
-  .feature-card:hover::before { opacity: 1; }
-  .feature-card:hover {
-    transform: translateY(-6px);
-    border-color: rgba(148,163,184,0.5);
-    box-shadow: 0 20px 60px -12px rgba(15,23,42,0.1), 0 8px 24px -8px rgba(15,23,42,0.06);
-  }
-  .feature-card .card-btn {
-    opacity: 0;
-    transform: translateY(8px);
-    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .feature-card:hover .card-btn {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .feature-card .card-svg {
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .feature-card:hover .card-svg {
-    transform: scale(1.08) rotate(-2deg);
-  }
-
-  .auth-modal-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 60;
-    background: rgba(15,23,42,0.5);
-    backdrop-filter: blur(8px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-  }
-  .auth-modal-overlay.open {
-    opacity: 1;
-    pointer-events: auto;
-  }
-  .auth-modal-box {
-    background: white;
-    border-radius: 24px;
-    max-width: 400px;
-    width: 100%;
-    padding: 2rem;
-    box-shadow: 0 25px 80px rgba(15,23,42,0.15);
-    transform: scale(0.92) translateY(12px);
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    text-align: center;
-  }
-  .auth-modal-overlay.open .auth-modal-box {
-    transform: scale(1) translateY(0);
-  }
-
-  .subject-card {
-    background: white;
-    border-radius: 16px;
-    border: 1.5px solid #E2E8F0;
-    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .subject-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 16px;
-    opacity: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 60%);
-    transition: opacity 0.35s ease;
-    pointer-events: none;
-  }
-  .subject-card:hover::before { opacity: 1; }
-  .subject-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--card-accent, #4F46E5);
-    box-shadow: 0 12px 40px -8px var(--card-shadow, rgba(79,70,229,0.12));
-  }
-  .subject-card .subject-icon {
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .subject-card:hover .subject-icon {
-    transform: scale(1.12) rotate(-4deg);
-  }
-
-  .animated-underline {
-    position: relative;
-    display: inline-block;
-  }
-  .animated-underline::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    border-radius: 3px;
-    background: linear-gradient(90deg, #4F46E5, #7C3AED);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .animated-underline:hover::after { transform: scaleX(1); }
-
-  .steps-row {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 0;
-    position: relative;
-  }
-  .step-card-wrapper {
-    flex: 1;
-    max-width: 220px;
-    display: flex;
-    align-items: center;
-    position: relative;
-  }
-  .step-card {
-    background: rgba(255,255,255,0.85);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(226,232,240,0.6);
-    border-radius: 16px;
-    padding: 1.5rem 1rem;
-    text-align: center;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    width: 100%;
-    position: relative;
-  }
-  .step-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(148,163,184,0.5);
-    box-shadow: 0 16px 48px -12px rgba(15,23,42,0.1), 0 8px 24px -8px rgba(15,23,42,0.06);
-  }
-  .step-num {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #4F46E5, #7C3AED);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Rubik', sans-serif;
-    font-weight: 800;
-    font-size: 1.125rem;
-    margin: 0 auto 1rem;
-    box-shadow: 0 6px 16px rgba(79,70,229,0.2);
-  }
-  .step-title {
-    font-family: 'Rubik', sans-serif;
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: #0F172A;
-    margin-bottom: 0.375rem;
-    letter-spacing: -0.01em;
-  }
-  .step-desc {
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: #94A3B8;
-    line-height: 1.5;
-  }
-  .step-connector {
-    width: 2rem;
-    height: 1px;
-    background: linear-gradient(90deg, #CBD5E1, transparent);
-    flex-shrink: 0;
-    margin: 0 0.25rem;
-    align-self: center;
-    position: relative;
-    top: -1.5rem;
-  }
-  @media (max-width: 1024px) {
-    .steps-row {
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-    .step-card-wrapper {
-      flex: 1 1 calc(50% - 0.5rem);
-      max-width: none;
-    }
-    .step-connector { display: none; }
-  }
-  @media (max-width: 640px) {
-    .step-card-wrapper {
-      flex: 1 1 100%;
-      max-width: 280px;
-      margin: 0 auto;
-    }
-    .step-card { padding: 1.25rem 1rem; }
-    .feature-card .card-btn { opacity: 1; transform: translateY(0); }
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MathLogic — математика с пониманием</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Onest:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
 </head>
-<body class="page-enter" style="background:#F8FAFC">
-
-<!-- ====== HEADER ====== -->
-<header class="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/50 transition-all duration-300">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 md:h-20 flex items-center justify-between">
-    <div class="flex items-center gap-8">
-      <a href="index.html" class="flex items-center gap-2.5">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-600/20">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.8">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-          </svg>
-        </div>
-        <span class="font-head font-extrabold text-xl md:text-2xl text-slate-900 tracking-tight">
-          math<span class="text-blue-600">·</span>logic
-        </span>
+<body class="axis-app axis-product-page page-enter">
+  <header class="product-header">
+    <div class="product-header-inner">
+      <a class="axis-brand" href="index.html" aria-label="MathLogic">
+        <span class="axis-brand-mark"><i></i><i></i></span><span>MathLogic</span>
       </a>
-
-      <nav class="hidden md:flex items-center gap-6">
-        <a href="index.html" class="nav-link active">Главная</a>
-        <a href="dashboard.html" class="nav-link">Курсы</a>
-        <a href="#how-it-works" class="nav-link">О платформе</a>
-        <a href="dashboard.html" class="nav-link">Прогресс</a>
-        <a href="#footer" class="nav-link">Контакты</a>
+      <nav class="product-nav" aria-label="Основная навигация">
+        <a href="index.html" aria-current="page" data-copy-ru="Главная" data-copy-kk="Басты бет">Главная</a>
+        <a href="#subjects" data-copy-ru="Предметы" data-copy-kk="Пәндер">Предметы</a>
+        <a href="#method" data-copy-ru="Как устроено обучение" data-copy-kk="Оқу қалай құрылған">Как устроено обучение</a>
+        <a href="dashboard.html" data-copy-ru="Курс" data-copy-kk="Курс">Курс</a>
       </nav>
-    </div>
-
-    <div class="flex items-center gap-3">
-      <div class="flex gap-1 rounded-full p-0.5 bg-slate-100 text-xs font-head font-semibold border border-slate-200/60 shadow-sm">
-        <button id="btn-kz" onclick="setLang('kk')" class="px-3 py-1 rounded-full transition-all duration-300 text-white bg-blue-700">KZ</button>
-        <button id="btn-ru" onclick="setLang('ru')" class="px-3 py-1 rounded-full transition-all duration-300 text-slate-500 hover:text-slate-700">RU</button>
-      </div>
-
-      <div id="index-nav-auth" class="flex items-center gap-2.5">
-        <a href="login.html" class="px-4 py-2 rounded-xl text-sm font-bold font-head text-slate-600 hover:text-blue-700 hover:bg-blue-50 transition-all">Войти</a>
-        <a href="register.html" class="px-5 py-2 rounded-xl text-sm font-bold font-head text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5 ripple">Регистрация</a>
-      </div>
-
-      <div id="index-nav-user" class="hidden items-center gap-2.5">
-        <a href="dashboard.html" class="px-4 py-2 rounded-xl text-sm font-bold font-head text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5 ripple">Дашборд</a>
-        <a onclick="handleProfileClick(event)" href="#" class="px-4 py-2 rounded-xl text-sm font-bold font-head text-slate-600 hover:text-blue-700 hover:bg-blue-50 transition-all">Личный кабинет</a>
-      </div>
-
-      <button onclick="document.querySelector('.mobile-nav').classList.toggle('open')" class="md:hidden p-2 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-all">
-        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  <div class="mobile-nav hidden md:hidden flex-col gap-1 px-4 pb-4 pt-2 bg-white border-t border-slate-100">
-    <a href="index.html" class="px-4 py-2.5 rounded-xl text-sm font-bold font-head text-blue-700 bg-blue-50">Главная</a>
-    <a href="dashboard.html" class="px-4 py-2.5 rounded-xl text-sm font-bold font-head text-slate-600 hover:bg-slate-50">Курсы</a>
-    <a href="#how-it-works" class="px-4 py-2.5 rounded-xl text-sm font-bold font-head text-slate-600 hover:bg-slate-50">О платформе</a>
-    <a href="dashboard.html" class="px-4 py-2.5 rounded-xl text-sm font-bold font-head text-slate-600 hover:bg-slate-50">Прогресс</a>
-  </div>
-</header>
-
-<!-- ====== HERO ====== -->
-<section class="hero-gradient relative overflow-hidden pt-28 md:pt-36 pb-20 md:pb-28 hero-grid-bg">
-  <!-- Floating math elements -->
-  <div class="absolute inset-0 pointer-events-none overflow-hidden">
-    <span class="absolute top-[15%] left-[5%] text-2xl md:text-3xl font-mono font-bold text-blue-200/60 hero-math-float">Σ</span>
-    <span class="absolute top-[25%] right-[8%] text-xl md:text-2xl font-mono font-bold text-purple-200/60 hero-math-float-delayed">∫</span>
-    <span class="absolute bottom-[20%] left-[10%] text-lg md:text-xl font-mono font-bold text-emerald-200/60 hero-math-float">π</span>
-    <span class="absolute bottom-[30%] right-[5%] text-xl md:text-2xl font-mono font-bold text-amber-200/60 hero-math-float-delayed">√</span>
-    <span class="absolute top-[40%] left-[50%] text-base font-mono font-bold text-sky-200/40 hero-math-float">∞</span>
-    <span class="absolute top-[60%] left-[3%] text-base font-mono font-bold text-indigo-200/40 hero-math-float-delayed">Δ</span>
-  </div>
-
-  <div class="max-w-5xl mx-auto px-4 sm:px-6 relative z-10">
-    <div class="text-center max-w-3xl mx-auto">
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-100/70 border border-blue-200/50 text-xs font-bold font-head text-blue-700 mb-6 reveal">
-        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-        7–9 сынып оқушыларына арналған
-      </div>
-
-      <h1 class="font-head text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.08] tracking-tight text-slate-900 reveal">
-        Математиканы
-        <br>
-        <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">түсініп</span> үйрен
-      </h1>
-
-      <p class="text-base sm:text-lg md:text-xl text-slate-500 max-w-xl mx-auto mt-5 leading-relaxed font-medium reveal delay-100">
-        Қазақ тіліндегі интерактивті сабақтар, тесттер және тапсырмалар. Теориядан практикаға — бір платформада.
-      </p>
-
-      <div class="flex flex-wrap justify-center gap-4 mt-10 reveal delay-200">
-        <a href="dashboard.html" class="hero-cta inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl text-base font-bold font-head text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-xl shadow-blue-600/25 hover:shadow-2xl hover:shadow-blue-600/30">
-          Начать обучение
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-          </svg>
-        </a>
-        <a href="#how-it-works" class="hero-cta-secondary inline-flex items-center gap-2 px-8 py-4 rounded-2xl text-base font-bold font-head text-slate-700 bg-white border-2 border-slate-200 hover:border-blue-300 hover:text-blue-700 shadow-sm hover:shadow-md">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-          Қалай жұмыс істейді
-        </a>
-      </div>
-
-      <!-- Stats row -->
-      <div class="flex flex-wrap justify-center gap-6 sm:gap-10 mt-12 reveal delay-300">
-        <div class="text-center">
-          <div class="font-head font-extrabold text-2xl sm:text-3xl text-slate-900" id="stat-modules">—</div>
-          <div class="text-xs font-bold text-slate-400 mt-0.5">Модуль</div>
+      <div class="product-header-actions">
+        <div class="axis-segment" role="group" aria-label="Язык">
+          <button type="button" data-language-choice="ru">РУС</button>
+          <button type="button" data-language-choice="kk">ҚАЗ</button>
         </div>
-        <div class="w-px bg-slate-200 hidden sm:block"></div>
-        <div class="text-center">
-          <div class="font-head font-extrabold text-2xl sm:text-3xl text-slate-900" id="stat-sections">—</div>
-          <div class="text-xs font-bold text-slate-400 mt-0.5">Бөлім</div>
-        </div>
-        <div class="w-px bg-slate-200 hidden sm:block"></div>
-        <div class="text-center">
-          <div class="font-head font-extrabold text-2xl sm:text-3xl text-slate-900" id="stat-topics">—</div>
-          <div class="text-xs font-bold text-slate-400 mt-0.5">Тақырып</div>
-        </div>
-        <div class="w-px bg-slate-200 hidden sm:block"></div>
-        <div class="text-center">
-          <div class="font-head font-extrabold text-2xl sm:text-3xl text-slate-900">7-9</div>
-          <div class="text-xs font-bold text-slate-400 mt-0.5">Сынып</div>
-        </div>
+        <button class="axis-icon-button" type="button" data-theme-toggle aria-label="Изменить тему">◐</button>
+        <a class="axis-icon-button product-header-compact" href="dashboard.html" aria-label="Открыть курс">→</a>
+        <a class="axis-button axis-button-outline" id="home-account" href="login.html" data-copy-ru="Войти" data-copy-kk="Кіру">Войти</a>
+        <a class="axis-button axis-button-gold" id="home-header-primary" href="dashboard.html" data-copy-ru="Начать" data-copy-kk="Бастау">Начать</a>
       </div>
     </div>
+  </header>
 
-    <!-- Hero illustration -->
-    <div class="mt-16 md:mt-20 reveal">
-      <div class="max-w-2xl mx-auto p-6 sm:p-8 bg-white/60 backdrop-blur-xl rounded-3xl border border-slate-200/60 shadow-xl shadow-slate-900/5">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 font-mono text-center items-center justify-center">
-          <div class="hero-math-float py-5 px-3 rounded-2xl bg-white/80 border border-blue-100 shadow-sm">
-            <div class="text-lg sm:text-2xl font-bold text-blue-600">x² + y² = r²</div>
-            <div class="text-[11px] font-bold text-slate-400 mt-1.5">Окружность</div>
-          </div>
-          <div class="hero-math-float-delayed py-5 px-3 rounded-2xl bg-white/80 border border-sky-100 shadow-sm">
-            <div class="text-lg sm:text-2xl font-bold text-sky-600">3x + 7 = 22</div>
-            <div class="text-[11px] font-bold text-slate-400 mt-1.5">Линейное ур.</div>
-          </div>
-          <div class="hero-math-float py-5 px-3 rounded-2xl bg-white/80 border border-indigo-100 shadow-sm">
-            <div class="text-lg sm:text-2xl font-bold text-indigo-600">x₁ + x₂ = −b</div>
-            <div class="text-[11px] font-bold text-slate-400 mt-1.5">Виет теоремасы</div>
-          </div>
-          <div class="hero-math-float-delayed py-5 px-3 rounded-2xl bg-white/80 border border-purple-100 shadow-sm">
-            <div class="text-lg sm:text-2xl font-bold text-purple-600">a² + b² = c²</div>
-            <div class="text-[11px] font-bold text-slate-400 mt-1.5">Пифагор</div>
+  <main class="product-main">
+    <section class="product-hero reveal" aria-labelledby="home-title">
+      <div class="product-hero-copy">
+        <div class="hero-kicker mono">
+          <span data-copy-ru="Математика 7–9 классов" data-copy-kk="7–9 сынып математикасы">Математика 7–9 классов</span>
+          <span>· RU / KK</span>
+        </div>
+        <h1 id="home-title" data-copy-ru="Математика, которую можно понять" data-copy-kk="Түсінуге болатын математика">Математика, которую можно понять</h1>
+        <p data-copy-ru="Последовательные объяснения, разобранные примеры и практика внутри одного учебного маршрута." data-copy-kk="Бір оқу бағытының ішінде жүйелі түсіндіру, талданған мысалдар және жаттығу бар.">Последовательные объяснения, разобранные примеры и практика внутри одного учебного маршрута.</p>
+        <div class="product-hero-actions">
+          <a class="axis-button axis-button-gold" id="home-primary" href="dashboard.html"><span aria-hidden="true">▶</span><span data-copy-ru="Открыть курс" data-copy-kk="Курсты ашу">Открыть курс</span></a>
+          <a class="axis-button axis-button-ghost" href="#lesson-sample" data-copy-ru="Посмотреть урок" data-copy-kk="Сабақты көру">Посмотреть урок</a>
+        </div>
+      </div>
+
+      <article class="product-hero-preview" aria-label="Фрагмент настоящего урока">
+        <div class="product-preview-toolbar">
+          <span class="axis-eyebrow" data-copy-ru="Фрагмент урока" data-copy-kk="Сабақ үзіндісі">Фрагмент урока</span>
+          <span class="product-preview-state mono" data-copy-ru="Реальный материал" data-copy-kk="Нақты материал">Реальный материал</span>
+        </div>
+        <div class="product-preview-body">
+          <h2 id="home-preview-title">Умножение степеней</h2>
+          <p id="home-preview-description">Почему показатели складываются при одинаковом основании.</p>
+          <div class="product-preview-formula">7¹² · 7⁵ = 7¹⁷</div>
+          <div class="product-preview-options" aria-hidden="true">
+            <span>aᵐ · aⁿ = aᵐ⁺ⁿ</span><span>aᵐ · aⁿ = aᵐⁿ</span>
           </div>
         </div>
+      </article>
+    </section>
+
+    <section class="product-section reveal" id="subjects" aria-labelledby="subjects-title">
+      <header class="product-section-heading">
+        <div><span class="axis-eyebrow" data-copy-ru="Направления" data-copy-kk="Бағыттар">Направления</span><h2 id="subjects-title" data-copy-ru="Единый математический маршрут" data-copy-kk="Біртұтас математикалық бағыт">Единый математический маршрут</h2></div>
+        <p data-copy-ru="Предметные карточки используют ту же систему, что и учебный Dashboard." data-copy-kk="Пән карточкалары оқу Dashboard жүйесімен бірдей жасалған.">Предметные карточки используют ту же систему, что и учебный Dashboard.</p>
+      </header>
+      <div class="product-subject-grid" id="home-subjects"></div>
+    </section>
+
+    <section class="product-section reveal" id="method" aria-labelledby="method-title">
+      <header class="product-section-heading">
+        <div><span class="axis-eyebrow" data-copy-ru="Учебный процесс" data-copy-kk="Оқу үдерісі">Учебный процесс</span><h2 id="method-title" data-copy-ru="От идеи к самостоятельному решению" data-copy-kk="Идеядан өздігінен шешуге дейін">От идеи к самостоятельному решению</h2></div>
+        <p data-copy-ru="Объяснение и действие чередуются: новая мысль сразу проверяется на примере." data-copy-kk="Түсіндіру мен әрекет кезектеседі: жаңа ой бірден мысалда тексеріледі.">Объяснение и действие чередуются: новая мысль сразу проверяется на примере.</p>
+      </header>
+      <div class="product-step-grid">
+        <article class="product-step"><span class="product-step-number">01</span><h3 data-copy-ru="Проблема" data-copy-kk="Мәселе">Проблема</h3><p data-copy-ru="Урок начинается с вопроса, который показывает смысл новой темы." data-copy-kk="Сабақ жаңа тақырыптың мағынасын ашатын сұрақтан басталады.">Урок начинается с вопроса, который показывает смысл новой темы.</p></article>
+        <article class="product-step"><span class="product-step-number">02</span><h3 data-copy-ru="Объяснение" data-copy-kk="Түсіндіру">Объяснение</h3><p data-copy-ru="Правило выводится из понятной идеи и полностью разобранного примера." data-copy-kk="Ереже түсінікті идеядан және толық талданған мысалдан шығарылады.">Правило выводится из понятной идеи и полностью разобранного примера.</p></article>
+        <article class="product-step"><span class="product-step-number">03</span><h3 data-copy-ru="Практика" data-copy-kk="Жаттығу">Практика</h3><p data-copy-ru="Задания постепенно передают ученику всё больше самостоятельности." data-copy-kk="Тапсырмалар оқушыға біртіндеп көбірек дербестік береді.">Задания постепенно передают ученику всё больше самостоятельности.</p></article>
+        <article class="product-step"><span class="product-step-number">04</span><h3 data-copy-ru="Перенос" data-copy-kk="Тасымалдау">Перенос</h3><p data-copy-ru="Финальная задача проверяет, можно ли применить идею в новой форме." data-copy-kk="Соңғы тапсырма идеяны жаңа түрде қолдануды тексереді.">Финальная задача проверяет, можно ли применить идею в новой форме.</p></article>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- ====== HOW IT WORKS ====== -->
-<section id="how-it-works" class="max-w-6xl mx-auto px-4 sm:px-6 py-20 md:py-28">
-  <div class="text-center mb-12 md:mb-16 reveal">
-    <span class="inline-block px-4 py-1.5 rounded-full bg-blue-100/70 border border-blue-200/50 text-xs font-bold font-head text-blue-700 mb-4">Қалай жұмыс істейді</span>
-    <h2 class="font-head text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
-      Сабақ құрылымы
-    </h2>
-    <p class="text-base sm:text-lg text-slate-500 max-w-xl mx-auto mt-4 font-medium">
-      Әр тақырып бірдей жүйемен өтіледі
-    </p>
-  </div>
+    <section class="product-section reveal" id="lesson-sample" aria-labelledby="sample-title">
+      <header class="product-section-heading">
+        <div><span class="axis-eyebrow" data-copy-ru="Настоящий фрагмент" data-copy-kk="Нақты үзінді">Настоящий фрагмент</span><h2 id="sample-title" data-copy-ru="Почему показатели складываются" data-copy-kk="Көрсеткіштер неге қосылады">Почему показатели складываются</h2></div>
+        <p data-copy-ru="Это содержание уже зарегистрированного урока, а не декоративный макет." data-copy-kk="Бұл сәндік макет емес, тіркелген сабақтың нақты мазмұны.">Это содержание уже зарегистрированного урока, а не декоративный макет.</p>
+      </header>
+      <article class="product-lesson-sample">
+        <div class="product-lesson-sample-copy">
+          <span class="axis-eyebrow">ALGEBRA / POWERS</span>
+          <h3 id="home-sample-title">Степени с одинаковым основанием</h3>
+          <p data-copy-ru="Степень — это короткая запись повторяющегося умножения. Поэтому два произведения с одинаковым основанием можно собрать в одно." data-copy-kk="Дәреже — қайталанатын көбейтудің қысқа жазбасы. Сондықтан негіздері бірдей екі көбейтіндіні бір өрнекке біріктіруге болады.">Степень — это короткая запись повторяющегося умножения. Поэтому два произведения с одинаковым основанием можно собрать в одно.</p>
+          <a class="axis-button axis-button-ink" id="home-sample-link" href="lesson.html?id=algebra.exponents.basics" data-copy-ru="Открыть урок →" data-copy-kk="Сабақты ашу →">Открыть урок →</a>
+        </div>
+        <div class="product-lesson-work">
+          <div class="product-equation">aᵐ · aⁿ = aᵐ⁺ⁿ</div>
+          <div class="product-rule" data-copy-ru="Основание остаётся тем же. Показатели считают общее количество одинаковых множителей." data-copy-kk="Негіз өзгермейді. Көрсеткіштер бірдей көбейткіштердің жалпы санын көрсетеді.">Основание остаётся тем же. Показатели считают общее количество одинаковых множителей.</div>
+        </div>
+      </article>
+    </section>
 
-  <div class="steps-row">
-    <!-- 1 -->
-    <div class="step-card-wrapper reveal">
-      <div class="step-card">
-        <div class="step-num">1</div>
-        <h3 class="step-title">Тақырыпты таңда</h3>
-        <p class="step-desc">Алгебра немесе геометрия — өз деңгейіңе қарай таңда</p>
-      </div>
-      <div class="step-connector hidden md:block"></div>
-    </div>
-    <!-- 2 -->
-    <div class="step-card-wrapper reveal delay-100">
-      <div class="step-card">
-        <div class="step-num">2</div>
-        <h3 class="step-title">Теорияны оқы</h3>
-        <p class="step-desc">Қысқа әрі түсінікті түсіндірме және нақты мысалдар</p>
-      </div>
-      <div class="step-connector hidden md:block"></div>
-    </div>
-    <!-- 3 -->
-    <div class="step-card-wrapper reveal delay-200">
-      <div class="step-card">
-        <div class="step-num">3</div>
-        <h3 class="step-title">Тапсырманы шеш</h3>
-        <p class="step-desc">Интерактивті тесттер мен енгізу тапсырмалары</p>
-      </div>
-      <div class="step-connector hidden md:block"></div>
-    </div>
-    <!-- 4 -->
-    <div class="step-card-wrapper reveal delay-300">
-      <div class="step-card">
-        <div class="step-num">4</div>
-        <h3 class="step-title">Нәтижеңді көр</h3>
-        <p class="step-desc">Бірден дұрыс-бұрыс жауап, қатеңді түсіндіру және ұпай</p>
-      </div>
-      <div class="step-connector hidden md:block"></div>
-    </div>
-    <!-- 5 -->
-    <div class="step-card-wrapper reveal delay-400">
-      <div class="step-card">
-        <div class="step-num">5</div>
-        <h3 class="step-title">Прогресті бақыла</h3>
-        <p class="step-desc">Барлық өткен тақырыптар мен статистика жеке кабинетте</p>
-      </div>
-    </div>
-  </div>
-</section>
+    <section class="product-section product-cta reveal">
+      <div><span class="axis-eyebrow" data-copy-ru="Следующий шаг" data-copy-kk="Келесі қадам">Следующий шаг</span><h2 data-copy-ru="Откройте маршрут и выберите тему" data-copy-kk="Бағытты ашып, тақырыпты таңдаңыз">Откройте маршрут и выберите тему</h2><p data-copy-ru="Доступные уроки и реальный прогресс собраны в одном Dashboard." data-copy-kk="Қолжетімді сабақтар мен нақты оқу барысы бір Dashboard ішінде жинақталған.">Доступные уроки и реальный прогресс собраны в одном Dashboard.</p></div>
+      <a class="axis-button axis-button-gold" href="dashboard.html" data-copy-ru="Перейти к обучению" data-copy-kk="Оқуға өту">Перейти к обучению</a>
+    </section>
 
-<!-- ====== ТЕМЫ ====== -->
-<section class="max-w-6xl mx-auto px-4 sm:px-6 pb-20 md:pb-28 reveal" id="subject-tabs">
-  <div class="text-center mb-10 reveal">
-    <span class="inline-block px-4 py-1.5 rounded-full bg-indigo-100/70 border border-indigo-200/50 text-xs font-bold font-head text-indigo-700 mb-4">Бағдарлама</span>
-    <h2 class="font-head text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">7–9 сынып бағдарламасы</h2>
-  </div>
+    <footer class="product-footer">
+      <a class="axis-brand" href="index.html"><span class="axis-brand-mark"><i></i><i></i></span><span>MathLogic</span></a>
+      <div class="product-footer-links"><a href="dashboard.html" data-copy-ru="Курс" data-copy-kk="Курс">Курс</a><a href="settings.html" data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</a><span>© 2026</span></div>
+    </footer>
+  </main>
 
-  <div class="flex flex-wrap justify-center gap-3 mb-10">
-    <button onclick="switchTab('algebra')" id="tab-algebra" class="tab-btn px-6 py-2.5 rounded-full text-sm font-bold font-head text-white bg-blue-700 shadow-md transition-all duration-200">Алгебра</button>
-    <button onclick="switchTab('geometry')" id="tab-geometry" class="tab-btn px-6 py-2.5 rounded-full text-sm font-bold font-head text-slate-500 bg-white border border-slate-200 hover:border-blue-300 hover:text-blue-700 transition-all duration-200">Геометрия</button>
-    <button onclick="switchTab('logic')" id="tab-logic" class="tab-btn px-6 py-2.5 rounded-full text-sm font-bold font-head text-slate-500 bg-white border border-slate-200 hover:border-blue-300 hover:text-blue-700 transition-all duration-200">Логика</button>
-    <button onclick="switchTab('numbers')" id="tab-numbers" class="tab-btn px-6 py-2.5 rounded-full text-sm font-bold font-head text-slate-500 bg-white border border-slate-200 hover:border-blue-300 hover:text-blue-700 transition-all duration-200">Сандар</button>
-  </div>
-
-  <div class="max-w-2xl mx-auto bg-white/80 backdrop-blur-xl rounded-3xl p-8 sm:p-10 border border-slate-200/60 shadow-xl shadow-slate-900/5">
-    <p class="font-head font-bold text-sm text-blue-700 mb-5 flex items-center gap-2">
-      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-      Қамтылған тақырыптар
-    </p>
-    <div id="topics-grid" class="grid grid-cols-2 gap-3 text-sm font-medium text-slate-700"></div>
-  </div>
-</section>
-
-<!-- ====== CTA ====== -->
-<section class="max-w-6xl mx-auto px-4 sm:px-6 pb-20 md:pb-28 reveal">
-  <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 p-10 sm:p-16 md:p-20 text-center shadow-2xl">
-    <div class="absolute inset-0 pointer-events-none">
-      <div class="absolute top-[-20%] left-[-10%] w-[300px] h-[300px] bg-white/5 rounded-full blur-[60px]"></div>
-      <div class="absolute bottom-[-20%] right-[-10%] w-[400px] h-[400px] bg-white/5 rounded-full blur-[80px]"></div>
-    </div>
-    <div class="relative z-10">
-      <h2 class="font-head text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">Бастауға дайынсың ба?</h2>
-      <p class="text-base sm:text-lg text-blue-200 max-w-md mx-auto mt-4 font-medium">Кез келген тақырыпты қазір бастауға болады</p>
-      <div class="flex flex-wrap justify-center gap-4 mt-8">
-        <a href="dashboard.html" class="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl text-base font-bold font-head text-blue-700 bg-white hover:bg-blue-50 shadow-xl shadow-blue-900/20 transition-all hover:-translate-y-0.5">
-          Сабақтарды көру
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-        </a>
-        <a href="register.html" class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl text-base font-bold font-head text-white border-2 border-white/30 hover:border-white/50 transition-all hover:-translate-y-0.5">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
-          Тіркелу
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ====== FOOTER ====== -->
-<footer id="footer" class="max-w-6xl mx-auto px-4 sm:px-6 pb-8 reveal">
-  <div class="py-7 border-t border-slate-200 flex flex-wrap justify-between items-center gap-4">
-    <p class="text-xs text-slate-400 font-medium">© math·logic 2026</p>
-    <div class="flex items-center gap-5 text-xs font-medium">
-      <span class="text-slate-400">7–9 сынып оқушыларына арналған</span>
-      <span class="text-slate-300 hidden sm:inline">|</span>
-      <span class="font-bold text-slate-500">KZ / RU</span>
-    </div>
-  </div>
-</footer>
-
-<!-- ====== AUTH MODAL ====== -->
-<div class="auth-modal-overlay" id="auth-modal">
-  <div class="auth-modal-box">
-    <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-50 border border-blue-200/60 flex items-center justify-center shadow-sm">
-      <svg class="w-8 h-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-      </svg>
-    </div>
-    <h3 class="font-head font-extrabold text-xl text-slate-900 mb-2">Доступ ограничен</h3>
-    <p class="text-sm font-medium text-slate-500 mb-7 leading-relaxed">
-      Для доступа к личному кабинету необходимо зарегистрироваться или войти.
-    </p>
-    <div class="flex flex-col gap-3">
-      <a href="login.html" class="w-full py-3.5 rounded-2xl text-sm font-bold font-head text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-600/20 transition-all text-center">Войти</a>
-      <a href="register.html" class="w-full py-3.5 rounded-2xl text-sm font-bold font-head text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 transition-all text-center">Зарегистрироваться</a>
-      <button onclick="closeAuthModal()" class="w-full py-3 rounded-xl text-sm font-bold font-head text-slate-400 hover:text-slate-600 transition-all">Отмена</button>
-    </div>
-  </div>
-</div>
-
-<!-- SCRIPTS -->
-<script src="js/data.js"></script>
-<script src="js/i18n.js"></script>
-<script src="js/storage.js"></script>
-<script src="js/events.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/navigation.js"></script>
-<script src="js/utils.js"></script>
-<script src="js/animations.js"></script>
-<script src="js/app.js"></script>
-<script>
-  let activeTab = 'algebra';
-
-  function switchTab(tabKey) {
-    activeTab = tabKey;
-    document.querySelectorAll('.tab-btn').forEach(function(btn) {
-      btn.className = "tab-btn px-6 py-2.5 rounded-full text-sm font-bold font-head text-slate-500 bg-white border border-slate-200 hover:border-blue-300 hover:text-blue-700 transition-all duration-200";
-    });
-    var activeBtn = document.getElementById('tab-' + tabKey);
-    if (activeBtn) {
-      activeBtn.className = "tab-btn px-6 py-2.5 rounded-full text-sm font-bold font-head text-white bg-blue-700 shadow-md transition-all duration-200";
-    }
-    renderLandingTopics();
-  }
-
-  function renderLandingTopics() {
-    var grid = document.getElementById('topics-grid');
-    if (!grid) return;
-    grid.style.opacity = '0';
-    grid.style.transform = 'translateY(8px)';
-    setTimeout(function() {
-      grid.innerHTML = '';
-      var currentLang = getLang();
-      var list = TOPICS_LANDING[activeTab][currentLang] || TOPICS_LANDING[activeTab].ru || [];
-      list.forEach(function(item, i) {
-        var p = document.createElement('p');
-        p.className = "transition-all duration-200 hover:text-blue-600 cursor-default flex items-center gap-2";
-        p.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0"></span>' + item;
-        p.style.opacity = '0';
-        p.style.transform = 'translateY(8px)';
-        p.style.transition = 'opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1) ' + (i * 0.06) + 's, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) ' + (i * 0.06) + 's';
-        grid.appendChild(p);
-        requestAnimationFrame(function() {
-          p.style.opacity = '1';
-          p.style.transform = 'none';
-        });
-      });
-      grid.style.opacity = '1';
-      grid.style.transform = 'none';
-      grid.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
-    }, 150);
-  }
-
-  function handleProfileClick(e) {
-    e.preventDefault();
-    if (ML.isLoggedIn()) {
-      window.location.href = 'profile.html';
-    } else {
-      document.getElementById('auth-modal').classList.add('open');
-    }
-  }
-
-  function closeAuthModal() {
-    document.getElementById('auth-modal').classList.remove('open');
-  }
-
-  document.getElementById('auth-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeAuthModal();
-  });
-
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeAuthModal();
-  });
-
-  function updateLandingStats() {
-    var totalModules = 0, totalTopics = 0, totalSections = 0;
-    try {
-      if (typeof DATA !== 'undefined') {
-        totalSections = Object.keys(DATA).length;
-        Object.keys(DATA).forEach(function(sk) {
-          (DATA[sk] || []).forEach(function(sec) {
-            (sec.modules || []).forEach(function(mod) {
-              totalModules++;
-              (mod.subtopics || []).forEach(function() { totalTopics++; });
-            });
-          });
-        });
-      }
-    } catch(e) {}
-    var elMod = document.getElementById('stat-modules');
-    var elSec = document.getElementById('stat-sections');
-    var elTop = document.getElementById('stat-topics');
-    if (elMod) elMod.textContent = totalModules || '—';
-    if (elSec) elSec.textContent = totalSections || '—';
-    if (elTop) elTop.textContent = totalTopics > 0 ? totalTopics + '+' : '—';
-  }
-
-  document.addEventListener('DOMContentLoaded', function() {
-    updateLandingStats();
-    renderLandingTopics();
-    ANIME.initPageTransitions();
-    ML.applySettings();
-    if (ML.isLoggedIn()) {
-      document.getElementById('index-nav-auth').classList.add('hidden');
-      document.getElementById('index-nav-user').classList.remove('hidden');
-    }
-  });
-</script>
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/learning.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/site.js"></script>
+  <script src="js/home.js"></script>
 </body>
 </html>

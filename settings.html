@@ -1,919 +1,117 @@
-<!DOCTYPE html>
-<html lang="kk">
+<!doctype html>
+<html lang="ru" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Настройки — math·logic</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          blue: { 50: '#EEF2FF', 100: '#E0E7FF', 200: '#C7D2FE', 300: '#A5B4FC', 400: '#818CF8', 500: '#6366F1', 600: '#4F46E5', 700: '#4338CA', 800: '#3730A3', 900: '#312E81' },
-          indigo: { 50: '#EEF2FF', 100: '#E0E7FF', 200: '#C7D2FE', 300: '#A5B4FC', 400: '#818CF8', 500: '#6366F1', 600: '#4F46E5', 700: '#4338CA' },
-          purple: { 50: '#F5F3FF', 100: '#EDE9FE', 200: '#DDD6FE', 300: '#C4B5FD', 400: '#A78BFA', 500: '#8B5CF6', 600: '#7C3AED', 700: '#6D28D9' },
-          emerald: { 50: '#F0FDF4', 100: '#D1FAE5', 200: '#A7F3D0', 300: '#6EE7B7', 400: '#34D399', 500: '#10B981', 600: '#059669' },
-        },
-        fontFamily: { head: ['Rubik', 'sans-serif'] },
-        borderRadius: { '2xl': '16px', '3xl': '20px' },
-      }
-    }
-  }
-  </script>
+  <title>Настройки — MathLogic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Onest:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/components.css">
-  <style>
-    html { scroll-behavior: smooth; }
-
-    .settings-layout {
-      display: grid;
-      grid-template-columns: 220px 1fr;
-      gap: 32px;
-      align-items: start;
-    }
-
-    .settings-sidebar {
-      position: sticky;
-      top: 100px;
-    }
-
-    .settings-nav-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      border-radius: 12px;
-      font-size: 0.8125rem;
-      font-weight: 600;
-      color: #64748B;
-      cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      text-decoration: none;
-      border: none;
-      background: none;
-      width: 100%;
-      text-align: left;
-      font-family: 'Rubik', sans-serif;
-    }
-    .settings-nav-item:hover {
-      background: #F1F5F9;
-      color: #0F172A;
-    }
-    .settings-nav-item.active {
-      background: #EEF2FF;
-      color: #4F46E5;
-    }
-    .settings-nav-item .nav-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: transparent;
-      transition: all 0.25s ease;
-    }
-    .settings-nav-item.active .nav-dot {
-      background: #4F46E5;
-      box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
-    }
-
-    .settings-card {
-      border-radius: 20px;
-      padding: 1.75rem;
-      background: rgba(255,255,255,0.78);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(226,232,240,0.6);
-      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .settings-card:hover {
-      border-color: #CBD5E1;
-      background: rgba(255,255,255,0.9);
-    }
-
-    .settings-section {
-      scroll-margin-top: 100px;
-    }
-
-    .settings-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.875rem 0;
-      gap: 1rem;
-    }
-    .settings-row + .settings-row {
-      border-top: 1px solid rgba(226,232,240,0.5);
-    }
-
-    .settings-label {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .settings-label span:first-child {
-      font-size: 0.875rem;
-      font-weight: 700;
-      color: #0F172A;
-      font-family: 'Rubik', sans-serif;
-    }
-    .settings-label span:last-child {
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: #94A3B8;
-    }
-
-    .settings-input {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.875rem;
-      font-weight: 600;
-      background: white;
-      border: 1.5px solid #E2E8F0;
-      border-radius: 12px;
-      padding: 0.625rem 1rem;
-      outline: none;
-      transition: all 0.2s ease;
-      color: #0F172A;
-      width: 100%;
-      max-width: 280px;
-    }
-    .settings-input:focus {
-      border-color: #4F46E5;
-      box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
-    }
-
-    .option-btn {
-      padding: 6px 16px;
-      border-radius: 10px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      font-family: 'Rubik', sans-serif;
-      border: 1.5px solid #E2E8F0;
-      background: white;
-      color: #64748B;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      user-select: none;
-    }
-    .option-btn:hover {
-      border-color: #94A3B8;
-      color: #475569;
-    }
-    .option-btn:active {
-      transform: scale(0.96);
-    }
-    .option-btn.active {
-      background: #EEF2FF;
-      border-color: #4F46E5;
-      color: #4F46E5;
-      box-shadow: 0 2px 8px rgba(79,70,229,0.08);
-    }
-
-    .color-swatch {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      cursor: pointer;
-      border: 3px solid transparent;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      flex-shrink: 0;
-      outline: none;
-    }
-    .color-swatch:hover { transform: scale(1.18); }
-    .color-swatch:active { transform: scale(0.95); }
-    .color-swatch.active {
-      border-color: #0F172A;
-      box-shadow: 0 0 0 2px white, 0 0 0 4px rgba(15,23,42,0.1);
-    }
-
-    .toggle {
-      position: relative;
-      width: 44px;
-      height: 26px;
-      flex-shrink: 0;
-      border-radius: 999px;
-      background: #CBD5E1;
-      cursor: pointer;
-      transition: background 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .toggle:focus-visible {
-      outline: 2px solid #4F46E5;
-      outline-offset: 2px;
-    }
-    .toggle.active { background: #4F46E5; }
-    .toggle::after {
-      content: '';
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: white;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .toggle.active::after { transform: translateX(18px); }
-
-    .danger-btn {
-      padding: 8px 18px;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: 800;
-      font-family: 'Rubik', sans-serif;
-      border: 1.5px solid #FECACA;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      background: #FEF2F2;
-      color: #EF4444;
-    }
-    .danger-btn:hover {
-      background: #FEE2E2;
-      border-color: #FCA5A5;
-      transform: translateY(-1px);
-    }
-    .danger-btn:active { transform: scale(0.97); }
-
-    .danger-btn-solid {
-      padding: 8px 18px;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: 800;
-      font-family: 'Rubik', sans-serif;
-      border: none;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      background: #EF4444;
-      color: white;
-      box-shadow: 0 4px 12px rgba(239,68,68,0.2);
-    }
-    .danger-btn-solid:hover {
-      background: #DC2626;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(239,68,68,0.3);
-    }
-    .danger-btn-solid:active { transform: scale(0.97); }
-
-    .primary-btn {
-      padding: 10px 24px;
-      border-radius: 12px;
-      font-size: 0.8125rem;
-      font-weight: 800;
-      font-family: 'Rubik', sans-serif;
-      border: none;
-      cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      background: #4F46E5;
-      color: white;
-      box-shadow: 0 4px 12px rgba(79,70,229,0.2);
-    }
-    .primary-btn:hover {
-      background: #4338CA;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(79,70,229,0.3);
-    }
-    .primary-btn:active { transform: scale(0.97); }
-    .primary-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none !important;
-    }
-
-    .primary-btn-outline {
-      padding: 10px 24px;
-      border-radius: 12px;
-      font-size: 0.8125rem;
-      font-weight: 800;
-      font-family: 'Rubik', sans-serif;
-      border: 1.5px solid #E2E8F0;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      background: white;
-      color: #4F46E5;
-    }
-    .primary-btn-outline:hover {
-      background: #EEF2FF;
-      border-color: #4F46E5;
-      transform: translateY(-1px);
-    }
-    .primary-btn-outline:active { transform: scale(0.97); }
-
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      background: rgba(15,23,42,0.5);
-      backdrop-filter: blur(6px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
-    }
-    .modal-overlay.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .modal-box {
-      background: white;
-      border-radius: 28px;
-      max-width: 400px;
-      width: 100%;
-      padding: 2rem;
-      box-shadow: 0 25px 60px rgba(15,23,42,0.15);
-      transform: scale(0.92) translateY(12px);
-      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .modal-overlay.open .modal-box {
-      transform: scale(1) translateY(0);
-    }
-
-    .toast-container {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 200;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      pointer-events: none;
-    }
-
-    .toast {
-      padding: 12px 24px;
-      border-radius: 16px;
-      font-size: 0.8125rem;
-      font-weight: 700;
-      font-family: 'Rubik', sans-serif;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-      pointer-events: auto;
-      animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .toast-success { background: #065F46; color: white; }
-    .toast-info { background: #4338CA; color: white; }
-    .toast-error { background: #991B1B; color: white; }
-    .toast-warning { background: #92400E; color: white; }
-
-    .section-icon-wrap {
-      width: 40px;
-      height: 40px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.125rem;
-      flex-shrink: 0;
-    }
-
-    .stat-value {
-      font-size: 1.5rem;
-      font-weight: 800;
-      font-family: 'Rubik', sans-serif;
-      line-height: 1.1;
-      letter-spacing: -0.03em;
-    }
-
-    .badge-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.25rem;
-    }
-
-    @media (max-width: 896px) {
-      .settings-layout {
-        grid-template-columns: 1fr;
-        gap: 20px;
-      }
-      .settings-sidebar {
-        position: static;
-        display: flex;
-        overflow-x: auto;
-        gap: 4px;
-        padding: 4px;
-        background: rgba(255,255,255,0.6);
-        backdrop-filter: blur(12px);
-        border-radius: 18px;
-        border: 1px solid rgba(226,232,240,0.6);
-        -webkit-overflow-scrolling: touch;
-      }
-      .settings-sidebar::-webkit-scrollbar { display: none; }
-      .settings-nav-item {
-        white-space: nowrap;
-        padding: 8px 12px;
-        font-size: 0.75rem;
-      }
-      .settings-nav-item .nav-dot { display: none; }
-    }
-
-    @media (max-width: 480px) {
-      .settings-card { padding: 1.25rem; }
-      .settings-row { flex-wrap: wrap; gap: 8px; }
-      .settings-input { max-width: 100%; }
-      .modal-box { padding: 1.5rem; margin: 0.5rem; }
-    }
-
-    body.dark .settings-card {
-      background: rgba(30,41,59,0.8);
-      border-color: rgba(51,65,85,0.6);
-    }
-    body.dark .settings-card:hover {
-      background: rgba(30,41,59,0.95);
-      border-color: #475569;
-    }
-    body.dark .settings-nav-item:hover { background: #334155; color: #F1F5F9; }
-    body.dark .settings-nav-item.active { background: rgba(79,70,229,0.2); color: #818CF8; }
-    body.dark .settings-label span:first-child { color: #F1F5F9; }
-    body.dark .settings-input { background: #1E293B; border-color: #334155; color: #F1F5F9; }
-    body.dark .settings-input:focus { border-color: #6366F1; }
-    body.dark .option-btn { background: #1E293B; border-color: #334155; color: #94A3B8; }
-    body.dark .option-btn.active { background: rgba(79,70,229,0.2); border-color: #6366F1; color: #818CF8; }
-    body.dark .toggle:not(.active) { background: #475569; }
-    body.dark .modal-box { background: #1E293B; }
-  </style>
+  <link rel="stylesheet" href="css/animations.css">
 </head>
-<body class="min-h-screen relative overflow-x-hidden bg-[#F8FAFC] page-enter" id="app-body">
-
-  <!-- AMBIENT BG -->
-  <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
-    <div class="absolute top-[-8%] left-[-3%] w-[550px] h-[550px] bg-blue-200/40 rounded-full blur-[130px]"></div>
-    <div class="absolute top-[20%] right-[-8%] w-[480px] h-[480px] bg-purple-100/50 rounded-full blur-[120px]"></div>
-    <div class="absolute bottom-[-5%] left-[15%] w-[400px] h-[400px] bg-emerald-100/40 rounded-full blur-[100px]"></div>
-  </div>
-
-  <!-- HEADER -->
-  <header class="fixed top-0 left-0 w-full z-40 bg-white/70 backdrop-blur-md border-b border-slate-200/50 shadow-xs">
-    <div class="h-1 w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-600/15">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-          </svg>
-        </div>
-        <span class="font-head font-extrabold text-xl text-slate-900 tracking-tight">math<span class="text-blue-600">·</span>logic</span>
-      </a>
-      <a href="profile.html" class="text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors px-3 py-2 rounded-xl hover:bg-slate-100">
-        <svg class="w-5 h-5 inline-block mr-1.5 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-        </svg>
-        Профиль
-      </a>
+<body class="axis-app axis-product-page page-enter">
+  <header class="product-header">
+    <div class="product-header-inner">
+      <a class="axis-brand" href="index.html" aria-label="MathLogic"><span class="axis-brand-mark"><i></i><i></i></span><span>MathLogic</span></a>
+      <nav class="product-nav" aria-label="Основная навигация">
+        <a href="dashboard.html" data-copy-ru="Обучение" data-copy-kk="Оқу">Обучение</a>
+        <a href="profile.html" data-copy-ru="Учебный журнал" data-copy-kk="Оқу журналы">Учебный журнал</a>
+        <a href="settings.html" aria-current="page" data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</a>
+      </nav>
+      <div class="product-header-actions">
+        <div class="axis-segment" role="group" aria-label="Язык"><button type="button" data-language-choice="ru">РУС</button><button type="button" data-language-choice="kk">ҚАЗ</button></div>
+        <button class="axis-icon-button" type="button" data-theme-toggle aria-label="Изменить тему">◐</button>
+        <a class="axis-icon-button product-header-compact" href="dashboard.html" aria-label="К обучению">←</a>
+        <a class="axis-button axis-button-outline" href="dashboard.html" data-copy-ru="К обучению" data-copy-kk="Оқуға өту">К обучению</a>
+      </div>
     </div>
   </header>
 
-  <!-- MAIN -->
-  <main class="max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-24">
-    <div class="flex items-center gap-3 mb-8 reveal">
-      <div class="w-1 h-7 rounded-full bg-gradient-to-b from-blue-500 to-purple-500"></div>
-      <h1 class="font-head font-extrabold text-2xl sm:text-3xl text-slate-900 tracking-tight">Настройки</h1>
-    </div>
+  <main class="product-main">
+    <header class="product-page-heading reveal">
+      <div><span class="axis-eyebrow" data-copy-ru="Управление продуктом" data-copy-kk="Өнімді басқару">Управление продуктом</span><h1 data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</h1></div>
+      <p data-copy-ru="Здесь собраны только параметры, которые действительно работают в текущей версии MathLogic." data-copy-kk="Мұнда MathLogic-тің қазіргі нұсқасында шынымен жұмыс істейтін параметрлер ғана бар.">Здесь собраны только параметры, которые действительно работают в текущей версии MathLogic.</p>
+    </header>
 
-    <div class="settings-layout">
-
-      <!-- SIDEBAR NAV -->
-      <nav class="settings-sidebar" id="settings-nav">
-        <a href="#section-account" class="settings-nav-item active" data-section="account">
-          <span class="nav-dot"></span>
-          <span>👤 Аккаунт</span>
-        </a>
-        <a href="#section-appearance" class="settings-nav-item" data-section="appearance">
-          <span class="nav-dot"></span>
-          <span>🎨 Внешний вид</span>
-        </a>
-        <a href="#section-language" class="settings-nav-item" data-section="language">
-          <span class="nav-dot"></span>
-          <span>🌍 Язык</span>
-        </a>
-        <a href="#section-learning" class="settings-nav-item" data-section="learning">
-          <span class="nav-dot"></span>
-          <span>📚 Обучение</span>
-        </a>
-        <a href="#section-notifications" class="settings-nav-item" data-section="notifications">
-          <span class="nav-dot"></span>
-          <span>🔔 Уведомления</span>
-        </a>
-        <a href="#section-security" class="settings-nav-item" data-section="security">
-          <span class="nav-dot"></span>
-          <span>🔒 Безопасность</span>
-        </a>
-        <a href="#section-data" class="settings-nav-item" data-section="data">
-          <span class="nav-dot"></span>
-          <span>💾 Данные</span>
-        </a>
-        <a href="#section-about" class="settings-nav-item" data-section="about">
-          <span class="nav-dot"></span>
-          <span>ℹ️ О проекте</span>
-        </a>
+    <div class="product-settings-layout">
+      <nav class="product-settings-nav reveal" aria-label="Разделы настроек">
+        <a href="#settings-profile" class="active" data-settings-link="profile"><span class="nav-glyph">○</span><span data-copy-ru="Профиль" data-copy-kk="Профиль">Профиль</span></a>
+        <a href="#settings-interface" data-settings-link="interface"><span class="nav-glyph">◐</span><span data-copy-ru="Интерфейс" data-copy-kk="Интерфейс">Интерфейс</span></a>
+        <a href="#settings-language" data-settings-link="language"><span class="nav-glyph">А</span><span data-copy-ru="Язык" data-copy-kk="Тіл">Язык</span></a>
+        <a href="#settings-data" data-settings-link="data"><span class="nav-glyph">↓</span><span data-copy-ru="Данные" data-copy-kk="Деректер">Данные</span></a>
       </nav>
 
-      <!-- CONTENT -->
-      <div class="flex flex-col gap-6">
-
-        <!-- ==================== АККАУНТ ==================== -->
-        <section id="section-account" class="settings-section reveal">
-          <div class="settings-card">
-            <div class="flex items-center gap-3 mb-6 pb-5 border-b border-slate-200/50">
-              <div class="section-icon-wrap bg-blue-100 text-blue-600">👤</div>
-              <div>
-                <h2 class="font-head font-bold text-lg text-slate-900">Аккаунт</h2>
-                <p class="text-xs font-medium text-slate-400">Управление профилем</p>
-              </div>
+      <div class="product-settings-content">
+        <section class="product-settings-panel reveal" id="settings-profile" data-settings-section="profile">
+          <header class="product-settings-panel-header"><span class="product-settings-icon">○</span><div><h2 data-copy-ru="Профиль" data-copy-kk="Профиль">Профиль</h2><p data-copy-ru="Имя и подпись используются на Dashboard и в учебном журнале." data-copy-kk="Аты-жөніңіз бен белгіңіз Dashboard және оқу журналында қолданылады.">Имя и подпись используются на Dashboard и в учебном журнале.</p></div></header>
+          <div class="product-settings-body">
+            <div class="product-setting-row">
+              <div class="product-setting-copy"><strong data-copy-ru="Аватар" data-copy-kk="Аватар">Аватар</strong><small data-copy-ru="Сейчас используется первая буква имени — без фиктивной загрузки изображения." data-copy-kk="Қазір сурет жүктеудің орнына аттың бірінші әрпі қолданылады.">Сейчас используется первая буква имени — без фиктивной загрузки изображения.</small></div>
+              <div class="product-avatar product-avatar-small" id="settings-avatar">М</div>
             </div>
+            <form id="profile-form">
+              <div class="product-form-grid">
+                <div class="product-field"><label for="settings-name" data-copy-ru="Имя" data-copy-kk="Аты">Имя</label><input id="settings-name" name="name" type="text" autocomplete="name" maxlength="60" required><p class="product-field-note" data-copy-ru="Не может быть пустым." data-copy-kk="Бос болмауы керек.">Не может быть пустым.</p></div>
+                <div class="product-field"><label for="settings-username" data-copy-ru="Подпись профиля" data-copy-kk="Профиль белгісі">Подпись профиля</label><input id="settings-username" name="username" type="text" autocomplete="username" maxlength="40" placeholder="@user"><p class="product-field-note" data-copy-ru="Необязательное короткое имя." data-copy-kk="Міндетті емес қысқа атау.">Необязательное короткое имя.</p></div>
+              </div>
+              <button class="axis-button axis-button-ink product-form-submit" type="submit" data-copy-ru="Сохранить профиль" data-copy-kk="Профильді сақтау">Сохранить профиль</button>
+            </form>
+          </div>
+        </section>
 
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Аватар</span>
-                <span>PNG, JPG до 2MB</span>
-              </div>
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-head font-bold text-sm shadow-sm" id="avatar-preview">Н</div>
-                <button class="option-btn" onclick="showToast('Функция временно недоступна', 'info')">Изменить</button>
-              </div>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Имя</span>
-                <span>Ваше отображаемое имя</span>
-              </div>
-              <input class="settings-input" type="text" id="settings-name" value="" placeholder="Ваше имя" onchange="saveAccount()">
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Username</span>
-                <span>Ваш уникальный логин</span>
-              </div>
-              <input class="settings-input" type="text" id="settings-username" value="" placeholder="@username" onchange="saveAccount()">
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Email</span>
-                <span>Для уведомлений и входа</span>
-              </div>
-              <input class="settings-input" type="email" id="settings-email" value="" placeholder="email@example.com" onchange="saveAccount()">
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Пароль</span>
-                <span>Минимум 8 символов</span>
-              </div>
-              <button class="option-btn" onclick="showToast('Функция временно недоступна', 'info')">Сменить</button>
+        <section class="product-settings-panel reveal" id="settings-interface" data-settings-section="interface">
+          <header class="product-settings-panel-header"><span class="product-settings-icon">◐</span><div><h2 data-copy-ru="Интерфейс" data-copy-kk="Интерфейс">Интерфейс</h2><p data-copy-ru="Тема применяется ко всем страницам, использующим общую систему MathLogic." data-copy-kk="Тақырып MathLogic ортақ жүйесін қолданатын барлық бетке қолданылады.">Тема применяется ко всем страницам, использующим общую систему MathLogic.</p></div></header>
+          <div class="product-settings-body">
+            <div class="product-setting-row">
+              <div class="product-setting-copy"><strong data-copy-ru="Тема оформления" data-copy-kk="Көрініс тақырыбы">Тема оформления</strong><small data-copy-ru="Светлая, тёмная или системная тема устройства." data-copy-kk="Құрылғының ашық, қараңғы немесе жүйелік тақырыбы.">Светлая, тёмная или системная тема устройства.</small></div>
+              <div class="product-choice-group" id="theme-options"><button class="product-choice" type="button" data-theme="light" data-copy-ru="Светлая" data-copy-kk="Ашық">Светлая</button><button class="product-choice" type="button" data-theme="dark" data-copy-ru="Тёмная" data-copy-kk="Қараңғы">Тёмная</button><button class="product-choice" type="button" data-theme="system" data-copy-ru="Системная" data-copy-kk="Жүйелік">Системная</button></div>
             </div>
           </div>
         </section>
 
-        <!-- ==================== ВНЕШНИЙ ВИД ==================== -->
-        <section id="section-appearance" class="settings-section reveal">
-          <div class="settings-card">
-            <div class="flex items-center gap-3 mb-6 pb-5 border-b border-slate-200/50">
-              <div class="section-icon-wrap bg-purple-100 text-purple-600">🎨</div>
-              <div>
-                <h2 class="font-head font-bold text-lg text-slate-900">Внешний вид</h2>
-                <p class="text-xs font-medium text-slate-400">Тема, цвета, шрифты</p>
-              </div>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Тема оформления</span>
-                <span>Выберите стиль отображения</span>
-              </div>
-              <div class="flex gap-2" id="theme-options">
-                <button class="option-btn active" data-theme="light" onclick="setTheme('light')">☀️ Светлая</button>
-                <button class="option-btn" data-theme="dark" onclick="setTheme('dark')">🌙 Тёмная</button>
-                <button class="option-btn" data-theme="system" onclick="setTheme('system')">💻 Системная</button>
-              </div>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Акцентный цвет</span>
-                <span>Цвет выделения элементов</span>
-              </div>
-              <div class="flex gap-2" id="accent-options">
-                <button class="color-swatch active" data-color="#4F46E5" style="background:#4F46E5" onclick="setAccent('#4F46E5')" aria-label="Синий"></button>
-                <button class="color-swatch" data-color="#059669" style="background:#059669" onclick="setAccent('#059669')" aria-label="Зелёный"></button>
-                <button class="color-swatch" data-color="#7C3AED" style="background:#7C3AED" onclick="setAccent('#7C3AED')" aria-label="Фиолетовый"></button>
-                <button class="color-swatch" data-color="#DC2626" style="background:#DC2626" onclick="setAccent('#DC2626')" aria-label="Красный"></button>
-                <button class="color-swatch" data-color="#D97706" style="background:#D97706" onclick="setAccent('#D97706')" aria-label="Оранжевый"></button>
-              </div>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Размер шрифта</span>
-                <span>Настройка текста интерфейса</span>
-              </div>
-              <div class="flex gap-2" id="fontsize-options">
-                <button class="option-btn" data-size="small" onclick="setFontSize('small')">Мелкий</button>
-                <button class="option-btn active" data-size="medium" onclick="setFontSize('medium')">Средний</button>
-                <button class="option-btn" data-size="large" onclick="setFontSize('large')">Крупный</button>
-              </div>
+        <section class="product-settings-panel reveal" id="settings-language" data-settings-section="language">
+          <header class="product-settings-panel-header"><span class="product-settings-icon">А</span><div><h2 data-copy-ru="Язык" data-copy-kk="Тіл">Язык</h2><p data-copy-ru="MathLogic поддерживает русский и казахский языки." data-copy-kk="MathLogic орыс және қазақ тілдерін қолдайды.">MathLogic поддерживает русский и казахский языки.</p></div></header>
+          <div class="product-settings-body">
+            <div class="product-setting-row">
+              <div class="product-setting-copy"><strong data-copy-ru="Язык интерфейса" data-copy-kk="Интерфейс тілі">Язык интерфейса</strong><small data-copy-ru="Если перевод конкретного материала отсутствует, используется русский вариант." data-copy-kk="Нақты материалдың аудармасы болмаса, орысша нұсқа қолданылады.">Если перевод конкретного материала отсутствует, используется русский вариант.</small></div>
+              <div class="product-choice-group" id="language-options"><button class="product-choice" type="button" data-language="ru">Русский</button><button class="product-choice" type="button" data-language="kk">Қазақша</button></div>
             </div>
           </div>
         </section>
 
-        <!-- ==================== ЯЗЫК ==================== -->
-        <section id="section-language" class="settings-section reveal">
-          <div class="settings-card">
-            <div class="flex items-center gap-3 mb-6 pb-5 border-b border-slate-200/50">
-              <div class="section-icon-wrap bg-emerald-100 text-emerald-600">🌍</div>
-              <div>
-                <h2 class="font-head font-bold text-lg text-slate-900">Язык</h2>
-                <p class="text-xs font-medium text-slate-400">Язык интерфейса</p>
-              </div>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Интерфейс</span>
-                <span>Выберите язык отображения</span>
-              </div>
-              <div class="flex gap-2" id="lang-options">
-                <button class="option-btn" data-lang="kk" onclick="setLang('kk')">🇰🇿 Қазақша</button>
-                <button class="option-btn active" data-lang="ru" onclick="setLang('ru')">🇷🇺 Русский</button>
-              </div>
+        <section class="product-settings-panel reveal" id="settings-data" data-settings-section="data">
+          <header class="product-settings-panel-header"><span class="product-settings-icon">↓</span><div><h2 data-copy-ru="Данные" data-copy-kk="Деректер">Данные</h2><p data-copy-ru="Экспорт создаёт локальную JSON-копию текущего профиля и прогресса." data-copy-kk="Экспорт ағымдағы профиль мен оқу барысының жергілікті JSON көшірмесін жасайды.">Экспорт создаёт локальную JSON-копию текущего профиля и прогресса.</p></div></header>
+          <div class="product-settings-body">
+            <div class="product-setting-row">
+              <div class="product-setting-copy"><strong data-copy-ru="Экспорт данных" data-copy-kk="Деректерді экспорттау">Экспорт данных</strong><small data-copy-ru="Скачать все локальные данные MathLogic без отправки на сервер." data-copy-kk="MathLogic жергілікті деректерін серверге жібермей жүктеп алу.">Скачать все локальные данные MathLogic без отправки на сервер.</small></div>
+              <button class="axis-button axis-button-outline" id="export-data" type="button" data-copy-ru="Скачать JSON" data-copy-kk="JSON жүктеу">Скачать JSON</button>
             </div>
           </div>
         </section>
 
-        <!-- ==================== ОБУЧЕНИЕ ==================== -->
-        <section id="section-learning" class="settings-section reveal">
-          <div class="settings-card">
-            <div class="flex items-center gap-3 mb-6 pb-5 border-b border-slate-200/50">
-              <div class="section-icon-wrap bg-amber-100 text-amber-600">📚</div>
-              <div>
-                <h2 class="font-head font-bold text-lg text-slate-900">Обучение</h2>
-                <p class="text-xs font-medium text-slate-400">Персональные настройки</p>
-              </div>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Ежедневная цель</span>
-                <span>Количество уроков в день</span>
-              </div>
-              <div class="flex items-center gap-3">
-                <button class="option-btn" onclick="adjustGoal(-1)">−</button>
-                <span class="font-head font-extrabold text-xl text-slate-900 w-8 text-center" id="daily-goal-value">3</span>
-                <button class="option-btn" onclick="adjustGoal(1)">+</button>
-              </div>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Напоминания</span>
-                <span>Ежедневные уведомления о занятиях</span>
-              </div>
-              <div class="toggle active" id="toggle-reminders" role="switch" aria-checked="true" tabindex="0"></div>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Автосохранение</span>
-                <span>Автоматически сохранять прогресс</span>
-              </div>
-              <div class="toggle active" id="toggle-autosave" role="switch" aria-checked="true" tabindex="0"></div>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Показывать решения</span>
-                <span>Когда отображать правильный ответ</span>
-              </div>
-              <div class="flex gap-2" id="solutions-options">
-                <button class="option-btn" data-mode="immediate" onclick="setSolutionsMode('immediate')">Сразу</button>
-                <button class="option-btn active" data-mode="after_answer" onclick="setSolutionsMode('after_answer')">После ответа</button>
-              </div>
-            </div>
-          </div>
+        <section class="product-settings-panel danger reveal" data-settings-section="data">
+          <header class="product-settings-panel-header"><span class="product-settings-icon">!</span><div><h2 data-copy-ru="Сброс прогресса" data-copy-kk="Оқу барысын өшіру">Сброс прогресса</h2><p data-copy-ru="Удаляет результаты и сохранённые шаги, но оставляет профиль, язык и тему." data-copy-kk="Нәтижелер мен сақталған қадамдарды жояды, бірақ профиль, тіл және тақырып қалады.">Удаляет результаты и сохранённые шаги, но оставляет профиль, язык и тему.</p></div></header>
+          <div class="product-settings-body"><div class="product-setting-row"><div class="product-setting-copy"><strong data-copy-ru="Учебные данные" data-copy-kk="Оқу деректері">Учебные данные</strong><small id="progress-summary">—</small></div><button class="axis-button product-danger-button" id="reset-progress" type="button" data-copy-ru="Сбросить прогресс" data-copy-kk="Оқу барысын өшіру">Сбросить прогресс</button></div></div>
         </section>
-
-        <!-- ==================== УВЕДОМЛЕНИЯ ==================== -->
-        <section id="section-notifications" class="settings-section reveal">
-          <div class="settings-card">
-            <div class="flex items-center gap-3 mb-6 pb-5 border-b border-slate-200/50">
-              <div class="section-icon-wrap bg-sky-100 text-sky-600">🔔</div>
-              <div>
-                <h2 class="font-head font-bold text-lg text-slate-900">Уведомления</h2>
-                <p class="text-xs font-medium text-slate-400">Настройка оповещений</p>
-              </div>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Push-уведомления</span>
-                <span>Браузерные уведомления о прогрессе</span>
-              </div>
-              <div class="toggle" id="toggle-push" role="switch" aria-checked="false" tabindex="0"></div>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Email-уведомления</span>
-                <span>Письма о новых уроках и напоминания</span>
-              </div>
-              <div class="toggle active" id="toggle-email" role="switch" aria-checked="true" tabindex="0"></div>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Звуковые эффекты</span>
-                <span>Звуки при проверке ответов</span>
-              </div>
-              <div class="toggle active" id="toggle-sound" role="switch" aria-checked="true" tabindex="0"></div>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Анимации</span>
-                <span>Визуальные эффекты интерфейса</span>
-              </div>
-              <div class="toggle active" id="toggle-animations" role="switch" aria-checked="true" tabindex="0"></div>
-            </div>
-          </div>
-        </section>
-
-        <!-- ==================== БЕЗОПАСНОСТЬ ==================== -->
-        <section id="section-security" class="settings-section reveal">
-          <div class="settings-card">
-            <div class="flex items-center gap-3 mb-6 pb-5 border-b border-slate-200/50">
-              <div class="section-icon-wrap bg-rose-100 text-rose-600">🔒</div>
-              <div>
-                <h2 class="font-head font-bold text-lg text-slate-900">Безопасность</h2>
-                <p class="text-xs font-medium text-slate-400">Защита аккаунта</p>
-              </div>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Текущий пароль</span>
-                <span>Последнее изменение: 3 месяца назад</span>
-              </div>
-              <button class="option-btn" onclick="showToast('Функция временно недоступна', 'info')">Изменить</button>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Двухфакторная аутентификация</span>
-                <span>Дополнительный уровень защиты</span>
-              </div>
-              <button class="option-btn" onclick="showToast('Функция временно недоступна', 'info')">Настроить</button>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Сессии</span>
-                <span>Активных сессий: 1</span>
-              </div>
-              <button class="option-btn" onclick="showToast('Функция временно недоступна', 'info')">Управлять</button>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span style="color:#EF4444;">Удалить аккаунт</span>
-                <span>Это действие необратимо</span>
-              </div>
-              <button class="danger-btn-solid" onclick="openModal('delete-account')">Удалить</button>
-            </div>
-          </div>
-        </section>
-
-        <!-- ==================== ДАННЫЕ ==================== -->
-        <section id="section-data" class="settings-section reveal">
-          <div class="settings-card">
-            <div class="flex items-center gap-3 mb-6 pb-5 border-b border-slate-200/50">
-              <div class="section-icon-wrap bg-cyan-100 text-cyan-600">💾</div>
-              <div>
-                <h2 class="font-head font-bold text-lg text-slate-900">Данные</h2>
-                <p class="text-xs font-medium text-slate-400">Управление данными</p>
-              </div>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Экспорт прогресса</span>
-                <span>Скачать все данные в JSON</span>
-              </div>
-              <button class="option-btn" onclick="exportData()">📥 Скачать</button>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Очистить данные</span>
-                <span>Удалить все настройки, кроме аккаунта</span>
-              </div>
-              <button class="danger-btn" onclick="openModal('clear-data')">Очистить</button>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Сбросить прогресс</span>
-                <span>Удалить весь прогресс обучения</span>
-              </div>
-              <button class="danger-btn" onclick="openModal('reset-progress')">Сбросить</button>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Политика конфиденциальности</span>
-                <span>Как мы обрабатываем ваши данные</span>
-              </div>
-              <a href="#" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors" onclick="showToast('Страница временно недоступна', 'info'); return false;">Открыть</a>
-            </div>
-          </div>
-        </section>
-
-        <!-- ==================== О ПРОЕКТЕ ==================== -->
-        <section id="section-about" class="settings-section reveal">
-          <div class="settings-card">
-            <div class="flex items-center gap-3 mb-6 pb-5 border-b border-slate-200/50">
-              <div class="section-icon-wrap bg-indigo-100 text-indigo-600">ℹ️</div>
-              <div>
-                <h2 class="font-head font-bold text-lg text-slate-900">О проекте</h2>
-                <p class="text-xs font-medium text-slate-400">math·logic v2.4.1</p>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6" id="about-stats"></div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Версия</span>
-                <span>Текущая версия приложения</span>
-              </div>
-              <span class="text-sm font-bold text-slate-900 font-mono">2.4.1</span>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Автор</span>
-                <span>Разработчик проекта</span>
-              </div>
-              <span class="text-sm font-bold text-slate-900">Нұрбол Абдазов</span>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>GitHub</span>
-                <span>Исходный код проекта</span>
-              </div>
-              <a href="https://github.com" target="_blank" class="text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors" onclick="showToast('Ссылка временно недоступна', 'info'); return false;">Открыть →</a>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
-                <span>Лицензия</span>
-                <span>Условия использования</span>
-              </div>
-              <span class="text-sm font-bold text-slate-500">MIT</span>
-            </div>
-          </div>
-        </section>
-
-        <!-- LOGOUT -->
-        <div class="flex justify-center pt-4 reveal">
-          <button class="danger-btn-solid flex items-center gap-2.5 px-8 py-3.5 rounded-2xl shadow-lg shadow-red-600/15 text-sm" onclick="openModal('logout')">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-            Выйти из аккаунта
-          </button>
-        </div>
-
       </div>
     </div>
+
+    <footer class="product-footer"><a class="axis-brand" href="index.html"><span class="axis-brand-mark"><i></i><i></i></span><span>MathLogic</span></a><div class="product-footer-links"><a href="dashboard.html" data-copy-ru="Обучение" data-copy-kk="Оқу">Обучение</a><a href="profile.html" data-copy-ru="Учебный журнал" data-copy-kk="Оқу журналы">Учебный журнал</a></div></footer>
   </main>
 
-  <!-- ==================== MODALS ==================== -->
-  <div class="modal-overlay" id="modal-overlay">
-    <div class="modal-box text-center" id="modal-box">
-      <div id="modal-content"></div>
-    </div>
+  <div class="axis-modal" id="reset-modal" hidden role="dialog" aria-modal="true" aria-labelledby="reset-title">
+    <div class="axis-modal-card"><span class="lesson-error-mark" aria-hidden="true">!</span><h2 id="reset-title" data-copy-ru="Сбросить учебный прогресс?" data-copy-kk="Оқу барысын өшіру керек пе?">Сбросить учебный прогресс?</h2><p data-copy-ru="Будут удалены завершённые уроки, незавершённые сессии и история занятий. Отменить это действие нельзя." data-copy-kk="Аяқталған сабақтар, аяқталмаған сессиялар және оқу тарихы жойылады. Бұл әрекетті қайтару мүмкін емес.">Будут удалены завершённые уроки, незавершённые сессии и история занятий. Отменить это действие нельзя.</p><div class="axis-modal-actions"><button class="axis-button axis-button-outline" id="cancel-reset" type="button" data-copy-ru="Отмена" data-copy-kk="Бас тарту">Отмена</button><button class="axis-button product-danger-button" id="confirm-reset" type="button" data-copy-ru="Сбросить" data-copy-kk="Өшіру">Сбросить</button></div></div>
   </div>
-
-  <!-- ==================== TOAST CONTAINER ==================== -->
-  <div class="toast-container" id="toast-container"></div>
+  <div class="axis-toast" id="settings-toast" role="status" aria-live="polite"></div>
 
   <script src="js/storage.js"></script>
-  <script src="js/events.js"></script>
   <script src="js/data.js"></script>
-  <script src="js/ui.js"></script>
-  <script src="js/navigation.js"></script>
-  <script src="js/utils.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/learning.js"></script>
   <script src="js/animations.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/site.js"></script>
   <script src="js/settings.js"></script>
 </body>
 </html>
