@@ -3,83 +3,63 @@
 
   function lang() { return ML.getLang(); }
   function copy(ru, kk) { return lang() === 'kk' ? kk : ru; }
-  function escapeHtml(value) {
-    return String(value === undefined || value === null ? '' : value)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  }
-  function localize(record, key) { return I18N.localize(record, key, lang()); }
-
-  function applyTheme() {
-    ML.applySettings();
-    document.querySelectorAll('[data-theme-toggle]').forEach(function(button) {
-      button.textContent = document.documentElement.dataset.theme === 'dark' ? '◑' : '◐';
-    });
-  }
 
   function renderHeader() {
-    document.querySelectorAll('[data-language-choice]').forEach(function(button) {
-      button.setAttribute('aria-pressed', String(button.dataset.languageChoice === lang()));
-    });
     var account = document.getElementById('home-account');
     var primary = document.getElementById('home-primary');
     var headerPrimary = document.getElementById('home-header-primary');
     if (ML.isLoggedIn()) {
       account.href = 'profile.html';
       account.textContent = copy('Профиль', 'Профиль');
-      primary.querySelector('span:last-child').textContent = copy('Продолжить обучение', 'Оқуды жалғастыру');
+      primary.textContent = copy('Продолжить обучение', 'Оқуды жалғастыру');
       headerPrimary.textContent = copy('Продолжить', 'Жалғастыру');
     } else {
       account.href = 'login.html';
       account.textContent = copy('Войти', 'Кіру');
-      primary.querySelector('span:last-child').textContent = copy('Открыть курс', 'Курсты ашу');
-      headerPrimary.textContent = copy('Начать', 'Бастау');
+      primary.textContent = copy('Начать обучение', 'Оқуды бастау');
+      headerPrimary.textContent = copy('Начать обучение', 'Оқуды бастау');
     }
   }
 
-  function renderSubjects() {
-    var root = document.getElementById('home-subjects');
-    root.innerHTML = Learning.getSubjects().map(function(subject) {
-      var name = I18N.t('subjects.' + subject.key, lang()) || localize(subject, 'name') || subject.name;
-      var lessonLabel = copy('уроков в маршруте', 'сабақ бағытта');
-      return '<article class="product-subject-card" style="--subject-color:' + escapeHtml(subject.mainColor) + '">' +
-        '<span class="product-subject-icon" aria-hidden="true">' + subject.icon + '</span><span><strong>' + escapeHtml(name) + '</strong>' +
-        '<small>' + subject.completedLessons + ' / ' + subject.totalLessons + ' ' + escapeHtml(lessonLabel) + '</small></span>' +
-        '<b class="mono">' + subject.progress + '%</b></article>';
-    }).join('');
+  function showDemoFeedback(choice) {
+    var feedback = document.getElementById('home-demo-feedback');
+    var buttons = document.querySelectorAll('[data-demo-choice]');
+    buttons.forEach(function(button) {
+      button.classList.remove('is-selected', 'is-correct', 'is-incorrect');
+      button.setAttribute('aria-pressed', 'false');
+    });
+    choice.classList.add('is-selected');
+    choice.setAttribute('aria-pressed', 'true');
+    feedback.hidden = false;
+
+    if (choice.dataset.demoChoice === 'correct') {
+      choice.classList.add('is-correct');
+      feedback.className = 'home-demo-feedback is-correct';
+      feedback.innerHTML = '<strong>' + copy('Верный первый шаг.', 'Дұрыс алғашқы қадам.') + '</strong><span>' + copy('У 3x и 2x одинаковая переменная часть x, поэтому можно сложить коэффициенты: 3x + 2x = 5x.', '3x пен 2x-тің айнымалы бөлігі x бірдей, сондықтан коэффициенттерді қосуға болады: 3x + 2x = 5x.') + '</span>';
+      return;
+    }
+
+    choice.classList.add('is-incorrect');
+    feedback.className = 'home-demo-feedback is-incorrect';
+    if (choice.dataset.demoChoice === 'unlike') {
+      feedback.innerHTML = '<strong>' + copy('Проверьте структуру слагаемых.', 'Қосылғыштардың құрылымын тексеріңіз.') + '</strong><span>' + copy('3x содержит переменную часть, а 5 — постоянное число. Найдите два слагаемых с одинаковой переменной частью.', '3x айнымалы бөліктен тұрады, ал 5 — тұрақты сан. Айнымалы бөлігі бірдей екі қосылғышты табыңыз.') + '</span>';
+    } else {
+      feedback.innerHTML = '<strong>' + copy('Значение x не задано.', 'x мәні берілмеген.') + '</strong><span>' + copy('Выражение можно упростить для любого x. Сначала посмотрите, какие слагаемые являются подобными.', 'Өрнекті кез келген x үшін ықшамдауға болады. Алдымен қай қосылғыштар ұқсас екенін қараңыз.') + '</span>';
+    }
   }
 
-  function renderLessonPreview() {
-    var lesson = Learning.getLesson('algebra.exponents.basics') || Learning.getNextLesson();
-    if (!lesson) return;
-    document.getElementById('home-preview-title').textContent = localize(lesson, 'title');
-    document.getElementById('home-preview-description').textContent = localize(lesson, 'description');
-    document.getElementById('home-sample-title').textContent = localize(lesson, 'title');
-    document.getElementById('home-sample-link').href = lesson.route;
-  }
-
-  function render() {
-    MathLogicSite.applyCopy();
-    applyTheme();
-    renderHeader();
-    renderSubjects();
-    renderLessonPreview();
+  function initDemo() {
+    document.querySelectorAll('[data-demo-choice]').forEach(function(button) {
+      button.setAttribute('aria-pressed', 'false');
+      button.addEventListener('click', function() { showDemoFeedback(button); });
+    });
   }
 
   function init() {
-    document.querySelectorAll('[data-language-choice]').forEach(function(button) {
-      button.addEventListener('click', function() {
-        ML.setLang(button.dataset.languageChoice);
-        render();
-      });
-    });
-    document.querySelectorAll('[data-theme-toggle]').forEach(function(button) {
-      button.addEventListener('click', function() {
-        ML.setSetting('theme', document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
-        applyTheme();
-      });
-    });
-    render();
+    ML.applySettings();
+    MathLogicSite.applyCopy();
+    renderHeader();
+    initDemo();
     if (typeof ANIME !== 'undefined' && ANIME.initPageTransitions) ANIME.initPageTransitions();
   }
 

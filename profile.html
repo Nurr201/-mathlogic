@@ -11,31 +11,35 @@
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/animations.css">
 </head>
-<body class="axis-app axis-product-page page-enter">
-  <header class="product-header">
-    <div class="product-header-inner">
-      <a class="axis-brand" href="index.html" aria-label="MathLogic"><span class="axis-brand-mark"><i></i><i></i></span><span>MathLogic</span></a>
-      <nav class="product-nav" aria-label="Основная навигация">
-        <a href="dashboard.html" data-copy-ru="Обучение" data-copy-kk="Оқу">Обучение</a>
-        <a href="profile.html" aria-current="page" data-copy-ru="Учебный журнал" data-copy-kk="Оқу журналы">Учебный журнал</a>
-        <a href="settings.html" data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</a>
-      </nav>
-      <div class="product-header-actions">
+<body class="axis-app axis-product-page axis-dashboard-page axis-workspace-page page-enter">
+  <aside class="dashboard-rail workspace-rail">
+    <a class="axis-brand" href="index.html" aria-label="MathLogic"><span class="axis-brand-mark"><i></i><i></i></span><span>MathLogic</span></a>
+    <nav class="dashboard-nav" aria-label="Основная навигация">
+      <a href="dashboard.html"><span class="nav-glyph">◇</span><span data-copy-ru="Обучение" data-copy-kk="Оқу">Обучение</span></a>
+      <a href="profile.html" aria-current="page"><span class="nav-glyph">△</span><span data-copy-ru="Учебный журнал" data-copy-kk="Оқу журналы">Учебный журнал</span></a>
+      <a href="#profile-overview"><span class="nav-glyph">○</span><span data-copy-ru="Профиль" data-copy-kk="Профиль">Профиль</span></a>
+      <a href="settings.html"><span class="nav-glyph">□</span><span data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</span></a>
+    </nav>
+    <div class="workspace-rail-note">
+      <span class="axis-eyebrow" data-copy-ru="Рабочее пространство" data-copy-kk="Жұмыс кеңістігі">Рабочее пространство</span>
+      <p data-copy-ru="Прогресс и история сохраняются только из реальных уроков." data-copy-kk="Оқу барысы мен тарих тек нақты сабақтардан сақталады.">Прогресс и история сохраняются только из реальных уроков.</p>
+    </div>
+    <div class="dashboard-rail-footer">
+      <div class="rail-controls">
         <div class="axis-segment" role="group" aria-label="Язык"><button type="button" data-language-choice="ru">РУС</button><button type="button" data-language-choice="kk">ҚАЗ</button></div>
-        <button class="axis-icon-button" type="button" data-theme-toggle aria-label="Изменить тему">◐</button>
-        <a class="axis-icon-button product-header-compact" href="dashboard.html" aria-label="К обучению">←</a>
-        <a class="axis-button axis-button-outline" href="dashboard.html" data-copy-ru="К обучению" data-copy-kk="Оқуға өту">К обучению</a>
+        <div class="axis-segment" role="group" aria-label="Тема"><button type="button" data-theme-toggle aria-label="Изменить тему">◐</button></div>
       </div>
     </div>
-  </header>
+  </aside>
 
-  <main class="product-main">
+  <main class="dashboard-main workspace-main">
+   <div class="product-main">
     <header class="product-page-heading reveal">
       <div><span class="axis-eyebrow" data-copy-ru="Личный раздел" data-copy-kk="Жеке бөлім">Личный раздел</span><h1 data-copy-ru="Учебный журнал" data-copy-kk="Оқу журналы">Учебный журнал</h1></div>
       <p data-copy-ru="Только фактические занятия, сохранённый прогресс и доступные уроки." data-copy-kk="Тек нақты сабақтар, сақталған оқу барысы және қолжетімді сабақтар.">Только фактические занятия, сохранённый прогресс и доступные уроки.</p>
     </header>
 
-    <section class="product-profile-hero reveal" aria-labelledby="profile-name">
+    <section class="product-profile-hero reveal" id="profile-overview" aria-labelledby="profile-name">
       <div class="product-avatar" id="profile-avatar">М</div>
       <div class="product-profile-copy">
         <span class="axis-eyebrow" data-copy-ru="Профиль ученика" data-copy-kk="Оқушы профилі">Профиль ученика</span>
@@ -83,8 +87,15 @@
       <a class="axis-button axis-button-gold" href="settings.html" data-copy-ru="Открыть настройки" data-copy-kk="Баптауларды ашу">Открыть настройки</a>
     </section>
 
-    <footer class="product-footer"><a class="axis-brand" href="index.html"><span class="axis-brand-mark"><i></i><i></i></span><span>MathLogic</span></a><div class="product-footer-links"><a href="dashboard.html" data-copy-ru="Обучение" data-copy-kk="Оқу">Обучение</a><a href="settings.html" data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</a></div></footer>
+   </div>
   </main>
+
+  <nav class="dashboard-mobile-tabs workspace-mobile-tabs" aria-label="Мобильная навигация">
+    <a href="dashboard.html"><span>◇</span><small data-copy-ru="Обучение" data-copy-kk="Оқу">Обучение</small></a>
+    <a href="profile.html" aria-current="page"><span>△</span><small data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</small></a>
+    <a href="#profile-overview"><span>○</span><small data-copy-ru="Профиль" data-copy-kk="Профиль">Профиль</small></a>
+    <a href="settings.html"><span>□</span><small data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</small></a>
+  </nav>
 
   <script src="js/storage.js"></script>
   <script src="js/data.js"></script>
