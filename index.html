@@ -6,137 +6,91 @@
   <title>MathLogic — математика с пониманием</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Onest:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/components.css">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/editorial.css">
   <link rel="stylesheet" href="css/animations.css">
 </head>
-<body class="axis-app axis-product-page axis-public-page page-enter">
-  <header class="product-header public-header">
-    <div class="product-header-inner">
-      <a class="axis-brand" href="index.html" aria-label="MathLogic">
-        <span class="axis-brand-mark"><i></i><i></i></span><span>MathLogic</span>
-      </a>
-      <nav class="product-nav" aria-label="Основная навигация">
-        <a href="#method" data-copy-ru="Как это работает" data-copy-kk="Қалай жұмыс істейді">Как это работает</a>
-        <a href="#program" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a>
+<body class="v7-app">
+  <header class="v7-nav">
+    <div class="v7-nav-inner">
+      <a class="v7-brand" href="index.html"><span class="v7-mark"></span><span>MathLogic</span></a>
+      <nav class="v7-links" aria-label="Основная навигация">
+        <a href="#method" data-copy-ru="Метод" data-copy-kk="Әдіс">Метод</a>
+        <a href="program.html" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a>
         <a href="#about" data-copy-ru="О проекте" data-copy-kk="Жоба туралы">О проекте</a>
       </nav>
-      <div class="product-header-actions public-header-actions">
-        <a class="public-login-link" id="home-account" href="login.html" data-copy-ru="Войти" data-copy-kk="Кіру">Войти</a>
-        <a class="axis-button axis-button-gold" id="home-header-primary" href="dashboard.html" data-copy-ru="Начать обучение" data-copy-kk="Оқуды бастау">Начать обучение</a>
+      <div class="v7-nav-actions">
+        <a class="v7-button ghost" id="home-account" href="login.html" data-copy-ru="Войти" data-copy-kk="Кіру">Войти</a>
       </div>
     </div>
   </header>
 
-  <main class="public-main">
-    <section class="home-hero-v2 reveal" aria-labelledby="home-title">
-      <div class="home-hero-copy">
-        <div class="hero-kicker mono" data-copy-ru="Математика 7–9 классов · RU / KK" data-copy-kk="7–9 сынып математикасы · RU / KK">Математика 7–9 классов · RU / KK</div>
-        <h1 id="home-title" data-copy-ru="Не запоминать шаги. Понимать, почему они работают." data-copy-kk="Қадамдарды жаттамау. Олардың неге жұмыс істейтінін түсіну.">Не запоминать шаги. Понимать, почему они работают.</h1>
-        <p data-copy-ru="MathLogic связывает объяснение, разобранный пример и самостоятельное действие в одну последовательность — чтобы правило становилось способом рассуждать." data-copy-kk="MathLogic түсіндіруді, талданған мысалды және өз бетінше әрекетті бірізділікке біріктіреді — ереже ойлау тәсіліне айналуы үшін.">MathLogic связывает объяснение, разобранный пример и самостоятельное действие в одну последовательность — чтобы правило становилось способом рассуждать.</p>
-        <div class="home-hero-actions">
-          <a class="axis-button axis-button-gold" id="home-primary" href="dashboard.html" data-copy-ru="Начать обучение" data-copy-kk="Оқуды бастау">Начать обучение</a>
-          <a class="home-demo-link" href="#live-demo" data-copy-ru="Посмотреть демонстрацию ↓" data-copy-kk="Демонстрацияны көру ↓">Посмотреть демонстрацию ↓</a>
+  <main class="v7-wrap">
+    <section class="v7-landing-hero v7-reveal">
+      <div>
+        <span class="v7-eyebrow" data-copy-ru="Платформа для изучения математики" data-copy-kk="Математиканы оқуға арналған платформа">Платформа для изучения математики</span>
+        <h1 data-copy-ru="Разобраться в теме и увидеть, как она связана с другими." data-copy-kk="Тақырыпты түсініп, оның басқа тақырыптармен байланысын көру.">Разобраться в теме и увидеть, как она связана с другими.</h1>
+        <p class="v7-lede" data-copy-ru="В MathLogic есть подробные уроки, карта тем, практика и журнал обучения. Вы выбираете направление, читаете объяснение и возвращаетесь к нему, когда нужно." data-copy-kk="MathLogic ішінде толық сабақтар, тақырыптар картасы, жаттығу және оқу журналы бар. Бағытты таңдап, түсіндірмені оқып, қажет кезде оған қайта ораласыз.">В MathLogic есть подробные уроки, карта тем, практика и журнал обучения. Вы выбираете направление, читаете объяснение и возвращаетесь к нему, когда нужно.</p>
+        <div class="v7-actions">
+          <a class="v7-button primary" id="home-primary" href="lesson.html?id=algebra.exponents.basics" data-copy-ru="Начать с урока" data-copy-kk="Сабақтан бастау">Начать с урока</a>
+          <a class="v7-button ghost" href="program.html" data-copy-ru="Посмотреть разделы" data-copy-kk="Бөлімдерді көру">Посмотреть разделы</a>
+        </div>
+        <div class="v7-domains" aria-label="Направления программы">
+          <a class="v7-domain" href="program.html?subject=algebra" data-copy-ru="Алгебра" data-copy-kk="Алгебра">Алгебра</a>
+          <a class="v7-domain" href="program.html?subject=geometry" data-copy-ru="Геометрия" data-copy-kk="Геометрия">Геометрия</a>
+          <a class="v7-domain" href="program.html?subject=algebra" data-copy-ru="Функции" data-copy-kk="Функциялар">Функции</a>
+          <a class="v7-domain" href="program.html?subject=logic" data-copy-ru="Логика" data-copy-kk="Логика">Логика</a>
+          <a class="v7-domain" href="program.html?subject=logic" data-copy-ru="Вероятность" data-copy-kk="Ықтималдық">Вероятность</a>
+          <a class="v7-domain" href="program.html" data-copy-ru="Подготовка к ЕНТ" data-copy-kk="ҰБТ-ға дайындық">Подготовка к ЕНТ</a>
         </div>
       </div>
 
-      <div class="home-math-visual" aria-label="Последовательное преобразование выражения">
-        <div class="home-math-label mono" data-copy-ru="ЛОГИКА ПРЕОБРАЗОВАНИЯ" data-copy-kk="ТҮРЛЕНДІРУ ЛОГИКАСЫ">ЛОГИКА ПРЕОБРАЗОВАНИЯ</div>
-        <div class="home-transform-step is-source">
-          <span class="home-step-index mono">01</span>
-          <strong>2(x + 3) + x</strong>
-          <small data-copy-ru="Исходное выражение" data-copy-kk="Бастапқы өрнек">Исходное выражение</small>
+      <article class="v7-product-board" aria-label="Что есть внутри MathLogic">
+        <span class="v7-eyebrow" data-copy-ru="Что есть внутри" data-copy-kk="Ішінде не бар">Что есть внутри</span>
+        <h2 data-copy-ru="Объяснения, темы и место для продолжения" data-copy-kk="Түсіндірмелер, тақырыптар және жалғастыратын орын">Объяснения, темы и место для продолжения</h2>
+        <p data-copy-ru="Каждая тема собрана в последовательный урок. После создания локального профиля сохраняются текущий урок и учебная история." data-copy-kk="Әр тақырып бірізді сабаққа жинақталған. Жергілікті профиль жасалғаннан кейін ағымдағы сабақ пен оқу тарихы сақталады.">Каждая тема собрана в последовательный урок. После создания локального профиля сохраняются текущий урок и учебная история.</p>
+        <div class="v7-board-grid">
+          <section class="v7-board-panel">
+            <h3 data-copy-ru="Как проходит обучение" data-copy-kk="Оқу қалай өтеді">Как проходит обучение</h3>
+            <p data-copy-ru="Читаем объяснение, разбираем пример, проверяем себя и применяем идею." data-copy-kk="Түсіндірмені оқимыз, мысалды талдаймыз, өзімізді тексеріп, идеяны қолданамыз.">Читаем объяснение, разбираем пример, проверяем себя и применяем идею.</p>
+            <div class="v7-path"><span data-copy-ru="Объяснение" data-copy-kk="Түсіндіру">Объяснение</span><i>→</i><span data-copy-ru="Пример" data-copy-kk="Мысал">Пример</span><i>→</i><span data-copy-ru="Практика" data-copy-kk="Жаттығу">Практика</span></div>
+          </section>
+          <section class="v7-board-panel">
+            <h3 data-copy-ru="Что можно открыть" data-copy-kk="Нені ашуға болады">Что можно открыть</h3>
+            <p data-copy-ru="Направления и темы собраны по содержательным связям." data-copy-kk="Бағыттар мен тақырыптар мазмұндық байланыстар бойынша жиналған.">Направления и темы собраны по содержательным связям.</p>
+            <div class="v7-path"><span data-copy-ru="Алгебра" data-copy-kk="Алгебра">Алгебра</span><span data-copy-ru="Функции" data-copy-kk="Функциялар">Функции</span><span data-copy-ru="Геометрия" data-copy-kk="Геометрия">Геометрия</span></div>
+          </section>
         </div>
-        <div class="home-transform-rule"><span></span><p data-copy-ru="Умножаем 2 на каждое слагаемое в скобках" data-copy-kk="2 санын жақшадағы әр қосылғышқа көбейтеміз">Умножаем 2 на каждое слагаемое в скобках</p></div>
-        <div class="home-transform-step">
-          <span class="home-step-index mono">02</span>
-          <strong><mark>2x</mark> + 6 + <mark>x</mark></strong>
-          <small data-copy-ru="Подобные слагаемые имеют одинаковую переменную часть" data-copy-kk="Ұқсас қосылғыштардың айнымалы бөлігі бірдей">Подобные слагаемые имеют одинаковую переменную часть</small>
+        <div class="v7-actions"><a class="v7-button primary" href="lesson.html?id=algebra.exponents.basics" data-copy-ru="Открыть урок" data-copy-kk="Сабақты ашу">Открыть урок</a><span class="v7-eyebrow" data-copy-ru="без регистрации · реальный урок" data-copy-kk="тіркелусіз · нақты сабақ">без регистрации · реальный урок</span></div>
+      </article>
+    </section>
+
+    <section class="v7-band" id="method">
+      <div class="v7-two">
+        <div><span class="v7-eyebrow" data-copy-ru="Как устроен MathLogic" data-copy-kk="MathLogic қалай құрылған">Как устроен MathLogic</span><h2 data-copy-ru="Всё нужное для спокойного изучения темы" data-copy-kk="Тақырыпты асықпай оқуға қажет нәрсенің бәрі">Всё нужное для спокойного изучения темы</h2></div>
+        <div>
+          <p class="v7-copy" data-copy-ru="Уроки объясняют идею подробно, программа помогает выбрать следующую тему, а журнал хранит реальные завершённые и начатые занятия." data-copy-kk="Сабақтар идеяны толық түсіндіреді, бағдарлама келесі тақырыпты таңдауға көмектеседі, ал журнал нақты аяқталған және басталған сабақтарды сақтайды.">Уроки объясняют идею подробно, программа помогает выбрать следующую тему, а журнал хранит реальные завершённые и начатые занятия.</p>
+          <div class="v7-method">
+            <div><span class="v7-eyebrow" data-copy-ru="Уроки" data-copy-kk="Сабақтар">Уроки</span><h3 data-copy-ru="Читайте и разбирайте" data-copy-kk="Оқып, талдаңыз">Читайте и разбирайте</h3><p data-copy-ru="Текст, примеры и вопросы по ходу объяснения." data-copy-kk="Түсіндіру барысындағы мәтін, мысалдар және сұрақтар.">Текст, примеры и вопросы по ходу объяснения.</p></div>
+            <div><span class="v7-eyebrow" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</span><h3 data-copy-ru="Выбирайте направление" data-copy-kk="Бағытты таңдаңыз">Выбирайте направление</h3><p data-copy-ru="Темы собраны по содержательным связям." data-copy-kk="Тақырыптар мазмұндық байланыстар бойынша жиналған.">Темы собраны по содержательным связям.</p></div>
+            <div><span class="v7-eyebrow" data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</span><h3 data-copy-ru="Возвращайтесь к урокам" data-copy-kk="Сабақтарға оралыңыз">Возвращайтесь к урокам</h3><p data-copy-ru="Последние занятия и сохранённый прогресс." data-copy-kk="Соңғы сабақтар мен сақталған оқу барысы.">Последние занятия и сохранённый прогресс.</p></div>
+          </div>
         </div>
-        <div class="home-transform-rule"><span></span><p data-copy-ru="Объединяем коэффициенты: 2 + 1" data-copy-kk="Коэффициенттерді біріктіреміз: 2 + 1">Объединяем коэффициенты: 2 + 1</p></div>
-        <div class="home-transform-step is-result">
-          <span class="home-step-index mono">03</span>
-          <strong>3x + 6</strong>
-          <small data-copy-ru="Каждое действие обосновано структурой выражения" data-copy-kk="Әр әрекет өрнектің құрылымымен негізделген">Каждое действие обосновано структурой выражения</small>
-        </div>
-        <div class="home-transform-feedback"><span>✓</span><p data-copy-ru="Верно не потому, что «так запомнили», а потому что свойства сохраняют значение выражения." data-copy-kk="Бұл «солай жаттағандықтан» емес, қасиеттер өрнектің мәнін сақтайтындықтан дұрыс.">Верно не потому, что «так запомнили», а потому что свойства сохраняют значение выражения.</p></div>
       </div>
     </section>
 
-    <section class="home-problem reveal" id="about" aria-labelledby="problem-title">
-      <div class="home-section-intro">
-        <span class="axis-eyebrow" data-copy-ru="Зачем MathLogic" data-copy-kk="MathLogic не үшін">Зачем MathLogic</span>
-        <h2 id="problem-title" data-copy-ru="Правило полезно только тогда, когда ученик видит, где его применять" data-copy-kk="Ереже оқушы оны қай жерде қолдану керегін көргенде ғана пайдалы">Правило полезно только тогда, когда ученик видит, где его применять</h2>
-      </div>
-      <div class="home-understanding-path" aria-label="Путь от правила к самостоятельному применению">
-        <article><span class="mono">01</span><h3 data-copy-ru="Запомнить" data-copy-kk="Есте сақтау">Запомнить</h3><p data-copy-ru="Узнать формулу и повторить знакомый образец." data-copy-kk="Формуланы біліп, таныс үлгіні қайталау.">Узнать формулу и повторить знакомый образец.</p></article>
-        <i aria-hidden="true">→</i>
-        <article><span class="mono">02</span><h3 data-copy-ru="Увидеть структуру" data-copy-kk="Құрылымды көру">Увидеть структуру</h3><p data-copy-ru="Понять, какие части выражения связаны и почему допустим следующий шаг." data-copy-kk="Өрнектің қай бөліктері байланысты екенін және келесі қадамның неге дұрыс екенін түсіну.">Понять, какие части выражения связаны и почему допустим следующий шаг.</p></article>
-        <i aria-hidden="true">→</i>
-        <article><span class="mono">03</span><h3 data-copy-ru="Применить" data-copy-kk="Қолдану">Применить</h3><p data-copy-ru="Самостоятельно выбрать способ в задаче, которая не повторяет пример." data-copy-kk="Мысалды қайталамайтын есепте тәсілді өз бетінше таңдау.">Самостоятельно выбрать способ в задаче, которая не повторяет пример.</p></article>
+    <section class="v7-band" id="about">
+      <div class="v7-two">
+        <div><span class="v7-eyebrow" data-copy-ru="Локальный профиль" data-copy-kk="Жергілікті профиль">Локальный профиль</span><h2 data-copy-ru="Продолжайте с того же места" data-copy-kk="Сол жерден жалғастырыңыз">Продолжайте с того же места</h2></div>
+        <div><p class="v7-copy" data-copy-ru="MathLogic пока хранит профиль и учебные данные только в этом браузере. Серверной синхронизации нет — мы говорим об этом прямо." data-copy-kk="MathLogic әзірге профиль мен оқу деректерін тек осы браузерде сақтайды. Серверлік синхрондау жоқ — бұл туралы ашық айтамыз.">MathLogic пока хранит профиль и учебные данные только в этом браузере. Серверной синхронизации нет — мы говорим об этом прямо.</p><div class="v7-actions"><a class="v7-button primary" href="register.html" data-copy-ru="Создать профиль" data-copy-kk="Профиль жасау">Создать профиль</a><a class="v7-button text" href="login.html" data-copy-ru="Уже есть профиль" data-copy-kk="Профиль бар">Уже есть профиль</a></div></div>
       </div>
     </section>
-
-    <section class="home-method reveal" id="method" aria-labelledby="method-title">
-      <div class="home-section-intro">
-        <span class="axis-eyebrow" data-copy-ru="Метод MathLogic" data-copy-kk="MathLogic әдісі">Метод MathLogic</span>
-        <h2 id="method-title" data-copy-ru="Один маршрут от объяснения к точной обратной связи" data-copy-kk="Түсіндіруден нақты кері байланысқа дейінгі бір бағыт">Один маршрут от объяснения к точной обратной связи</h2>
-        <p data-copy-ru="Новая идея не отделена от практики: после каждого смыслового шага ученик делает собственное действие." data-copy-kk="Жаңа идея жаттығудан бөлек емес: әр мағыналық қадамнан кейін оқушы өзі әрекет етеді.">Новая идея не отделена от практики: после каждого смыслового шага ученик делает собственное действие.</p>
-      </div>
-      <ol class="home-method-route">
-        <li><span class="home-method-node mono">01</span><div><h3 data-copy-ru="Понятное объяснение" data-copy-kk="Түсінікті түсіндіру">Понятное объяснение</h3><p data-copy-ru="Сначала идея и смысл обозначений, затем формальное правило." data-copy-kk="Алдымен идея мен белгілеулердің мағынасы, содан кейін формалды ереже.">Сначала идея и смысл обозначений, затем формальное правило.</p></div></li>
-        <li><span class="home-method-node mono">02</span><div><h3 data-copy-ru="Разобранный пример" data-copy-kk="Талданған мысал">Разобранный пример</h3><p data-copy-ru="Каждый переход сопровождается причиной, а не только вычислением." data-copy-kk="Әр түрлендіру тек есептеумен емес, себебімен бірге беріледі.">Каждый переход сопровождается причиной, а не только вычислением.</p></div></li>
-        <li><span class="home-method-node mono">03</span><div><h3 data-copy-ru="Самостоятельный шаг" data-copy-kk="Өзіндік қадам">Самостоятельный шаг</h3><p data-copy-ru="Ученик выбирает или выполняет следующий шаг до готового решения." data-copy-kk="Оқушы дайын шешімді көрмей тұрып келесі қадамды таңдайды немесе орындайды.">Ученик выбирает или выполняет следующий шаг до готового решения.</p></div></li>
-        <li><span class="home-method-node mono">04</span><div><h3 data-copy-ru="Точная обратная связь" data-copy-kk="Нақты кері байланыс">Точная обратная связь</h3><p data-copy-ru="Ответ объясняет конкретную ошибку и направляет к повторной попытке." data-copy-kk="Жауап нақты қатені түсіндіріп, қайта әрекет жасауға бағыттайды.">Ответ объясняет конкретную ошибку и направляет к повторной попытке.</p></div></li>
-      </ol>
-    </section>
-
-    <section class="home-live-demo reveal" id="live-demo" aria-labelledby="demo-title">
-      <div class="home-demo-copy">
-        <span class="axis-eyebrow" data-copy-ru="Попробуйте без регистрации" data-copy-kk="Тіркелмей байқап көріңіз">Попробуйте без регистрации</span>
-        <h2 id="demo-title" data-copy-ru="Какой первый шаг сохраняет смысл выражения?" data-copy-kk="Қай алғашқы қадам өрнектің мағынасын сақтайды?">Какой первый шаг сохраняет смысл выражения?</h2>
-        <p data-copy-ru="Выберите действие. Эта демонстрация работает только на странице и ничего не записывает в учебный прогресс." data-copy-kk="Әрекетті таңдаңыз. Бұл демонстрация тек осы бетте жұмыс істейді және оқу барысына ештеңе жазбайды.">Выберите действие. Эта демонстрация работает только на странице и ничего не записывает в учебный прогресс.</p>
-      </div>
-      <div class="home-demo-work">
-        <div class="home-demo-expression mono">3x + 5 + 2x</div>
-        <div class="home-demo-options" role="group" aria-labelledby="demo-title">
-          <button type="button" data-demo-choice="correct" data-copy-ru="Объединить 3x и 2x" data-copy-kk="3x пен 2x-ті біріктіру">Объединить 3x и 2x</button>
-          <button type="button" data-demo-choice="unlike" data-copy-ru="Сложить 3x и 5" data-copy-kk="3x пен 5-ті қосу">Сложить 3x и 5</button>
-          <button type="button" data-demo-choice="substitute" data-copy-ru="Подставить x = 1" data-copy-kk="x = 1 деп қою">Подставить x = 1</button>
-        </div>
-        <div class="home-demo-feedback" id="home-demo-feedback" role="status" aria-live="polite" hidden></div>
-      </div>
-    </section>
-
-    <section class="home-program reveal" id="program" aria-labelledby="program-title">
-      <div class="home-section-intro">
-        <span class="axis-eyebrow" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</span>
-        <h2 id="program-title" data-copy-ru="Четыре направления, одна культура рассуждения" data-copy-kk="Төрт бағыт, бір ойлау мәдениеті">Четыре направления, одна культура рассуждения</h2>
-      </div>
-      <div class="home-program-list">
-        <article><span class="home-program-symbol algebra">x</span><div><h3 data-copy-ru="Алгебра" data-copy-kk="Алгебра">Алгебра</h3><p data-copy-ru="Выражения, уравнения, функции и способы преобразований." data-copy-kk="Өрнектер, теңдеулер, функциялар және түрлендіру тәсілдері.">Выражения, уравнения, функции и способы преобразований.</p></div></article>
-        <article><span class="home-program-symbol geometry">△</span><div><h3 data-copy-ru="Геометрия" data-copy-kk="Геометрия">Геометрия</h3><p data-copy-ru="Фигуры, доказательства и связь чертежа с формулой." data-copy-kk="Фигуралар, дәлелдеулер және сызбаның формуламен байланысы.">Фигуры, доказательства и связь чертежа с формулой.</p></div></article>
-        <article><span class="home-program-symbol logic">◇</span><div><h3 data-copy-ru="Логика" data-copy-kk="Логика">Логика</h3><p data-copy-ru="Условия, следствия и последовательное построение аргумента." data-copy-kk="Шарттар, салдарлар және дәлелді бірізді құру.">Условия, следствия и последовательное построение аргумента.</p></div></article>
-        <article><span class="home-program-symbol numbers">#</span><div><h3 data-copy-ru="Числа" data-copy-kk="Сандар">Числа</h3><p data-copy-ru="Свойства чисел, вычислительные стратегии и закономерности." data-copy-kk="Сандардың қасиеттері, есептеу стратегиялары және заңдылықтар.">Свойства чисел, вычислительные стратегии и закономерности.</p></div></article>
-      </div>
-    </section>
-
-    <section class="home-final-cta reveal">
-      <div><span class="axis-eyebrow" data-copy-ru="Начало маршрута" data-copy-kk="Бағыттың бастауы">Начало маршрута</span><h2 data-copy-ru="Перейдите от правил к математическому рассуждению" data-copy-kk="Ережелерден математикалық пайымдауға көшіңіз">Перейдите от правил к математическому рассуждению</h2><p data-copy-ru="Откройте программу и выберите доступную тему." data-copy-kk="Бағдарламаны ашып, қолжетімді тақырыпты таңдаңыз.">Откройте программу и выберите доступную тему.</p></div>
-      <a class="axis-button axis-button-gold" href="dashboard.html" data-copy-ru="Начать обучение" data-copy-kk="Оқуды бастау">Начать обучение</a>
-    </section>
-
-    <footer class="product-footer public-footer">
-      <a class="axis-brand" href="index.html"><span class="axis-brand-mark"><i></i><i></i></span><span>MathLogic</span></a>
-      <div class="product-footer-links"><a href="#method" data-copy-ru="Метод" data-copy-kk="Әдіс">Метод</a><a href="#program" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a><a href="login.html" data-copy-ru="Войти" data-copy-kk="Кіру">Войти</a><span>© 2026</span></div>
-    </footer>
   </main>
 
   <script src="js/storage.js"></script>
   <script src="js/i18n.js"></script>
-  <script src="js/animations.js"></script>
   <script src="js/site.js"></script>
+  <script src="js/animations.js"></script>
   <script src="js/home.js"></script>
 </body>
 </html>

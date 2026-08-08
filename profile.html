@@ -1,108 +1,52 @@
 <!doctype html>
 <html lang="ru" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Учебный журнал — MathLogic</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Onest:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/components.css">
-  <link rel="stylesheet" href="css/animations.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css"><link rel="stylesheet" href="css/components.css"><link rel="stylesheet" href="css/editorial.css"><link rel="stylesheet" href="css/animations.css">
 </head>
-<body class="axis-app axis-product-page axis-dashboard-page axis-workspace-page page-enter">
-  <aside class="dashboard-rail workspace-rail">
-    <a class="axis-brand" href="index.html" aria-label="MathLogic"><span class="axis-brand-mark"><i></i><i></i></span><span>MathLogic</span></a>
-    <nav class="dashboard-nav" aria-label="Основная навигация">
-      <a href="dashboard.html"><span class="nav-glyph">◇</span><span data-copy-ru="Обучение" data-copy-kk="Оқу">Обучение</span></a>
-      <a href="profile.html" aria-current="page"><span class="nav-glyph">△</span><span data-copy-ru="Учебный журнал" data-copy-kk="Оқу журналы">Учебный журнал</span></a>
-      <a href="#profile-overview"><span class="nav-glyph">○</span><span data-copy-ru="Профиль" data-copy-kk="Профиль">Профиль</span></a>
-      <a href="settings.html"><span class="nav-glyph">□</span><span data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</span></a>
-    </nav>
-    <div class="workspace-rail-note">
-      <span class="axis-eyebrow" data-copy-ru="Рабочее пространство" data-copy-kk="Жұмыс кеңістігі">Рабочее пространство</span>
-      <p data-copy-ru="Прогресс и история сохраняются только из реальных уроков." data-copy-kk="Оқу барысы мен тарих тек нақты сабақтардан сақталады.">Прогресс и история сохраняются только из реальных уроков.</p>
-    </div>
-    <div class="dashboard-rail-footer">
-      <div class="rail-controls">
-        <div class="axis-segment" role="group" aria-label="Язык"><button type="button" data-language-choice="ru">РУС</button><button type="button" data-language-choice="kk">ҚАЗ</button></div>
-        <div class="axis-segment" role="group" aria-label="Тема"><button type="button" data-theme-toggle aria-label="Изменить тему">◐</button></div>
-      </div>
-    </div>
-  </aside>
+<body class="v7-app">
+  <header class="v7-nav"><div class="v7-nav-inner">
+    <a class="v7-brand" href="index.html"><span class="v7-mark"></span><span>MathLogic</span></a>
+    <nav class="v7-links"><a href="dashboard.html" data-copy-ru="Сегодня" data-copy-kk="Бүгін">Сегодня</a><a href="program.html" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a><a href="profile.html" aria-current="page" data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</a></nav>
+    <div class="v7-nav-actions"><div class="v7-segment"><button type="button" data-language-choice="ru">RU</button><button type="button" data-language-choice="kk">ҚАЗ</button></div><button class="v7-tool" type="button" data-theme-toggle>◐</button><a class="v7-button ghost" href="settings.html" data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</a></div>
+  </div></header>
 
-  <main class="dashboard-main workspace-main">
-   <div class="product-main">
-    <header class="product-page-heading reveal">
-      <div><span class="axis-eyebrow" data-copy-ru="Личный раздел" data-copy-kk="Жеке бөлім">Личный раздел</span><h1 data-copy-ru="Учебный журнал" data-copy-kk="Оқу журналы">Учебный журнал</h1></div>
-      <p data-copy-ru="Только фактические занятия, сохранённый прогресс и доступные уроки." data-copy-kk="Тек нақты сабақтар, сақталған оқу барысы және қолжетімді сабақтар.">Только фактические занятия, сохранённый прогресс и доступные уроки.</p>
-    </header>
-
-    <section class="product-profile-hero reveal" id="profile-overview" aria-labelledby="profile-name">
-      <div class="product-avatar" id="profile-avatar">М</div>
-      <div class="product-profile-copy">
-        <span class="axis-eyebrow" data-copy-ru="Профиль ученика" data-copy-kk="Оқушы профилі">Профиль ученика</span>
-        <h2 id="profile-name">Пользователь</h2>
-        <p id="profile-username">@user</p>
-        <div class="product-profile-meta">
-          <span class="axis-chip"><span aria-hidden="true">✓</span><b class="mono" id="profile-completed">0</b><span data-copy-ru="пройдено" data-copy-kk="аяқталды">пройдено</span></span>
-          <span class="axis-chip"><span aria-hidden="true">◇</span><b class="mono" id="profile-active">0</b><span data-copy-ru="в процессе" data-copy-kk="жалғасуда">в процессе</span></span>
-          <span class="axis-chip"><span aria-hidden="true">◷</span><span id="profile-last-date">—</span></span>
-        </div>
-      </div>
-      <a class="axis-button axis-button-gold" href="settings.html" data-copy-ru="Изменить профиль" data-copy-kk="Профильді өзгерту">Изменить профиль</a>
+  <main class="v7-wrap v7-page">
+    <section class="v7-profile-hero" id="profile-overview">
+      <div class="v7-profile-id"><div class="v7-big-avatar" id="profile-avatar">М</div><div><span class="v7-eyebrow" data-copy-ru="Учебный журнал" data-copy-kk="Оқу журналы">Учебный журнал</span><h1 id="profile-name">Пользователь</h1><p id="profile-username">@user</p></div></div>
+      <a class="v7-button ghost" href="settings.html" data-copy-ru="Изменить профиль" data-copy-kk="Профильді өзгерту">Изменить профиль</a>
     </section>
 
-    <section class="product-metric-grid reveal" aria-label="Учебные показатели">
-      <article class="product-metric"><span class="axis-eyebrow" data-copy-ru="Пройдено уроков" data-copy-kk="Аяқталған сабақ">Пройдено уроков</span><strong id="metric-completed">0</strong><small id="metric-completed-note">—</small></article>
-      <article class="product-metric"><span class="axis-eyebrow" data-copy-ru="В процессе" data-copy-kk="Жалғасуда">В процессе</span><strong id="metric-active">0</strong><small id="metric-active-note">—</small></article>
-      <article class="product-metric"><span class="axis-eyebrow" data-copy-ru="Учебных дней" data-copy-kk="Оқу күні">Учебных дней</span><strong id="metric-days">0</strong><small id="metric-days-note">—</small></article>
-      <article class="product-metric"><span class="axis-eyebrow" data-copy-ru="Доступно" data-copy-kk="Қолжетімді">Доступно</span><strong id="metric-available">0</strong><small id="metric-available-note">—</small></article>
+    <section class="v7-facts" aria-label="Фактические учебные данные">
+      <article class="v7-fact"><span class="v7-eyebrow" data-copy-ru="Пройдено уроков" data-copy-kk="Аяқталған сабақ">Пройдено уроков</span><strong id="metric-completed">0</strong><small id="metric-completed-note">—</small></article>
+      <article class="v7-fact"><span class="v7-eyebrow" data-copy-ru="В процессе" data-copy-kk="Жалғасуда">В процессе</span><strong id="metric-active">0</strong><small id="metric-active-note">—</small></article>
+      <article class="v7-fact"><span class="v7-eyebrow" data-copy-ru="Учебных дней" data-copy-kk="Оқу күні">Учебных дней</span><strong id="metric-days">0</strong><small id="metric-days-note">—</small></article>
+      <article class="v7-fact"><span class="v7-eyebrow" data-copy-ru="Доступно" data-copy-kk="Қолжетімді">Доступно</span><strong id="metric-available">0</strong><small id="metric-available-note">—</small></article>
     </section>
+    <span hidden id="profile-completed">0</span><span hidden id="profile-active">0</span><span hidden id="profile-last-date">—</span>
 
-    <section class="product-content-grid reveal">
-      <article class="product-panel" aria-labelledby="history-title">
-        <header class="product-panel-header"><div><span class="axis-eyebrow" data-copy-ru="Хронология" data-copy-kk="Хронология">Хронология</span><h2 id="history-title" data-copy-ru="Учебная история" data-copy-kk="Оқу тарихы">Учебная история</h2><p data-copy-ru="Здесь появляются только действительно завершённые уроки." data-copy-kk="Мұнда тек шынымен аяқталған сабақтар көрсетіледі.">Здесь появляются только действительно завершённые уроки.</p></div><span class="axis-chip"><b class="mono" id="history-count">0</b><span data-copy-ru="записей" data-copy-kk="жазба">записей</span></span></header>
+    <section class="v7-journal-grid">
+      <article class="v7-panel">
+        <div class="v7-section-head"><span class="v7-eyebrow" data-copy-ru="Хронология" data-copy-kk="Хронология">Хронология</span><h2 data-copy-ru="История обучения" data-copy-kk="Оқу тарихы">История обучения</h2><p data-copy-ru="Здесь появляются только действительно завершённые уроки." data-copy-kk="Мұнда тек шынымен аяқталған сабақтар көрсетіледі.">Здесь появляются только действительно завершённые уроки.</p></div>
+        <span class="v7-pill"><b class="v7-mono" id="history-count">0</b><span data-copy-ru="записей" data-copy-kk="жазба">записей</span></span>
         <div class="product-history" id="profile-history"></div>
       </article>
-
-      <aside class="product-next-card" aria-labelledby="next-title">
-        <span class="axis-eyebrow" data-copy-ru="Продолжить обучение" data-copy-kk="Оқуды жалғастыру">Продолжить обучение</span>
-        <h3 id="next-title">—</h3>
-        <p id="next-description">—</p>
-        <div class="axis-track"><span id="next-progress"></span></div>
-        <div class="hero-meta mono"><span id="next-duration">—</span><span id="next-state">—</span></div>
-        <a class="axis-button axis-button-gold" id="next-link" href="dashboard.html" data-copy-ru="Открыть урок" data-copy-kk="Сабақты ашу">Открыть урок</a>
+      <aside class="v7-continue">
+        <div><span class="v7-eyebrow" data-copy-ru="Продолжить" data-copy-kk="Жалғастыру">Продолжить</span><h2 id="next-title">—</h2><p id="next-description">—</p><div class="axis-track"><span id="next-progress"></span></div><div class="hero-meta v7-mono"><span id="next-duration">—</span><span id="next-state">—</span></div></div>
+        <a class="v7-button" id="next-link" href="dashboard.html" data-copy-ru="Открыть урок" data-copy-kk="Сабақты ашу">Открыть урок</a>
       </aside>
     </section>
 
-    <section class="product-section reveal" aria-labelledby="topics-title">
-      <header class="product-section-heading"><div><span class="axis-eyebrow" data-copy-ru="Темы" data-copy-kk="Тақырыптар">Темы</span><h2 id="topics-title" data-copy-ru="Недавние темы" data-copy-kk="Соңғы тақырыптар">Недавние темы</h2></div><p data-copy-ru="Темы определяются по реальному состоянию зарегистрированных уроков." data-copy-kk="Тақырыптар тіркелген сабақтардың нақты күйі бойынша анықталады.">Темы определяются по реальному состоянию зарегистрированных уроков.</p></header>
+    <section>
+      <div class="v7-section-head"><span class="v7-eyebrow" data-copy-ru="Темы" data-copy-kk="Тақырыптар">Темы</span><h2 data-copy-ru="Темы в процессе" data-copy-kk="Жалғасып жатқан тақырыптар">Темы в процессе</h2><p data-copy-ru="Список строится только по сохранённым урокам." data-copy-kk="Тізім тек сақталған сабақтар бойынша құрылады.">Список строится только по сохранённым урокам.</p></div>
       <div class="product-topic-list" id="profile-topics"></div>
     </section>
-
-    <section class="product-section product-cta reveal">
-      <div><span class="axis-eyebrow" data-copy-ru="Управление" data-copy-kk="Басқару">Управление</span><h2 data-copy-ru="Язык, тема и данные профиля" data-copy-kk="Тіл, тақырып және профиль деректері">Язык, тема и данные профиля</h2><p data-copy-ru="Все работающие параметры собраны на одной странице настроек." data-copy-kk="Барлық жұмыс істейтін параметрлер бір баптаулар бетінде жинақталған.">Все работающие параметры собраны на одной странице настроек.</p></div>
-      <a class="axis-button axis-button-gold" href="settings.html" data-copy-ru="Открыть настройки" data-copy-kk="Баптауларды ашу">Открыть настройки</a>
-    </section>
-
-   </div>
   </main>
 
-  <nav class="dashboard-mobile-tabs workspace-mobile-tabs" aria-label="Мобильная навигация">
-    <a href="dashboard.html"><span>◇</span><small data-copy-ru="Обучение" data-copy-kk="Оқу">Обучение</small></a>
-    <a href="profile.html" aria-current="page"><span>△</span><small data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</small></a>
-    <a href="#profile-overview"><span>○</span><small data-copy-ru="Профиль" data-copy-kk="Профиль">Профиль</small></a>
-    <a href="settings.html"><span>□</span><small data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</small></a>
-  </nav>
-
-  <script src="js/storage.js"></script>
-  <script src="js/data.js"></script>
-  <script src="js/i18n.js"></script>
-  <script src="js/learning.js"></script>
-  <script src="js/animations.js"></script>
-  <script src="js/site.js"></script>
-  <script src="js/profile.js"></script>
+  <nav class="v7-mobile-nav"><a href="dashboard.html" data-copy-ru="Сегодня" data-copy-kk="Бүгін">Сегодня</a><a href="program.html" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a><a href="profile.html" aria-current="page" data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</a><a href="settings.html" data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</a></nav>
+  <script src="js/storage.js"></script><script src="js/data.js"></script><script src="js/i18n.js"></script><script src="js/learning.js"></script><script src="js/animations.js"></script><script src="js/site.js"></script><script src="js/profile.js"></script>
 </body>
 </html>

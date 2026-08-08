@@ -1,7 +1,6 @@
 (function() {
-  var isDev = window.location.hostname === 'localhost' ||
-              window.location.hostname === '127.0.0.1' ||
-              window.DEV === true;
+  var isDev = window.DEV === true ||
+              new URLSearchParams(window.location.search).get('debug') === '1';
   if (!isDev) return;
 
   var btn = 'display:block;width:100%;padding:8px 12px;margin:4px 0;' +

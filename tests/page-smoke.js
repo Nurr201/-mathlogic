@@ -66,7 +66,7 @@ function environment(search, initialStorage) {
     console,
     document,
     localStorage: storage,
-    location: { search: search || '', hostname: 'example.test' },
+    location: { search: search || '', hostname: 'example.test', pathname: '/dashboard.html' },
     URLSearchParams,
     Intl,
     Date,
@@ -102,7 +102,7 @@ function testDashboardShell() {
   const scripts = Array.from(html.matchAll(/<script\s+src="([^"]+)"\s*><\/script>/g), function(match) { return match[1].split('?')[0]; });
   assert.deepEqual(scripts, [
     'js/data.js', 'js/storage.js', 'js/i18n.js',
-    'js/learning.js', 'js/dashboard.js',
+    'js/events.js', 'js/learning.js', 'js/site.js', 'js/dashboard.js',
   ]);
   assert.equal((html.match(/js\/dashboard\.js/g) || []).length, 1);
   assert.equal(/<style\b/i.test(html), false);
@@ -114,11 +114,15 @@ function testDashboard() {
   app.document.body.classList.add('axis-app');
   app.document.getElementById('dashboard-content').hidden = true;
   app.document.getElementById('dashboard-error').hidden = true;
-  load(app, CORE.concat(['js/dashboard.js']));
+  load(app, CORE.concat(['js/site.js', 'js/dashboard.js']));
   assert.equal(app.document.getElementById('dashboard-content').hidden, false);
   assert.equal(app.document.getElementById('dashboard-error').hidden, true);
   assert.equal(app.document.getElementById('hero-primary').href, 'lesson.html?id=algebra.exponents.basics');
-  assert.ok(app.document.getElementById('route-modules').innerHTML.includes('status-locked'));
+  const currentPath = app.document.getElementById('current-path-points').innerHTML;
+  assert.ok(currentPath.includes('v7-current-path-item'));
+  assert.ok((currentPath.match(/v7-current-path-item/g) || []).length <= 5);
+  assert.equal(currentPath.includes('route-module'), false);
+  assert.equal(app.document.getElementById('current-path-link').href, 'program.html?subject=algebra');
 }
 
 function testLesson(id, expectedTitle, initialStorage) {

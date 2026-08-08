@@ -222,13 +222,14 @@
   function fillHeading(meta) {
     var title = localized(meta, 'title');
     var description = localized(meta, 'description');
+    var subjectTitle = I18N.t('subjects.' + meta.subjectId, language()) || meta.subjectId;
     document.title = title + ' — MathLogic';
     document.getElementById('lesson-title').textContent = title;
     document.getElementById('lesson-description').textContent = description;
     document.getElementById('lesson-duration').textContent = meta.duration + ' ' + text('minutes');
     document.getElementById('lesson-length').textContent = activeConfig.blocks.length + ' ' + text('steps');
-    document.getElementById('lesson-breadcrumb').textContent = meta.subjectId.toUpperCase() + ' / ' + meta.topicId.toUpperCase();
-    document.getElementById('lesson-top-context').textContent = meta.subjectId.toUpperCase() + ' / ' + title;
+    document.getElementById('lesson-breadcrumb').textContent = subjectTitle + ' / ' + (language() === 'kk' ? 'Сабақ' : 'Урок');
+    document.getElementById('lesson-top-context').textContent = subjectTitle + ' / ' + title;
   }
 
   function bindTheme() {

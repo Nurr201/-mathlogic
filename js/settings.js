@@ -43,6 +43,8 @@
     document.getElementById('settings-name').value = user.name || '';
     document.getElementById('settings-username').value = user.username || '';
     document.getElementById('settings-avatar').textContent = name.charAt(0).toUpperCase();
+    var navAvatar = document.getElementById('settings-avatar-nav');
+    if (navAvatar) navAvatar.textContent = name.charAt(0).toUpperCase();
   }
 
   function renderProgressSummary() {
@@ -151,6 +153,8 @@
     document.getElementById('settings-name').addEventListener('input', function() {
       var value = this.value.trim();
       document.getElementById('settings-avatar').textContent = (value || copy('П', 'П')).charAt(0).toUpperCase();
+      var navAvatar = document.getElementById('settings-avatar-nav');
+      if (navAvatar) navAvatar.textContent = (value || copy('П', 'П')).charAt(0).toUpperCase();
     });
     initNavigation();
     render();
