@@ -183,6 +183,77 @@ function testCompletionDoesNotMutateLegacyGameFields() {
   assert.equal(app.run("ML.get('activity.dates').length"), 1);
 }
 
+function testActivityHistory() {
+  const app = boot();
+  assert.equal(app.run('ML.getActivityRange().length'), 365);
+  assert.equal(app.run('ML.getActivityRange().filter(function(day){return day.active;}).length'), 0);
+
+  const today = boot();
+  today.run('ML.recordLearningActivity(90)');
+  assert.equal(today.run('ML.getActivityByDate().active'), true);
+  assert.equal(today.run('ML.getActivityByDate().seconds'), 90);
+  assert.equal(today.run('ML.getActivityRange().filter(function(day){return day.active;}).length'), 1);
+
+  app.run("ML.recordLearningActivity(120,new Date(2024,1,29,23,30).getTime())");
+  assert.equal(app.run("ML.getActivityByDate('2024-02-29').active"), true);
+  assert.equal(app.run("ML.getActivityByDate('2024-02-29').seconds"), 120);
+  assert.equal(app.run("ML.getActivityByDate('2024-02-29').intensity"), 1);
+
+  app.run("ML.recordLearningActivity(300,new Date(2024,1,29,23,45).getTime())");
+  assert.equal(app.run("ML.getActivityByDate('2024-02-29').seconds"), 420);
+  assert.equal(app.run("ML.getActivityByDate('2024-02-29').intensity"), 2);
+  assert.equal(app.run("ML.get('activity.dates').filter(function(day){return day==='2024-02-29';}).length"), 1);
+
+  app.run("ML.recordLearningActivity(900,new Date(2024,2,1,0,15).getTime())");
+  assert.deepEqual(Array.from(app.run("ML.getActivityRange('2024-02-28','2024-03-01').map(function(day){return day.date;})")), ['2024-02-28', '2024-02-29', '2024-03-01']);
+  assert.equal(app.run("ML.getActivityRange('2024-02-28','2024-03-01').filter(function(day){return day.active;}).length"), 2);
+
+  app.run("ML.recordLearningActivity(60,new Date(2025,11,31,23,30).getTime());ML.recordLearningActivity(60,new Date(2026,0,1,0,30).getTime())");
+  assert.equal(app.run("ML.getActivityRange('2025-12-31','2026-01-01').length"), 2);
+  assert.equal(app.run("ML.getActivityRange('2025-12-31','2026-01-01').every(function(day){return day.active;})"), true);
+  assert.equal(app.run("ML.getActivityRange('2026-01-02','2026-01-01').length"), 0);
+  assert.equal(app.run('ML.getActivityIntensity(0,false)'), 0);
+  assert.equal(app.run('ML.getActivityIntensity(1800,true)'), 4);
+}
+
+function testLearningHistory() {
+  const app = boot();
+  assert.equal(app.run('ML.getLearningHistory().length'), 0);
+  const base = new Date(2026, 7, 8, 15, 0).getTime();
+
+  const started = app.run("ML.addLearningEvent({type:'LESSON_STARTED',lessonId:'algebra.exponents.basics',timestamp:" + base + ",metadata:{completedBlocks:1}})");
+  assert.equal(started.added, true);
+  const duplicateStart = app.run("ML.addLearningEvent({type:'LESSON_STARTED',lessonId:'algebra.exponents.basics',timestamp:" + (base + 60000) + "})");
+  assert.equal(duplicateStart.added, false);
+  assert.equal(app.run("ML.getLearningHistory({lessonId:'algebra.exponents.basics'}).length"), 1);
+
+  app.run("ML.addLearningEvent({type:'LESSON_CONTINUED',lessonId:'algebra.exponents.basics',timestamp:" + (base + 3600000) + "})");
+  app.run("Learning.completeLesson('algebra.exponents.basics',{percentage:80,correctAnswers:4,totalQuestions:5,duration:600,completedAt:" + (base + 7200000) + "})");
+  app.run("Learning.completeLesson('algebra.exponents.basics',{percentage:100,correctAnswers:5,totalQuestions:5,completedAt:" + (base + 7300000) + "})");
+  assert.equal(app.run("ML.getLearningHistory({types:['LESSON_COMPLETED'],lessonId:'algebra.exponents.basics'}).length"), 1);
+  assert.equal(app.run("ML.getLearningHistory({lessonId:'algebra.exponents.basics'})[0].metadata.totalQuestions"), 5);
+
+  app.run("Learning.completeLesson('algebra.vieta.intro',{percentage:100,correctAnswers:3,totalQuestions:3,duration:300,completedAt:" + (base + 10800000) + "})");
+  assert.equal(app.run("ML.getLearningHistory({lessonId:'algebra.vieta.intro'}).length"), 1);
+  assert.equal(app.run("ML.getLearningHistory().every(function(event,index,list){return !index || list[index-1].timestamp >= event.timestamp;})"), true);
+
+  const reloaded = boot(app.context.localStorage.dump());
+  assert.equal(reloaded.run('ML.getLearningHistory().length'), app.run('ML.getLearningHistory().length'));
+  assert.equal(reloaded.run("ML.getLearningHistory()[0].lessonId"), 'algebra.vieta.intro');
+
+  const malformed = boot({ mathlogic_data: JSON.stringify({ version: 2, activity: { history: [null, 'bad', { type: 'UNKNOWN', lessonId: 'x', timestamp: base }, { type: 'LESSON_STARTED', lessonId: '', timestamp: base }] } }) });
+  assert.equal(malformed.run('ML.getLearningHistory().length'), 0);
+
+  const backfilled = boot({ mathlogic_data: JSON.stringify({ version: 2, progress: { lessons: { 'algebra.exponents.basics': { status: 'completed', completedAt: base, correctAnswers: 4, totalQuestions: 5, duration: 600 } } } }) });
+  assert.equal(backfilled.run("ML.getLearningHistory({types:['LESSON_COMPLETED']}).length"), 1);
+  assert.equal(backfilled.run("ML.getLearningHistory()[0].timestamp"), base);
+
+  const capped = boot();
+  capped.run("for(var i=0;i<205;i++){ML.addLearningEvent({type:i%2?'LESSON_STARTED':'LESSON_CONTINUED',lessonId:'algebra.exponents.basics',timestamp:" + base + "+i*31*60*1000})}");
+  assert.equal(capped.run('ML.getLearningHistory().length'), 200);
+  assert.equal(capped.run('ML.getLearningHistory()[0].timestamp > ML.getLearningHistory()[199].timestamp'), true);
+}
+
 testCanonicalLifecycle();
 testRegistryAndConfigs();
 testLegacyMigration();
@@ -192,4 +263,6 @@ testLearningReset();
 testSubjectReset();
 testCorruptStorageFallback();
 testCompletionDoesNotMutateLegacyGameFields();
+testActivityHistory();
+testLearningHistory();
 console.log('core-smoke: ok');

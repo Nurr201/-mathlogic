@@ -28,7 +28,14 @@ const I18N_DICTIONARY = {
     'lesson.steps': 'қадам', 'lesson.repeat': 'Қайталап оқу', 'lesson.resume': 'Сақталған қадамнан жалғастыру',
     'lesson.completed': 'Сабақ аяқталды', 'lesson.unavailable': 'Сабақ әлі дайын емес', 'lesson.notFound': 'Сабақ табылмады',
     'lesson.notFoundText': 'Сілтемені тексеріңіз немесе маршрутқа оралыңыз.', 'lesson.dashboard': 'Dashboard-қа оралу',
-    'lesson.stageStart': 'Бастау', 'lesson.stageRule': 'Ереже', 'lesson.stageExample': 'Талдау', 'lesson.stagePractice': 'Жаттығу', 'lesson.stageFinish': 'Нәтиже'
+    'lesson.stageStart': 'Бастау', 'lesson.stageRule': 'Ереже', 'lesson.stageExample': 'Талдау', 'lesson.stagePractice': 'Жаттығу', 'lesson.stageFinish': 'Нәтиже',
+
+    'history.eyebrow': 'Хронология', 'history.title': 'Оқу тарихы', 'history.subtitle': 'Соңғы әрекеттер мен өзгерістер',
+    'history.today': 'Бүгін', 'history.yesterday': 'Кеше',
+    'history.lessonStarted': 'Сабақ басталды', 'history.lessonContinued': 'Сабақ жалғастырылды', 'history.lessonCompleted': 'Сабақ аяқталды',
+    'history.showMore': 'Тағы көрсету', 'history.empty': 'Алғашқы сабақтардан кейін мұнда басталған, жалғастырылған және аяқталған сабақтар көрінеді.',
+    'history.openProgram': 'Бағдарламаны ашу', 'history.openLesson': 'Сабаққа оралу', 'history.unknownLesson': 'Бағдарламада жоқ сабақ',
+    'history.events': 'оқу әрекеті', 'history.tasks': 'тапсырма', 'history.minutes': 'мин', 'history.attempts': 'әрекет'
   },
   ru: {
     nav_dashboard: 'Дашборд', nav_subjects: 'Темы', nav_login: 'Войти', nav_register: 'Регистрация',
@@ -57,7 +64,14 @@ const I18N_DICTIONARY = {
     'lesson.steps': 'шагов', 'lesson.repeat': 'Повторное чтение', 'lesson.resume': 'Продолжение с сохранённого шага',
     'lesson.completed': 'Урок завершён', 'lesson.unavailable': 'Урок пока не готов', 'lesson.notFound': 'Урок не найден',
     'lesson.notFoundText': 'Проверьте ссылку или вернитесь к маршруту.', 'lesson.dashboard': 'Вернуться на Dashboard',
-    'lesson.stageStart': 'Старт', 'lesson.stageRule': 'Правило', 'lesson.stageExample': 'Разбор', 'lesson.stagePractice': 'Практика', 'lesson.stageFinish': 'Результат'
+    'lesson.stageStart': 'Старт', 'lesson.stageRule': 'Правило', 'lesson.stageExample': 'Разбор', 'lesson.stagePractice': 'Практика', 'lesson.stageFinish': 'Результат',
+
+    'history.eyebrow': 'Хронология', 'history.title': 'История обучения', 'history.subtitle': 'Последние действия и изменения',
+    'history.today': 'Сегодня', 'history.yesterday': 'Вчера',
+    'history.lessonStarted': 'Урок начат', 'history.lessonContinued': 'Урок продолжен', 'history.lessonCompleted': 'Урок завершён',
+    'history.showMore': 'Показать ещё', 'history.empty': 'После первых уроков здесь появятся начатые, продолженные и завершённые занятия.',
+    'history.openProgram': 'Открыть программу', 'history.openLesson': 'Вернуться к уроку', 'history.unknownLesson': 'Урок больше не в программе',
+    'history.events': 'учебных событий', 'history.tasks': 'задач', 'history.minutes': 'мин', 'history.attempts': 'попыток'
   }
 };
 

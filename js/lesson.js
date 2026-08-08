@@ -5,6 +5,8 @@
   var activeLesson = null;
   var activeConfig = null;
   var completionHandled = false;
+  var savedBlocksAtLoad = 0;
+  var progressEventRecorded = false;
 
   function language() { return ML.getLang(); }
   function text(key) { return I18N.t('lesson.' + key, language()); }
@@ -208,6 +210,28 @@
     setMode(text('completed'), false);
   }
 
+  function recordMeaningfulProgress() {
+    if (progressEventRecorded || !activeLesson) return;
+    var state = LessonEngine.getState();
+    if (state.repeatMode || !state.completedBlocks.length) return;
+    var type = savedBlocksAtLoad > 0 ? 'LESSON_CONTINUED' : 'LESSON_STARTED';
+    ML.addLearningEvent({
+      type: type,
+      timestamp: Date.now(),
+      lessonId: activeLesson.id,
+      subjectId: activeLesson.subjectKey,
+      topicId: activeLesson.topicId,
+      metadata: {
+        completedBlocks: state.completedBlocks.length,
+        lessonTitle: {
+          ru: activeLesson.titleRu || activeLesson.title,
+          kk: activeLesson.titleKk || activeLesson.titleKz || activeLesson.title,
+        },
+      },
+    });
+    progressEventRecorded = true;
+  }
+
   function bindEngine() {
     LessonEngine.on('afterRender', function(data) {
       updateEngineUI();
@@ -215,7 +239,10 @@
         setTimeout(function() { LessonBlocks._updateSandbox(data.blockIndex); }, 0);
       }
     });
-    LessonEngine.on('afterComplete', updateEngineUI);
+    LessonEngine.on('afterComplete', function() {
+      recordMeaningfulProgress();
+      updateEngineUI();
+    });
     LessonEngine.analytics.on('onLessonFinish', completeFromEngine);
   }
 
@@ -262,6 +289,8 @@
       showError(text('unavailable'), text('notFoundText'));
       return;
     }
+    var savedSession = ML.getLessonSession(activeLesson.id);
+    savedBlocksAtLoad = savedSession && Array.isArray(savedSession.completedBlocks) ? savedSession.completedBlocks.length : 0;
     if (window.LessonValidator) {
       var validation = LessonValidator.validate(activeConfig);
       if (!validation.valid) {

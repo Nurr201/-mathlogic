@@ -405,18 +405,27 @@ window.Learning = (function() {
       data.stats.avg_score = scores.length ? Math.round(scores.reduce(function(sum, score) { return sum + score; }, 0) / scores.length) : 0;
       data.user.lastLesson = found.lesson.title;
       data.user.lastSubject = found.subject ? found.subject.name : found.lesson.subjectKey;
-      data.timeline.unshift({
-        icon: '◇',
-        title: 'Завершён урок «' + found.lesson.title + '»',
-        desc: correct + ' / ' + total + ' задач · ' + percentage + '%',
-        time: record.completedAt,
-        color: 'bg-blue-500',
-      });
-      if (data.timeline.length > 50) data.timeline = data.timeline.slice(0, 50);
     });
 
     ML.setLessonSession(id, null);
     ML.recordLearningActivity(record.duration, record.completedAt);
+    ML.addLearningEvent({
+      type: 'LESSON_COMPLETED',
+      timestamp: record.completedAt,
+      lessonId: id,
+      subjectId: found.lesson.subjectKey,
+      topicId: found.lesson.topicId,
+      metadata: {
+        correctAnswers: correct,
+        totalQuestions: total,
+        duration: record.duration,
+        attempts: record.attempts,
+        lessonTitle: {
+          ru: found.lesson.titleRu || found.lesson.title,
+          kk: found.lesson.titleKk || found.lesson.titleKz || found.lesson.title,
+        },
+      },
+    });
     const detail = {
       lessonId: id,
       lessonName: found.lesson.title,

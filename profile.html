@@ -28,11 +28,37 @@
     </section>
     <span hidden id="profile-completed">0</span><span hidden id="profile-active">0</span><span hidden id="profile-last-date">—</span>
 
+    <section class="v7-activity" aria-labelledby="activity-title">
+      <div class="v7-activity-heading">
+        <div class="v7-section-head">
+          <span class="v7-eyebrow" data-copy-ru="Учебная история" data-copy-kk="Оқу тарихы">Учебная история</span>
+          <h2 id="activity-title" data-copy-ru="Активность" data-copy-kk="Белсенділік">Активность</h2>
+          <p data-copy-ru="Последние 12 месяцев" data-copy-kk="Соңғы 12 ай">Последние 12 месяцев</p>
+        </div>
+        <p class="v7-activity-summary" id="activity-summary"></p>
+      </div>
+      <div class="v7-activity-scroll" id="activity-scroll" aria-label="Учебная активность за последние 12 месяцев">
+        <div class="v7-activity-chart" id="activity-chart"></div>
+      </div>
+      <div class="v7-activity-footer">
+        <div class="v7-activity-empty" id="activity-empty" hidden>
+          <p data-copy-ru="Здесь появятся дни, когда вы действительно занимались математикой." data-copy-kk="Мұнда математикамен шынымен айналысқан күндеріңіз көрінеді.">Здесь появятся дни, когда вы действительно занимались математикой.</p>
+          <a href="program.html" data-copy-ru="Открыть программу" data-copy-kk="Бағдарламаны ашу">Открыть программу</a>
+        </div>
+        <div class="v7-activity-legend" aria-label="Шкала активности">
+          <span data-copy-ru="Меньше" data-copy-kk="Аз">Меньше</span>
+          <i data-level="0"></i><i data-level="1"></i><i data-level="2"></i><i data-level="3"></i><i data-level="4"></i>
+          <span data-copy-ru="Больше" data-copy-kk="Көп">Больше</span>
+        </div>
+      </div>
+      <div class="v7-activity-tooltip" id="activity-tooltip" role="tooltip" hidden></div>
+    </section>
+
     <section class="v7-journal-grid">
       <article class="v7-panel">
-        <div class="v7-section-head"><span class="v7-eyebrow" data-copy-ru="Хронология" data-copy-kk="Хронология">Хронология</span><h2 data-copy-ru="История обучения" data-copy-kk="Оқу тарихы">История обучения</h2><p data-copy-ru="Здесь появляются только действительно завершённые уроки." data-copy-kk="Мұнда тек шынымен аяқталған сабақтар көрсетіледі.">Здесь появляются только действительно завершённые уроки.</p></div>
-        <span class="v7-pill"><b class="v7-mono" id="history-count">0</b><span data-copy-ru="записей" data-copy-kk="жазба">записей</span></span>
-        <div class="product-history" id="profile-history"></div>
+        <div class="v7-section-head"><span class="v7-eyebrow" id="history-eyebrow">Хронология</span><h2 id="history-title">История обучения</h2><p id="history-subtitle">Последние действия и изменения</p></div>
+        <span class="v7-pill" id="history-count-pill" hidden><b class="v7-mono" id="history-count">0</b><span id="history-count-label">учебных событий</span></span>
+        <div class="v7-learning-history" id="profile-history" aria-live="polite"></div>
       </article>
       <aside class="v7-continue">
         <div><span class="v7-eyebrow" data-copy-ru="Продолжить" data-copy-kk="Жалғастыру">Продолжить</span><h2 id="next-title">—</h2><p id="next-description">—</p><div class="axis-track"><span id="next-progress"></span></div><div class="hero-meta v7-mono"><span id="next-duration">—</span><span id="next-state">—</span></div></div>
