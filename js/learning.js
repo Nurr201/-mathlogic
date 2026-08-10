@@ -16,16 +16,6 @@ window.Learning = (function() {
     return typeof LESSON_LEGACY_MAP !== 'undefined' ? LESSON_LEGACY_MAP : {};
   }
 
-  function stableSlug(value) {
-    let hash = 2166136261;
-    const text = String(value || 'lesson');
-    for (let i = 0; i < text.length; i++) {
-      hash ^= text.charCodeAt(i);
-      hash = Math.imul(hash, 16777619);
-    }
-    return (hash >>> 0).toString(36);
-  }
-
   function resolveLessonId(id) {
     if (!id) return '';
     return legacyMap()[id] || id;
@@ -37,80 +27,97 @@ window.Learning = (function() {
 
   function buildCourse() {
     const subjects = [];
-    if (typeof DATA === 'undefined' || typeof SUBJECTS === 'undefined') return subjects;
+    if (typeof MATHLOGIC_CURRICULUM === 'undefined' || typeof SUBJECTS === 'undefined') return subjects;
     const subjectMap = {};
     SUBJECTS.forEach(function(subject) { subjectMap[subject.key] = subject; });
-
-    Object.keys(DATA).forEach(function(subjectKey) {
+    MATHLOGIC_CURRICULUM.subjects.forEach(function(curriculumSubject) {
+      const subjectKey = curriculumSubject.id;
       const meta = subjectMap[subjectKey];
-      if (!meta || !Array.isArray(DATA[subjectKey])) return;
-      const topics = [];
+      if (!meta) return;
       const allLessons = [];
-      let legacyOrder = 0;
-
-      DATA[subjectKey].forEach(function(section, sectionIndex) {
-        const topicId = section.id || subjectKey + '.topic.' + stableSlug(section.title);
-        const lessons = [];
-        (section.modules || []).forEach(function(module, moduleIndex) {
-          legacyOrder++;
-          const id = module.id || subjectKey + '.catalog.' + stableSlug(section.title + '|' + module.name);
+      const lessonViews = {};
+      function makeLesson(curriculumLesson, topicIndex, lessonIndex) {
+          const unit = MATHLOGIC_CURRICULUM.getUnits(subjectKey).find(function(item) { return item.id === curriculumLesson.unitId; });
+          const id = curriculumLesson.id;
           const reg = registry()[id] || null;
           const lesson = {
             id: id,
-            legacyId: subjectKey + '_' + legacyOrder,
-            order: legacyOrder,
-            moduleIndex: moduleIndex,
-            sectionIndex: sectionIndex,
-            sectionTitle: section.title,
-            sectionTitleRu: section.titleRu || section.title,
-            sectionTitleKk: section.titleKk || section.titleKz || section.title,
-            sectionLevel: section.level || '',
-            sectionLevelRu: section.levelRu || section.level || '',
-            sectionLevelKk: section.levelKk || section.levelKz || section.level || '',
-            name: module.name,
-            title: reg ? reg.title : module.name,
-            titleRu: reg ? (reg.titleRu || reg.title) : (module.titleRu || module.name),
-            titleKk: reg ? (reg.titleKk || reg.titleKz || reg.title) : (module.titleKk || module.titleKz || module.name),
-            titleKz: reg ? reg.titleKz : module.name,
+            legacyId: '',
+            order: curriculumLesson.recommendedOrder || 0,
+            moduleIndex: lessonIndex,
+            sectionIndex: topicIndex,
+            grade: curriculumLesson.grade,
+            unitId: unit.id,
+            curriculumTopicId: curriculumLesson.topicId,
+            productionStatus: curriculumLesson.productionStatus,
+            sectionTitle: unit.titleRu,
+            sectionTitleRu: unit.titleRu,
+            sectionTitleKk: unit.titleKk,
+            sectionLevel: '', sectionLevelRu: '', sectionLevelKk: '',
+            name: curriculumLesson.titleRu,
+            title: reg ? reg.title : curriculumLesson.titleRu,
+            titleRu: reg ? (reg.titleRu || reg.title) : curriculumLesson.titleRu,
+            titleKk: reg ? (reg.titleKk || reg.titleKz || reg.title) : curriculumLesson.titleKk,
+            titleKz: reg ? reg.titleKz : curriculumLesson.titleKk,
             description: reg ? reg.description : '',
-            descriptionRu: reg ? (reg.descriptionRu || reg.description) : (module.descriptionRu || ''),
-            descriptionKk: reg ? (reg.descriptionKk || reg.descriptionKz || reg.description) : (module.descriptionKk || module.descriptionKz || ''),
+            descriptionRu: reg ? (reg.descriptionRu || reg.description) : curriculumLesson.learningObjectives.ru[0],
+            descriptionKk: reg ? (reg.descriptionKk || reg.descriptionKz || reg.description) : curriculumLesson.learningObjectives.kk[0],
             descriptionKz: reg ? reg.descriptionKz : '',
             route: reg ? reg.route : null,
             link: reg ? reg.route : null,
             duration: reg ? reg.duration : null,
             xp: reg ? reg.xp : null,
             availability: reg ? reg.availability : 'unavailable',
-            prerequisites: reg && Array.isArray(reg.prerequisites) ? reg.prerequisites.slice() : [],
+            prerequisites: reg && Array.isArray(reg.prerequisites) ? reg.prerequisites.slice() : curriculumLesson.prerequisites.hard.slice(),
+            softPrerequisites: curriculumLesson.prerequisites.soft.slice(),
             unlockReason: reg ? reg.unlockReason : '',
             unlockReasonRu: reg ? (reg.unlockReasonRu || reg.unlockReason) : '',
             unlockReasonKk: reg ? (reg.unlockReasonKk || reg.unlockReasonKz || reg.unlockReason) : '',
             releaseDate: reg ? reg.releaseDate : null,
             hasContent: !!reg,
-            subtopics: module.subtopics || [],
+            subtopics: curriculumLesson.learningObjectives.ru.slice(),
             subjectKey: subjectKey,
-            topicId: reg ? reg.topicId : topicId,
+            topicId: curriculumLesson.topicId,
+            curriculumCodes: curriculumLesson.curriculumCodes.slice(),
+            archetype: curriculumLesson.archetype,
           };
-          lessons.push(lesson);
-          allLessons.push(lesson);
-        });
-        topics.push({
-          id: topicId,
-          title: section.title,
-          titleRu: section.titleRu || section.title,
-          titleKk: section.titleKk || section.titleKz || section.title,
-          level: section.level || '',
-          levelRu: section.levelRu || section.level || '',
-          levelKk: section.levelKk || section.levelKz || section.level || '',
-          order: sectionIndex,
+          return lesson;
+      }
+      const topics = MATHLOGIC_CURRICULUM.topics.filter(function(topic) { return topic.subject === subjectKey; })
+        .sort(function(a, b) {
+          var aOrder = a.lessonIds.length ? (MATHLOGIC_CURRICULUM.getLesson(a.lessonIds[0]).recommendedOrder || 0) : 0;
+          var bOrder = b.lessonIds.length ? (MATHLOGIC_CURRICULUM.getLesson(b.lessonIds[0]).recommendedOrder || 0) : 0;
+          return aOrder - bOrder;
+        }).map(function(curriculumTopic, topicIndex) {
+          var lessons = curriculumTopic.lessonIds.map(function(id, lessonIndex) {
+            var lesson = makeLesson(MATHLOGIC_CURRICULUM.getLesson(id), topicIndex, lessonIndex);
+            lessonViews[id] = lesson;
+            return lesson;
+          });
+          return {
+          id: curriculumTopic.id,
+          unitId: curriculumTopic.unitId,
+          grade: curriculumTopic.grade,
+          title: curriculumTopic.titleRu,
+          titleRu: curriculumTopic.titleRu,
+          titleKk: curriculumTopic.titleKk,
+          descriptionRu: curriculumTopic.descriptionRu,
+          descriptionKk: curriculumTopic.descriptionKk,
+          level: '', levelRu: '', levelKk: '',
+          order: topicIndex,
           lessons: lessons,
           totalLessons: lessons.length,
+        };
         });
+      MATHLOGIC_CURRICULUM.getLessons(subjectKey).forEach(function(curriculumLesson) {
+        if (lessonViews[curriculumLesson.id]) allLessons.push(lessonViews[curriculumLesson.id]);
       });
 
       subjects.push({
         key: subjectKey,
         name: meta.name,
+        nameRu: meta.nameRu || meta.name,
+        nameKk: meta.nameKk || meta.name,
         icon: meta.icon || '',
         mainColor: meta.mainColor || '#4F46E5',
         bgActive: meta.bgActive || '#EEF2FF',
@@ -118,6 +125,7 @@ window.Learning = (function() {
         lessons: allLessons,
         totalLessons: allLessons.length,
         firstLessonId: allLessons.length ? allLessons[0].id : null,
+        grades: curriculumSubject.grades.slice(),
       });
     });
     return subjects;
@@ -155,6 +163,9 @@ window.Learning = (function() {
           descriptionRu: reg.descriptionRu || reg.description,
           descriptionKk: reg.descriptionKk || reg.descriptionKz || reg.description,
           descriptionKz: reg.descriptionKz,
+          grade: reg.grade,
+          unitId: reg.unitId || reg.topicId,
+          curriculumTopicId: reg.topicId,
           subjectKey: reg.subjectId,
           topicId: reg.topicId,
           sectionTitle: '',
@@ -178,30 +189,37 @@ window.Learning = (function() {
     return null;
   }
 
-  function getRecord(lessonId) {
-    const lessons = ML.get('progress.lessons', {});
+  function runtimeSnapshot() {
+    return {
+      records: ML.get('progress.lessons', {}),
+      sessions: ML.get('lesson.sessions', {}),
+    };
+  }
+
+  function getRecord(lessonId, snapshot) {
+    const lessons = snapshot ? snapshot.records : ML.get('progress.lessons', {});
     return lessons[resolveLessonId(lessonId)] || null;
   }
 
-  function getLessonStatus(lessonId) {
+  function getSession(lessonId, snapshot) {
+    if (!snapshot) return ML.getLessonSession(resolveLessonId(lessonId));
+    return snapshot.sessions[resolveLessonId(lessonId)] || null;
+  }
+
+  function getLessonStatus(lessonId, snapshot) {
     const found = findLesson(lessonId);
     if (!found) return 'locked';
     const lesson = found.lesson;
-    const record = getRecord(lesson.id);
+    snapshot = snapshot || runtimeSnapshot();
+    const record = getRecord(lesson.id, snapshot);
     if (record && record.status === 'completed') return 'completed';
-    const session = ML.getLessonSession(lesson.id);
+    const session = getSession(lesson.id, snapshot);
     if (session && Array.isArray(session.completedBlocks) && session.completedBlocks.length > 0) return 'current';
     if (lesson.releaseDate) {
       const release = new Date(lesson.releaseDate);
       if (!isNaN(release.getTime()) && release.getTime() > Date.now()) return 'comingSoon';
     }
-    const prerequisites = Array.isArray(lesson.prerequisites) ? lesson.prerequisites : [];
-    const missingPrerequisite = prerequisites.some(function(id) {
-      const prerequisite = getRecord(id);
-      return !prerequisite || prerequisite.status !== 'completed';
-    });
-    if (missingPrerequisite) return 'locked';
-    if (!lesson.hasContent || lesson.availability === 'unavailable' || lesson.availability === 'locked') return 'locked';
+    if (!lesson.hasContent) return 'locked';
     return 'available';
   }
 
@@ -213,10 +231,11 @@ window.Learning = (function() {
     return 'locked';
   }
 
-  function lessonView(lesson) {
-    const status = getLessonStatus(lesson.id);
-    const record = getRecord(lesson.id);
-    const session = ML.getLessonSession(lesson.id);
+  function lessonView(lesson, snapshot) {
+    snapshot = snapshot || runtimeSnapshot();
+    const status = getLessonStatus(lesson.id, snapshot);
+    const record = getRecord(lesson.id, snapshot);
+    const session = getSession(lesson.id, snapshot);
     return {
       id: lesson.id,
       name: lesson.name,
@@ -229,6 +248,10 @@ window.Learning = (function() {
       descriptionKk: lesson.descriptionKk || lesson.descriptionKz || lesson.description,
       descriptionKz: lesson.descriptionKz,
       order: lesson.order,
+      grade: lesson.grade,
+      unitId: lesson.unitId || lesson.topicId,
+      curriculumTopicId: lesson.curriculumTopicId || lesson.topicId,
+      productionStatus: lesson.productionStatus || '',
       sectionTitle: lesson.sectionTitle,
       sectionTitleRu: lesson.sectionTitleRu || lesson.sectionTitle,
       sectionTitleKk: lesson.sectionTitleKk || lesson.sectionTitle,
@@ -238,7 +261,7 @@ window.Learning = (function() {
       subjectKey: lesson.subjectKey,
       topicId: lesson.topicId,
       status: status,
-      state: getLessonState(lesson.id),
+      state: status === 'completed' ? 'completed' : (status === 'current' || status === 'available' ? 'available' : 'locked'),
       route: lesson.route,
       link: lesson.route,
       duration: lesson.duration,
@@ -252,17 +275,22 @@ window.Learning = (function() {
       unlockReasonRu: lesson.unlockReasonRu || lesson.unlockReason || '',
       unlockReasonKk: lesson.unlockReasonKk || lesson.unlockReasonKz || lesson.unlockReason || '',
       prerequisites: lesson.prerequisites || [],
+      softPrerequisites: lesson.softPrerequisites || [],
       hasContent: lesson.hasContent,
+      curriculumCodes: lesson.curriculumCodes || [],
+      archetype: lesson.archetype || '',
       subtopics: lesson.subtopics,
       result: record,
       session: session,
     };
   }
 
-  function getSubjects() {
+  function getSubjects(snapshot) {
+    snapshot = snapshot || runtimeSnapshot();
     return getCourse().map(function(subject) {
-      const completed = subject.lessons.filter(function(lesson) {
-        return getLessonStatus(lesson.id) === 'completed';
+      const published = subject.lessons.filter(function(lesson) { return lesson.hasContent; });
+      const completed = published.filter(function(lesson) {
+        return getLessonStatus(lesson.id, snapshot) === 'completed';
       }).length;
       return {
         key: subject.key,
@@ -270,9 +298,10 @@ window.Learning = (function() {
         icon: subject.icon,
         mainColor: subject.mainColor,
         bgActive: subject.bgActive,
-        totalLessons: subject.totalLessons,
+        totalLessons: published.length,
+        plannedLessons: subject.totalLessons - published.length,
         completedLessons: completed,
-        progress: subject.totalLessons ? Math.round(completed / subject.totalLessons * 100) : 0,
+        progress: published.length ? Math.round(completed / published.length * 100) : 0,
       };
     });
   }
@@ -280,11 +309,13 @@ window.Learning = (function() {
   function getSubject(subjectKey) {
     const subject = findSubject(subjectKey);
     if (!subject) return null;
-    const summary = getSubjects().find(function(item) { return item.key === subjectKey; });
+    const snapshot = runtimeSnapshot();
+    const summary = getSubjects(snapshot).find(function(item) { return item.key === subjectKey; });
     return Object.assign({}, summary, {
       topics: subject.topics.map(function(topic) {
-        const completed = topic.lessons.filter(function(lesson) {
-          return getLessonStatus(lesson.id) === 'completed';
+        const published = topic.lessons.filter(function(lesson) { return lesson.hasContent; });
+        const completed = published.filter(function(lesson) {
+          return getLessonStatus(lesson.id, snapshot) === 'completed';
         }).length;
         return {
           id: topic.id,
@@ -295,9 +326,11 @@ window.Learning = (function() {
           levelRu: topic.levelRu || topic.level,
           levelKk: topic.levelKk || topic.level,
           order: topic.order,
-          totalLessons: topic.totalLessons,
+          grade: topic.grade,
+          totalLessons: published.length,
+          plannedLessons: topic.totalLessons - published.length,
           completedLessons: completed,
-          progress: topic.totalLessons ? Math.round(completed / topic.totalLessons * 100) : 0,
+          progress: published.length ? Math.round(completed / published.length * 100) : 0,
         };
       }),
       firstLessonId: subject.firstLessonId,
@@ -307,11 +340,13 @@ window.Learning = (function() {
   function getTopics(subjectKey) {
     const subject = findSubject(subjectKey);
     if (!subject) return [];
+    const snapshot = runtimeSnapshot();
     return subject.topics.map(function(topic) {
-      const lessons = topic.lessons.map(lessonView);
+      const lessons = topic.lessons.map(function(lesson) { return lessonView(lesson, snapshot); });
       const completed = lessons.filter(function(lesson) { return lesson.status === 'completed'; }).length;
       return {
-        id: topic.id,
+      id: topic.id,
+      grade: topic.grade,
         title: topic.title,
         titleRu: topic.titleRu || topic.title,
         titleKk: topic.titleKk || topic.title,
@@ -319,28 +354,32 @@ window.Learning = (function() {
         levelRu: topic.levelRu || topic.level,
         levelKk: topic.levelKk || topic.level,
         order: topic.order,
-        totalLessons: topic.totalLessons,
+      totalLessons: lessons.filter(function(lesson) { return lesson.hasContent; }).length,
+      plannedLessons: lessons.filter(function(lesson) { return !lesson.hasContent; }).length,
         completedLessons: completed,
-        progress: topic.totalLessons ? Math.round(completed / topic.totalLessons * 100) : 0,
+      progress: lessons.some(function(lesson) { return lesson.hasContent; }) ? Math.round(completed / lessons.filter(function(lesson) { return lesson.hasContent; }).length * 100) : 0,
         lessons: lessons,
       };
     });
   }
 
   function getTopic(subjectKey, topicTitleOrId) {
+    const curriculumTopic = typeof MATHLOGIC_CURRICULUM !== 'undefined' ? MATHLOGIC_CURRICULUM.getTopic(topicTitleOrId) : null;
     return getTopics(subjectKey).find(function(topic) {
-      return topic.id === topicTitleOrId || topic.title === topicTitleOrId;
+      return topic.id === (curriculumTopic ? curriculumTopic.id : topicTitleOrId) || topic.title === topicTitleOrId;
     }) || null;
   }
 
   function getLessons(subjectKey) {
     const subject = findSubject(subjectKey);
-    return subject ? subject.lessons.map(lessonView) : [];
+    if (!subject) return [];
+    const snapshot = runtimeSnapshot();
+    return subject.lessons.map(function(lesson) { return lessonView(lesson, snapshot); });
   }
 
   function getLesson(lessonId) {
     const found = findLesson(lessonId);
-    return found ? lessonView(found.lesson) : null;
+    return found ? lessonView(found.lesson, runtimeSnapshot()) : null;
   }
 
   function isUnlocked(lessonId) {
@@ -349,9 +388,10 @@ window.Learning = (function() {
   }
 
   function findNextLessonId(currentId) {
-    const entries = Object.keys(registry()).map(function(id) { return registry()[id]; })
-      .sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
     const canonical = resolveLessonId(currentId);
+    const current = typeof MATHLOGIC_CURRICULUM !== 'undefined' ? MATHLOGIC_CURRICULUM.getLesson(canonical) : null;
+    if (!current) return null;
+    const entries = MATHLOGIC_CURRICULUM.getLessons(current.subject, current.grade);
     const index = entries.findIndex(function(entry) { return entry.id === canonical; });
     return index > -1 && entries[index + 1] ? entries[index + 1].id : null;
   }
@@ -474,8 +514,24 @@ window.Learning = (function() {
   function resetLesson(lessonId) {
     const id = resolveLessonId(lessonId);
     ML.update(function(data) {
+      const previous = data.progress.lessons[id];
+      const completionEvent = (data.activity.history || []).find(function(event) {
+        return event && event.lessonId === id && event.type === 'LESSON_COMPLETED';
+      });
+      if (previous && completionEvent && Number(previous.duration) > 0 && Number(previous.completedAt) > 0) {
+        const date = new Date(Number(previous.completedAt));
+        if (!isNaN(date.getTime())) {
+          const key = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+          data.activity.studySecondsByDate[key] = Math.max(0,
+            (Number(data.activity.studySecondsByDate[key]) || 0) - Math.floor(Number(previous.duration))
+          );
+        }
+      }
       delete data.progress.lessons[id];
       delete data.lesson.sessions[id];
+      data.activity.history = (data.activity.history || []).filter(function(event) {
+        return !event || event.lessonId !== id;
+      });
       recalculateResultStats(data);
     });
     emit('progress:update', { lessonId: id, reset: true });
@@ -517,16 +573,32 @@ window.Learning = (function() {
     return topic ? topic.progress : 0;
   }
 
-  function availableRegistryLessons() {
-    return Object.keys(registry()).map(function(id) { return getLesson(id); })
+  function availableRegistryLessons(subjectKey, grade) {
+    const hasGrade = grade !== undefined && grade !== null && grade !== '';
+    const snapshot = runtimeSnapshot();
+    return Object.keys(registry()).map(function(id) {
+      const found = findLesson(id);
+      return found ? lessonView(found.lesson, snapshot) : null;
+    })
       .filter(Boolean)
+      .filter(function(lesson) { return !subjectKey || lesson.subjectKey === subjectKey; })
+      .filter(function(lesson) { return !hasGrade || lesson.grade === Number(grade); })
       .sort(function(a, b) { return (registry()[a.id].order || 0) - (registry()[b.id].order || 0); });
   }
 
-  function getNextLesson() {
-    const lessons = availableRegistryLessons();
-    return lessons.find(function(lesson) { return lesson.status === 'current'; }) ||
-      lessons.find(function(lesson) { return lesson.status === 'available'; }) || null;
+  function getNextLesson(context) {
+    const all = availableRegistryLessons();
+    const current = all.find(function(lesson) { return lesson.status === 'current'; });
+    if (current) return current;
+    const requestedId = typeof context === 'string' ? context : context && context.currentLessonId;
+    const anchor = requestedId ? getLesson(requestedId) : getLastCompletedLesson();
+    const subjectKey = (context && context.subjectKey) || (anchor && anchor.subjectKey) || 'algebra';
+    const grade = (context && context.grade) || (anchor && anchor.grade) || 7;
+    const lessons = availableRegistryLessons(subjectKey, grade);
+    // The recommended path is authoritative even when a learner opens and
+    // completes a later lesson directly. Resume the earliest unfinished,
+    // available lesson in the active subject/grade instead of skipping gaps.
+    return lessons.find(function(lesson) { return lesson.status === 'available'; }) || null;
   }
 
   function getLastCompletedLesson() {
@@ -538,7 +610,7 @@ window.Learning = (function() {
   }
 
   function getTotalCompletedLessons() { return Object.keys(ML.getCompletedLessons()).length; }
-  function getTotalLessons() { return getCourse().reduce(function(sum, subject) { return sum + subject.totalLessons; }, 0); }
+  function getTotalLessons() { return Object.keys(registry()).length; }
   function unlock() { return false; }
   function unlockNextLesson(currentId) { return findNextLessonId(currentId); }
 
@@ -559,6 +631,18 @@ window.Learning = (function() {
 
   return {
     getCourse: getCourse,
+    getCurriculum: function() {
+      return typeof MATHLOGIC_CURRICULUM === 'undefined' ? null : {
+        version: MATHLOGIC_CURRICULUM.version,
+        subjects: JSON.parse(JSON.stringify(MATHLOGIC_CURRICULUM.subjects)),
+        units: JSON.parse(JSON.stringify(MATHLOGIC_CURRICULUM.units)),
+        topics: JSON.parse(JSON.stringify(MATHLOGIC_CURRICULUM.topics)),
+        lessons: JSON.parse(JSON.stringify(MATHLOGIC_CURRICULUM.lessons)),
+      };
+    },
+    getProductionQueue: function() {
+      return typeof MATHLOGIC_CURRICULUM === 'undefined' ? [] : JSON.parse(JSON.stringify(MATHLOGIC_CURRICULUM.productionQueue));
+    },
     getRegistry: function() { return JSON.parse(JSON.stringify(registry())); },
     getRegistryEntry: getRegistryEntry,
     resolveLessonId: resolveLessonId,

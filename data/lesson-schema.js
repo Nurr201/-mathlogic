@@ -1,6 +1,6 @@
 window.LESSON_SCHEMA = (function() {
 
-  var SCHEMA_VERSION = '2.0.0';
+  var SCHEMA_VERSION = '2.5.0';
 
   var REQUIRED_PER_TYPE = {
     hero: ['type', 'title'],
@@ -15,6 +15,14 @@ window.LESSON_SCHEMA = (function() {
     challenge: ['type', 'tasks'],
     reflection: ['type', 'questions'],
     result: ['type'],
+    'factor-model': ['type', 'title', 'operation', 'base', 'leftCount', 'rightCount'],
+    'worked-example': ['type', 'title', 'steps'],
+    'guided-practice': ['type', 'question', 'responseType'],
+    'math-response': ['type', 'question', 'answer'],
+    'equation-step': ['type', 'title', 'initial', 'steps'],
+    'graph-workspace': ['type', 'title', 'mode', 'viewport'],
+    'geometry-workspace': ['type', 'title', 'mode', 'viewport', 'vertices'],
+    'lesson-summary': ['type', 'title', 'capabilities'],
   };
 
   var KNOWN_FIELDS = {
@@ -30,6 +38,14 @@ window.LESSON_SCHEMA = (function() {
     challenge: ['id', 'type', 'title', 'tasks'],
     reflection: ['id', 'type', 'title', 'questions'],
     result: ['id', 'type', 'description', 'xp', 'nextLesson'],
+    'factor-model': ['id', 'type', 'title', 'badgeLabel', 'intro', 'operation', 'base', 'leftCount', 'rightCount', 'result', 'ariaLabel', 'explanation'],
+    'worked-example': ['id', 'type', 'title', 'badgeLabel', 'intro', 'expression', 'steps', 'result', 'formula', 'formulaLabel', 'conditions', 'takeaway'],
+    'guided-practice': ['id', 'type', 'title', 'badgeLabel', 'prompt', 'expression', 'question', 'responseType', 'options', 'answer', 'acceptedAnswers', 'inputLabel', 'placeholder', 'hints', 'successFeedback', 'feedback', 'answerFeedback', 'role', 'points'],
+    'math-response': ['id', 'type', 'title', 'badgeLabel', 'prompt', 'expression', 'question', 'inputLabel', 'answer', 'numericInput', 'keyboard', 'misconceptions', 'hints', 'successFeedback', 'feedback', 'role', 'points', 'compact', 'typingHelp'],
+    'equation-step': ['id', 'type', 'title', 'badgeLabel', 'intro', 'initial', 'historyLabel', 'balanceModel', 'steps', 'keyboard', 'successTitle', 'successFeedback', 'role', 'points'],
+    'graph-workspace': ['id', 'type', 'title', 'badgeLabel', 'intro', 'mode', 'viewport', 'function', 'plotPoints', 'referenceX', 'target', 'tolerance', 'rows', 'keyboard', 'showLine', 'revealLine', 'lineLabel', 'parameter', 'requiredValues', 'targetParameter', 'task', 'followUp', 'hints', 'successFeedback', 'feedback', 'misconceptions', 'role', 'points', 'uiLabels'],
+    'geometry-workspace': ['id', 'type', 'title', 'badgeLabel', 'intro', 'mode', 'viewport', 'vertices', 'draggableVertices', 'constraints', 'keyboardStep', 'showMeasurements', 'showSum', 'task', 'requiredMoves', 'requiredCategories', 'categoryLabels', 'explorationGate', 'followUp', 'hints', 'successFeedback', 'feedback', 'role', 'points', 'auxiliaryAt', 'proofSteps'],
+    'lesson-summary': ['id', 'type', 'title', 'description', 'capabilities', 'resultLabels', 'uiLabels', 'completesLesson', 'nextLesson'],
   };
 
   var TOP_LEVEL_KNOWN = ['id', 'title', 'description', 'subject', 'xp', 'blocks', 'meta', 'debug', 'schemaVersion'];
@@ -83,12 +99,219 @@ window.LESSON_SCHEMA = (function() {
     }
   }
 
+  function _checkFactorModel(block, errors, prefix) {
+    if (['multiply', 'divide'].indexOf(block.operation) === -1) errors.push(prefix + ' operation must be "multiply" or "divide"');
+    if (Number(block.leftCount) < 1 || Number(block.rightCount) < 1) errors.push(prefix + ' factor counts must be positive');
+    if (block.operation === 'divide' && Number(block.leftCount) <= Number(block.rightCount)) errors.push(prefix + ' division model requires leftCount > rightCount');
+  }
+
+  function _checkGuidedPractice(block, errors, prefix) {
+    if (['choice', 'input'].indexOf(block.responseType) === -1) errors.push(prefix + ' responseType must be "choice" or "input"');
+    if (block.responseType === 'choice') {
+      if (!Array.isArray(block.options) || block.options.length < 2) errors.push(prefix + ' choice requires at least two options');
+      else if (block.answer === undefined || block.answer < 0 || block.answer >= block.options.length) errors.push(prefix + ' answer is out of bounds');
+    }
+    if (block.responseType === 'input' && !Array.isArray(block.acceptedAnswers)) errors.push(prefix + ' input requires acceptedAnswers');
+    if (block.hints !== undefined && !Array.isArray(block.hints)) errors.push(prefix + ' hints must be an array');
+  }
+
+  function _checkMathResponse(block, errors, prefix) {
+    var keyboardGroups = ['numbers', 'variables', 'operators', 'powers', 'fractions', 'roots'];
+    var answer = block.answer;
+    if (!answer || typeof answer !== 'object') {
+      errors.push(prefix + ' answer must be an object');
+      return;
+    }
+    if (['expression', 'numeric-angle'].indexOf(answer.kind) === -1) errors.push(prefix + ' answer.kind must be "expression" or "numeric-angle"');
+    if (typeof answer.expected !== 'string' || !answer.expected.trim()) errors.push(prefix + ' answer.expected must be a non-empty string');
+    if (answer.validation && answer.validation !== 'normalized' && answer.validation !== 'numeric-angle') errors.push(prefix + ' uses an unsupported validator');
+    if (answer.kind === 'numeric-angle' && answer.validation && answer.validation !== 'numeric-angle') errors.push(prefix + ' numeric-angle answers require the numeric-angle validator');
+    if (answer.accepted !== undefined && !Array.isArray(answer.accepted)) errors.push(prefix + ' answer.accepted must be an array');
+    else if (Array.isArray(answer.accepted) && answer.accepted.some(function(item) { return typeof item !== 'string'; })) errors.push(prefix + ' answer.accepted entries must be strings');
+    if (block.keyboard !== undefined && !Array.isArray(block.keyboard) && (!block.keyboard || typeof block.keyboard !== 'object')) {
+      errors.push(prefix + ' keyboard must be an array or object');
+    } else if (Array.isArray(block.keyboard) && block.keyboard.some(function(group) { return keyboardGroups.indexOf(group) === -1; })) {
+      errors.push(prefix + ' keyboard contains an unknown group');
+    } else if (block.keyboard && !Array.isArray(block.keyboard)) {
+      if (!Array.isArray(block.keyboard.groups) || block.keyboard.groups.some(function(group) { return keyboardGroups.indexOf(group) === -1; })) errors.push(prefix + ' keyboard.groups contains an unknown group');
+      if (block.keyboard.variables !== undefined && (!Array.isArray(block.keyboard.variables) || block.keyboard.variables.some(function(value) { return typeof value !== 'string' || !/^[A-Za-z]$/.test(value); }))) errors.push(prefix + ' keyboard.variables must contain single Latin letters');
+    }
+    if (block.numericInput !== undefined) {
+      if (!block.numericInput || typeof block.numericInput !== 'object') errors.push(prefix + ' numericInput must be an object');
+      else ['prefix', 'suffix'].forEach(function(key) {
+        if (block.numericInput[key] !== undefined && typeof block.numericInput[key] !== 'string') errors.push(prefix + '.numericInput.' + key + ' must be a string');
+      });
+    }
+    if (block.hints !== undefined && !Array.isArray(block.hints)) errors.push(prefix + ' hints must be an array');
+    if (block.misconceptions !== undefined && !Array.isArray(block.misconceptions)) {
+      errors.push(prefix + ' misconceptions must be an array');
+    } else if (Array.isArray(block.misconceptions)) {
+      block.misconceptions.forEach(function(item, index) {
+        var itemPrefix = prefix + '.misconceptions[' + index + ']';
+        if (!item || typeof item !== 'object') errors.push(itemPrefix + ' must be an object');
+        else {
+          if (!item.code || typeof item.code !== 'string') errors.push(itemPrefix + ' requires a code');
+          if (!Array.isArray(item.accepted) || item.accepted.length === 0) errors.push(itemPrefix + ' requires accepted forms');
+          if (!item.feedback) errors.push(itemPrefix + ' requires feedback');
+        }
+      });
+    }
+  }
+
+  function _checkEquationStep(block, errors, prefix) {
+    if (typeof block.initial !== 'string' || !block.initial.trim()) errors.push(prefix + ' initial must be a non-empty string');
+    if (!Array.isArray(block.steps) || block.steps.length === 0) {
+      errors.push(prefix + ' steps must be a non-empty array');
+      return;
+    }
+    block.steps.forEach(function(step, index) {
+      var stepPrefix = prefix + '.steps[' + index + ']';
+      if (!step || typeof step !== 'object') { errors.push(stepPrefix + ' must be an object'); return; }
+      if (!step.prompt) errors.push(stepPrefix + ' requires prompt');
+      if (!step.operationLabel) errors.push(stepPrefix + ' requires operationLabel');
+      if (!step.result) errors.push(stepPrefix + ' requires result');
+      if (!step.answer || step.answer.kind !== 'expression' || typeof step.answer.expected !== 'string') errors.push(stepPrefix + ' requires an expression answer');
+      if (step.answer && step.answer.validation && step.answer.validation !== 'normalized') errors.push(stepPrefix + ' uses an unsupported validator');
+      if (step.operationOptions !== undefined) {
+        if (!Array.isArray(step.operationOptions) || step.operationOptions.length < 2) errors.push(stepPrefix + ' operationOptions must contain at least two choices');
+        else if (!step.operationOptions.some(function(option, optionIndex) { return option && (option.correct === true || Number(step.operationAnswer) === optionIndex); })) errors.push(stepPrefix + ' requires one correct operation');
+      }
+      if (step.hints !== undefined && !Array.isArray(step.hints)) errors.push(stepPrefix + ' hints must be an array');
+      if (step.misconceptions !== undefined && !Array.isArray(step.misconceptions)) errors.push(stepPrefix + ' misconceptions must be an array');
+    });
+  }
+
+  function _isFiniteNumber(value) {
+    return typeof value === 'number' && isFinite(value);
+  }
+
+  function _checkGraphWorkspace(block, errors, prefix) {
+    var modes = ['place-point', 'value-table', 'inspect', 'parameter'];
+    if (modes.indexOf(block.mode) === -1) errors.push(prefix + ' mode must be place-point, value-table, inspect, or parameter');
+    var viewport = block.viewport;
+    if (!viewport || typeof viewport !== 'object') {
+      errors.push(prefix + ' viewport must be an object');
+    } else {
+      ['xMin', 'xMax', 'yMin', 'yMax'].forEach(function(key) {
+        if (!_isFiniteNumber(viewport[key])) errors.push(prefix + '.viewport.' + key + ' must be a finite number');
+      });
+      if (_isFiniteNumber(viewport.xMin) && _isFiniteNumber(viewport.xMax) && viewport.xMin >= viewport.xMax) errors.push(prefix + ' viewport requires xMin < xMax');
+      if (_isFiniteNumber(viewport.yMin) && _isFiniteNumber(viewport.yMax) && viewport.yMin >= viewport.yMax) errors.push(prefix + ' viewport requires yMin < yMax');
+      if (viewport.gridStep !== undefined && (!_isFiniteNumber(viewport.gridStep) || viewport.gridStep <= 0)) errors.push(prefix + ' viewport.gridStep must be positive');
+      if (viewport.labelStep !== undefined && (!_isFiniteNumber(viewport.labelStep) || viewport.labelStep <= 0)) errors.push(prefix + ' viewport.labelStep must be positive');
+    }
+    if (block.function !== undefined) {
+      if (!block.function || block.function.type !== 'linear') errors.push(prefix + ' function.type must be "linear"');
+      else {
+        if (!_isFiniteNumber(block.function.k)) errors.push(prefix + ' function.k must be a finite number');
+        if (!_isFiniteNumber(block.function.b)) errors.push(prefix + ' function.b must be a finite number');
+      }
+    }
+    function checkPoint(point, pointPrefix) {
+      if (!point || !_isFiniteNumber(point.x) || !_isFiniteNumber(point.y)) errors.push(pointPrefix + ' requires finite x and y');
+    }
+    if (block.plotPoints !== undefined) {
+      if (!Array.isArray(block.plotPoints)) errors.push(prefix + ' plotPoints must be an array');
+      else block.plotPoints.forEach(function(point, index) { checkPoint(point, prefix + '.plotPoints[' + index + ']'); });
+    }
+    if (block.referenceX !== undefined && (!Array.isArray(block.referenceX) || block.referenceX.some(function(value) { return !_isFiniteNumber(value); }))) errors.push(prefix + ' referenceX must contain finite numbers');
+    if (block.mode === 'place-point') checkPoint(block.target, prefix + '.target');
+    if (block.mode === 'value-table') {
+      if (!block.function) errors.push(prefix + ' value-table requires function');
+      if (!Array.isArray(block.rows) || block.rows.length < 2) errors.push(prefix + ' value-table requires at least two rows');
+      else block.rows.forEach(function(row, index) {
+        if (!row || !_isFiniteNumber(row.x) || !_isFiniteNumber(row.y)) errors.push(prefix + '.rows[' + index + '] requires finite x and y');
+      });
+    }
+    if (block.mode === 'parameter') {
+      var parameter = block.parameter;
+      if (!parameter || ['k', 'b'].indexOf(parameter.name) === -1) errors.push(prefix + ' parameter.name must be k or b');
+      else {
+        ['min', 'max', 'step', 'initial'].forEach(function(key) {
+          if (!_isFiniteNumber(parameter[key])) errors.push(prefix + '.parameter.' + key + ' must be a finite number');
+        });
+        if (_isFiniteNumber(parameter.min) && _isFiniteNumber(parameter.max) && parameter.min >= parameter.max) errors.push(prefix + ' parameter requires min < max');
+        if (_isFiniteNumber(parameter.step) && parameter.step <= 0) errors.push(prefix + ' parameter.step must be positive');
+      }
+      if (block.requiredValues !== undefined && (!Array.isArray(block.requiredValues) || block.requiredValues.some(function(value) { return !_isFiniteNumber(value); }))) errors.push(prefix + ' requiredValues must contain finite numbers');
+    }
+    if (block.followUp !== undefined) {
+      if (!block.followUp || !Array.isArray(block.followUp.options) || block.followUp.options.length < 2) errors.push(prefix + ' followUp requires at least two options');
+      else if (!Number.isInteger(block.followUp.answer) || block.followUp.answer < 0 || block.followUp.answer >= block.followUp.options.length) errors.push(prefix + ' followUp.answer is out of bounds');
+    }
+    if (block.hints !== undefined && !Array.isArray(block.hints)) errors.push(prefix + ' hints must be an array');
+    if (block.tolerance !== undefined && (!_isFiniteNumber(block.tolerance) || block.tolerance <= 0)) errors.push(prefix + ' tolerance must be positive');
+  }
+
+  function _checkGeometryWorkspace(block, errors, prefix) {
+    var modes = ['explore', 'proof'];
+    if (modes.indexOf(block.mode) === -1) errors.push(prefix + ' mode must be explore or proof');
+    var viewport = block.viewport;
+    if (!viewport || typeof viewport !== 'object') {
+      errors.push(prefix + ' viewport must be an object');
+    } else {
+      ['xMin', 'xMax', 'yMin', 'yMax'].forEach(function(key) {
+        if (!_isFiniteNumber(viewport[key])) errors.push(prefix + '.viewport.' + key + ' must be a finite number');
+      });
+      if (_isFiniteNumber(viewport.xMin) && _isFiniteNumber(viewport.xMax) && viewport.xMin >= viewport.xMax) errors.push(prefix + ' viewport requires xMin < xMax');
+      if (_isFiniteNumber(viewport.yMin) && _isFiniteNumber(viewport.yMax) && viewport.yMin >= viewport.yMax) errors.push(prefix + ' viewport requires yMin < yMax');
+    }
+    var vertices = block.vertices;
+    if (!vertices || typeof vertices !== 'object') {
+      errors.push(prefix + ' vertices must be an object');
+    } else {
+      ['A', 'B', 'C'].forEach(function(id) {
+        var point = vertices[id];
+        if (!point || !_isFiniteNumber(point.x) || !_isFiniteNumber(point.y)) errors.push(prefix + '.vertices.' + id + ' requires finite x and y');
+      });
+      var hasFiniteTriangle = ['A', 'B', 'C'].every(function(id) {
+        return vertices[id] && _isFiniteNumber(vertices[id].x) && _isFiniteNumber(vertices[id].y);
+      });
+      if (hasFiniteTriangle) {
+        var twiceArea = Math.abs(
+          (vertices.B.x - vertices.A.x) * (vertices.C.y - vertices.A.y) -
+          (vertices.B.y - vertices.A.y) * (vertices.C.x - vertices.A.x)
+        );
+        var minimumArea = block.constraints && _isFiniteNumber(block.constraints.minArea) ? block.constraints.minArea : 1.2;
+        if (twiceArea / 2 < minimumArea) errors.push(prefix + ' initial vertices form a degenerate or too narrow triangle');
+      }
+    }
+    if (block.draggableVertices !== undefined && (!Array.isArray(block.draggableVertices) || block.draggableVertices.some(function(id) { return ['A', 'B', 'C'].indexOf(id) === -1; }))) errors.push(prefix + ' draggableVertices may only reference A, B, or C');
+    if (block.constraints !== undefined) {
+      if (!block.constraints || typeof block.constraints !== 'object') errors.push(prefix + ' constraints must be an object');
+      else ['minArea', 'minSide'].forEach(function(key) {
+        if (block.constraints[key] !== undefined && (!_isFiniteNumber(block.constraints[key]) || block.constraints[key] <= 0)) errors.push(prefix + '.constraints.' + key + ' must be positive');
+      });
+    }
+    if (block.requiredMoves !== undefined && (!Number.isInteger(block.requiredMoves) || block.requiredMoves < 0)) errors.push(prefix + ' requiredMoves must be a non-negative integer');
+    if (block.requiredCategories !== undefined) {
+      var categories = ['acute', 'right', 'obtuse', 'narrow'];
+      if (!Array.isArray(block.requiredCategories) || block.requiredCategories.some(function(category) { return categories.indexOf(category) === -1; })) errors.push(prefix + ' requiredCategories contains an unsupported category');
+    }
+    if (block.followUp !== undefined) {
+      if (!block.followUp || !Array.isArray(block.followUp.options) || block.followUp.options.length < 2) errors.push(prefix + ' followUp requires at least two options');
+      else if (!Number.isInteger(block.followUp.answer) || block.followUp.answer < 0 || block.followUp.answer >= block.followUp.options.length) errors.push(prefix + ' followUp.answer is out of bounds');
+    }
+    if (block.mode === 'proof') {
+      if (!Array.isArray(block.proofSteps) || block.proofSteps.length < 3) errors.push(prefix + ' proof mode requires at least three proofSteps');
+      if (block.auxiliaryAt !== undefined && block.auxiliaryAt !== 'A') errors.push(prefix + ' auxiliaryAt currently supports A only');
+    }
+    if (block.hints !== undefined && !Array.isArray(block.hints)) errors.push(prefix + ' hints must be an array');
+  }
+
   var BLOCK_VALIDATORS = {
     warmup: _checkAnswerBounds,
     quiz: _checkAnswerBounds,
     input: _checkInputFields,
     challenge: _checkChallengeTasks,
     result: _checkResultNextLesson,
+    'factor-model': _checkFactorModel,
+    'guided-practice': _checkGuidedPractice,
+    'math-response': _checkMathResponse,
+    'equation-step': _checkEquationStep,
+    'graph-workspace': _checkGraphWorkspace,
+    'geometry-workspace': _checkGeometryWorkspace,
+    'lesson-summary': _checkResultNextLesson,
   };
 
   /* ------------------------------------------
@@ -176,6 +399,25 @@ window.LESSON_SCHEMA = (function() {
     config.blocks.forEach(function(block, i) {
       _validateBlock(block, i, errors, warnings, seenIds);
     });
+
+    var routeStages = config.meta && config.meta.routeStages;
+    if (routeStages !== undefined) {
+      if (!Array.isArray(routeStages) || routeStages.length === 0) {
+        errors.push('meta.routeStages must be a non-empty array');
+      } else {
+        var previousThrough = -1;
+        routeStages.forEach(function(stage, index) {
+          var prefix = 'meta.routeStages[' + index + ']';
+          if (!stage || !stage.id || !stage.label) errors.push(prefix + ' requires id and label');
+          if (!stage || !Number.isInteger(Number(stage.through)) || Number(stage.through) <= previousThrough) {
+            errors.push(prefix + ' through must be an increasing integer');
+          } else {
+            previousThrough = Number(stage.through);
+          }
+        });
+        if (previousThrough < config.blocks.length - 1) errors.push('meta.routeStages must cover every block');
+      }
+    }
 
     Object.keys(config).forEach(function(key) {
       if (TOP_LEVEL_KNOWN.indexOf(key) === -1) {
@@ -292,8 +534,8 @@ window.LESSON_SCHEMA = (function() {
           type: 'quiz',
           question: '\u0414\u043B\u044F \u0443\u0440\u0430\u0432\u043D\u0435\u043D\u0438\u044F x\u00B2 \u2013 5x + 6 = 0 \u0447\u0435\u043C\u0443 \u0440\u0430\u0432\u043D\u0430 \u0441\u0443\u043C\u043C\u0430 \u043A\u043E\u0440\u043D\u0435\u0439?',
           equation: 'x\u00B2 \u2013 5x + 6 = 0',
-          options: ['\u20135', '5', '6', '\u20136'],
-          answer: 1,
+          options: ['\u20135', '6', '5', '\u20136'],
+          answer: 2,
           explanation: 'p = \u20135, \u0437\u043D\u0430\u0447\u0438\u0442 \u2013p = 5. \u0421\u0443\u043C\u043C\u0430 \u043A\u043E\u0440\u043D\u0435\u0439 \u0440\u0430\u0432\u043D\u0430 5.',
         },
 
@@ -373,8 +615,8 @@ window.LESSON_SCHEMA = (function() {
             {
               type: 'quiz',
               question: '\u0423 \u043A\u0430\u043A\u043E\u0433\u043E \u0443\u0440\u0430\u0432\u043D\u0435\u043D\u0438\u044F \u043A\u043E\u0440\u043D\u0438 3 \u0438 7?',
-              options: ['x\u00B2 \u2013 10x + 21 = 0', 'x\u00B2 + 10x + 21 = 0', 'x\u00B2 \u2013 10x \u2013 21 = 0', 'x\u00B2 + 10x \u2013 21 = 0'],
-              answer: 0,
+              options: ['x\u00B2 + 10x + 21 = 0', 'x\u00B2 \u2013 10x \u2013 21 = 0', 'x\u00B2 + 10x \u2013 21 = 0', 'x\u00B2 \u2013 10x + 21 = 0'],
+              answer: 3,
             },
             {
               type: 'input',
@@ -385,8 +627,8 @@ window.LESSON_SCHEMA = (function() {
             {
               type: 'quiz',
               question: '\u0427\u0435\u043C\u0443 \u0440\u0430\u0432\u043D\u043E q, \u0435\u0441\u043B\u0438 \u043A\u043E\u0440\u043D\u0438 \u2014 \u044D\u0442\u043E 2 \u0438 \u20139?',
-              options: ['\u201318', '18', '\u20137', '\u201311'],
-              answer: 0,
+              options: ['18', '\u201318', '\u20137', '\u201311'],
+              answer: 1,
               explanation: 'q = 2 \u00D7 (\u20139) = \u201318',
             },
           ],

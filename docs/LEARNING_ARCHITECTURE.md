@@ -1,110 +1,145 @@
 # MathLogic Learning Architecture
 
-Актуальный контракт после перехода на канонические уроки и storage schema v2.
+This document describes the current product model. The source of truth is the
+implementation, primarily `data/curriculum.js`, `js/learning.js`,
+`data/lesson-assets.js` and `js/data.js`.
 
-## Источники данных
+## Two layers: curriculum and presentation
 
-- `js/data.js` содержит каталог `DATA` и реестр реально реализованных уроков `LESSON_REGISTRY`.
-- Каталог описывает весь будущий курс. Наличие строки в `DATA` не означает, что контент готов.
-- Только урок из `LESSON_REGISTRY` с `availability: "available"` и выполненными optional `prerequisites` открывается в `lesson.html?id=...`.
-- `LESSON_LEGACY_MAP` явно сопоставляет старые ID и старые URL с постоянными ID. ID больше не выводится из позиции элемента в массиве.
-- `js/learning.js` объединяет каталог, реестр и пользовательские данные и является публичным read/write API учебного домена.
+The canonical curriculum is:
 
-Сейчас зарегистрированы:
-
-| Канонический ID | Конфиг | Маршрут |
-|---|---|---|
-| `algebra.exponents.basics` | `LESSON_EXPONENTS` | `lesson.html?id=algebra.exponents.basics` |
-| `algebra.vieta.intro` | `LESSON_VIETA` | `lesson.html?id=algebra.vieta.intro` |
-
-`topic-1-expressions.html` сохранён только как redirect для старых ссылок.
-
-## Storage schema v2
-
-Все пользовательские данные хранятся под одним ключом `mathlogic_data`:
-
-```js
-{
-  version: 2,
-  user: { xp, level, streak, ... }, // legacy compatibility; active UI does not use these fields
-  progress: {
-    lessons: {
-      "algebra.exponents.basics": {
-        status: "completed",
-        percentage: 80,
-        correctAnswers: 4,
-        totalQuestions: 5,
-        duration: 320,
-        startedAt: 0,
-        completedAt: 0,
-        xpEarned: 0
-      }
-    },
-    subtopics: {}
-  },
-  lesson: {
-    sessions: {
-      "algebra.vieta.intro": { currentIndex, completedBlocks, answers, blockResults, timeSpent }
-    }
-  },
-  activity: { dates: [], studySecondsByDate: {} },
-  rewards: {}, // legacy compatibility
-  settings: {}, stats: {}, achievements: [], timeline: []
-}
+```text
+Subject → Unit → Topic → Lesson
 ```
 
-`ML.get()` возвращает копию данных. Согласованные изменения выполняются через `ML.update(mutator)`. Сессии с ID, содержащими точки, читаются только через `getLessonSession` / `setLessonSession`, а не через dotted path.
+- `Subject` is currently Algebra or Geometry.
+- `Unit` is a large official-curriculum grouping with grade metadata and
+  curriculum-code coverage.
+- `Topic` is a real mathematical group with a stable ID, localized title and
+  description, and its own ordered lesson IDs. It is not a generated
+  `*.core` placeholder.
+- `Lesson` is one routeable learning session with objectives, prerequisites,
+  source references, interaction intent, evidence and production status.
 
-При чтении применяются defaults, проверяются основные типы и выполняются идемпотентные миграции:
+`grade` is curriculum metadata, not a platform boundary and not the required
+student navigation. The currently populated content scope is grades 7–9; the
+data model can add later school levels or other programmes without changing
+lesson IDs or storage.
 
-- `progress.lessonStates` → `progress.lessons`;
-- `lesson.v2` → `lesson.sessions`;
-- старые lesson ID → канонические ID;
-- `ml_streak_dates` → `activity.dates`.
+`data/program-presentation.js` is a presentation layer, not a second
+curriculum. It maps canonical topic IDs into student-facing **Large Modules**:
 
-Ошибки чтения/записи не скрываются полностью: они доступны через `ML.getDiagnostics()` и выводятся в console. При повреждённом JSON приложение безопасно стартует с defaults.
+```text
+Subject → Large Module → Topic → Lesson
+```
 
-## Статусы урока
+The Program page is a vertical learning path. It deliberately does not make
+grade tabs the primary hierarchy. Large Modules describe a broad direction;
+Topics group related lessons; lessons retain canonical order and prerequisites.
+Development order never determines course order.
 
-`Learning.getLessonStatus(id)` возвращает ровно одно состояние:
+## Curriculum, content and availability
 
-| Статус | Основание |
+`data/curriculum.js` contains lightweight metadata only. It must not contain
+full lesson blocks. A lesson can be `planned`, `implemented`, `reference` or
+`needs-review`; this is a production status, not a student state.
+
+`js/data.js` contains `LESSON_REGISTRY`, the registry of actual lesson configs.
+Only registry entries have a config global, canonical route
+`lesson.html?id=<stable-id>`, duration and loadable content. The legacy `DATA`
+view is generated for compatibility and must not become a second source of
+truth.
+
+`Learning.getLessonStatus(id)` derives the student state from registry metadata,
+progress and prerequisites:
+
+| State | Meaning |
 |---|---|
-| `completed` | есть завершённый result в `progress.lessons` |
-| `current` | есть незавершённая session с пройденными блоками |
-| `available` | контент зарегистрирован и доступен |
-| `comingSoon` | задана валидная будущая `releaseDate` |
-| `locked` | контент отсутствует или явно заблокирован |
+| `completed` | A completed product result exists. |
+| `current` | An unfinished meaningful session exists. |
+| `available` | Content exists and hard prerequisites are complete. |
+| `comingSoon` | A future release date is configured. |
+| `locked` | Content is absent/unavailable or required prerequisites are incomplete. |
 
-Для незарегистрированных модулей не создаются фиктивные даты. Dashboard показывает честную причину «урок пока не готов».
+The Program shows all canonical lessons in their Topic. A lesson title is a
+link only when content and a route exist; planned lessons do not create dead
+routes. Completed lessons remain routeable for repeat/viewing. Topic progress
+uses published lessons only, not nearby planned lessons.
 
-## Completion
+Hard prerequisites affect availability; soft prerequisites are advisory
+metadata. The current product deliberately avoids a separate user-managed
+unlock state. `Learning.unlock()` remains a compatibility no-op.
 
-`Learning.completeLesson(id, result)` — единственный product-level lifecycle завершения урока. В одной транзакции он:
+Stable canonical lesson IDs are storage and History keys. Do not rename them
+casually. `LESSON_LEGACY_MAP` maps known historic IDs and URLs to current IDs.
 
-1. проверяет первое завершение;
-2. сохраняет нормализованный result;
-3. помечает подтемы;
-4. обновляет учебные stats и timeline.
+## Runtime model
 
-После транзакции очищается session, отмечается день активности и отправляются `lesson:completed`, `progress:update`.
+`js/learning.js` is the learning-domain API joining curriculum metadata,
+registry data and `ML` storage. Useful reads include `getSubjects`,
+`getTopics`, `getLessons`, `getLesson`, `getLessonStatus` and `getNextLesson`.
+Writes are centred on `completeLesson`, `resetLesson`, `resetSubject` and
+`resetAll`.
 
-Новое прохождение и repeat возвращают `xpEarned: 0`; XP, streak, rewards и achievements больше не обновляются. Их старые storage-поля сохраняются только для чтения существующих пользовательских данных. `resetLesson()` удаляет result/session, а `resetAll()` очищает учебный прогресс, активность и аналитику, сохраняя профиль, авторизацию и настройки.
+`getNextLesson()` is deterministic: resume a current lesson first; otherwise
+return the earliest unfinished available registered lesson in the active
+subject/grade context. The canonical recommended order is authoritative.
 
-## Публичный API
+`js/dashboard.js` consumes that API for the next lesson and nearby path.
+`js/program.js` consumes the presentation layer for the complete student path.
+Neither page owns curriculum order.
 
-Основное чтение: `getSubjects`, `getSubject`, `getTopics`, `getLessons`, `getLesson`, `getLessonStatus`, `getNextLesson`, `getLastCompletedLesson`, методы progress.
+## Session, completion and history
 
-Основная запись: `completeLesson`, `resetLesson`, `resetSubject`, `resetAll`.
+All data is stored under `mathlogic_data` (storage schema version 2). Lesson
+sessions live at `lesson.sessions[canonicalLessonId]`; completed results live
+at `progress.lessons[canonicalLessonId]`. Use the storage helpers for dotted
+lesson IDs rather than generic dotted-path access.
 
-Старый `getLessonState()` оставлен совместимым и сводит новые статусы к трём старым. `unlock()` оставлен no-op: готовность контента не должна создаваться пользовательским состоянием.
+The Lesson Engine persists its current index, completed blocks, block results,
+draft/evidence interaction state and elapsed time. Blocks persist only
+meaningful state: drafts, checked answers, hints, repairs and configured
+workspace evidence—not every keystroke, pointer move or animation frame.
 
-## Добавление урока
+`js/lesson.js` receives the Engine finish event and calls
+`Learning.completeLesson()` once. That transaction records the product result,
+study activity and a Learning History event, then clears the in-progress
+session. Completion is idempotent; repeating a completed lesson does not add a
+second completion or activity event.
 
-1. Добавить постоянный namespaced ID, метаданные, route и имя config в `LESSON_REGISTRY`.
-2. Если раньше был другой ID/URL, внести его в `legacyIds`.
-3. Добавить этот ID соответствующему module в `DATA`.
-4. Создать config по schema и подключить его до `js/lesson.js`.
-5. Проверить `LessonValidator.validate(config)` и выполнить `node tests/core-smoke.js`.
+Historical XP/streak/reward fields remain only for storage compatibility.
+Current learning completion does not award XP or achievements.
 
-Не добавлять отдельную HTML-реализацию completion и не начислять игровые награды из renderer/page.
+## Lesson loading and performance
+
+`lesson.html?id=…` loads the small shared shell first. `js/lesson-loader.js`
+resolves the requested canonical ID through `data/lesson-assets.js`, then loads
+only that config and its required renderer scripts.
+
+- MathLive is vendored and loads only for lessons that use Math Input.
+- Equation, graph and geometry renderers load only when the selected lesson
+  declares them in the assets manifest.
+- Numeric-angle geometry currently uses a native field and does not load
+  MathLive merely for that field.
+- `js/dev.js` is loaded only in explicit debug mode (`?debug=1` or `DEV`).
+
+An unknown, locked or unavailable direct route loads only the safe lesson-page
+error controller. Direct canonical routes remain the only lesson runtime route.
+
+## Current content
+
+The complete planned catalogue belongs in `data/curriculum.js`; do not maintain
+a manual mirror here. Current production examples include the powers sequence,
+monomials and polynomials, equivalent transformations of linear equations,
+linear-function graphs, Vieta and the triangle-angle-sum lesson.
+
+Use `LESSON_REGISTRY` and `MATHLOGIC_LESSON_ASSETS.lessons` to determine the
+current set of loadable lessons rather than this prose.
+
+## Adding a lesson
+
+Follow `docs/LESSON_AUTHORING_GUIDE.md`. In short: use an existing canonical
+lesson record, author a validated config, register it, add its lazy-load asset
+entry, change production status only after QA, and run the integrity and
+relevant primitive tests. Do not create an alternate HTML lesson, a new
+completion path or a second curriculum list.

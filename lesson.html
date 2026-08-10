@@ -6,8 +6,8 @@
   <title>Урок — MathLogic</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap"></noscript>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/animations.css">
@@ -80,26 +80,14 @@
 
   <div class="axis-toast" id="lesson-toast" role="status" aria-live="polite"></div>
 
+  <script src="data/curriculum.js"></script>
   <script src="js/data.js"></script>
-  <script src="js/storage.js?v=nogame"></script>
-  <script src="js/i18n.js?v=nogame"></script>
-  <script src="js/events.js?v=nogame"></script>
-  <script src="js/learning.js?v=nogame"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/events.js"></script>
+  <script src="js/learning.js"></script>
   <script src="js/ui.js"></script>
-  <script src="js/lesson-engine/state.js"></script>
-  <script src="js/lesson-engine/hooks.js"></script>
-  <script src="js/lesson-engine/storage.js"></script>
-  <script src="js/lesson-engine/debug.js"></script>
-  <script src="js/lesson-engine/serializer.js"></script>
-  <script src="js/lesson-engine/core.js"></script>
-  <script src="js/lesson-engine.js"></script>
-  <script src="js/lesson-blocks/helpers.js"></script>
-  <script src="js/lesson-blocks/registry.js"></script>
-  <script src="js/lesson-blocks/renderers.js?v=nogame"></script>
-  <script src="js/lesson-blocks.js"></script>
-  <script src="data/lesson-schema.js"></script>
-  <script src="data/lessons/exponents.js"></script>
-  <script src="js/lesson.js?v=v7"></script>
-  <script src="js/dev.js?v=2"></script>
+  <script src="data/lesson-assets.js"></script>
+  <script src="js/lesson-loader.js"></script>
 </body>
 </html>

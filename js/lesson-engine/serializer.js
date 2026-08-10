@@ -14,6 +14,8 @@ window.__EngineInternal = window.__EngineInternal || {};
       completedBlocks: I.state.completedBlocks,
       answers: I.state.answers,
       blockResults: I.state.blockResults,
+      interactionStates: I.state.interactionStates,
+      completedSnapshot: I.state.completedSnapshot === true,
       finished: I.state.finished,
     });
   };
@@ -34,6 +36,8 @@ window.__EngineInternal = window.__EngineInternal || {};
       I.state.completedBlocks = data.completedBlocks || [];
       I.state.answers = data.answers || {};
       I.state.blockResults = data.blockResults || {};
+      I.state.interactionStates = data.interactionStates || {};
+      I.state.completedSnapshot = data.completedSnapshot === true;
       I.state.finished = data.finished || false;
       I.state.repeatMode = false;
       I.state.startTime = Date.now();

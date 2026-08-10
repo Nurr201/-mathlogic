@@ -48,10 +48,76 @@
     });
     Object.keys(source).forEach(function(key) {
       if (/((Kk|KK|Kz|KZ|Kazakh|Ru|RU)|_(kk|kz|ru))$/.test(key)) return;
+      /* Structured fields were already recursively localized above. Treating a
+         plain object as a legacy scalar translation turns it into an empty
+         string and loses metadata such as declarative route stages. */
+      if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) return;
       var selected = I18N.localize(source, key, lang);
       if (selected !== undefined && selected !== null) result[key] = localizeContent(selected);
     });
     return result;
+  }
+
+  function blockTranslationMap(sourceBlock) {
+    var map = {};
+    var lang = language();
+    function visit(value) {
+      if (Array.isArray(value)) {
+        value.forEach(visit);
+        return;
+      }
+      if (!value || typeof value !== 'object') return;
+      var hasLocalized = value.ru !== undefined || value.kk !== undefined || value.kz !== undefined;
+      if (hasLocalized) {
+        var translated = lang === 'kk'
+          ? (value.kk !== undefined ? value.kk : value.kz !== undefined ? value.kz : value.ru)
+          : (value.ru !== undefined ? value.ru : value.kk !== undefined ? value.kk : value.kz);
+        if (typeof translated === 'string') {
+          ['ru', 'kk', 'kz'].forEach(function(key) {
+            if (typeof value[key] === 'string') map[value[key]] = translated;
+          });
+        }
+      }
+      Object.keys(value).forEach(function(key) { visit(value[key]); });
+    }
+    visit(sourceBlock);
+    return map;
+  }
+
+  function relocalizeSavedSession(session, sourceConfig) {
+    if (!session || !sourceConfig || !Array.isArray(sourceConfig.blocks)) return false;
+    var changed = false;
+    function replaceStrings(value, map) {
+      if (Array.isArray(value)) {
+        value.forEach(function(item, index) {
+          if (typeof item === 'string' && map[item] !== undefined && item !== map[item]) {
+            value[index] = map[item];
+            changed = true;
+          } else {
+            replaceStrings(item, map);
+          }
+        });
+        return;
+      }
+      if (!value || typeof value !== 'object') return;
+      Object.keys(value).forEach(function(key) {
+        if (typeof value[key] === 'string' && map[value[key]] !== undefined && value[key] !== map[value[key]]) {
+          value[key] = map[value[key]];
+          changed = true;
+        } else {
+          replaceStrings(value[key], map);
+        }
+      });
+    }
+    ['interactionStates', 'blockResults'].forEach(function(collectionName) {
+      var collection = session[collectionName];
+      if (!collection || typeof collection !== 'object') return;
+      Object.keys(collection).forEach(function(index) {
+        var block = sourceConfig.blocks[Number(index)];
+        if (block) replaceStrings(collection[index], blockTranslationMap(block));
+      });
+    });
+    return changed;
   }
 
   function setShellCopy() {
@@ -94,7 +160,7 @@
     config.title = localized(meta, 'title');
     config.description = localized(meta, 'description');
     config.xp = 0;
-    var resultBlock = config.blocks && config.blocks.find(function(block) { return block.type === 'result'; });
+    var resultBlock = config.blocks && config.blocks.find(function(block) { return block.type === 'result' || block.type === 'lesson-summary'; });
     if (resultBlock) {
       resultBlock.xp = 0;
       var nextId = Learning.getNextLessonId(meta.id);
@@ -106,16 +172,26 @@
     return config;
   }
 
-  function stageFor(block) {
+  function stageFor(block, blockIndex) {
+    var configured = activeConfig && activeConfig.meta && activeConfig.meta.routeStages;
+    if (Array.isArray(configured) && configured.length) {
+      var matched = configured.find(function(stage) { return blockIndex <= Number(stage.through); });
+      if (matched) return matched.id;
+    }
     var type = block.type;
     if (['hero', 'goal', 'warmup'].indexOf(type) > -1) return 'start';
-    if (['anchor', 'theory'].indexOf(type) > -1) return 'rule';
-    if (['mistake', 'sandbox'].indexOf(type) > -1) return 'example';
-    if (['quiz', 'input', 'challenge'].indexOf(type) > -1) return 'practice';
+    if (['anchor', 'theory', 'factor-model'].indexOf(type) > -1) return 'rule';
+    if (['mistake', 'sandbox', 'worked-example'].indexOf(type) > -1) return 'example';
+    if (['quiz', 'input', 'challenge', 'guided-practice', 'math-response', 'equation-step', 'graph-workspace', 'geometry-workspace'].indexOf(type) > -1) return 'practice';
     return 'finish';
   }
 
   function stageLabel(stage) {
+    var configured = activeConfig && activeConfig.meta && activeConfig.meta.routeStages;
+    if (Array.isArray(configured)) {
+      var matched = configured.find(function(item) { return item.id === stage; });
+      if (matched && matched.label) return matched.label;
+    }
     var keys = { start: 'stageStart', rule: 'stageRule', example: 'stageExample', practice: 'stagePractice', finish: 'stageFinish' };
     return text(keys[stage]);
   }
@@ -123,7 +199,7 @@
   function stages() {
     var result = [];
     (activeConfig.blocks || []).forEach(function(block, index) {
-      var key = stageFor(block);
+      var key = stageFor(block, index);
       var stage = result.find(function(item) { return item.key === key; });
       if (!stage) {
         stage = { key: key, label: stageLabel(key), firstIndex: index, indices: [] };
@@ -171,12 +247,15 @@
 
   function updateEngineUI() {
     var state = LessonEngine.getState();
+    var active = document.getElementById('lesson-active');
+    if (active && active.classList) active.classList.toggle('is-compact-heading', state.currentIndex > 0);
     renderRoute(state);
     renderProgress(state);
     var mode = '';
-    if (state.repeatMode) mode = text('repeat');
+    if (state.finished) mode = text('completed');
+    else if (state.repeatMode) mode = text('repeat');
     else if (state.completedBlocks.length) mode = text('resume');
-    setMode(mode, state.repeatMode);
+    setMode(mode, state.repeatMode && !state.finished);
   }
 
   function setMode(mode, isRepeat) {
@@ -207,6 +286,14 @@
       answers: data.answers || {},
       xpEarned: 0,
     });
+    try {
+      var snapshot = JSON.parse(LessonEngine.exportState());
+      snapshot.completedSnapshot = true;
+      snapshot.updatedAt = Date.now();
+      ML.setLessonSession(activeLesson.id, snapshot);
+    } catch (error) {
+      console.warn('[Lesson] completion snapshot failed', error);
+    }
     setMode(text('completed'), false);
   }
 
@@ -267,9 +354,17 @@
     });
   }
 
+  function scheduleLastVisit() {
+    var update = function() { ML.updateLastVisit(); };
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(update, { timeout: 1500 });
+    } else {
+      setTimeout(update, 0);
+    }
+  }
+
   function init() {
     ML.applySettings();
-    ML.updateLastVisit();
     setShellCopy();
     bindTheme();
 
@@ -280,7 +375,7 @@
       return;
     }
     activeLesson = Learning.getLesson(id);
-    if (!activeLesson || !activeLesson.hasContent || activeLesson.status === 'comingSoon' || activeLesson.status === 'locked') {
+    if (!activeLesson || !activeLesson.hasContent || activeLesson.status === 'comingSoon') {
       showError(text('unavailable'), activeLesson && activeLesson.unlockReason ? activeLesson.unlockReason : text('notFoundText'));
       return;
     }
@@ -290,6 +385,8 @@
       return;
     }
     var savedSession = ML.getLessonSession(activeLesson.id);
+    var sourceConfig = window[meta.config];
+    if (relocalizeSavedSession(savedSession, sourceConfig)) ML.setLessonSession(activeLesson.id, savedSession);
     savedBlocksAtLoad = savedSession && Array.isArray(savedSession.completedBlocks) ? savedSession.completedBlocks.length : 0;
     if (window.LessonValidator) {
       var validation = LessonValidator.validate(activeConfig);
@@ -306,6 +403,7 @@
     document.getElementById('lesson-active').hidden = false;
     LessonEngine.load(activeConfig, document.getElementById('main-content'));
     updateEngineUI();
+    scheduleLastVisit();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

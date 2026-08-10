@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Настройки — MathLogic</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap"></noscript>
   <link rel="stylesheet" href="css/styles.css"><link rel="stylesheet" href="css/components.css"><link rel="stylesheet" href="css/editorial.css"><link rel="stylesheet" href="css/animations.css">
 </head>
-<body class="v7-app">
+<body class="v7-app v7-settings-page">
   <header class="v7-nav"><div class="v7-nav-inner">
     <a class="v7-brand" href="index.html"><span class="v7-mark"></span><span>MathLogic</span></a>
     <nav class="v7-links"><a href="dashboard.html" data-copy-ru="Сегодня" data-copy-kk="Бүгін">Сегодня</a><a href="program.html" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a><a href="profile.html" data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</a></nav>
@@ -41,6 +42,6 @@
   <nav class="v7-mobile-nav"><a href="dashboard.html" data-copy-ru="Сегодня" data-copy-kk="Бүгін">Сегодня</a><a href="program.html" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a><a href="profile.html" data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</a><a href="settings.html" aria-current="page" data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</a></nav>
   <div class="axis-modal" id="reset-modal" hidden role="dialog" aria-modal="true" aria-labelledby="reset-title"><div class="axis-modal-card"><h2 id="reset-title" data-copy-ru="Сбросить учебный прогресс?" data-copy-kk="Оқу барысын өшіру керек пе?">Сбросить учебный прогресс?</h2><p data-copy-ru="Будут удалены завершённые уроки, незавершённые сессии и история занятий. Отменить это действие нельзя." data-copy-kk="Аяқталған сабақтар, аяқталмаған сессиялар және оқу тарихы жойылады. Бұл әрекетті қайтару мүмкін емес.">Будут удалены завершённые уроки, незавершённые сессии и история занятий.</p><div class="axis-modal-actions"><button class="v7-button ghost" id="cancel-reset" type="button" data-copy-ru="Отмена" data-copy-kk="Бас тарту">Отмена</button><button class="v7-button danger" id="confirm-reset" type="button" data-copy-ru="Сбросить" data-copy-kk="Өшіру">Сбросить</button></div></div></div>
   <div class="axis-toast" id="settings-toast" role="status" aria-live="polite"></div>
-  <script src="js/storage.js"></script><script src="js/data.js"></script><script src="js/i18n.js"></script><script src="js/learning.js"></script><script src="js/animations.js"></script><script src="js/site.js"></script><script src="js/settings.js"></script>
+  <script src="js/storage.js"></script><script src="data/curriculum.js"></script><script src="js/data.js"></script><script src="js/i18n.js"></script><script src="js/learning.js"></script><script src="js/animations.js"></script><script src="js/site.js"></script><script src="js/settings.js"></script>
 </body>
 </html>

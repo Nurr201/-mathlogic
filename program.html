@@ -6,10 +6,11 @@
   <title>Программа — MathLogic</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap"></noscript>
   <link rel="stylesheet" href="css/editorial.css">
 </head>
-<body class="v7-app">
+<body class="v7-app v7-program-page">
   <header class="v7-nav"><div class="v7-nav-inner">
     <a class="v7-brand" href="index.html"><span class="v7-mark"></span><span>MathLogic</span></a>
     <nav class="v7-links"><a href="dashboard.html" data-copy-ru="Сегодня" data-copy-kk="Бүгін">Сегодня</a><a href="program.html" aria-current="page" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a><a href="profile.html" data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</a></nav>
@@ -22,11 +23,12 @@
       <p data-copy-ru="Предварительные знания подсказывают путь, но не запирают программу. Статусы основаны только на данных этого устройства." data-copy-kk="Алдыңғы білім бағытты көрсетеді, бірақ бағдарламаны жаппайды. Күйлер тек осы құрылғыдағы деректерге негізделген.">Предварительные знания подсказывают путь, но не запирают программу. Статусы основаны только на данных этого устройства.</p>
     </header>
     <div class="v7-program-tabs" id="program-subjects" role="tablist" aria-label="Направления"></div>
+    <section class="v7-program-now" id="program-now" aria-live="polite"></section>
     <div class="v7-map" id="program-content" aria-live="polite"></div>
   </main>
 
   <nav class="v7-mobile-nav"><a href="dashboard.html" data-copy-ru="Сегодня" data-copy-kk="Бүгін">Сегодня</a><a href="program.html" aria-current="page" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a><a href="profile.html" data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</a><a href="settings.html" data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</a></nav>
 
-  <script src="js/data.js"></script><script src="js/storage.js"></script><script src="js/i18n.js"></script><script src="js/events.js"></script><script src="js/learning.js"></script><script src="js/site.js"></script><script src="js/program.js"></script>
+  <script src="data/curriculum.js"></script><script src="data/program-presentation.js"></script><script src="js/data.js"></script><script src="js/storage.js"></script><script src="js/i18n.js"></script><script src="js/events.js"></script><script src="js/learning.js"></script><script src="js/site.js"></script><script src="js/program.js"></script>
 </body>
 </html>

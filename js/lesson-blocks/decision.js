@@ -170,27 +170,56 @@ window.DecisionExperiment = (function() {
     return { bundle: bundle, record: record || null };
   }
 
-  function optionList(options, name, selected, disabled) {
+  function optionList(options, name, selected, disabled, record, selectionKey, blockIndex) {
     return (options || []).map(function(option) {
       var checked = option.id === selected;
+      var hasResult = !!(checked && record && record.lastFeedback && record.lastSelection && record.lastSelection[selectionKey] === option.id);
+      var resultClass = hasResult ? (option.correct ? ' is-correct' : ' is-incorrect') : '';
       return '<label class="lesson-option flex cursor-pointer items-start gap-3 rounded-2xl border-2 border-slate-200 bg-white p-4 transition-all hover:border-blue-300' +
-        (checked ? ' is-selected border-blue-600 bg-blue-50' : '') + '">' +
-        '<input type="radio" name="' + escapeHtml(name) + '" value="' + escapeHtml(option.id) + '" onchange="DecisionExperiment.select(this)" class="mt-1 h-5 w-5 accent-blue-600"' +
+        (checked ? ' is-selected' : '') + resultClass + '">' +
+        '<input type="radio" name="' + escapeHtml(name) + '" value="' + escapeHtml(option.id) + '" onchange="DecisionExperiment.select(this,' + blockIndex + ',\'' + selectionKey + '\')" onkeydown="DecisionExperiment.keySelect(event,this,' + blockIndex + ',\'' + selectionKey + '\')" aria-checked="' + (checked ? 'true' : 'false') + '" class="mt-1 h-5 w-5 accent-blue-600"' +
         (checked ? ' checked' : '') + (disabled ? ' disabled' : '') + '>' +
         '<span class="text-base font-bold leading-snug text-slate-700">' + option.text + '</span>' +
         '</label>';
     }).join('');
   }
 
-  function select(input) {
-    if (!input || !input.name) return;
+  function select(input, blockIndex, selectionKey) {
+    var block = currentBlock(blockIndex);
+    if (!input || !input.name || input.disabled || !block || block.type !== 'decision') return;
     document.querySelectorAll('input[name="' + input.name + '"]').forEach(function(option) {
+      var checked = option === input;
+      option.checked = checked;
+      option.setAttribute('aria-checked', checked ? 'true' : 'false');
       var label = option.closest('label');
       if (!label) return;
-      label.classList.toggle('is-selected', option.checked);
-      label.classList.toggle('border-blue-600', option.checked);
-      label.classList.toggle('bg-blue-50', option.checked);
+      label.classList.toggle('is-selected', checked);
+      label.classList.remove('is-correct', 'is-incorrect', 'border-blue-600', 'bg-blue-50');
     });
+    var data = recordFor(block, null);
+    var record = data.record || {
+      blockId: block.id,
+      role: block.role,
+      attemptCount: 0,
+      hintCount: 0,
+      attempts: [],
+      misconceptionCodes: [],
+      completed: false,
+    };
+    record.draftSelection = Object.assign({}, record.draftSelection || {});
+    record.draftSelection[selectionKey] = input.value;
+    if (!record.completed && (!record.lastSelection || record.lastSelection[selectionKey] !== input.value)) record.lastFeedback = '';
+    data.bundle.run.blocks[block.id] = record;
+    saveRun(block.experimentId, data.bundle.store, data.bundle.run);
+    var feedback = document.getElementById('decision-feedback-' + blockIndex);
+    if (feedback && !record.lastFeedback) feedback.innerHTML = '';
+  }
+
+  function keySelect(event, input, blockIndex, selectionKey) {
+    if (!event || event.key !== 'Enter' || !input || input.disabled) return;
+    event.preventDefault();
+    input.checked = true;
+    select(input, blockIndex, selectionKey);
   }
 
   function feedbackHtml(record, block) {
@@ -208,7 +237,7 @@ window.DecisionExperiment = (function() {
     var H = window.__BlockHelpers;
     var data = recordFor(block, ctx.savedResult);
     var record = data.record;
-    var selection = record && record.lastSelection ? record.lastSelection : {};
+    var selection = Object.assign({}, record && record.lastSelection ? record.lastSelection : {}, record && record.draftSelection ? record.draftSelection : {});
     var disabled = !!(record && record.completed);
     var stepName = 'decision_step_' + ctx.index;
     var reasonName = 'decision_reason_' + ctx.index;
@@ -230,9 +259,9 @@ window.DecisionExperiment = (function() {
         H.formulaBlock(block.expression) +
         '<div class="mb-8 grid gap-7">' +
           '<fieldset><legend class="mb-3 text-base font-extrabold text-slate-900">1 · ' + block.stepQuestion + '</legend>' +
-            '<div class="grid gap-3">' + optionList(block.stepOptions, stepName, selection.stepId, disabled) + '</div></fieldset>' +
+            '<div class="grid gap-3">' + optionList(block.stepOptions, stepName, selection.stepId, disabled, record, 'stepId', ctx.index) + '</div></fieldset>' +
           '<fieldset><legend class="mb-3 text-base font-extrabold text-slate-900">2 · ' + block.reasonQuestion + '</legend>' +
-            '<div class="grid gap-3">' + optionList(block.reasonOptions, reasonName, selection.reasonId, disabled) + '</div></fieldset>' +
+            '<div class="grid gap-3">' + optionList(block.reasonOptions, reasonName, selection.reasonId, disabled, record, 'reasonId', ctx.index) + '</div></fieldset>' +
           '<label class="block"><span class="mb-3 block text-base font-extrabold text-slate-900">3 · ' + block.answerQuestion + '</span>' +
             '<input id="decision-answer-' + ctx.index + '" type="text" inputmode="text" autocomplete="off" value="' + escapeHtml(selection.answer || '') + '"' +
             (disabled ? ' disabled' : '') + ' required aria-required="true" class="h-16 w-full rounded-2xl border-2 border-slate-300 bg-white px-5 font-mono text-xl font-bold text-slate-900 outline-none transition-all focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20" placeholder="…"></label>' +
@@ -318,6 +347,7 @@ window.DecisionExperiment = (function() {
     if (!record.firstAttempt) record.firstAttempt = attempt;
     if (attempt.independent && !record.firstIndependentAttempt) record.firstIndependentAttempt = attempt;
     record.lastSelection = selection;
+    record.draftSelection = selection;
     record.lastFeedback = result.feedback || '';
     record.misconceptionCodes = unique(record.misconceptionCodes.concat(result.misconceptionCodes));
 
@@ -421,6 +451,7 @@ window.DecisionExperiment = (function() {
     complete: complete,
     showHint: showHint,
     select: select,
+    keySelect: keySelect,
     renderSummary: renderSummary,
     currentEvidence: currentEvidence,
     evaluate: evaluate,

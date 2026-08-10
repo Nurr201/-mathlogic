@@ -367,14 +367,26 @@ const ML = (function() {
   function mutableData() {
     if (_cache) return _cache;
     let data = loadRaw();
-    if (!data) data = migrateLegacyKeys(data);
+    const loadedVersion = data && Number(data.version);
+    const hasLegacyShape = !!(data && (
+      data.dashboard !== undefined || data.dailyQuests !== undefined ||
+      (data.progress && data.progress.lessonStates !== undefined) ||
+      (data.lesson && data.lesson.v2 !== undefined) || data.streak_data !== undefined
+    ));
+    let shouldPersist = !data || loadedVersion !== VERSION || hasLegacyShape;
+    if (!data) {
+      data = migrateLegacyKeys(data);
+      shouldPersist = true;
+    }
     const isNew = !data;
     data = normalize(data || clone(DEFAULTS));
     if (!data.user.id) data.user.id = 'user_' + Date.now();
     if (!data.user.createdAt) data.user.createdAt = Date.now();
     if (isNew && !data.user.lastVisit) data.user.lastVisit = Date.now();
     _cache = data;
-    persist(data);
+    /* A valid current record is already durable. Avoid rewriting the entire
+       localStorage payload during every page's synchronous bootstrap. */
+    if (shouldPersist) persist(data);
     return _cache;
   }
 

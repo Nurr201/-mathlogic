@@ -1,8 +1,16 @@
 window.__EngineInternal = window.__EngineInternal || {};
 (function(I) {
 
-  I.ENGINE_VERSION = '2.2.0';
+  I.ENGINE_VERSION = '2.4.0';
   I.MIN_SCHEMA_VERSION = '1.0.0';
+
+  /* Production runtime does not load the debug renderer. Debug mode replaces
+     these no-ops before the engine core is evaluated. */
+  I.isDebug = I.isDebug || function() { return false; };
+  I.debugLog = I.debugLog || function() {};
+  I.initDebug = I.initDebug || function() {};
+  I.renderDebugPanel = I.renderDebugPanel || function() {};
+  I.debugEvent = I.debugEvent || function() {};
 
   I.state = {
     lessonId: null,
@@ -20,6 +28,8 @@ window.__EngineInternal = window.__EngineInternal || {};
     elapsedBeforeSession: 0,
     blockStartTime: null,
     blockResults: {},
+    interactionStates: {},
+    completedSnapshot: false,
     container: null,
     finished: false,
   };
@@ -70,8 +80,29 @@ window.__EngineInternal = window.__EngineInternal || {};
     return { correctAnswers: correct, totalQuestions: total, attempts: attempts, percentage: percentage };
   };
 
+  I.getLearningEvidenceSummary = function() {
+    var summary = {
+      assessed: 0,
+      independentlySolved: 0,
+      hintsUsed: 0,
+      repairedAfterFeedback: 0,
+      transferCompleted: 0,
+    };
+    Object.keys(I.state.blockResults || {}).forEach(function(key) {
+      var result = I.state.blockResults[key];
+      if (!result || result.correct === undefined) return;
+      summary.assessed += Number(result.totalQuestions) || 1;
+      if (result.independent === true || result.firstTry === true) summary.independentlySolved += 1;
+      summary.hintsUsed += Math.max(0, Number(result.hintsUsed) || 0);
+      if (result.repairedAfterFeedback === true) summary.repairedAfterFeedback += 1;
+      if (result.role === 'transfer' && result.correct === true) summary.transferCompleted += 1;
+    });
+    return summary;
+  };
+
   I.getState = function() {
     var assessment = I.getAssessmentSummary();
+    var evidence = I.getLearningEvidenceSummary();
     return {
       lessonId: I.state.lessonId,
       currentIndex: I.state.currentIndex,
@@ -88,6 +119,7 @@ window.__EngineInternal = window.__EngineInternal || {};
       totalQuestions: assessment.totalQuestions,
       percentage: assessment.percentage,
       attempts: assessment.attempts,
+      evidence: evidence,
       hasNext: I.hasNext(),
       hasPrev: I.hasPrev(),
     };

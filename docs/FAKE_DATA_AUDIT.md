@@ -1,39 +1,37 @@
 # Runtime Data Audit
 
-Актуально для Axis Dashboard и Lesson.
+This is a concise audit of what current product pages may present as real data.
+For the full learning model, see [`LEARNING_ARCHITECTURE.md`](LEARNING_ARCHITECTURE.md).
 
-## Удалено из активного Dashboard
+## Real learning data
 
-- hardcoded проценты, XP, streak и количество завершённых уроков;
-- `DASH_SUBJECTS`, `TOPIC_LESSON_MAP` и отдельное dashboard storage;
-- ежедневные квесты без backend/правил выполнения;
-- фиктивные даты разблокировки;
-- XP за декоративные действия вроде «запомнить формулу»;
-- inline page logic и отдельная completion-логика старого урока;
-- legacy-компоненты `.subj-card`, `.topic-chip`, `.bottom-bar`, `.bottom-item`, `.section-block`, `.section-title` и `.formula-card`;
-- невозможные достижения `first_quest`/`thirty_quests` и обработчик `quest:completed`.
+- Canonical curriculum metadata is in `data/curriculum.js`; it covers the
+  current grades 7–9 content scope and includes planned lessons as metadata.
+- Loadable production lessons are exactly the current `LESSON_REGISTRY` entries
+  in `js/data.js`, with matching entries in `data/lesson-assets.js`.
+- Completed results, unfinished sessions, Activity and Learning History are
+  local data under `mathlogic_data`.
+- Dashboard and Program obtain learning state through `Learning`; they do not
+  maintain independent progress or unlock stores.
+- Student-facing content is authored and localized in RU/KK where a production
+  config supplies it. Shell copy also follows the saved language.
 
-Dashboard читает только `Learning`, `ML` и `I18N`. Его единственный контроллер — `js/dashboard.js`; игровые модули удалены. Каталог будущих тем из `DATA` показывается как locked/unavailable, а интерактивные ссылки создаются только для `LESSON_REGISTRY`.
+## Intentionally not represented as earned product data
 
-Нормализация storage удаляет старые поля `dashboard` и `dailyQuests`, а отдельный ключ `ml_dash_state` оставлен только в списке миграционной очистки.
+- Current completion does not grant XP, streaks, rewards or achievements.
+  Historical fields remain only for storage compatibility.
+- Program does not invent release dates or routes for planned lessons.
+- Planned lesson metadata is not evidence that a lesson config or direct route
+  exists.
 
-## Реальные данные
+## Product boundaries
 
-- профиль и настройки из `mathlogic_data`;
-- lesson results и незавершённые sessions;
-- количество завершённых и незавершённых уроков;
-- реальные учебные дни из `activity.dates`;
-- stats/timeline, созданные реальным completion;
-- две существующие JSON-конфигурации уроков.
-
-## Прототипные области
-
-- большинство модулей в `DATA` — продуктовый каталог без lesson config;
-- auth остаётся локальным демо без backend;
-- профиль/аналитика используют локальные данные и не синхронизируются с сервером;
-- lesson content сейчас только на русском, хотя shell поддерживает RU/KZ;
-- внешние CDN (шрифты, Tailwind на Lesson) требуют сеть и production bundling.
-
-`topic.html` остаётся честной страницей «в разработке». `topic-1-expressions.html` — только redirect для обратной совместимости.
-
-`js/topic.js` и `js/quiz.js` помечены deprecated и не подключаются к новому Lesson. Они сохранены как совместимый код до отдельной проверки старых внешних ссылок. `js/navigation.js` продолжает обслуживать legacy-страницы, но не подключается к Axis Dashboard/Lesson.
+- The app is a static, local-first product. Authentication, profile and
+  settings are local demo/runtime features; there is no server synchronisation.
+- Lesson content is loaded lazily from the assets manifest. Production lesson
+  routes do not statically load every config, MathLive or every workspace.
+- Fonts remain external with a non-blocking `display=swap` loading path; this
+  is not a claim of offline font availability.
+- Legacy `topic.html`, `js/topic.js`, `js/quiz.js` and `js/navigation.js` are
+  retained for compatibility outside the current Program/Lesson flow. They are
+  not the current canonical learning UI.

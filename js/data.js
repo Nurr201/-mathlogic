@@ -1,236 +1,210 @@
-/* ЕДИНЫЕ ДАННЫЕ ПРЕДМЕТОВ И ТЕМ */
+/* Runtime adapters around the canonical curriculum and implemented lesson registry. */
 
 const MATHIGON_ICONS = [
   `<svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path opacity="0.3" d="M12 21a9 9 0 100-18 9 9 0 000 18z"/><path d="M10.5 5.5L4 16h13L10.5 5.5z"/></svg>`,
   `<svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path opacity="0.3" d="M3 12c0-4.97 4.03-9 9-9s9 4.03 9 9-4.03 9-9 z"/><path d="M6 12s2-4 6-4 6 4 6 4-2 4-6 4-6-4-6-4z"/></svg>`,
-  `<svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path opacity="0.3" d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" fill="none"/></svg>`,
-  `<svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path opacity="0.3" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 100-16 8 8 0 000 16z"/><path d="M12 6a6 6 0 100 12 6 6 0 000-12zm0 2a4 4 0 110 8 4 4 0 010-8z"/></svg>`
 ];
 
 const THEME_COLORS = {
-  algebra: ['#4F46E5', '#0284C7', '#6366F1', '#4338CA'], 
-  geometry: ['#059669', '#10B981', '#047857', '#065F46'], 
-  logic: ['#9333EA', '#A855F7', '#7E22CE', '#6B21A8'],    
-  numbers: ['#EA580C', '#F97316', '#C2410C', '#9A3412'],  
+  algebra: ['#4F46E5', '#0284C7', '#6366F1', '#4338CA'],
+  geometry: ['#059669', '#10B981', '#047857', '#065F46'],
 };
 
 const SUBJECTS = [
-  { key: 'algebra', name: 'Алгебра', mainColor: '#4F46E5', bgActive: '#EEF2FF',
-    icon: `<svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M4 19L20 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M4 5C4 5 7 13 12 13C17 13 20 19 20 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/><circle cx="12" cy="13" r="2" fill="currentColor"/></svg>` },
-  
-  { key: 'geometry', name: 'Геометрия & Тригонометрия', mainColor: '#059669', bgActive: '#ECFDF5',
-    icon: `<svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M12 3L21 19H3L12 3Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" opacity="0.4"/><circle cx="12" cy="14" r="3.5" stroke="currentColor" stroke-width="2.5"/></svg>` },
-  
-  { key: 'logic', name: 'Логика & Графтар', mainColor: '#9333EA', bgActive: '#FAF5FF',
-    icon: `<svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><rect x="4" y="4" width="7" height="7" rx="2" stroke="currentColor" stroke-width="2.5"/><rect x="13" y="13" width="7" height="7" rx="2" stroke="currentColor" stroke-width="2.5"/><path d="M11 7H16.5C17.8807 7 19 8.11929 19 9.5V13" stroke="currentColor" stroke-width="2.5" opacity="0.4"/></svg>` },
-  
-  { key: 'numbers', name: 'Сандар & IT-База', mainColor: '#EA580C', bgActive: '#FFF7ED',
-    icon: `<svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M8 4V20M16 4V20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/><path d="M4 9H20M4 15H20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="8" cy="9" r="2" fill="currentColor"/><circle cx="16" cy="15" r="2" fill="currentColor"/></svg>` },
+  { key: 'algebra', name: 'Алгебра', nameRu: 'Алгебра', nameKk: 'Алгебра', mainColor: '#4F46E5', bgActive: '#EEF2FF', icon: MATHIGON_ICONS[0] },
+  { key: 'geometry', name: 'Геометрия', nameRu: 'Геометрия', nameKk: 'Геометрия', mainColor: '#059669', bgActive: '#ECFDF5', icon: MATHIGON_ICONS[1] },
 ];
 
-/* КРУПНЫЕ МОДУЛИ И ПОДТЕМЫ */
-const DATA = {
-  algebra: [
-    {
-      id: "algebra.base-equations",
-      title: "База және Теңдеулер", level: "Жеңіл", 
-      modules: [
-        { name: "Алгебралық өрнектер", subtopics: ["Санды және әріпті өрнектер", "Одночлен мен многочлен", "Жақшаны ашу мен ұқсас мүшелер", "Қысқаша көбейту формулалары (ФСУ)", "Алгебралық бөлшектер мен ОДЗ"] },
-        { name: "Сызықтық теңдеулер мен жүйелер", subtopics: ["Бір айнымалысы бар теңдеулер", "Мәндес теңдеулер қасиеттері", "Екі айнымалысы бар жүйелер", "Алмастыру және қосу тәсілдері", "Модулі бар сызықтық теңдеулер"] },
-        { id: "algebra.vieta.intro", name: "Квадрат теңдеулер мен Үшмүше (Виет теоремасы)", route: "lesson.html?id=algebra.vieta.intro", subtopics: ["Толық емес квадрат теңдеулер", "Дискриминант формуласы", "Виет теоремасы мен қолдану", "Квадрат үшмүшені көбейткіштерге жіктеу", "Квадрат теңдеуге келтірілетін биквадрат теңдеулер"] }
-      ]
-    },
-    {
-      id: "algebra.powers-roots-logs",
-      title: "Дәреже, Түбір және Логарифм", level: "Орташа", 
-      modules: [
-        { id: "algebra.exponents.basics", name: "Негіздері бірдей дәрежелерді көбейту және бөлу", route: "lesson.html?id=algebra.exponents.basics", subtopics: ["Негіздері бірдей дәрежелерді көбейту", "Негіздері бірдей дәрежелерді бөлу"] },
-        { name: "Көрсеткіштік және Логарифмдік өрнектер", subtopics: ["Логарифм анықтамасы мен негізгі теңдік", "Логарифм қасиеттері (қосу, азайту, дәреже)", "Негізді ауыстыру формуласы", "Көрсеткіштік мен логарифмдік теңдеулер"] },
-        { name: "Теңсіздіктер мен Интервалдар", subtopics: ["Сызықтық теңсіздіктер", "Интервалдар әдісі", "Квадраттық теңсіздіктер", "Бөлшек-рационал теңсіздіктер"] }
-      ]
-    },
-    { 
-      title: "Функциялар, Графиктер және Туынды", level: "Қиын", 
-      modules: [
-        { name: "Элементар функциялар мен қасиеттері", subtopics: ["Сызықтық функция мен оның графигі", "Квадраттық функция (Парабола төбесі)", "Көрсеткіштік мен логарифмдік функциялар", "Графиктерді параллель жылжыту"] },
-        { name: "Дифференциалдық есептеу (Туынды)", subtopics: ["Туындының физикалық мен геометриялық мағынасы", "Негізгі функциялардың туындылар кестесі", "Көбейтінді мен бөлінді туындысы", "Экстремумдар (Максимум мен Минимум)", "Иілу нүктелері мен асимптоталар"] }
-      ]
-    },
-    { 
-      title: "Тізбектер мен Прогрессиялар", level: "Күрделі", 
-      modules: [
-        { name: "Прогрессиялар", subtopics: ["Арифметикалық прогрессия n-ші мүшесі мен қосындысы", "Геометриялық прогрессия n-ші мүшесі мен қосындысы", "Ақырсыз кемімелі геометриялық прогрессия", "Аралас есептер"] },
-        { name: "Шектер ұғымы (Limits)", subtopics: ["Сандық тізбек шегі", "Шектердің негізгі қасиеттері", "Анықталмағандықтарды ашу (0/0, ∞/∞)"] }
-      ]
-    }
-  ],
-  geometry: [
-    {
-      title: "Планиметрия (Жазықтықтағы фигуралар)", level: "Жеңіл",
-      modules: [
-        { name: "Үшбұрыштар геометриясы", subtopics: ["Үшбұрыш бұрыштарының қосындысы", "Пифагор теоремасы мен египет үшбұрышы", "Үшбұрыш ауданының формулалары", "Үшбұрыштар теңдігі мен ұқсастығы"] },
-        { name: "Төртбұрыштар мен Көпбұрыштар", subtopics: ["Параллелограмм мен Ромб қасиеттері", "Тіктөртбұрыш мен Шаршы", "Трапеция мен оның орта сызығы", "Правильный многоугольниктер"] },
-        { name: "Шеңбер мен Дөңгелек", subtopics: ["Центрлік және іштей сызылған бұрыштар", "Жанама мен қиюшы қасиеттері", "Іштей және сырттай сызылған шеңберлер", "Доға ұзындығы мен сектор ауданы"] }
-      ]
-    },
-    {
-      title: "Тригонометрия", level: "Орташа",
-      modules: [
-        { name: "Тригонометрия Негіздері", subtopics: ["Радиандық өлшем мен тригонометриялық шеңбер", "Sin, Cos, Tan, Ctan анықтамалары", "Негізгі тригонометриялық теңдік", "Келтіру формулалары"] },
-        { name: "Тригонометриялық Түрлендірулер", subtopics: ["Қосу формулалары", "Қос бұрыш мен жарты бұрыш формулалары", "Қосындыны көбейтіндіге түрлендіру", "Теорема синусов мен косинусов"] },
-        { name: "Тригонометриялық Теңдеулер мен Функциялар", subtopics: ["Каноникалық тригонометриялық теңдеулер", "Arcsin, Arccos, Arctan ұғымдары", "Sin x мен Cos x функцияларының графиктері"] }
-      ]
-    },
-    {
-      title: "Векторлар мен Стереометрия", level: "Қиын",
-      modules: [
-        { name: "Векторлар мен Координаттар", subtopics: ["Векторлардың координаттары мен ұзындығы", "Векторларды қосу мен санға көбейту", "Векторлардың скаляр көбейтіндісі", "Координаталар жүйесіндегі арақашықтық"] },
-        { name: "Стереометрия (Кеңістік фигуралары)", subtopics: ["Стереометрия аксиомалары мен салдарлары", "Түзулер мен жазықтықтардың параллельдігі мен перпендикулярлығы", "Үш перпендикуляр туралы теорема", "Призма, Пирамида, Цилиндр, Конус, Шар көлемдері"] }
-      ]
-    }
-  ],
-  logic: [
-    {
-      title: "Мектептік және Математикалық Логика", level: "Жеңіл",
-      modules: [
-        { name: "Пікірлер Логикасы", subtopics: ["Простые и сложные высказывания", "Логикалық амалдар (AND, OR, NOT, Implication)", "Ақиқаттық кестесін құру", "Логикалық заңдар мен эквиваленттілік"] },
-        { name: "Заңдылықтар мен Задачки", subtopics: ["Сандық мен әріптік тізбектердегі заңдылық", "Фигуралық және матрицалық паттерндер", "Өтірікшілер мен шыншылдарға арналған логикалық есептер"] }
-      ]
-    },
-    {
-      title: "Жиындар, Графтар мен Комбинаторика", level: "Орташа",
-      modules: [
-        { name: "Жиындар және Эйлер-Венн", subtopics: ["Жиын элементтері мен ішкі жиындар", "Жиындардың қиылысуы, бірігуі, айырымы", "Эйлер-Венн диаграммалары арқылы есептер шығару"] },
-        { name: "Графтар Теориясы", subtopics: ["Төбелер, қабырғалар және дәрежелер", "Эйлер графтары мен маршруттар", "Ағаштар (Trees) мен бағытталған графтар"] },
-        { name: "Комбинаторика және Ықтималдық", subtopics: ["Көбейту мен қосу ережелері", "Алмастырулар (Permutations)", "Орналастырулар мен Терулер (Combinations)", "Классикалық ықтималдық анықтамасы", "Тәуелсіз оқиғалар мен Бернулли схемасы"] }
-      ]
-    }
-  ],
-  numbers: [
-    {
-      title: "Сандар Теориясы мен Компьютерлік Арифметика", level: "Жеңіл",
-      modules: [
-        { name: "Бөлінгіштік және Жай сандар", subtopics: ["Бөлінгіштік белгілері (2, 3, 4, 5, 9, 10, 11)", "Жай және құрама сандар, каноникалық жіктеу", "ЕҮОБ (НОД) және ЕКӨЕ (НОК)", "Евклид алгоритмі"] },
-        { name: "Санау жүйелері мен Биттік амалдар", subtopics: ["Двоичная (Binary), Октальная, Шестнадцатеричная (Hex) жүйелер", "Сандарды бір жүйеден екіншісіне ауыстыру", "Биттік операциялар (AND, OR, XOR, SHIFT)"] }
-      ]
-    },
-    {
-      title: "Модульдік Арифметика мен Матрицалар (IT/AI База)", level: "Орташа",
-      modules: [
-        { name: "Модульдік Арифметика (Crypto)", subtopics: ["Қалдықпен бөлу қасиеттері", "Модуль бойынша салыстырулар (Congruence)", "Криптографиядағы негізгі сандар теориясы"] },
-        { name: "Матрицалар мен Векторлық кеңістік (AI)", subtopics: ["Матрица ұғымы мен өлшемдері", "Матрицаларды қосу мен көбейту", "Определитель (Determinant) 2x2 және 3x3", "Кері матрица және сызықтық жүйелер", "Векторлық пространства негіздері"] }
-      ]
-    }
-  ]
-};
+/* Compatibility view only. It is generated from MATHLOGIC_CURRICULUM and is
+   never maintained separately. New code should read MATHLOGIC_CURRICULUM. */
+const DATA = (function() {
+  var result = {};
+  SUBJECTS.forEach(function(subject) {
+    result[subject.key] = [];
+    var curriculumSubject = MATHLOGIC_CURRICULUM.subjects.find(function(item) { return item.id === subject.key; });
+    (curriculumSubject ? curriculumSubject.grades : []).forEach(function(grade) {
+      var units = MATHLOGIC_CURRICULUM.getUnits(subject.key, grade);
+      result[subject.key].push({
+        id: subject.key + '.grade-' + grade,
+        grade: grade,
+        title: grade + ' класс', titleRu: grade + ' класс', titleKk: grade + '-сынып', level: '',
+        modules: units.map(function(unit) {
+          return {
+            id: unit.id, name: unit.titleRu, titleRu: unit.titleRu, titleKk: unit.titleKk,
+            subtopics: unit.lessonIds.map(function(id) { return MATHLOGIC_CURRICULUM.getLesson(id).titleRu; }),
+          };
+        }),
+      });
+    });
+  });
+  return result;
+})();
 
-/* ДАННЫЕ ДЛЯ ТАБОВ НА ГЛАВНОЙ СТРАНИЦЕ */
 const TOPICS_LANDING = {
   algebra: {
-    kk: [
-      "· Өрнектер және оларды түрлендіру",
-      "· Дәреже және оның қасиеттері",
-      "· Бірмүшелер",
-      "· Көпмүшелер",
-      "· Қысқаша көбейту формулалары",
-      "· Сызықтық теңдеулер",
-      "· Сызықтық теңсіздіктер",
-      "· Функциялар",
-    ],
-    ru: [
-      "· Выражения и их преобразования",
-      "· Степень и её свойства",
-      "· Одночлены",
-      "· Многочлены",
-      "· Формулы сокращённого умножения",
-      "· Линейные уравнения",
-      "· Линейные неравенства",
-      "· Функции",
-    ]
+    ru: ['· Выражения и преобразования','· Степени','· Уравнения','· Функции и графики','· Статистика и вероятность'],
+    kk: ['· Өрнектер және түрлендірулер','· Дәрежелер','· Теңдеулер','· Функциялар және графиктер','· Статистика және ықтималдық'],
   },
   geometry: {
-    kk: [
-      "· Үшбұрыштар",
-      "· Координаталық жазықтық",
-      "· Бұрыштар",
-      "· Шеңбер",
-      "· Пифагор теоремасы",
-    ],
-    ru: [
-      "· Треугольники",
-      "· Координатная плоскость",
-      "· Углы",
-      "· Окружность",
-      "· Теорема Пифагора",
-    ]
+    ru: ['· Геометрические фигуры','· Треугольники','· Параллельные прямые','· Площади','· Окружности и векторы'],
+    kk: ['· Геометриялық фигуралар','· Үшбұрыштар','· Параллель түзулер','· Аудандар','· Шеңберлер және векторлар'],
   },
-  logic: {
-    kk: ["· Заңдылықтар", "· Графтар", "· Комбинаторика", "· Логикалық есептер"],
-    ru: ["· Закономерности", "· Графы", "· Комбинаторика", "· Логические задачи"]
-  },
-  numbers: {
-    kk: ["· Бөлінгіштік", "· Жай сандар", "· Модульдік арифметика", "· Проценттер"],
-    ru: ["· Делимость", "· Простые числа", "· Модульная арифметика", "· Проценты"]
-  }
 };
 
 const TAB_NAMES = {
-  algebra: { kk: "Алгебра", ru: "Алгебра" },
-  geometry: { kk: "Геометрия", ru: "Геометрия" },
-  logic: { kk: "Логика", ru: "Логика" },
-  numbers: { kk: "Сандар", ru: "Числа" }
+  algebra: { ru: 'Алгебра', kk: 'Алгебра' },
+  geometry: { ru: 'Геометрия', kk: 'Геометрия' },
 };
 
-/* КАНОНИЧЕСКИЙ РЕЕСТР РЕАЛЬНО РЕАЛИЗОВАННЫХ УРОКОВ.
-   Каталог DATA может содержать будущие модули, но только записи отсюда
-   считаются доступным интерактивным контентом. */
+function curriculumMeta(id) {
+  var meta = MATHLOGIC_CURRICULUM.getLesson(id);
+  if (!meta) throw new Error('Curriculum metadata is missing for implemented lesson: ' + id);
+  return meta;
+}
+
+function registryEntry(id, config, descriptionRu, descriptionKk, legacyIds) {
+  var meta = curriculumMeta(id);
+  return {
+    id: id, subjectId: meta.subject, unitId: meta.unitId, topicId: meta.topicId, grade: meta.grade,
+    title: meta.titleRu, titleRu: meta.titleRu, titleKk: meta.titleKk,
+    description: descriptionRu, descriptionRu: descriptionRu, descriptionKk: descriptionKk,
+    duration: meta.estimatedDuration, availability: 'available',
+    prerequisites: meta.prerequisites.hard.filter(function(prerequisiteId) {
+      return !!MATHLOGIC_CURRICULUM.getLesson(prerequisiteId) &&
+        MATHLOGIC_CURRICULUM.getLesson(prerequisiteId).productionStatus !== 'planned';
+    }),
+    softPrerequisites: meta.prerequisites.soft.slice(), unlockReason: '', releaseDate: null,
+    config: config, route: 'lesson.html?id=' + id, order: meta.recommendedOrder || 0,
+    productionStatus: meta.productionStatus, legacyIds: legacyIds || [], xp: 0,
+  };
+}
+
+/* Content registry is deliberately separate from curriculum metadata: only
+   entries here have loadable production lesson configs. */
 const LESSON_REGISTRY = {
-  'algebra.exponents.basics': {
-    id: 'algebra.exponents.basics',
-    subjectId: 'algebra',
-    topicId: 'algebra.powers-roots-logs',
-    title: 'Умножение и деление степеней с одинаковым основанием',
-    titleKk: 'Негіздері бірдей дәрежелерді көбейту және бөлу',
-    description: 'Почему при умножении показатели складывают, а при делении вычитают.',
-    descriptionKk: 'Көбейткенде көрсеткіштер неге қосылатынын, ал бөлгенде неге азайтылатынын түсінеміз.',
-    duration: 18,
-    xp: 90,
-    availability: 'available',
-    prerequisites: [],
-    unlockReason: '',
-    releaseDate: null,
-    config: 'LESSON_EXPONENTS',
-    route: 'lesson.html?id=algebra.exponents.basics',
-    order: 1,
-    legacyIds: ['algebra_1', 'algebra_4', 'topic-1-expressions.html'],
-  },
-  'algebra.vieta.intro': {
-    id: 'algebra.vieta.intro',
-    subjectId: 'algebra',
-    topicId: 'algebra.base-equations',
-    title: 'Теорема Виета',
-    titleKz: 'Виет теоремасы',
-    description: 'Решение приведённых квадратных уравнений через сумму и произведение корней.',
-    descriptionKz: 'Келтірілген квадрат теңдеулерді түбірлер қосындысы мен көбейтіндісі арқылы шешу.',
-    duration: 12,
-    xp: 70,
-    availability: 'available',
-    prerequisites: [],
-    unlockReason: '',
-    releaseDate: null,
-    config: 'LESSON_VIETA',
-    route: 'lesson.html?id=algebra.vieta.intro',
-    order: 2,
-    legacyIds: ['algebra_3', 'lesson.html'],
-  },
+  'algebra.g7.alg-01.fractions': registryEntry(
+    'algebra.g7.alg-01.fractions', 'LESSON_ALG01_FRACTIONS',
+    'Как связать часть целого с обыкновенной и десятичной дробью, сравнивать и складывать доли.',
+    'Бүтіннің бөлігін жай және ондық бөлшекпен байланыстырып, үлестерді салыстыру және қосуды үйренеміз.'
+  ),
+  'algebra.g7.alg-01.percent': registryEntry(
+    'algebra.g7.alg-01.percent', 'LESSON_ALG01_PERCENT',
+    'Как находить процент от числа и восстанавливать целое по известной части.',
+    'Санның пайызын тауып, белгілі бөлігі бойынша бүтінді қалпына келтіруді үйренеміз.'
+  ),
+  'algebra.g7.alg-01.proportions': registryEntry(
+    'algebra.g7.alg-01.proportions', 'LESSON_ALG01_PROPORTIONS',
+    'Как сохранять смысл отношения, составлять пропорцию и распознавать прямую зависимость.',
+    'Қатынастың мағынасын сақтап, пропорция құрастыруды және тура тәуелділікті тануды үйренеміз.'
+  ),
+  'algebra.g7.alg-01.parts-mixtures': registryEntry(
+    'algebra.g7.alg-01.parts-mixtures', 'LESSON_ALG01_PARTS_MIXTURES',
+    'Как делить целое в отношении и находить компонент как долю всей смеси.',
+    'Бүтінді қатынаста бөліп, компонентті бүкіл қоспаның үлесі ретінде табуды үйренеміз.'
+  ),
+  'algebra.g7.alg-01.model': registryEntry(
+    'algebra.g7.alg-01.model', 'LESSON_ALG01_MODEL',
+    'Как выбрать неизвестную, перевести текст в уравнение и проверить смысл ответа.',
+    'Белгісізді таңдап, мәтінді теңдеуге аудару және жауаптың мағынасын тексеруді үйренеміз.'
+  ),
+  'algebra.g7.alg-01.practice': registryEntry(
+    'algebra.g7.alg-01.practice', 'LESSON_ALG01_PRACTICE',
+    'Как выбрать дробь, процент, пропорцию или уравнение по структуре задачи.',
+    'Есеп құрылымы бойынша бөлшекті, пайызды, пропорцияны немесе теңдеуді таңдауды үйренеміз.'
+  ),
+  'algebra.g7.alg-02.meaning': registryEntry(
+    'algebra.g7.alg-02.meaning', 'LESSON_NATURAL_EXPONENT_MEANING',
+    'Как короткая запись показывает произведение одинаковых множителей.',
+    'Қысқа жазба бірдей көбейткіштердің көбейтіндісін қалай көрсететінін түсінеміз.'
+  ),
+  'algebra.exponents.basics': registryEntry(
+    'algebra.exponents.basics', 'LESSON_EXPONENTS',
+    'Почему при умножении показатели складывают, а при делении вычитают.',
+    'Көбейткенде көрсеткіштер неге қосылатынын, ал бөлгенде неге азайтылатынын түсінеміз.',
+    ['algebra_1','algebra_4','topic-1-expressions.html']
+  ),
+  'algebra.g7.alg-02.power-rules': registryEntry(
+    'algebra.g7.alg-02.power-rules', 'LESSON_POWER_RULES',
+    'Как выбирать свойство степени по структуре произведения, частного или степени.',
+    'Көбейтінді, бөлінді немесе дәреже құрылымы бойынша дәреже қасиетін қалай таңдайтынын үйренеміз.'
+  ),
+  'algebra.g7.alg-02.zero-negative': registryEntry(
+    'algebra.g7.alg-02.zero-negative', 'LESSON_ZERO_NEGATIVE_EXPONENTS',
+    'Почему нулевой показатель даёт 1, а отрицательный — обратную степень.',
+    'Неліктен нөлдік көрсеткіш 1-ге, ал теріс көрсеткіш кері дәрежеге тең екенін түсінеміз.'
+  ),
+  'algebra.g7.alg-02.standard-form': registryEntry(
+    'algebra.g7.alg-02.standard-form', 'LESSON_STANDARD_FORM',
+    'Как записывать большие и малые числа через значащую часть и степень десяти.',
+    'Үлкен және кіші сандарды мәнді бөлік пен он дәрежесі арқылы қалай жазатынын үйренеміз.'
+  ),
+  'algebra.g7.alg-03.monomials': registryEntry(
+    'algebra.g7.alg-03.monomials', 'LESSON_MONOMIALS_STANDARD_FORM',
+    'Как коэффициент, буквенная часть и степень образуют одночлен стандартного вида.',
+    'Коэффициент, әріптік бөлік және дәреже стандарт түрдегі бірмүшені қалай құрайтынын түсінеміз.'
+  ),
+  'algebra.g7.alg-03.polynomials': registryEntry(
+    'algebra.g7.alg-03.polynomials', 'LESSON_POLYNOMIALS_ADD_SUBTRACT',
+    'Почему объединяются только подобные члены и как корректно вычитать многочлены.',
+    'Неліктен тек ұқсас мүшелер біріктірілетінін және көпмүшелерді қалай дұрыс азайтатынын түсінеміз.'
+  ),
+  'algebra.g7.alg-03.multiplication': registryEntry(
+    'algebra.g7.alg-03.multiplication', 'LESSON_MONOMIAL_POLYNOMIAL_MULTIPLICATION',
+    'Как распределительное свойство объясняет умножение одночленов и многочленов.',
+    'Үлестірімділік қасиет бірмүшелер мен көпмүшелерді көбейтуді қалай түсіндіретінін үйренеміз.'
+  ),
+  'algebra.g7.alg-03.square-sum-difference': registryEntry(
+    'algebra.g7.alg-03.square-sum-difference', 'LESSON_SQUARE_SUM_DIFFERENCE',
+    'Откуда берётся удвоенное произведение и как раскрывать квадрат двучлена.',
+    'Екі еселенген көбейтінді қайдан шығатынын және екімүшенің квадратын қалай ашатынын түсінеміз.'
+  ),
+  'algebra.g7.alg-03.difference-squares': registryEntry(
+    'algebra.g7.alg-03.difference-squares', 'LESSON_DIFFERENCE_SQUARES',
+    'Как распознать разность квадратов и преобразовать её в произведение.',
+    'Квадраттар айырмасын қалай танып, оны көбейтіндіге түрлендіретінін үйренеміз.'
+  ),
+  'algebra.g7.alg-03.cubes': registryEntry(
+    'algebra.g7.alg-03.cubes', 'LESSON_CUBE_IDENTITIES',
+    'Как различать куб двучлена и сумму или разность кубов и выбирать нужную формулу.',
+    'Екімүшенің кубы мен кубтар қосындысын немесе айырмасын ажыратып, қажетті формуланы таңдауды үйренеміз.'
+  ),
+  'algebra.g7.alg-03.factorization': registryEntry(
+    'algebra.g7.alg-03.factorization', 'LESSON_FACTORIZATION',
+    'Как вынести общий множитель и использовать группировку для разложения многочлена.',
+    'Ортақ көбейткішті шығарып, көпмүшені топтау арқылы қалай жіктейтінін үйренеміз.'
+  ),
+  'algebra.g7.alg-03.practice': registryEntry(
+    'algebra.g7.alg-03.practice', 'LESSON_POLYNOMIAL_TRANSFORMATIONS_PRACTICE',
+    'Как выбрать подходящее преобразование многочлена и проверить результат.',
+    'Көпмүшені түрлендірудің лайықты тәсілін таңдап, нәтижені қалай тексеретінін үйренеміз.'
+  ),
+  'algebra.linear-equations.equivalent-transformations': registryEntry(
+    'algebra.linear-equations.equivalent-transformations', 'LESSON_LINEAR_EQUATIONS',
+    'Как сохранять равенство, записывать шаги решения и проверять корень.',
+    'Теңдікті сақтап, шешу қадамдарын жазу және түбірді тексеру.'
+  ),
+  'algebra.linear-functions.graph': registryEntry(
+    'algebra.linear-functions.graph', 'LESSON_LINEAR_FUNCTIONS',
+    'Как из значений функции появляются точки, прямая и предсказуемое изменение графика.',
+    'Функция мәндерінен нүктелер мен түзу қалай пайда болатынын және графиктің қалай өзгеретінін зерттейміз.'
+  ),
+  'algebra.vieta.intro': registryEntry(
+    'algebra.vieta.intro', 'LESSON_VIETA',
+    'Решение приведённых квадратных уравнений через сумму и произведение корней.',
+    'Келтірілген квадрат теңдеулерді түбірлер қосындысы мен көбейтіндісі арқылы шешу.',
+    ['algebra_3','lesson.html']
+  ),
+  'geometry.triangle-angle-sum': registryEntry(
+    'geometry.triangle-angle-sum', 'LESSON_TRIANGLE_ANGLE_SUM',
+    'Как эксперимент приводит к гипотезе, а параллельная прямая объясняет сумму 180°.',
+    'Тәжірибе болжамға қалай әкелетінін және параллель түзу 180° қосындысын қалай түсіндіретінін зерттейміз.'
+  ),
 };
 
 const LESSON_LEGACY_MAP = (function() {
   var map = {};
   Object.keys(LESSON_REGISTRY).forEach(function(id) {
-    (LESSON_REGISTRY[id].legacyIds || []).forEach(function(legacyId) {
-      map[legacyId] = id;
-    });
+    (LESSON_REGISTRY[id].legacyIds || []).forEach(function(legacyId) { map[legacyId] = id; });
   });
   return map;
 })();
