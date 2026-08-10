@@ -67,6 +67,23 @@ const lessons = [
   { id: 'linear-equations', lesson: load('data/lessons/linear-equations.js', 'LESSON_LINEAR_EQUATIONS') },
   { id: 'linear-functions', lesson: load('data/lessons/linear-functions.js', 'LESSON_LINEAR_FUNCTIONS') },
   { id: 'triangle-angle-sum', lesson: load('data/lessons/triangle-angle-sum.js', 'LESSON_TRIANGLE_ANGLE_SUM') },
+  { id: 'geometry-figures-axioms', lesson: load('data/lessons/geometry-figures-axioms.js', 'LESSON_GEOMETRY_FIGURES_AXIOMS') },
+  { id: 'geometry-equal-figures', lesson: load('data/lessons/geometry-equal-figures.js', 'LESSON_GEOMETRY_EQUAL_FIGURES') },
+  { id: 'geometry-proof-methods', lesson: load('data/lessons/geometry-proof-methods.js', 'LESSON_GEOMETRY_PROOF_METHODS') },
+  { id: 'geometry-angles-perpendicular', lesson: load('data/lessons/geometry-angles-perpendicular.js', 'LESSON_GEOMETRY_ANGLES_PERPENDICULAR') },
+  { id: 'geometry-initial-practice', lesson: load('data/lessons/geometry-initial-practice.js', 'LESSON_GEOMETRY_INITIAL_PRACTICE') },
+  { id: 'geometry-triangle-types', lesson: load('data/lessons/geometry-triangle-types.js', 'LESSON_GEOMETRY_TRIANGLE_TYPES') },
+  { id: 'geometry-triangle-elements', lesson: load('data/lessons/geometry-triangle-elements.js', 'LESSON_GEOMETRY_TRIANGLE_ELEMENTS') },
+  { id: 'geometry-g03-transversal', lesson: load('data/lessons/geometry-g03-transversal.js', 'LESSON_GEOMETRY_G03_TRANSVERSAL') },
+  { id: 'geometry-g03-criteria', lesson: load('data/lessons/geometry-g03-criteria.js', 'LESSON_GEOMETRY_G03_CRITERIA') },
+  { id: 'geometry-g03-properties', lesson: load('data/lessons/geometry-g03-properties.js', 'LESSON_GEOMETRY_G03_PROPERTIES') },
+  { id: 'geometry-g03-triangle-relations', lesson: load('data/lessons/geometry-g03-triangle-relations.js', 'LESSON_GEOMETRY_G03_TRIANGLE_RELATIONS') },
+  { id: 'geometry-g03-right-triangles', lesson: load('data/lessons/geometry-g03-right-triangles.js', 'LESSON_GEOMETRY_G03_RIGHT_TRIANGLES') },
+  { id: 'geometry-triangle-congruence-1', lesson: load('data/lessons/geometry-triangle-congruence-1.js', 'LESSON_GEOMETRY_TRIANGLE_CONGRUENCE_1') },
+  { id: 'geometry-triangle-congruence-2', lesson: load('data/lessons/geometry-triangle-congruence-2.js', 'LESSON_GEOMETRY_TRIANGLE_CONGRUENCE_2') },
+  { id: 'geometry-triangle-isosceles', lesson: load('data/lessons/geometry-triangle-isosceles.js', 'LESSON_GEOMETRY_TRIANGLE_ISOSCELES') },
+  { id: 'geometry-triangle-equilateral', lesson: load('data/lessons/geometry-triangle-equilateral.js', 'LESSON_GEOMETRY_TRIANGLE_EQUILATERAL') },
+  { id: 'geometry-triangle-congruence-practice', lesson: load('data/lessons/geometry-triangle-congruence-practice.js', 'LESSON_GEOMETRY_TRIANGLE_CONGRUENCE_PRACTICE') },
   { id: 'vieta', lesson: vieta },
 ];
 
@@ -180,6 +197,54 @@ const expectedCorrectText = {
     possible_triangle_transfer: 'Нет, потому что сумма равна 190°, а должна быть 180°',
     final_conceptual_check: 'Измерения дали гипотезу, а параллельная прямая объяснила её для любого треугольника',
   },
+  'geometry-figures-axioms': {
+    classify_ray: 'Луч OP', diagram_limit: 'Можно утверждать лишь то, что явно дано или отмечено',
+    axiom_or_theorem: 'Это теорема: для неё дана цепочка обоснований', transfer_statement: 'Аксиома о единственной прямой через две различные точки',
+  },
+  'geometry-equal-figures': {
+    not_just_appearance: 'Нет: без изменения размера полностью совместить их нельзя', corresponding_side: 'LM',
+    angle_transfer: '∠L = 70°', insufficient_data: 'Нет, нужно основание для полного совмещения всех соответствующих частей',
+    equal_transfer: 'Получена равная фигура в новом положении',
+  },
+  'geometry-proof-methods': {
+    given_or_goal: 'Это цель доказательства', choose_reason: 'По условию луч делит угол на равные части',
+    finite_examples: 'Получено наблюдение, которое поддерживает гипотезу',
+    order_chain: 'AC = AB + BC по сложению частей отрезка; значит AC = 3 + 4 = 7',
+    proof_transfer: 'Выписать данное и цель, затем найти определение или свойство, которое их связывает',
+  },
+  'geometry-angles-perpendicular': {
+    identify_adjacent: 'Общая сторона, а две другие стороны — противоположные лучи', vertical_or_adjacent: 'Вертикальные',
+    angle_chain: '∠2 = 112°, ∠3 = 68°', perpendicular_evidence: 'Один из образованных углов отмечен как 90°',
+  },
+  'geometry-initial-practice': {
+    object_reading: 'Луч AB', condition_vs_picture: 'Равенство установить нельзя без условия, отметок или доказательства',
+    equal_figures_transfer: 'MP = 6 см', proof_plan: 'По определению середина делит отрезок на две равные части',
+    angle_independent: '141°: ∠B = 180° − 39°, а вертикальный ∠C равен ∠B',
+    perpendicular_transfer: 'a ⟂ b, потому что один образованный угол прямой; остальные тоже 90° по свойствам смежных и вертикальных углов',
+    axiom_theorem_transfer: 'Теорему можно применить, когда выполнены её условия, и назвать её основанием вывода',
+  },
+  'geometry-triangle-types': {
+    side_evidence: 'Равнобедренный: AB = AC', 'explore_angle_types.followUp': 'Один измеренный или явно отмеченный угол равен 90°',
+    equilateral_relation: 'Он равносторонний и также равнобедренный: три равные стороны включают хотя бы две равные',
+    independent_full_classification: 'Разносторонний прямоугольный', transfer_isosceles_obtuse: 'Равнобедренный тупоугольный',
+  },
+  'geometry-triangle-elements': {
+    median_evidence: 'M — середина BC, потому что BM = MC', bisector_evidence: 'Две одинаковые дуги показывают ∠LKN = ∠NKM',
+    height_evidence: 'PH идёт из вершины P перпендикулярно прямой QR',
+    not_enough_evidence: 'Пока известно только, что AD — отрезок из вершины к стороне BC',
+    obtuse_altitude: 'AH идёт из вершины A перпендикулярно прямой, содержащей BC',
+    special_isosceles: 'Потому что даны все три нужных признака: равные части, равные углы и прямой угол',
+  },
+  'geometry-g03-transversal': { read_diagram:'Накрест лежащие внутренние', supplementary:'116°', no_parallel:'Пока нет: параллельность не дана и не доказана', transfer:'Соответственный равен 128°, односторонний внутренний равен 52°', independent_pair:'Накрест лежащий угол равен 74°, а односторонний внутренний — 106°' },
+  'geometry-g03-criteria': { alternate:'m ∥ n', wrong_direction:'Нет: признак нужен, когда параллельность ещё не дана', transfer:'Равенство накрест лежащих углов', independent_criterion:'Прямые параллельны по признаку односторонних внутренних углов' },
+  'geometry-g03-properties': { diagram:'Противоположный угол у того же пересечения: 68°', calculate:'112°', transfer:'Вертикальные и соответствующие равны 68°, смежные дают 112°', contrast:'Он не указал, является ли угол соответствующим/вертикальным или смежным' },
+  'geometry-g03-triangle-relations': { exterior:'∠ACD = ∠A + ∠B', inequality:'Нет: 4 + 5 не больше 10', transfer:'75°', inequality_contrast:'Потому что 3 + 4 = 7: фигура вырождается в прямую' },
+  'geometry-g03-right-triangles': { read:'BC', altitude:'AH перпендикулярна BC; BH и HC — проекции', transfer:'Гипотенуза; она длиннее каждого катета', independent_roles:'BH = HC' },
+  'geometry-triangle-congruence-1': { sas_read: 'Первый: две стороны и угол между ними', asa_check: 'Дана сторона и два угла при её концах', not_enough: 'Нет: не хватает третьего связанного условия', transfer: '△ABC = △KLM по первому признаку: равны две стороны и угол между ними' },
+  'geometry-triangle-congruence-2': { sss_diagram: '△ABC и △KLM равны по третьему признаку', lengths_check: 'Треугольники равны по третьему признаку', two_sides_only: 'Пока равенство не доказано: нужна ещё третья сторона или другой полный набор данных', transfer: '△DEF = △UVW' },
+  'geometry-triangle-isosceles': { property_read: '∠B и ∠C — углы при основании BC', calculate_base: '68°', converse: 'DE = DF, поэтому треугольник равнобедренный', not_appearance: 'Нет: нужны отметки, длины или другое обоснование', transfer: 'KM = LM; треугольник равнобедренный с основанием KL' },
+  'geometry-triangle-equilateral': { marks_read: 'Все три стороны равны', angle_check: '60°', converse: 'Треугольник равносторонний', not_enough: 'Нет: нужна отметка или длина третьей стороны', transfer: 'Все углы равны, поэтому по обратному свойству получаем AB = BC = CA' },
+  'geometry-triangle-congruence-practice': { choose_criterion: '△ABC = △DEF по первому признаку', corresponding_angle: '71°', isosceles_transfer: '70°', equilateral_transfer: 'Каждый угол равен 60°', evidence_limit: 'Пока нельзя утверждать равенство', final_assessment: 'AB = AC → ∠B = ∠C → ∠C = 55°' },
   vieta: {
     warmup: '12', quiz_1: '5', quiz_2: '5 и 6', 'challenge_1.tasks[0]': 'x² – 10x + 21 = 0', 'challenge_1.tasks[2]': '–18',
   },
@@ -215,5 +280,5 @@ lessons.forEach(({ id, lesson }) => {
   summary[id] = counts;
 });
 
-assert.equal(total, 98);
+assert.equal(total, 179);
 console.log('answer-position-audit: ok', JSON.stringify(summary));

@@ -223,6 +223,7 @@ window.GuidedLessonBlocks = (function() {
         (block.title ? '<h2 class="mb-3 text-3xl font-extrabold text-slate-900">' + block.title + '</h2>' : '') +
         (block.prompt ? '<p class="mb-4 text-lg leading-relaxed text-slate-600">' + block.prompt + '</p>' : '') +
         (block.expression ? '<div class="guided-expression">' + block.expression + '</div>' : '') +
+        (block.diagram && window.GeometryDiagram ? window.GeometryDiagram.render(block.diagram, ctx.index) : '') +
         '<h3 class="guided-question">' + block.question + '</h3>' +
         response + renderHints(block, record) + renderGuidedFeedback(record, ctx.index) +
         '<div class="guided-actions">' + (record.attemptCount ? '<span class="guided-attempts">' + copy('Попыток', 'Әрекет') + ': ' + record.attemptCount + '</span>' : '') + action + '</div>' +

@@ -66,7 +66,7 @@ only when their interaction genuinely fits the objective.
 | `input` | Small structured native fields. | Exact configured fields; not a general expression editor. |
 | `worked-example` | A compact explained transformation. Use `steps`, optional expression/result/takeaway. | Informational support; follow it with learner work when appropriate. |
 | `factor-model` | Visual repeated-factor model for configured multiplication/division. | Restricted configured model, not symbolic manipulation. |
-| `guided-practice` | Scaffolding with `responseType` (`choice` or `input`), hints, feedback and explicit Check. | Saves answer, hints, attempts, repairs and completion evidence. |
+| `guided-practice` | Scaffolding with `responseType` (`choice` or `input`), hints, feedback and explicit Check. Elementary geometry tasks may add a structured `diagram` rendered by `geometry-diagram.js`. | Saves answer, hints, attempts, repairs and completion evidence. The diagram is presentation, not separate evidence. |
 | `decision` | Prediction/decision interaction with options and feedback. | Explicit checked decision; intended for conceptual distinctions. |
 | `math-response` | Free mathematical response. Use `question`, `answer`, optional `expression`, `keyboard`, `misconceptions`, `hints`, `compact`. | Saves a debounced draft, syntax issues, hints and checked evidence. See Math Input below. |
 | `equation-step` | Explicit next-line equation transformations. Use `initial`, `steps`, optional operation options, keyboard, hints. | Saves equation history and each checked step. It validates configured expected states; it is not a symbolic solver. |
@@ -159,6 +159,13 @@ it does not write storage for every pointer move. Reduced motion is respected.
 Current scope is intentionally narrow: triangle `A/B/C`, its
 `acute`/`right`/`obtuse`/`narrow` categories, and a proof overlay whose
 auxiliary line is through `A`. It is not a general geometry solver or CAD tool.
+
+For task-linked elementary diagrams that do not need dragging, a
+`guided-practice` block may use `diagram`. The small SVG renderer supports
+configured points, labels, lines, rays, segments, polygons, equal marks, angle
+arcs, right-angle marks and highlights. Supply a localized `ariaLabel` and
+caption. The SVG scales to its container and must remain readable without
+horizontal scrolling; it is not a second geometry workspace.
 
 ## Error handling and debug
 

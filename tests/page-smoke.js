@@ -104,9 +104,10 @@ const LESSON = [
   'js/lesson-engine/state.js', 'js/lesson-engine/hooks.js', 'js/lesson-engine/storage.js',
   'js/lesson-engine/debug.js', 'js/lesson-engine/serializer.js', 'js/lesson-engine/core.js', 'js/lesson-engine.js',
   'js/lesson-blocks/helpers.js', 'js/lesson-blocks/registry.js', 'js/lesson-blocks/renderers.js', 'js/lesson-blocks.js',
-  'js/lesson-blocks/guided.js',
+  'js/lesson-blocks/geometry-diagram.js', 'js/lesson-blocks/guided.js',
   'js/math-input.js', 'js/lesson-blocks/math-response.js', 'js/lesson-blocks/equation-step.js', 'js/lesson-blocks/graph-workspace.js', 'js/lesson-blocks/geometry-workspace.js',
-  'data/lesson-schema.js', 'data/lessons/fractions.js', 'data/lessons/percent.js', 'data/lessons/proportions.js', 'data/lessons/parts-mixtures.js', 'data/lessons/model.js', 'data/lessons/practice.js', 'data/lessons/natural-exponent-meaning.js', 'data/lessons/exponents.js', 'data/lessons/power-rules.js', 'data/lessons/zero-negative-exponents.js', 'data/lessons/standard-form.js', 'data/lessons/monomials-standard-form.js', 'data/lessons/polynomials-add-subtract.js', 'data/lessons/monomial-polynomial-multiplication.js', 'data/lessons/square-sum-difference.js', 'data/lessons/difference-squares.js', 'data/lessons/cube-identities.js', 'data/lessons/factorization.js', 'data/lessons/polynomial-transformations-practice.js', 'data/lessons/linear-equations.js', 'data/lessons/linear-functions.js', 'data/lessons/triangle-angle-sum.js', 'js/lesson.js',
+  'data/lessons/geometry-g03-transversal.js', 'data/lessons/geometry-g03-criteria.js', 'data/lessons/geometry-g03-properties.js', 'data/lessons/geometry-g03-triangle-relations.js', 'data/lessons/geometry-g03-right-triangles.js',
+  'data/lesson-schema.js', 'data/lessons/fractions.js', 'data/lessons/percent.js', 'data/lessons/proportions.js', 'data/lessons/parts-mixtures.js', 'data/lessons/model.js', 'data/lessons/practice.js', 'data/lessons/natural-exponent-meaning.js', 'data/lessons/exponents.js', 'data/lessons/power-rules.js', 'data/lessons/zero-negative-exponents.js', 'data/lessons/standard-form.js', 'data/lessons/monomials-standard-form.js', 'data/lessons/polynomials-add-subtract.js', 'data/lessons/monomial-polynomial-multiplication.js', 'data/lessons/square-sum-difference.js', 'data/lessons/difference-squares.js', 'data/lessons/cube-identities.js', 'data/lessons/factorization.js', 'data/lessons/polynomial-transformations-practice.js', 'data/lessons/linear-equations.js', 'data/lessons/linear-functions.js', 'data/lessons/triangle-angle-sum.js', 'data/lessons/geometry-figures-axioms.js', 'data/lessons/geometry-equal-figures.js', 'data/lessons/geometry-proof-methods.js', 'data/lessons/geometry-angles-perpendicular.js', 'data/lessons/geometry-initial-practice.js', 'data/lessons/geometry-triangle-types.js', 'data/lessons/geometry-triangle-elements.js', 'data/lessons/geometry-triangle-congruence-1.js', 'data/lessons/geometry-triangle-congruence-2.js', 'data/lessons/geometry-triangle-isosceles.js', 'data/lessons/geometry-triangle-equilateral.js', 'data/lessons/geometry-triangle-congruence-practice.js', 'js/lesson.js',
 ];
 
 function testDashboardShell() {
@@ -259,11 +260,23 @@ function testProgramCurriculum() {
   ['Основы геометрии и углы', 'Фигуры и измерения', 'Координаты и преобразования'].forEach(function(title) {
     assert.ok(geometryContent.includes(title), 'all geometry modules are visible immediately: ' + title);
   });
-  assert.ok(algebra.document.getElementById('program-now').innerHTML.includes('Сумма углов треугольника'));
+  assert.ok(algebra.document.getElementById('program-now').innerHTML.includes('Основные фигуры, аксиомы и теоремы'));
+  [
+    'geometry.g7.geo-01.figures-axioms', 'geometry.g7.geo-01.equal-figures',
+    'geometry.g7.geo-01.proof-methods', 'geometry.g7.geo-01.angles-perpendicular',
+    'geometry.g7.geo-01.practice',
+    'geometry.g7.geo-02.types', 'geometry.g7.geo-02.elements',
+    'geometry.g7.geo-02.congruence-1', 'geometry.g7.geo-02.congruence-2', 'geometry.g7.geo-02.isosceles', 'geometry.g7.geo-02.equilateral', 'geometry.g7.geo-02.practice',
+    'geometry.g7.geo-03.transversal', 'geometry.g7.geo-03.criteria', 'geometry.g7.geo-03.properties', 'geometry.triangle-angle-sum', 'geometry.g7.geo-03.triangle-relations', 'geometry.g7.geo-03.right-triangles',
+  ].forEach(function(id) {
+    assert.ok(algebra.document.getElementById('program-content').innerHTML.includes('lesson.html?id=' + id), id + ' requires a canonical Program link');
+  });
   assert.ok(algebra.document.getElementById('program-content').innerHTML.includes('lesson.html?id=geometry.triangle-angle-sum'));
 
   const kk = open('?subject=geometry');
   assert.ok(kk.document.getElementById('program-content').innerHTML.includes('Геометрия негіздері және бұрыштар'));
+  assert.ok(kk.document.getElementById('program-content').innerHTML.includes('Негізгі фигуралар, аксиомалар және теоремалар'));
+  assert.ok(kk.document.getElementById('program-content').innerHTML.includes('Бастапқы геометрия практикасы'));
   assert.ok(kk.document.getElementById('program-content').innerHTML.includes('Үшбұрыш бұрыштарының қосындысы'));
   assert.ok(kk.document.getElementById('program-content').innerHTML.includes('ТАҚЫРЫП 01'));
   assert.ok(lessonMarkup(kk.document.getElementById('program-content').innerHTML, 'geometry.triangle-angle-sum').includes('<a class="v7-program-lesson-title" href="lesson.html?id=geometry.triangle-angle-sum">Үшбұрыш бұрыштарының қосындысы</a>'));
@@ -1835,11 +1848,26 @@ function testGeometryResponsiveAndStaticSmoke() {
   assert.ok(css.includes('.geometry-workspace-wrap'));
   assert.ok(css.includes('.geometry-vertex-hit'));
   assert.ok(css.includes('.geometry-proof-panel'));
+  assert.ok(css.includes('.geometry-diagram { width:100%'));
+  assert.ok(css.includes('.geometry-diagram svg { display:block; width:100%; height:auto'));
+  assert.ok(css.includes('overflow:hidden'));
   assert.ok(css.includes('@media (max-width:390px)'));
   assert.ok(css.includes('@media (prefers-reduced-motion:reduce)'));
   assert.equal(html.includes('js/lesson-blocks/geometry-workspace.js'), false);
   assert.ok(assets.includes('js/lesson-blocks/geometry-workspace.js'));
   assert.ok(assets.includes('data/lessons/triangle-angle-sum.js'));
+}
+
+function testGeometryDiagramRenderer() {
+  const diagram = environment('');
+  load(diagram, ['js/lesson-blocks/geometry-diagram.js']);
+  const html = vm.runInContext("GeometryDiagram.render({ariaLabel:'Accessible geometry',caption:'Reason from the marks',elements:[{kind:'ray',from:{x:10,y:30},to:{x:90,y:30}},{kind:'point',at:{x:10,y:30},label:'A'},{kind:'equal-mark',from:{x:10,y:30},to:{x:50,y:30}},{kind:'angle',vertex:{x:50,y:30},from:{x:10,y:30},to:{x:50,y:5},label:'1'},{kind:'right-angle',vertex:{x:50,y:30},along1:{x:80,y:30},along2:{x:50,y:5}}]},'regression')", diagram.context);
+  assert.ok(html.includes('<svg viewBox="0 0 100 60" role="img" aria-label="Accessible geometry"'));
+  assert.ok(html.includes('marker-end="url(#geometry-diagram-arrow-regression)"'));
+  assert.ok(html.includes('geometry-diagram-mark'));
+  assert.ok(html.includes('geometry-diagram-angle'));
+  assert.ok(html.includes('geometry-diagram-right-angle'));
+  assert.ok(html.includes('<figcaption>Reason from the marks</figcaption>'));
 }
 
 testDashboardShell();
@@ -1854,6 +1882,11 @@ testLesson('algebra.g7.alg-03.multiplication', 'Бірмүшелер мен кө
 testLesson('algebra.g7.alg-03.square-sum-difference', 'Қосынды мен айырманың квадраты');
 testLesson('algebra.g7.alg-03.difference-squares', 'Квадраттар айырмасы');
 testLesson('algebra.g7.alg-03.cubes', 'Кубтар формулалары');
+testLesson('geometry.g7.geo-03.transversal', 'Екі түзу мен қиюшыдағы бұрыштар');
+testLesson('geometry.g7.geo-03.criteria', 'Түзулердің параллельдік белгілері');
+testLesson('geometry.g7.geo-03.properties', 'Параллель түзулердің қасиеттері');
+testLesson('geometry.g7.geo-03.triangle-relations', 'Сыртқы бұрыш және үшбұрыш теңсіздігі');
+testLesson('geometry.g7.geo-03.right-triangles', 'Тікбұрышты үшбұрыштар және проекциялар');
 testBilingualLessonContent();
 testUnknownLesson();
 testPublishedLessonDirectAccessPolicy();
@@ -1890,4 +1923,5 @@ testGeometryLessonArchitectureAndLocale();
 testGeometryMisconceptionHintAndRepair();
 testGeometryResumeAndCompletionDedupe();
 testGeometryResponsiveAndStaticSmoke();
+testGeometryDiagramRenderer();
 console.log('page-smoke: ok');

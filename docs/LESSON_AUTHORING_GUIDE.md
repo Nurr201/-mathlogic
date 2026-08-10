@@ -33,6 +33,7 @@ lesson IDs: progress, History, sessions and direct routes depend on them.
 | Preserve equality through explicit steps | `equation-step` |
 | Connect table, points, linear graph or parameter | `graph-workspace` |
 | Explore a configured triangle or proof states | `geometry-workspace` |
+| Show a task-linked elementary geometry drawing | `guided-practice` with structured `diagram` |
 | Close a lesson | `lesson-summary` |
 
 Use a workspace only when directly manipulating its mathematical object helps

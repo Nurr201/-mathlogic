@@ -141,6 +141,98 @@ window.MATHLOGIC_LESSON_ASSETS = {
       primitiveScripts: [],
       mathLive: false,
     },
+    'geometry.g7.geo-01.figures-axioms': {
+      configGlobal: 'LESSON_GEOMETRY_FIGURES_AXIOMS',
+      configScript: 'data/lessons/geometry-figures-axioms.js',
+      primitiveScripts: ['js/lesson-blocks/geometry-diagram.js','js/lesson-blocks/guided.js'],
+      mathLive: false,
+    },
+    'geometry.g7.geo-01.equal-figures': {
+      configGlobal: 'LESSON_GEOMETRY_EQUAL_FIGURES',
+      configScript: 'data/lessons/geometry-equal-figures.js',
+      primitiveScripts: ['js/lesson-blocks/geometry-diagram.js','js/lesson-blocks/guided.js'],
+      mathLive: false,
+    },
+    'geometry.g7.geo-01.proof-methods': {
+      configGlobal: 'LESSON_GEOMETRY_PROOF_METHODS',
+      configScript: 'data/lessons/geometry-proof-methods.js',
+      primitiveScripts: ['js/lesson-blocks/geometry-diagram.js','js/lesson-blocks/guided.js'],
+      mathLive: false,
+    },
+    'geometry.g7.geo-01.angles-perpendicular': {
+      configGlobal: 'LESSON_GEOMETRY_ANGLES_PERPENDICULAR',
+      configScript: 'data/lessons/geometry-angles-perpendicular.js',
+      primitiveScripts: ['js/lesson-blocks/geometry-diagram.js','js/lesson-blocks/guided.js'],
+      mathLive: false,
+    },
+    'geometry.g7.geo-01.practice': {
+      configGlobal: 'LESSON_GEOMETRY_INITIAL_PRACTICE',
+      configScript: 'data/lessons/geometry-initial-practice.js',
+      primitiveScripts: ['js/lesson-blocks/geometry-diagram.js','js/lesson-blocks/guided.js'],
+      mathLive: false,
+    },
+    'geometry.g7.geo-02.types': {
+      configGlobal: 'LESSON_GEOMETRY_TRIANGLE_TYPES',
+      configScript: 'data/lessons/geometry-triangle-types.js',
+      primitiveScripts: ['js/lesson-blocks/geometry-diagram.js','js/lesson-blocks/guided.js','js/lesson-blocks/geometry-workspace.js'],
+      mathLive: false,
+    },
+    'geometry.g7.geo-02.elements': {
+      configGlobal: 'LESSON_GEOMETRY_TRIANGLE_ELEMENTS',
+      configScript: 'data/lessons/geometry-triangle-elements.js',
+      primitiveScripts: ['js/lesson-blocks/geometry-diagram.js','js/lesson-blocks/guided.js'],
+      mathLive: false,
+    },
+    'geometry.g7.geo-02.congruence-1': {
+      configGlobal: 'LESSON_GEOMETRY_TRIANGLE_CONGRUENCE_1',
+      configScript: 'data/lessons/geometry-triangle-congruence-1.js',
+      primitiveScripts: ['js/lesson-blocks/geometry-diagram.js','js/lesson-blocks/guided.js'],
+      mathLive: false,
+    },
+    'geometry.g7.geo-02.congruence-2': {
+      configGlobal: 'LESSON_GEOMETRY_TRIANGLE_CONGRUENCE_2',
+      configScript: 'data/lessons/geometry-triangle-congruence-2.js',
+      primitiveScripts: ['js/lesson-blocks/geometry-diagram.js','js/lesson-blocks/guided.js'],
+      mathLive: false,
+    },
+    'geometry.g7.geo-02.isosceles': {
+      configGlobal: 'LESSON_GEOMETRY_TRIANGLE_ISOSCELES',
+      configScript: 'data/lessons/geometry-triangle-isosceles.js',
+      primitiveScripts: ['js/lesson-blocks/geometry-diagram.js','js/lesson-blocks/guided.js'],
+      mathLive: false,
+    },
+    'geometry.g7.geo-02.equilateral': {
+      configGlobal: 'LESSON_GEOMETRY_TRIANGLE_EQUILATERAL',
+      configScript: 'data/lessons/geometry-triangle-equilateral.js',
+      primitiveScripts: ['js/lesson-blocks/geometry-diagram.js','js/lesson-blocks/guided.js'],
+      mathLive: false,
+    },
+    'geometry.g7.geo-02.practice': {
+      configGlobal: 'LESSON_GEOMETRY_TRIANGLE_CONGRUENCE_PRACTICE',
+      configScript: 'data/lessons/geometry-triangle-congruence-practice.js',
+      primitiveScripts: ['js/lesson-blocks/geometry-diagram.js','js/lesson-blocks/guided.js'],
+      mathLive: false,
+    },
+    'geometry.g7.geo-03.transversal': {
+      configGlobal: 'LESSON_GEOMETRY_G03_TRANSVERSAL', configScript: 'data/lessons/geometry-g03-transversal.js',
+      primitiveScripts: ['js/lesson-blocks/geometry-diagram.js','js/lesson-blocks/guided.js'], mathLive: false,
+    },
+    'geometry.g7.geo-03.criteria': {
+      configGlobal: 'LESSON_GEOMETRY_G03_CRITERIA', configScript: 'data/lessons/geometry-g03-criteria.js',
+      primitiveScripts: ['js/lesson-blocks/geometry-diagram.js','js/lesson-blocks/guided.js'], mathLive: false,
+    },
+    'geometry.g7.geo-03.properties': {
+      configGlobal: 'LESSON_GEOMETRY_G03_PROPERTIES', configScript: 'data/lessons/geometry-g03-properties.js',
+      primitiveScripts: ['js/lesson-blocks/geometry-diagram.js','js/lesson-blocks/guided.js'], mathLive: false,
+    },
+    'geometry.g7.geo-03.triangle-relations': {
+      configGlobal: 'LESSON_GEOMETRY_G03_TRIANGLE_RELATIONS', configScript: 'data/lessons/geometry-g03-triangle-relations.js',
+      primitiveScripts: ['js/lesson-blocks/geometry-diagram.js','js/lesson-blocks/guided.js'], mathLive: false,
+    },
+    'geometry.g7.geo-03.right-triangles': {
+      configGlobal: 'LESSON_GEOMETRY_G03_RIGHT_TRIANGLES', configScript: 'data/lessons/geometry-g03-right-triangles.js',
+      primitiveScripts: ['js/lesson-blocks/geometry-diagram.js','js/lesson-blocks/guided.js'], mathLive: false,
+    },
     'geometry.triangle-angle-sum': {
       configGlobal: 'LESSON_TRIANGLE_ANGLE_SUM',
       configScript: 'data/lessons/triangle-angle-sum.js',

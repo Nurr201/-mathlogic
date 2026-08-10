@@ -194,6 +194,71 @@ const LESSON_REGISTRY = {
     'Келтірілген квадрат теңдеулерді түбірлер қосындысы мен көбейтіндісі арқылы шешу.',
     ['algebra_3','lesson.html']
   ),
+  'geometry.g7.geo-01.figures-axioms': registryEntry(
+    'geometry.g7.geo-01.figures-axioms', 'LESSON_GEOMETRY_FIGURES_AXIOMS',
+    'Как различать основные геометрические объекты и роль аксиом и теорем.',
+    'Негізгі геометриялық объектілерді және аксиомалар мен теоремалардың рөлін ажырату.'
+  ),
+  'geometry.g7.geo-01.equal-figures': registryEntry(
+    'geometry.g7.geo-01.equal-figures', 'LESSON_GEOMETRY_EQUAL_FIGURES',
+    'Как точное совмещение задаёт равенство фигур и соответствие элементов.',
+    'Дәл беттестіру фигуралар теңдігін және элементтер сәйкестігін қалай анықтайды.'
+  ),
+  'geometry.g7.geo-01.proof-methods': registryEntry(
+    'geometry.g7.geo-01.proof-methods', 'LESSON_GEOMETRY_PROOF_METHODS',
+    'Как строить цепочку от данных к цели и обосновывать каждый переход.',
+    'Берілгеннен мақсатқа дейін тізбек құрып, әр ауысуды қалай негіздеу керек.'
+  ),
+  'geometry.g7.geo-01.angles-perpendicular': registryEntry(
+    'geometry.g7.geo-01.angles-perpendicular', 'LESSON_GEOMETRY_ANGLES_PERPENDICULAR',
+    'Почему смежные углы дают 180°, вертикальные равны, а прямые перпендикулярны.',
+    'Сыбайлас бұрыштар неге 180° беретінін, вертикаль бұрыштар неге тең және түзулер қашан перпендикуляр болатынын түсіндіру.'
+  ),
+  'geometry.g7.geo-01.practice': registryEntry(
+    'geometry.g7.geo-01.practice', 'LESSON_GEOMETRY_INITIAL_PRACTICE',
+    'Практика чтения чертежа, выбора свойства и короткого геометрического обоснования.',
+    'Сызбаны оқу, қасиетті таңдау және қысқа геометриялық негіздеу практикасы.'
+  ),
+  'geometry.g7.geo-02.types': registryEntry(
+    'geometry.g7.geo-02.types', 'LESSON_GEOMETRY_TRIANGLE_TYPES',
+    'Как классифицировать треугольник по сторонам и углам, не полагаясь на внешний вид чертежа.',
+    'Үшбұрышты сызбаның сыртқы түріне емес, қабырғалары мен бұрыштарына қарай жіктеу.'
+  ),
+  'geometry.g7.geo-02.elements': registryEntry(
+    'geometry.g7.geo-02.elements', 'LESSON_GEOMETRY_TRIANGLE_ELEMENTS',
+    'Как отличать медиану, биссектрису и высоту по их математическим условиям.',
+    'Медиананы, биссектрисаны және биіктікті математикалық шарттары бойынша ажырату.'
+  ),
+  'geometry.g7.geo-02.congruence-1': registryEntry(
+    'geometry.g7.geo-02.congruence-1', 'LESSON_GEOMETRY_TRIANGLE_CONGRUENCE_1',
+    'Как применять первый и второй признаки равенства треугольников.',
+    'Үшбұрыштар теңдігінің бірінші және екінші белгілерін қолдану.'
+  ),
+  'geometry.g7.geo-02.congruence-2': registryEntry(
+    'geometry.g7.geo-02.congruence-2', 'LESSON_GEOMETRY_TRIANGLE_CONGRUENCE_2',
+    'Как три стороны доказывают равенство треугольников.',
+    'Үш қабырға үшбұрыштар теңдігін қалай дәлелдейтінін түсіну.'
+  ),
+  'geometry.g7.geo-02.isosceles': registryEntry(
+    'geometry.g7.geo-02.isosceles', 'LESSON_GEOMETRY_TRIANGLE_ISOSCELES',
+    'Свойства и обратное свойство равнобедренного треугольника.',
+    'Теңбүйірлі үшбұрыштың қасиеттері және кері қасиеті.'
+  ),
+  'geometry.g7.geo-02.equilateral': registryEntry(
+    'geometry.g7.geo-02.equilateral', 'LESSON_GEOMETRY_TRIANGLE_EQUILATERAL',
+    'Как три равные стороны связаны с тремя углами по 60°.',
+    'Үш тең қабырғаның үш 60° бұрышпен байланысы.'
+  ),
+  'geometry.g7.geo-02.practice': registryEntry(
+    'geometry.g7.geo-02.practice', 'LESSON_GEOMETRY_TRIANGLE_CONGRUENCE_PRACTICE',
+    'Практика выбора признака и короткого геометрического обоснования.',
+    'Белгіні таңдау және қысқа геометриялық негіздеу практикасы.'
+  ),
+  'geometry.g7.geo-03.transversal': registryEntry('geometry.g7.geo-03.transversal','LESSON_GEOMETRY_G03_TRANSVERSAL','Углы при двух прямых и секущей.','Екі түзу мен қиюшыдағы бұрыштар.'),
+  'geometry.g7.geo-03.criteria': registryEntry('geometry.g7.geo-03.criteria','LESSON_GEOMETRY_G03_CRITERIA','Признаки параллельности прямых.','Түзулердің параллельдік белгілері.'),
+  'geometry.g7.geo-03.properties': registryEntry('geometry.g7.geo-03.properties','LESSON_GEOMETRY_G03_PROPERTIES','Свойства параллельных прямых.','Параллель түзулердің қасиеттері.'),
+  'geometry.g7.geo-03.triangle-relations': registryEntry('geometry.g7.geo-03.triangle-relations','LESSON_GEOMETRY_G03_TRIANGLE_RELATIONS','Внешний угол и неравенство треугольника.','Сыртқы бұрыш және үшбұрыш теңсіздігі.'),
+  'geometry.g7.geo-03.right-triangles': registryEntry('geometry.g7.geo-03.right-triangles','LESSON_GEOMETRY_G03_RIGHT_TRIANGLES','Прямоугольные треугольники и проекции.','Тікбұрышты үшбұрыштар және проекциялар.'),
   'geometry.triangle-angle-sum': registryEntry(
     'geometry.triangle-angle-sum', 'LESSON_TRIANGLE_ANGLE_SUM',
     'Как эксперимент приводит к гипотезе, а параллельная прямая объясняет сумму 180°.',

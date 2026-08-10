@@ -419,6 +419,23 @@ window.MATHLOGIC_CURRICULUM = (function() {
     'algebra.g7.alg-03.cubes': true,
     'algebra.g7.alg-03.factorization': true,
     'algebra.g7.alg-03.practice': true,
+    'geometry.g7.geo-01.figures-axioms': true,
+    'geometry.g7.geo-01.equal-figures': true,
+    'geometry.g7.geo-01.proof-methods': true,
+    'geometry.g7.geo-01.angles-perpendicular': true,
+    'geometry.g7.geo-01.practice': true,
+    'geometry.g7.geo-02.types': true,
+    'geometry.g7.geo-02.elements': true,
+    'geometry.g7.geo-02.congruence-1': true,
+    'geometry.g7.geo-02.congruence-2': true,
+    'geometry.g7.geo-02.isosceles': true,
+    'geometry.g7.geo-02.equilateral': true,
+    'geometry.g7.geo-02.practice': true,
+    'geometry.g7.geo-03.transversal': true,
+    'geometry.g7.geo-03.criteria': true,
+    'geometry.g7.geo-03.properties': true,
+    'geometry.g7.geo-03.triangle-relations': true,
+    'geometry.g7.geo-03.right-triangles': true,
   };
   var LESSON_SPEC_OVERRIDES = {
     'algebra.g7.alg-01.proportions': {

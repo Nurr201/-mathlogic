@@ -716,6 +716,21 @@ body.v7-lesson {
    EDUCATIONAL GEOMETRY WORKSPACE
    ------------------------------------------ */
 .v7-lesson .geometry-workspace-wrap { max-width:980px !important; }
+.v7-lesson .geometry-diagram { width:100%; max-width:680px; margin:18px auto 24px; overflow:hidden; border:1px solid var(--v7-line); border-radius:14px; background:var(--v7-paper); }
+.v7-lesson .geometry-diagram svg { display:block; width:100%; height:auto; max-height:360px; }
+.v7-lesson .geometry-diagram figcaption { padding:9px 14px 11px; border-top:1px solid var(--v7-line); color:var(--v7-muted); font-size:.88rem; line-height:1.4; }
+.v7-lesson .geometry-diagram-edge, .v7-lesson .geometry-diagram-polygon { fill:none; stroke:#334155; stroke-width:1.3; vector-effect:non-scaling-stroke; }
+.v7-lesson .geometry-diagram-polygon { fill:#f8fafc; }
+.v7-lesson .geometry-diagram-edge.is-highlighted, .v7-lesson .geometry-diagram-polygon.is-highlighted { stroke:#0284c7; stroke-width:2.4; }
+.v7-lesson .geometry-diagram-edge.is-muted { stroke:#94a3b8; }
+.v7-lesson .geometry-diagram-point { fill:#0f172a; }
+.v7-lesson .geometry-diagram-label { fill:#0f172a; font:600 3.8px/1 sans-serif; }
+.v7-lesson .geometry-diagram-label.is-highlighted { fill:#0369a1; font-weight:800; }
+.v7-lesson .geometry-diagram-mark, .v7-lesson .geometry-diagram-parallel-mark, .v7-lesson .geometry-diagram-right-angle { fill:none; stroke:#dc2626; stroke-width:2; vector-effect:non-scaling-stroke; }
+.v7-lesson .geometry-diagram-angle { fill:none; stroke:#0284c7; stroke-width:2.2; vector-effect:non-scaling-stroke; }
+.v7-lesson .geometry-diagram-angle.is-highlighted { stroke:#dc2626; stroke-width:2.8; }
+.v7-lesson .geometry-diagram-highlight { fill:#bae6fd; opacity:.55; }
+.v7-lesson .geometry-diagram-arrow { fill:#334155; }
 .v7-lesson .geometry-workspace-block > h2 { margin:0 0 10px; }
 .v7-lesson .geometry-workspace-intro { max-width:66ch; margin:0 0 20px; }
 .v7-lesson .geometry-layout { display:grid; grid-template-columns:minmax(0,1fr); gap:16px; align-items:start; }

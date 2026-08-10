@@ -40,7 +40,7 @@ window.LESSON_SCHEMA = (function() {
     result: ['id', 'type', 'description', 'xp', 'nextLesson'],
     'factor-model': ['id', 'type', 'title', 'badgeLabel', 'intro', 'operation', 'base', 'leftCount', 'rightCount', 'result', 'ariaLabel', 'explanation'],
     'worked-example': ['id', 'type', 'title', 'badgeLabel', 'intro', 'expression', 'steps', 'result', 'formula', 'formulaLabel', 'conditions', 'takeaway'],
-    'guided-practice': ['id', 'type', 'title', 'badgeLabel', 'prompt', 'expression', 'question', 'responseType', 'options', 'answer', 'acceptedAnswers', 'inputLabel', 'placeholder', 'hints', 'successFeedback', 'feedback', 'answerFeedback', 'role', 'points'],
+    'guided-practice': ['id', 'type', 'title', 'badgeLabel', 'prompt', 'expression', 'diagram', 'question', 'responseType', 'options', 'answer', 'acceptedAnswers', 'inputLabel', 'placeholder', 'hints', 'successFeedback', 'feedback', 'answerFeedback', 'role', 'points'],
     'math-response': ['id', 'type', 'title', 'badgeLabel', 'prompt', 'expression', 'question', 'inputLabel', 'answer', 'numericInput', 'keyboard', 'misconceptions', 'hints', 'successFeedback', 'feedback', 'role', 'points', 'compact', 'typingHelp'],
     'equation-step': ['id', 'type', 'title', 'badgeLabel', 'intro', 'initial', 'historyLabel', 'balanceModel', 'steps', 'keyboard', 'successTitle', 'successFeedback', 'role', 'points'],
     'graph-workspace': ['id', 'type', 'title', 'badgeLabel', 'intro', 'mode', 'viewport', 'function', 'plotPoints', 'referenceX', 'target', 'tolerance', 'rows', 'keyboard', 'showLine', 'revealLine', 'lineLabel', 'parameter', 'requiredValues', 'targetParameter', 'task', 'followUp', 'hints', 'successFeedback', 'feedback', 'misconceptions', 'role', 'points', 'uiLabels'],

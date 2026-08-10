@@ -17,6 +17,12 @@ vm.createContext(context);
   'data/lessons/square-sum-difference.js','data/lessons/difference-squares.js','data/lessons/cube-identities.js',
   'data/lessons/factorization.js','data/lessons/polynomial-transformations-practice.js',
   'data/lessons/linear-equations.js','data/lessons/linear-functions.js','data/lessons/triangle-angle-sum.js',
+  'data/lessons/geometry-figures-axioms.js','data/lessons/geometry-equal-figures.js',
+  'data/lessons/geometry-proof-methods.js','data/lessons/geometry-angles-perpendicular.js','data/lessons/geometry-initial-practice.js',
+  'data/lessons/geometry-triangle-types.js','data/lessons/geometry-triangle-elements.js',
+  'data/lessons/geometry-g03-transversal.js','data/lessons/geometry-g03-criteria.js','data/lessons/geometry-g03-properties.js','data/lessons/geometry-g03-triangle-relations.js','data/lessons/geometry-g03-right-triangles.js',
+  'data/lessons/geometry-triangle-congruence-1.js','data/lessons/geometry-triangle-congruence-2.js',
+  'data/lessons/geometry-triangle-isosceles.js','data/lessons/geometry-triangle-equilateral.js','data/lessons/geometry-triangle-congruence-practice.js',
 ].forEach(function(file) {
   vm.runInContext(fs.readFileSync(path.join(ROOT, file), 'utf8'), context, { filename: file });
 });
@@ -42,6 +48,7 @@ const STUDENT_TEXT_KEYS = new Set([
   'feedback','successFeedback','incorrectFeedback','emptyFeedback','fallbackFeedback','explanation',
   'hint','hints','label','badgeLabel','formulaLabel','capabilities','uiLabels','resultLabels',
   'actionLabel','continueLabel','typingHelp','options','text',
+  'ariaLabel','caption',
 ]);
 
 function assertProductionConfigLocalization(config, lessonId) {
@@ -220,15 +227,7 @@ lessons.filter(function(item) { return ['implemented','reference'].includes(item
 const queue = Array.from(curriculum.productionQueue);
 unique(queue.map(function(item) { return item.lessonId; }), 'production queue');
 const queueIds = queue.map(function(item) { return item.lessonId; });
-assert.deepEqual(queueIds, [
-  'geometry.g7.geo-01.figures-axioms',
-  'geometry.g7.geo-01.equal-figures',
-  'geometry.g7.geo-01.proof-methods',
-  'geometry.g7.geo-01.angles-perpendicular',
-  'geometry.g7.geo-03.transversal',
-  'geometry.g7.geo-03.criteria',
-  'geometry.g7.geo-03.properties',
-]);
+assert.deepEqual(queueIds, []);
 queue.forEach(function(item, index) {
   assert.equal(item.priority, index + 1);
   assert.ok(lessonIds.has(item.lessonId));
