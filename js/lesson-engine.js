@@ -24,6 +24,9 @@ window.LessonEngine = (function() {
       return I.state.blockResults[index !== undefined ? index : I.state.currentIndex] || null;
     },
 
+    getInteractionState: I.getInteractionState,
+    setInteractionState: I.setInteractionState,
+
     clearProgress: function() {
       I.clearProgressInternal();
     },

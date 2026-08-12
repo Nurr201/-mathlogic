@@ -37,6 +37,7 @@ window.LessonBlocks = (function() {
     result: R.renderResult,
 
     _selectOption: R._selectOption,
+    _keySelectOption: R._keySelectOption,
     _getSelected: R._getSelected,
     _checkInput: R._checkInput,
     _updateSandbox: R._updateSandbox,

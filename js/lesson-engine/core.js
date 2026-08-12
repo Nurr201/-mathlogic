@@ -76,13 +76,15 @@ window.__EngineInternal = window.__EngineInternal || {};
       score: I.state.score,
       mistakes: I.state.mistakes,
       repeatMode: isRepeat,
-      savedResult: isRepeat ? (I.state.blockResults[I.state.currentIndex] || null) : null,
+      savedResult: I.state.blockResults[I.state.currentIndex] || null,
+      interactionState: I.getInteractionState ? I.getInteractionState(I.state.currentIndex) : null,
       duration: I.blockDuration(),
       timeSpent: I.state.timeSpent,
       correctAnswers: assessment.correctAnswers,
       totalQuestions: assessment.totalQuestions,
       percentage: assessment.percentage,
       attempts: assessment.attempts,
+      evidence: I.getLearningEvidenceSummary ? I.getLearningEvidenceSummary() : {},
     };
   }
 
@@ -202,6 +204,10 @@ window.__EngineInternal = window.__EngineInternal || {};
     }
   }
 
+  function _isCompletionBlock(block) {
+    return !!(block && (block.type === 'result' || block.type === 'lesson-summary' || block.completesLesson === true));
+  }
+
   /* ------------------------------------------
      EMIT BLOCK COMPLETE
      ------------------------------------------ */
@@ -278,7 +284,7 @@ window.__EngineInternal = window.__EngineInternal || {};
     /* Result — подтверждённый финальный экран. Достижение фиксируется при
        входе на него, а не после ухода со страницы. */
     var nextBlock = I.getCurrentBlock();
-    if (nextBlock && nextBlock.type === 'result') I.finish();
+    if (_isCompletionBlock(nextBlock)) I.finish();
   };
 
   /* ------------------------------------------
@@ -310,7 +316,7 @@ window.__EngineInternal = window.__EngineInternal || {};
     I.updateTime();
 
     var current = I.getCurrentBlock();
-    if (current && current.type === 'result') _markComplete();
+    if (_isCompletionBlock(current)) _markComplete();
     I.saveProgress();
 
     var assessment = I.getAssessmentSummary();
@@ -391,6 +397,8 @@ window.__EngineInternal = window.__EngineInternal || {};
     I.state.timeSpent = 0;
     I.state.completedBlocks = [];
     I.state.blockResults = {};
+    I.state.interactionStates = {};
+    I.state.completedSnapshot = false;
     I.state.finished = false;
     I.state.startedAt = Date.now();
     I.state.startTime = Date.now();
@@ -410,7 +418,7 @@ window.__EngineInternal = window.__EngineInternal || {};
       if (I.state.currentIndex >= I.state.blocks.length) {
         I.state.currentIndex = I.state.blocks.length - 1;
       }
-      I.state.finished = false;
+      I.state.finished = I.state.completedSnapshot === true;
       I.state.startTime = Date.now();
     }
     return restored;

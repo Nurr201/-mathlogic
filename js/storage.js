@@ -68,6 +68,7 @@ const ML = (function() {
     activity: {
       dates: [],
       studySecondsByDate: {},
+      history: [],
     },
     timeline: [],
     goals: null,
@@ -179,6 +180,29 @@ const ML = (function() {
     if (!isPlainObject(data.activity)) data.activity = clone(DEFAULTS.activity);
     if (!Array.isArray(data.activity.dates)) data.activity.dates = [];
     if (!isPlainObject(data.activity.studySecondsByDate)) data.activity.studySecondsByDate = {};
+    data.activity.history = normalizeLearningHistory(data.activity.history);
+    Object.keys(data.progress.lessons).forEach(function(lessonId) {
+      const record = data.progress.lessons[lessonId];
+      if (!record || record.status !== 'completed' || !Number(record.completedAt)) return;
+      const exists = data.activity.history.some(function(event) {
+        return event.type === 'LESSON_COMPLETED' && event.lessonId === lessonId;
+      });
+      if (exists) return;
+      const migrated = normalizeLearningEvent({
+        id: 'lesson_completed:' + lessonId + ':' + Number(record.completedAt),
+        type: 'LESSON_COMPLETED',
+        timestamp: Number(record.completedAt),
+        lessonId: lessonId,
+        metadata: {
+          correctAnswers: Math.max(0, Number(record.correctAnswers) || 0),
+          totalQuestions: Math.max(0, Number(record.totalQuestions) || 0),
+          duration: Math.max(0, Number(record.duration) || 0),
+          attempts: Math.max(0, Number(record.attempts) || 0),
+        },
+      });
+      if (migrated) data.activity.history.push(migrated);
+    });
+    data.activity.history = normalizeLearningHistory(data.activity.history);
     if (!isPlainObject(data.rewards)) data.rewards = {};
     data.user.xp = Math.max(0, Number(data.user.xp) || 0);
     data.user.level = Math.max(1, Number(data.user.level) || 1);
@@ -299,9 +323,10 @@ const ML = (function() {
       delete data.lesson.v2;
     }
 
-    data.activity = isPlainObject(data.activity) ? data.activity : { dates: [], studySecondsByDate: {} };
+    data.activity = isPlainObject(data.activity) ? data.activity : { dates: [], studySecondsByDate: {}, history: [] };
     if (!Array.isArray(data.activity.dates)) data.activity.dates = [];
     if (!isPlainObject(data.activity.studySecondsByDate)) data.activity.studySecondsByDate = {};
+    if (!Array.isArray(data.activity.history)) data.activity.history = [];
     if (isPlainObject(data.streak_data)) {
       const streak = data.streak_data;
       data.user = isPlainObject(data.user) ? data.user : {};
@@ -342,14 +367,26 @@ const ML = (function() {
   function mutableData() {
     if (_cache) return _cache;
     let data = loadRaw();
-    if (!data) data = migrateLegacyKeys(data);
+    const loadedVersion = data && Number(data.version);
+    const hasLegacyShape = !!(data && (
+      data.dashboard !== undefined || data.dailyQuests !== undefined ||
+      (data.progress && data.progress.lessonStates !== undefined) ||
+      (data.lesson && data.lesson.v2 !== undefined) || data.streak_data !== undefined
+    ));
+    let shouldPersist = !data || loadedVersion !== VERSION || hasLegacyShape;
+    if (!data) {
+      data = migrateLegacyKeys(data);
+      shouldPersist = true;
+    }
     const isNew = !data;
     data = normalize(data || clone(DEFAULTS));
     if (!data.user.id) data.user.id = 'user_' + Date.now();
     if (!data.user.createdAt) data.user.createdAt = Date.now();
     if (isNew && !data.user.lastVisit) data.user.lastVisit = Date.now();
     _cache = data;
-    persist(data);
+    /* A valid current record is already durable. Avoid rewriting the entire
+       localStorage payload during every page's synchronous bootstrap. */
+    if (shouldPersist) persist(data);
     return _cache;
   }
 
@@ -485,37 +522,153 @@ const ML = (function() {
     return y + '-' + m + '-' + d;
   }
 
-  function calculateStreak(dates) {
-    const unique = {};
-    dates.forEach(function(date) { unique[date] = true; });
-    let cursor = new Date();
-    let key = localDateKey(cursor);
-    if (!unique[key]) {
-      cursor.setDate(cursor.getDate() - 1);
-      key = localDateKey(cursor);
-      if (!unique[key]) return 0;
+  const LEARNING_EVENT_TYPES = [
+    'LESSON_STARTED',
+    'LESSON_CONTINUED',
+    'LESSON_COMPLETED',
+  ];
+  const LEARNING_HISTORY_LIMIT = 200;
+
+  function normalizeLearningEvent(event) {
+    if (!isPlainObject(event)) return null;
+    const type = String(event.type || '').toUpperCase();
+    const lessonId = String(event.lessonId || '').trim();
+    const timestamp = Number(event.timestamp);
+    if (LEARNING_EVENT_TYPES.indexOf(type) === -1 || !lessonId || !isFinite(timestamp) || timestamp <= 0) return null;
+    const normalized = {
+      id: String(event.id || (type.toLowerCase() + ':' + lessonId + ':' + timestamp)),
+      type: type,
+      timestamp: timestamp,
+      lessonId: lessonId,
+      metadata: isPlainObject(event.metadata) ? clone(event.metadata) : {},
+    };
+    if (event.subjectId) normalized.subjectId = String(event.subjectId);
+    if (event.topicId) normalized.topicId = String(event.topicId);
+    return normalized;
+  }
+
+  function normalizeLearningHistory(history) {
+    const seen = {};
+    return (Array.isArray(history) ? history : []).map(normalizeLearningEvent).filter(function(event) {
+      if (!event || seen[event.id]) return false;
+      seen[event.id] = true;
+      return true;
+    }).sort(function(a, b) {
+      return b.timestamp - a.timestamp;
+    }).slice(0, LEARNING_HISTORY_LIMIT);
+  }
+
+  function addLearningEvent(event, options) {
+    const normalized = normalizeLearningEvent(Object.assign({}, event, {
+      timestamp: event && event.timestamp ? event.timestamp : Date.now(),
+    }));
+    if (!normalized) return { added: false, event: null };
+    options = isPlainObject(options) ? options : {};
+    const dedupeWindowMs = Math.max(0, Number(options.dedupeWindowMs) || 30 * 60 * 1000);
+    let response = { added: false, event: null };
+    update(function(data) {
+      const history = data.activity.history;
+      const duplicate = history.find(function(saved) {
+        if (saved.type !== normalized.type || saved.lessonId !== normalized.lessonId) return false;
+        if (normalized.type === 'LESSON_COMPLETED') return true;
+        return Math.abs(saved.timestamp - normalized.timestamp) <= dedupeWindowMs;
+      });
+      if (duplicate) {
+        duplicate.subjectId = normalized.subjectId || duplicate.subjectId;
+        duplicate.topicId = normalized.topicId || duplicate.topicId;
+        duplicate.metadata = deepMerge(duplicate.metadata || {}, normalized.metadata || {});
+        response = { added: false, event: clone(duplicate) };
+        return;
+      }
+      history.push(normalized);
+      data.activity.history = normalizeLearningHistory(history);
+      response = { added: true, event: clone(normalized) };
+    });
+    return response;
+  }
+
+  function getLearningHistory(options) {
+    options = isPlainObject(options) ? options : {};
+    let history = normalizeLearningHistory(get('activity.history', []));
+    if (options.lessonId) history = history.filter(function(event) { return event.lessonId === options.lessonId; });
+    if (Array.isArray(options.types) && options.types.length) {
+      history = history.filter(function(event) { return options.types.indexOf(event.type) !== -1; });
     }
-    let streak = 0;
-    while (unique[localDateKey(cursor)]) {
-      streak++;
-      cursor.setDate(cursor.getDate() - 1);
+    if (Number(options.since)) history = history.filter(function(event) { return event.timestamp >= Number(options.since); });
+    if (Number(options.until)) history = history.filter(function(event) { return event.timestamp <= Number(options.until); });
+    const limit = Math.max(0, Math.min(LEARNING_HISTORY_LIMIT, Number(options.limit) || LEARNING_HISTORY_LIMIT));
+    return clone(history.slice(0, limit));
+  }
+
+  function localDateFromKey(key) {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(key || ''));
+    if (!match) return null;
+    const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]), 12);
+    if (date.getFullYear() !== Number(match[1]) || date.getMonth() !== Number(match[2]) - 1 || date.getDate() !== Number(match[3])) return null;
+    return date;
+  }
+
+  function getActivityIntensity(seconds, active) {
+    const duration = Math.max(0, Number(seconds) || 0);
+    if (!active && duration === 0) return 0;
+    if (duration < 5 * 60) return 1;
+    if (duration < 15 * 60) return 2;
+    if (duration < 30 * 60) return 3;
+    return 4;
+  }
+
+  function getActivityByDate(value) {
+    const key = normalizeDateKey(value || new Date());
+    if (!key) return null;
+    const activity = get('activity', DEFAULTS.activity) || DEFAULTS.activity;
+    const active = activity.dates.indexOf(key) !== -1;
+    const seconds = Math.max(0, Number(activity.studySecondsByDate[key]) || 0);
+    return {
+      date: key,
+      active: active || seconds > 0,
+      seconds: seconds,
+      intensity: getActivityIntensity(seconds, active),
+    };
+  }
+
+  function getActivityRange(start, end) {
+    const finish = end === undefined ? localDateFromKey(localDateKey(new Date())) : localDateFromKey(normalizeDateKey(end));
+    let begin = start === undefined ? null : localDateFromKey(normalizeDateKey(start));
+    if (!finish) return [];
+    if (!begin) {
+      begin = new Date(finish.getFullYear(), finish.getMonth(), finish.getDate() - 364, 12);
     }
-    return streak;
+    if (begin > finish) return [];
+
+    const activity = get('activity', DEFAULTS.activity) || DEFAULTS.activity;
+    const activeDates = {};
+    activity.dates.forEach(function(key) { activeDates[key] = true; });
+    const result = [];
+    const cursor = new Date(begin.getFullYear(), begin.getMonth(), begin.getDate(), 12);
+    while (cursor <= finish) {
+      const key = localDateKey(cursor);
+      const seconds = Math.max(0, Number(activity.studySecondsByDate[key]) || 0);
+      const active = Boolean(activeDates[key]) || seconds > 0;
+      result.push({
+        date: key,
+        active: active,
+        seconds: seconds,
+        intensity: getActivityIntensity(seconds, active),
+      });
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    return result;
   }
 
   function recordLearningActivity(seconds, timestamp) {
     update(function(data) {
       const date = new Date(timestamp || Date.now());
+      if (isNaN(date.getTime())) return;
       const key = localDateKey(date);
       if (data.activity.dates.indexOf(key) === -1) data.activity.dates.push(key);
       if (seconds > 0) {
         data.activity.studySecondsByDate[key] = (data.activity.studySecondsByDate[key] || 0) + Math.floor(seconds);
       }
-      const current = calculateStreak(data.activity.dates);
-      data.user.streak = current;
-      data.user.streakBest = Math.max(data.user.streakBest || 0, current);
-      data.user.streakTotal = data.activity.dates.length;
-      data.stats.best_streak = data.user.streakBest;
     });
   }
 
@@ -559,19 +712,10 @@ const ML = (function() {
           data.lesson.sessions[canonicalId] = oldSession;
         }
         delete data.lesson.sessions[legacyId];
-      });
-      const canonicalIds = {};
-      Object.keys(mapping).forEach(function(legacyId) { canonicalIds[mapping[legacyId]] = true; });
-      Object.keys(canonicalIds).forEach(function(id) {
-        const record = data.progress.lessons[id];
-        const rewardKey = 'lesson:' + id;
-        if (record && record.status === 'completed' && !data.rewards[rewardKey]) {
-          data.rewards[rewardKey] = {
-            amount: Math.max(0, Number(record.xpEarned) || 0),
-            awardedAt: Number(record.completedAt) || Date.now(),
-            reason: 'legacy-lesson',
-          };
-        }
+
+        data.activity.history.forEach(function(event) {
+          if (event.lessonId === legacyId) event.lessonId = canonicalId;
+        });
       });
     });
   }
@@ -665,6 +809,11 @@ const ML = (function() {
     setLessonSession: setLessonSession,
     markSubtopicsDone: markSubtopicsDone,
     recordLearningActivity: recordLearningActivity,
+    getActivityByDate: getActivityByDate,
+    getActivityRange: getActivityRange,
+    getActivityIntensity: getActivityIntensity,
+    addLearningEvent: addLearningEvent,
+    getLearningHistory: getLearningHistory,
     updateLastVisit: updateLastVisit,
     addTimelineEntry: addTimelineEntry,
     migrateLessonIds: migrateLessonIds,

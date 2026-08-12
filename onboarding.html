@@ -1,268 +1,99 @@
-<!DOCTYPE html>
-<html lang="kk">
+<!doctype html>
+<html lang="ru" data-theme="light">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Баптау — math·logic</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        blue: { 50: '#EEF2FF', 100: '#E0E7FF', 200: '#C7D2FE', 300: '#A5B4FC', 400: '#818CF8', 500: '#6366F1', 600: '#4F46E5', 700: '#4338CA', 800: '#3730A3', 900: '#312E81' },
-        sky: { 400: '#818CF8', 500: '#6366F1' },
-        purple: { 50: '#F5F3FF', 600: '#7C3AED' },
-        emerald: { 100: '#D1FAE5', 700: '#047857' },
-        amber: { 100: '#FEF3C7', 700: '#B45309' },
-      },
-      fontFamily: { head: ['Rubik', 'sans-serif'] },
-      borderRadius: { '2xl': '16px', '3xl': '20px' },
-    }
-  }
-}
-</script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Rubik:wght@500;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css">
-<link rel="stylesheet" href="css/animations.css">
-<link rel="stylesheet" href="css/components.css">
-<style>
-  body { font-family: 'Inter', sans-serif; background: #F8FAFC; color: #0F172A; }
-  .fd { font-family: 'Rubik', sans-serif; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Настройка обучения — MathLogic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/editorial.css">
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 page-enter">
+<body class="v7-app">
+  <main class="v7-onboard">
+    <section class="v7-onboard-box" aria-labelledby="onboard-title">
+      <a class="v7-brand" href="index.html"><span class="v7-mark"></span><span>MathLogic</span></a>
+      <div class="v7-stepper" aria-label="Прогресс настройки"><i class="on"></i><i></i><i></i></div>
 
-  <div class="w-full max-w-2xl bg-white rounded-3xl p-6 md:p-10 shadow-2xl border border-blue-100 my-6">
-    
-    <!-- Прогресс-бар -->
-    <div class="mb-8" id="progress-header">
-      <div class="flex justify-between items-center mb-3">
-        <a href="index.html" class="fd font-extrabold text-xl text-blue-700">math<span class="text-sky-500">·</span>logic</a>
-        <span id="step-count" class="text-xs font-bold text-slate-400 fd bg-slate-100 px-3 py-1 rounded-full">1 / 3 қадам</span>
-      </div>
-      <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-        <div id="progress" class="h-full bg-blue-700 transition-all duration-500 w-1/3"></div>
-      </div>
-    </div>
-
-    <!-- ШАГ 1: ТЕМЫ -->
-    <div id="step-1" class="step-pane">
-      <h2 class="fd text-2xl md:text-3xl font-extrabold text-slate-800 mb-2">Нені дамытқың келеді?</h2>
-      <p class="text-sm text-slate-500 mb-6">Бір немесе бірнеше бағытты таңда</p>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div onclick="toggleGoal(this, 'math')" class="brilliant-card rounded-2xl p-4 active flex flex-col justify-between h-56">
-          <div class="flex justify-between items-start">
-            <span class="text-xs font-bold fd text-blue-700 bg-blue-100 px-2.5 py-1 rounded-lg">Алгебра</span>
-            <div class="card-check flex items-center justify-center text-white text-xs">✓</div>
-          </div>
-          <div class="my-2 flex justify-center items-center h-20 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100/60">
-            <svg viewBox="0 0 100 60" class="w-20 h-14"><path d="M10,50 Q30,10 50,30 T90,10" stroke="#4F46E5" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="50" cy="30" r="4" fill="#818CF8"/></svg>
-          </div>
-          <div>
-            <p class="fd font-bold text-slate-800 text-sm">Теңдеулер & Матем</p>
-            <p class="text-[11px] text-slate-500 mt-0.5">Виет, функциялар мен хактар</p>
-          </div>
-        </div>
-
-        <div onclick="toggleGoal(this, 'geometry')" class="brilliant-card rounded-2xl p-4 flex flex-col justify-between h-56">
-          <div class="flex justify-between items-start">
-            <span class="text-xs font-bold fd text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-lg">Геометрия</span>
-            <div class="card-check flex items-center justify-center text-white text-xs">✓</div>
-          </div>
-          <div class="my-2 flex justify-center items-center h-20 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl border border-emerald-100/60">
-            <svg viewBox="0 0 80 60" class="w-16 h-14"><polygon points="10,50 40,10 70,50" stroke="#059669" stroke-width="3.5" fill="none"/><line x1="40" y1="10" x2="40" y2="50" stroke="#10B981" stroke-width="2" stroke-dasharray="3 3"/></svg>
-          </div>
-          <div>
-            <p class="fd font-bold text-slate-800 text-sm">Геометрия</p>
-            <p class="text-[11px] text-slate-500 mt-0.5">Фигуралар, Пифагор мен бұрыштар</p>
-          </div>
-        </div>
-
-        <div onclick="toggleGoal(this, 'logic')" class="brilliant-card rounded-2xl p-4 flex flex-col justify-between h-56">
-          <div class="flex justify-between items-start">
-            <span class="text-xs font-bold fd text-amber-700 bg-amber-100 px-2.5 py-1 rounded-lg">Логика</span>
-            <div class="card-check flex items-center justify-center text-white text-xs">✓</div>
-          </div>
-          <div class="my-2 flex justify-center items-center h-20 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border border-amber-100/60">
-            <svg viewBox="0 0 80 60" class="w-16 h-14"><rect x="10" y="15" width="25" height="25" rx="6" fill="#F59E0B"/><circle cx="55" cy="27" r="13" fill="#D97706"/></svg>
-          </div>
-          <div>
-            <p class="fd font-bold text-slate-800 text-sm">Логика & Паттерндер</p>
-            <p class="text-[11px] text-slate-500 mt-0.5">Сұрақтар мен алгоритмдер</p>
-          </div>
+      <div class="v7-onboard-step" data-step="0">
+        <span class="v7-eyebrow">01 · Language</span>
+        <h1 id="onboard-title" data-copy-ru="Выберите язык" data-copy-kk="Тілді таңдаңыз">Выберите язык</h1>
+        <p data-copy-ru="Интерфейс и доступные версии уроков будут открываться на выбранном языке." data-copy-kk="Интерфейс пен сабақтардың қолжетімді нұсқалары таңдалған тілде ашылады.">Интерфейс и доступные версии уроков будут открываться на выбранном языке.</p>
+        <div class="v7-choices">
+          <button class="v7-choice" type="button" data-language="ru"><strong>Русский</strong><small>Интерфейс и уроки на русском</small></button>
+          <button class="v7-choice" type="button" data-language="kk"><strong>Қазақша</strong><small>Интерфейс және сабақтар қазақша</small></button>
         </div>
       </div>
 
-      <button onclick="nextStep(2)" class="w-full bg-blue-700 hover:bg-blue-800 text-white fd font-bold py-4 rounded-2xl shadow-lg shadow-blue-600/25 transition-all text-sm ripple">Ары қарай →</button>
-    </div>
-
-    <!-- ШАГ 2: УРОВЕНЬ -->
-    <div id="step-2" class="step-pane hidden">
-      <h2 class="fd text-2xl md:text-3xl font-extrabold text-slate-800 mb-2">Қай деңгейдесің?</h2>
-      <p class="text-sm text-slate-500 mb-6">Өзіңе сай есептерді таңдаймыз</p>
-
-      <div class="space-y-3 mb-8">
-        <div onclick="selectLevel(this, 'beginner')" class="brilliant-card rounded-2xl p-4 flex items-center gap-4">
-          <div class="w-12 h-12 rounded-xl bg-green-100 text-green-600 flex items-center justify-center text-xl shrink-0">🌱</div>
-          <div class="flex-grow">
-            <p class="fd font-bold text-slate-800 text-sm">Жаңадан бастаушы</p>
-            <p class="text-xs text-slate-500 mt-0.5">Базалық ережелер мен жеңіл теңдеулер</p>
-          </div>
-          <div class="card-check flex items-center justify-center text-white text-xs shrink-0">✓</div>
-        </div>
-
-        <div onclick="selectLevel(this, 'middle')" class="brilliant-card rounded-2xl p-4 active flex items-center gap-4">
-          <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl shrink-0">⚡️</div>
-          <div class="flex-grow">
-            <p class="fd font-bold text-slate-800 text-sm">База бар (8–9 сынып)</p>
-            <p class="text-xs text-slate-500 mt-0.5">Мектеп бағдарламасын жақсы білемін</p>
-          </div>
-          <div class="card-check flex items-center justify-center text-white text-xs shrink-0">✓</div>
-        </div>
-
-        <div onclick="selectLevel(this, 'pro')" class="brilliant-card rounded-2xl p-4 flex items-center gap-4">
-          <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl shrink-0">🔥</div>
-          <div class="flex-grow">
-            <p class="fd font-bold text-slate-800 text-sm">Олимпиада деңгейі</p>
-            <p class="text-xs text-slate-500 mt-0.5">Күрделі логика мен хардкор есептер</p>
-          </div>
-          <div class="card-check flex items-center justify-center text-white text-xs shrink-0">✓</div>
+      <div class="v7-onboard-step" data-step="1" hidden>
+        <span class="v7-eyebrow" data-copy-ru="02 · Учебная цель" data-copy-kk="02 · Оқу мақсаты">02 · Учебная цель</span>
+        <h1 data-copy-ru="На чём сосредоточиться?" data-copy-kk="Неге назар аударамыз?">На чём сосредоточиться?</h1>
+        <p data-copy-ru="Это сохранится в локальном профиле. Вы сможете изменить выбор позже." data-copy-kk="Бұл жергілікті профильде сақталады. Таңдауды кейін өзгерте аласыз.">Это сохранится в локальном профиле. Вы сможете изменить выбор позже.</p>
+        <div class="v7-choices">
+          <button class="v7-choice" type="button" data-goal="understand"><strong data-copy-ru="Понять алгебру" data-copy-kk="Алгебраны түсіну">Понять алгебру</strong><small data-copy-ru="Разобраться в идеях и связях" data-copy-kk="Идеялар мен байланыстарды түсіну">Разобраться в идеях и связях</small></button>
+          <button class="v7-choice" type="button" data-goal="review"><strong data-copy-ru="Повторить основы" data-copy-kk="Негіздерді қайталау">Повторить основы</strong><small data-copy-ru="Вернуться к ключевым темам" data-copy-kk="Негізгі тақырыптарға қайта оралу">Вернуться к ключевым темам</small></button>
+          <button class="v7-choice" type="button" data-goal="exam"><strong data-copy-ru="Готовиться к экзамену" data-copy-kk="Емтиханға дайындалу">Готовиться к экзамену</strong><small data-copy-ru="Системно пройти доступную программу" data-copy-kk="Қолжетімді бағдарламаны жүйелі өту">Системно пройти доступную программу</small></button>
         </div>
       </div>
 
-      <div class="flex gap-3">
-        <button onclick="nextStep(1)" class="w-1/3 bg-slate-100 hover:bg-slate-200 text-slate-600 fd font-bold py-4 rounded-2xl transition-all text-sm ripple">← Артқа</button>
-        <button onclick="nextStep(3)" class="w-2/3 bg-blue-700 hover:bg-blue-800 text-white fd font-bold py-4 rounded-2xl shadow-lg shadow-blue-600/25 transition-all text-sm ripple">Ары қарай →</button>
-      </div>
-    </div>
-
-    <!-- ШАГ 3: ВОЗРАСТ -->
-    <div id="step-3" class="step-pane hidden">
-      <h2 class="fd text-2xl md:text-3xl font-extrabold text-slate-800 mb-2">Жасың нешеде?</h2>
-      <p class="text-sm text-slate-500 mb-6">Контентті сәйкестендіру үшін</p>
-
-      <div class="grid grid-cols-3 gap-4 mb-8">
-        <div onclick="selectAge(this, '<14')" class="brilliant-card rounded-2xl p-5 text-center flex flex-col items-center justify-center h-36">
-          <div class="text-3xl mb-2">🎒</div>
-          <p class="fd font-bold text-sm text-slate-800">14-ке дейін</p>
-        </div>
-
-        <div onclick="selectAge(this, '14-17')" class="brilliant-card rounded-2xl p-5 text-center active flex flex-col items-center justify-center h-36">
-          <div class="text-3xl mb-2">🎧</div>
-          <p class="fd font-bold text-sm text-slate-800">14 – 17</p>
-        </div>
-
-        <div onclick="selectAge(this, '18+')" class="brilliant-card rounded-2xl p-5 text-center flex flex-col items-center justify-center h-36">
-          <div class="text-3xl mb-2">☕️</div>
-          <p class="fd font-bold text-sm text-slate-800">18+</p>
+      <div class="v7-onboard-step" data-step="2" hidden>
+        <span class="v7-eyebrow" data-copy-ru="03 · Стартовая точка" data-copy-kk="03 · Бастау нүктесі">03 · Стартовая точка</span>
+        <h1 data-copy-ru="Откуда начать?" data-copy-kk="Неден бастаймыз?">Откуда начать?</h1>
+        <p data-copy-ru="Выберите существующую точку входа. Диагностики и автоматического назначения уровня пока нет." data-copy-kk="Қолданыстағы бастау нүктесін таңдаңыз. Диагностика мен деңгейді автоматты анықтау әзірге жоқ.">Выберите существующую точку входа. Диагностики и автоматического назначения уровня пока нет.</p>
+        <div class="v7-choices">
+          <button class="v7-choice" type="button" data-start="program"><strong data-copy-ru="Открыть программу" data-copy-kk="Бағдарламаны ашу">Открыть программу</strong><small data-copy-ru="Сначала посмотреть все доступные темы" data-copy-kk="Алдымен барлық қолжетімді тақырыптарды көру">Сначала посмотреть все доступные темы</small></button>
+          <button class="v7-choice" type="button" data-start="lesson"><strong data-copy-ru="Начать первый урок" data-copy-kk="Бірінші сабақты бастау">Начать первый урок</strong><small data-copy-ru="Степени и их основные свойства" data-copy-kk="Дәрежелер және олардың негізгі қасиеттері">Степени и их основные свойства</small></button>
+          <button class="v7-choice" type="button" data-start="dashboard"><strong data-copy-ru="Перейти в рабочее пространство" data-copy-kk="Жұмыс кеңістігіне өту">Перейти в рабочее пространство</strong><small data-copy-ru="Увидеть текущий путь и продолжение" data-copy-kk="Ағымдағы жол мен жалғастыруды көру">Увидеть текущий путь и продолжение</small></button>
         </div>
       </div>
 
-      <div class="flex gap-3">
-        <button onclick="nextStep(2)" class="w-1/3 bg-slate-100 hover:bg-slate-200 text-slate-600 fd font-bold py-4 rounded-2xl transition-all text-sm">← Артқа</button>
-        <button onclick="showRegistration()" class="w-2/3 bg-blue-700 hover:bg-blue-800 text-white fd font-bold py-4 rounded-2xl shadow-lg shadow-blue-600/25 transition-all text-sm">Бағдарламаны құру ✨</button>
+      <div class="v7-actions v7-onboard-actions">
+        <button class="v7-button text" id="onboard-back" type="button" hidden data-copy-ru="← Назад" data-copy-kk="← Артқа">← Назад</button>
+        <button class="v7-button primary" id="onboard-next" type="button" disabled data-copy-ru="Продолжить" data-copy-kk="Жалғастыру">Продолжить</button>
       </div>
-    </div>
+      <p class="v7-onboard-note" data-copy-ru="Настройки сохраняются только в этом браузере." data-copy-kk="Баптаулар тек осы браузерде сақталады.">Настройки сохраняются только в этом браузере.</p>
+    </section>
+  </main>
+  <script src="js/storage.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/site.js"></script>
+  <script>
+  (function() {
+    'use strict';
+    var step = 0;
+    var choices = { language: ML.getLang(), goal: '', start: '' };
+    var panes = Array.from(document.querySelectorAll('[data-step]'));
+    var bars = Array.from(document.querySelectorAll('.v7-stepper i'));
+    var back = document.getElementById('onboard-back');
+    var next = document.getElementById('onboard-next');
 
-    <!-- ФИНАЛ: РЕГИСТРАЦИЯ (Отдельная полноценная карточка-итог) -->
-    <div id="step-4" class="step-pane hidden">
-      <div class="success-banner rounded-2xl p-5 mb-6 text-center">
-        <div class="w-12 h-12 bg-blue-600 text-white rounded-2xl mx-auto flex items-center justify-center text-2xl mb-3 shadow-md shadow-blue-500/20">🎉</div>
-        <h2 class="fd text-xl font-extrabold text-blue-900 mb-1">Жеке бағдарламаңыз дайын!</h2>
-        <p class="text-xs text-blue-700/80">Таңдауларыңыз ескерілді. Прогрессіңізді жоғалтпау үшін аккаунт жасаңыз.</p>
-      </div>
-
-      <form onsubmit="handleRegister(event)" class="space-y-4 mb-6">
-        <div>
-          <label class="block text-xs font-bold text-slate-600 fd mb-1">Есіміңіз</label>
-          <input type="text" required placeholder="Люк" class="w-full bg-slate-50 border border-slate-200 focus:border-blue-700 rounded-xl px-4 py-3 text-sm outline-none transition-all">
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-600 fd mb-1">Email поштаңыз</label>
-          <input type="email" required placeholder="luke@example.com" class="w-full bg-slate-50 border border-slate-200 focus:border-blue-700 rounded-xl px-4 py-3 text-sm outline-none transition-all">
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-600 fd mb-1">Құпия сөз (Пароль)</label>
-          <input type="password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 focus:border-blue-700 rounded-xl px-4 py-3 text-sm outline-none transition-all">
-        </div>
-
-        <button type="submit" class="w-full bg-blue-700 hover:bg-blue-800 text-white fd font-bold py-4 rounded-2xl shadow-lg shadow-blue-600/25 transition-all text-sm mt-2">Тіркелу және бастау 🚀</button>
-      </form>
-      
-      <p class="text-xs text-slate-400 text-center">
-        Бұрыннан аккаунтыңыз бар ма? <a href="login.html" class="text-blue-700 font-bold hover:underline">Кіру</a>
-      </p>
-    </div>
-
-  </div>
-
-<script src="js/storage.js"></script>
-<script src="js/events.js"></script>
-<script src="js/xp.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/navigation.js"></script>
-<script src="js/utils.js"></script>
-<script src="js/animations.js"></script>
-<script src="js/app.js"></script>
-<script>
-  const userData = { goals: ['math'], level: 'middle', age: '14-17' };
-
-  function toggleGoal(elem, goalKey) {
-    elem.classList.toggle('active');
-    if (userData.goals.includes(goalKey)) {
-      userData.goals = userData.goals.filter(g => g !== goalKey);
-    } else {
-      userData.goals.push(goalKey);
+    function applyCopy() { ML.applySettings(); MathLogicSite.applyCopy(); }
+    function selectedFor(index) { return index === 0 ? choices.language : index === 1 ? choices.goal : choices.start; }
+    function render() {
+      panes.forEach(function(pane, index) { pane.hidden = index !== step; });
+      bars.forEach(function(bar, index) { bar.classList.toggle('on', index <= step); });
+      back.hidden = step === 0;
+      next.disabled = !selectedFor(step);
+      next.textContent = step === 2
+        ? (ML.getLang() === 'kk' ? 'Оқуды бастау' : 'Начать обучение')
+        : (ML.getLang() === 'kk' ? 'Жалғастыру' : 'Продолжить');
+      document.querySelectorAll('[data-language]').forEach(function(button) { button.setAttribute('aria-pressed', String(button.dataset.language === choices.language)); });
+      document.querySelectorAll('[data-goal]').forEach(function(button) { button.setAttribute('aria-pressed', String(button.dataset.goal === choices.goal)); });
+      document.querySelectorAll('[data-start]').forEach(function(button) { button.setAttribute('aria-pressed', String(button.dataset.start === choices.start)); });
     }
-  }
-
-  function selectLevel(elem, levelKey) {
-    document.querySelectorAll('#step-2 .brilliant-card').forEach(c => c.classList.remove('active'));
-    elem.classList.add('active');
-    userData.level = levelKey;
-  }
-
-  function selectAge(elem, ageKey) {
-    document.querySelectorAll('#step-3 .brilliant-card').forEach(c => c.classList.remove('active'));
-    elem.classList.add('active');
-    userData.age = ageKey;
-  }
-
-  function nextStep(stepNumber) {
-    document.querySelectorAll('.step-pane').forEach(p => p.classList.add('hidden'));
-    document.getElementById('step-' + stepNumber).classList.remove('hidden');
-    document.getElementById('step-count').innerText = stepNumber + ' / 3 қадам';
-    const progressMap = { 1: '33%', 2: '66%', 3: '100%' };
-    document.getElementById('progress').style.width = progressMap[stepNumber];
-  }
-
-  function showRegistration() {
-    document.getElementById('progress-header').style.display = 'none';
-    document.querySelectorAll('.step-pane').forEach(p => p.classList.add('hidden'));
-    document.getElementById('step-4').classList.remove('hidden');
-  }
-
-  function handleRegister(e) {
-    e.preventDefault();
-    const nameInput = e.target.querySelector('input[type="text"]');
-    const emailInput = e.target.querySelector('input[type="email"]');
-    const userName = nameInput ? nameInput.value : 'Пользователь';
-    const userEmail = emailInput ? emailInput.value : 'user@example.com';
-
-    ML.setUser({
-      name: userName,
-      email: userEmail,
-      goals: userData.goals,
-      age: userData.age,
-      loggedIn: true
+    document.querySelectorAll('[data-language]').forEach(function(button) { button.addEventListener('click', function() { choices.language = button.dataset.language; ML.setLang(choices.language); applyCopy(); render(); }); });
+    document.querySelectorAll('[data-goal]').forEach(function(button) { button.addEventListener('click', function() { choices.goal = button.dataset.goal; render(); }); });
+    document.querySelectorAll('[data-start]').forEach(function(button) { button.addEventListener('click', function() { choices.start = button.dataset.start; render(); }); });
+    back.addEventListener('click', function() { if (step > 0) { step -= 1; render(); } });
+    next.addEventListener('click', function() {
+      if (!selectedFor(step)) return;
+      if (step < 2) { step += 1; render(); return; }
+      ML.setUser({ goals:[choices.goal], startPoint:choices.start });
+      var targets = { program:'program.html', lesson:'lesson.html?id=algebra.exponents.basics', dashboard:'dashboard.html' };
+      window.location.href = targets[choices.start] || 'program.html';
     });
-
-    UI.showToast('Тіркелу сәтті өтті! Қош келдіңіз, ' + userName + '!', 'success');
-    setTimeout(function() { window.location.href = "dashboard.html"; }, 500);
-  }
-  ANIME.initPageTransitions();
-</script>
+    applyCopy(); render();
+  })();
+  </script>
 </body>
 </html>

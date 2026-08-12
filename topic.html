@@ -1,36 +1,18 @@
-<!DOCTYPE html>
-<html lang="kk">
+<!doctype html>
+<html lang="ru" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Тақырып — math·logic</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-  tailwind.config = {
-    theme: { extend: { colors: { blue: { 50: '#EEF2FF', 100: '#E0E7FF', 200: '#C7D2FE', 300: '#A5B4FC', 400: '#818CF8', 500: '#6366F1', 600: '#4F46E5', 700: '#4338CA' }, purple: { 50: '#F5F3FF', 600: '#7C3AED' }, }, fontFamily: { head: ['Rubik', 'sans-serif'] }, borderRadius: { '2xl': '16px', '3xl': '20px' } } } }
-  </script>
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/animations.css">
-  <link rel="stylesheet" href="css/components.css">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Тема — MathLogic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/editorial.css">
 </head>
-<body class="min-h-screen flex items-center justify-center bg-[#F8FAFC] page-enter">
-  <div class="text-center p-8 animate-scale-in">
-    <div class="text-5xl mb-4">🚧</div>
-    <h1 class="font-head font-extrabold text-2xl text-slate-900 mb-2">Бұл бет әзірленуде</h1>
-    <p class="text-slate-500 mb-6">Біз жаңа сабақтарды дайындап жатырмыз</p>
-    <a href="dashboard.html" class="btn px-8 py-4 font-bold text-sm shadow-xl">Бақылау тақтасына қайту →</a>
-  </div>
-  <script src="js/storage.js"></script>
-  <script src="js/events.js"></script>
-  <script src="js/xp.js"></script>
-  <script src="js/data.js"></script>
-  <script src="js/learning.js"></script>
-  <script src="js/ui.js"></script>
-  <script src="js/navigation.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/animations.js"></script>
-  <script src="js/achievements.js"></script>
-  <script src="js/app.js"></script>
-  <script>ANIME.initPageTransitions();</script>
+<body class="v7-app">
+  <header class="v7-nav"><div class="v7-nav-inner"><a class="v7-brand" href="dashboard.html"><span class="v7-mark"></span><span>MathLogic</span></a><nav class="v7-links ml-nav"><a href="dashboard.html" data-copy-ru="Сегодня" data-copy-kk="Бүгін">Сегодня</a><a href="program.html" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a><a href="profile.html" data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</a></nav><div class="v7-nav-actions"><button class="v7-tool" data-language-toggle>RU</button><button class="v7-tool" data-theme-toggle>◐</button></div></div></header>
+  <main class="v7-page"><section class="v7-wrap v7-planned-page"><span class="v7-eyebrow" data-copy-ru="Каталог MathLogic" data-copy-kk="MathLogic каталогы">Каталог MathLogic</span><h1 data-copy-ru="Тема готовится" data-copy-kk="Тақырып дайындалып жатыр">Тема готовится</h1><p data-copy-ru="Эта точка уже есть в программе, но учебный материал ещё не опубликован. Доступные уроки отмечены в карте программы." data-copy-kk="Бұл бөлім бағдарламада бар, бірақ оқу материалы әлі жарияланған жоқ. Қолжетімді сабақтар бағдарлама картасында белгіленген.">Эта точка уже есть в программе, но учебный материал ещё не опубликован. Доступные уроки отмечены в карте программы.</p><div class="v7-actions"><a class="v7-button primary" href="program.html" data-copy-ru="Открыть программу" data-copy-kk="Бағдарламаны ашу">Открыть программу</a><a class="v7-button text" href="dashboard.html" data-copy-ru="Вернуться на сегодня" data-copy-kk="Бүгінгі бетке оралу">Вернуться на сегодня</a></div></section></main>
+  <script src="js/storage.js"></script><script src="js/i18n.js"></script><script src="js/site.js"></script>
+  <script>(function(){ ML.applySettings(); MathLogicSite.applyCopy(); document.querySelector('[data-language-toggle]').textContent=ML.getLang()==='kk'?'ҚАЗ':'RU'; document.querySelector('[data-language-toggle]').onclick=function(){ML.setLang(ML.getLang()==='kk'?'ru':'kk');location.reload();}; document.querySelector('[data-theme-toggle]').onclick=function(){ML.setSetting('theme',document.documentElement.dataset.theme==='dark'?'light':'dark');ML.applySettings();}; })();</script>
 </body>
 </html>

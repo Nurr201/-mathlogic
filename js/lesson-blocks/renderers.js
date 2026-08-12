@@ -4,6 +4,10 @@ window.__BlockRenderers = (function() {
   var _selected = {};
   var _pendingResult = null;
 
+  function _copy(ru, kk) {
+    return typeof ML !== 'undefined' && ML.getLang && ML.getLang() === 'kk' ? kk : ru;
+  }
+
   function _escapeAttr(value) {
     return String(value === undefined || value === null ? '' : value)
       .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -17,11 +21,11 @@ window.__BlockRenderers = (function() {
     return options.map(function(opt, i) {
       var isSelected = savedValue !== null && savedValue !== undefined && parseInt(savedValue) === i;
       var stateClasses = ' lesson-option';
-      if (isSelected) stateClasses += ' is-selected border-blue-600 bg-blue-50';
-      if (locked && parseInt(correctAnswer) === i) stateClasses += ' is-correct';
+      if (isSelected) stateClasses += ' is-selected';
+      if (locked && isSelected && parseInt(correctAnswer) === i) stateClasses += ' is-correct';
       if (locked && isSelected && parseInt(correctAnswer) !== i) stateClasses += ' is-incorrect';
       return '<label class="flex items-center gap-3 p-4 rounded-2xl bg-white border-2 border-slate-200 hover:border-blue-300 hover:bg-blue-50/30 transition-all cursor-pointer group' + stateClasses + '">' +
-        '<input type="radio" name="' + name + '" value="' + i + '" onchange="LessonBlocks._selectOption(this)"' +
+        '<input type="radio" name="' + name + '" value="' + i + '" onchange="LessonBlocks._selectOption(this)" onkeydown="LessonBlocks._keySelectOption(event,this)" aria-checked="' + (isSelected ? 'true' : 'false') + '"' +
         (isSelected ? ' checked' : '') + (locked ? ' disabled' : '') +
         ' class="w-5 h-5 text-blue-600 accent-blue-600">' +
         '<span class="text-lg font-bold text-slate-700 group-hover:text-slate-900">' + opt + '</span>' +
@@ -85,7 +89,8 @@ window.__BlockRenderers = (function() {
   function renderWarmup(block, ctx) {
     var name = 'warmup_' + ctx.index;
     var locked = !!ctx.savedResult;
-    var savedValue = locked ? ctx.savedResult.answers : null;
+    var draft = ctx.interactionState && ctx.interactionState.choiceDrafts ? ctx.interactionState.choiceDrafts[name] : null;
+    var savedValue = locked ? ctx.savedResult.answers : draft;
     var optionsHtml = _renderOptions(block.options || [], name, locked, savedValue, block.answer);
     var escapedExplanation = (block.explanation || '').replace(/'/g, "\\'");
     var action = locked
@@ -117,13 +122,13 @@ window.__BlockRenderers = (function() {
     return H.wrap(
       '<div class="py-8">' +
         H.progress(ctx.index, ctx.total) +
-        H.blockBadge('\u041F\u043E\u0434\u0443\u043C\u0430\u0439\u0442\u0435') +
+        H.blockBadge(_copy('Подумайте', 'Ойланыңыз')) +
         (block.visual ? '<div class="mb-8 flex justify-center">' + block.visual + '</div>' : '') +
         '<h2 class="text-2xl font-extrabold text-slate-900 mb-4">' + block.title + '</h2>' +
         '<p class="text-lg text-slate-600 leading-relaxed mb-6">' + block.problem + '</p>' +
         (block.question ? '<p class="text-lg font-bold text-blue-700 bg-blue-50 p-4 rounded-2xl border border-blue-100">' + block.question + '</p>' : '') +
         '<div class="mt-10 flex justify-end">' +
-          H.btnPrimary('\u0414\u0430\u043B\u0435\u0435', 'LessonEngine.next()') +
+          H.btnPrimary(_copy('Далее', 'Жалғастыру'), 'LessonEngine.next()') +
         '</div>' +
       '</div>'
     );
@@ -154,7 +159,7 @@ window.__BlockRenderers = (function() {
     if (!block.formula) return '';
     return '<div class="my-8 p-8 bg-white rounded-[24px] border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] relative overflow-hidden">' +
       '<div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 to-sky-400"></div>' +
-      '<span class="text-blue-600 text-xs font-extrabold uppercase tracking-widest block mb-3">' + (block.formulaLabel || '\u0424\u043E\u0440\u043C\u0443\u043B\u0430') + '</span>' +
+      '<span class="text-blue-600 text-xs font-extrabold uppercase tracking-widest block mb-3">' + (block.formulaLabel || _copy('Формула', 'Формула')) + '</span>' +
       '<div class="font-mono text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">' + block.formula + '</div>' +
       '</div>';
   }
@@ -173,13 +178,13 @@ window.__BlockRenderers = (function() {
     return H.wrap(
       '<div class="py-4">' +
         H.progress(ctx.index, ctx.total) +
-        H.blockBadge('\u0422\u0435\u043E\u0440\u0438\u044F') +
+        H.blockBadge(_copy('Объяснение', 'Түсіндіру')) +
         '<h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-6">' + block.title + '</h2>' +
         _renderTheoryContent(block.content) +
         _renderFormulaBox(block) +
         _renderExamples(block.examples) +
         '<div class="mt-10 flex justify-end">' +
-          H.btnPrimary('\u042F\u0441\u043D\u043E', 'LessonEngine.next()') +
+          H.btnPrimary(_copy('Понятно', 'Түсінікті'), 'LessonEngine.next()') +
         '</div>' +
       '</div>'
     );
@@ -206,7 +211,8 @@ window.__BlockRenderers = (function() {
 
   function renderQuiz(block, ctx) {
     var name = 'quiz_' + ctx.index;
-    var savedValue = ctx.savedResult ? ctx.savedResult.answers : null;
+    var draft = ctx.interactionState && ctx.interactionState.choiceDrafts ? ctx.interactionState.choiceDrafts[name] : null;
+    var savedValue = ctx.savedResult ? ctx.savedResult.answers : draft;
     var optionsHtml = _renderOptions(block.options || [], name, !!ctx.savedResult, savedValue, block.answer);
 
     return H.wrap(
@@ -342,14 +348,16 @@ window.__BlockRenderers = (function() {
   function _renderChallengeQuizTask(task, i, ctx, index) {
     var name = 'challenge_q_' + index + '_' + i;
     var taskResult = ctx.savedResult && ctx.savedResult.taskResults ? ctx.savedResult.taskResults[i] : null;
+    var draft = ctx.interactionState && ctx.interactionState.choiceDrafts ? ctx.interactionState.choiceDrafts[name] : null;
     var opts = (task.options || []).map(function(o, oi) {
-      var selected = taskResult && Number(taskResult.answer) === oi;
+      var selectedValue = taskResult ? taskResult.answer : draft;
+      var selected = selectedValue !== null && selectedValue !== undefined && Number(selectedValue) === oi;
       var classes = ' lesson-option';
       if (selected) classes += ' is-selected';
-      if (taskResult && Number(task.answer) === oi) classes += ' is-correct';
+      if (taskResult && selected && Number(task.answer) === oi) classes += ' is-correct';
       if (taskResult && selected && Number(task.answer) !== oi) classes += ' is-incorrect';
       return '<label class="flex items-center gap-3 p-3 rounded-xl bg-white border border-slate-200 hover:border-blue-300 transition-all cursor-pointer' + classes + '">' +
-        '<input type="radio" name="' + name + '" value="' + oi + '" data-task-index="' + i + '" onchange="LessonBlocks._selectOption(this)" class="w-4 h-4 accent-blue-600"' +
+        '<input type="radio" name="' + name + '" value="' + oi + '" data-task-index="' + i + '" onchange="LessonBlocks._selectOption(this)" onkeydown="LessonBlocks._keySelectOption(event,this)" aria-checked="' + (selected ? 'true' : 'false') + '" class="w-4 h-4 accent-blue-600"' +
         (selected ? ' checked' : '') + (taskResult ? ' disabled' : '') +
         '>' +
         '<span class="text-sm font-bold text-slate-700">' + o + '</span></label>';
@@ -416,9 +424,12 @@ window.__BlockRenderers = (function() {
      ------------------------------------------ */
 
   function _renderChoiceQuestion(q, i, ctx) {
+    var name = 'reflect_' + ctx.index + '_' + i;
+    var draft = ctx.interactionState && ctx.interactionState.choiceDrafts ? ctx.interactionState.choiceDrafts[name] : null;
     var opts = (q.options || []).map(function(o, oi) {
-      return '<label class="flex items-center gap-2 p-3 rounded-xl bg-white border border-slate-200 hover:border-blue-300 transition-all cursor-pointer">' +
-        '<input type="radio" name="reflect_' + ctx.index + '_' + i + '" value="' + oi + '" class="w-4 h-4 accent-blue-600">' +
+      var selected = draft !== null && draft !== undefined && Number(draft) === oi;
+      return '<label class="lesson-option flex items-center gap-2 p-3 rounded-xl bg-white border border-slate-200 hover:border-blue-300 transition-all cursor-pointer' + (selected ? ' is-selected' : '') + '">' +
+        '<input type="radio" name="' + name + '" value="' + oi + '" onchange="LessonBlocks._selectOption(this)" onkeydown="LessonBlocks._keySelectOption(event,this)" aria-checked="' + (selected ? 'true' : 'false') + '" class="w-4 h-4 accent-blue-600"' + (selected ? ' checked' : '') + '>' +
         '<span class="text-sm text-slate-700">' + o + '</span></label>';
     }).join('');
     return '<div class="mb-4"><p class="font-bold text-slate-900 mb-2">' + q.text + '</p><div class="space-y-1">' + opts + '</div></div>';
@@ -456,10 +467,6 @@ window.__BlockRenderers = (function() {
      RESULT
      ------------------------------------------ */
 
-  function _calcGrade(pct) {
-    return pct >= 90 ? 'S' : pct >= 80 ? 'A' : pct >= 60 ? 'B' : pct >= 40 ? 'C' : 'D';
-  }
-
   function _formatTime(seconds) {
     if (seconds >= 60) {
       return Math.floor(seconds / 60) + '\u00A0\u043C\u0438\u043D ' + (seconds % 60) + '\u00A0\u0441\u0435\u043A';
@@ -477,12 +484,12 @@ window.__BlockRenderers = (function() {
     return '<a href="dashboard.html" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg py-4 px-10 rounded-2xl shadow-[0_8px_20px_rgba(79,70,229,0.25)] transition-all hover:-translate-y-0.5">\u0411\u0430\u049B\u044B\u043B\u0430\u0443 \u0442\u0430\u049B\u0442\u0430\u0441\u044B\u043D\u0430 \u049B\u0430\u0439\u0442\u0443 \u2192</a>';
   }
 
-  function _renderStatsGrid(pct, xpEarned, timeStr, grade) {
+  function _renderStatsGrid(pct, correct, total, timeStr, steps) {
     return '<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-lg mx-auto mb-8">' +
-      '<div class="bg-blue-50 rounded-2xl p-4 border border-blue-100"><div class="text-2xl font-black text-blue-700">' + pct + '%</div><div class="text-xs font-bold text-blue-500 mt-1">\u0420\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442</div></div>' +
-      '<div class="bg-amber-50 rounded-2xl p-4 border border-amber-100"><div class="text-2xl font-black text-amber-700">+' + xpEarned + '</div><div class="text-xs font-bold text-amber-500 mt-1">XP</div></div>' +
-      '<div class="bg-emerald-50 rounded-2xl p-4 border border-emerald-100"><div class="text-2xl font-black text-emerald-700">' + timeStr + '</div><div class="text-xs font-bold text-emerald-500 mt-1">\u0412\u0440\u0435\u043C\u044F</div></div>' +
-      '<div class="bg-purple-50 rounded-2xl p-4 border border-purple-100"><div class="text-2xl font-black text-purple-700">' + grade + '</div><div class="text-xs font-bold text-purple-500 mt-1">\u041E\u0446\u0435\u043D\u043A\u0430</div></div>' +
+      '<div class="bg-blue-50 rounded-2xl p-4 border border-blue-100"><div class="text-2xl font-black text-blue-700">' + pct + '%</div><div class="text-xs font-bold text-blue-500 mt-1">' + _copy('\u0420\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442', '\u041D\u04D9\u0442\u0438\u0436\u0435') + '</div></div>' +
+      '<div class="bg-amber-50 rounded-2xl p-4 border border-amber-100"><div class="text-2xl font-black text-amber-700">' + correct + ' / ' + total + '</div><div class="text-xs font-bold text-amber-500 mt-1">' + _copy('\u0417\u0430\u0434\u0430\u0447\u0438', '\u0422\u0430\u043F\u0441\u044B\u0440\u043C\u0430\u043B\u0430\u0440') + '</div></div>' +
+      '<div class="bg-emerald-50 rounded-2xl p-4 border border-emerald-100"><div class="text-2xl font-black text-emerald-700">' + timeStr + '</div><div class="text-xs font-bold text-emerald-500 mt-1">' + _copy('\u0412\u0440\u0435\u043C\u044F', '\u0423\u0430\u049B\u044B\u0442') + '</div></div>' +
+      '<div class="bg-purple-50 rounded-2xl p-4 border border-purple-100"><div class="text-2xl font-black text-purple-700">' + steps + '</div><div class="text-xs font-bold text-purple-500 mt-1">' + _copy('\u0428\u0430\u0433\u043E\u0432', '\u049A\u0430\u0434\u0430\u043C') + '</div></div>' +
       '</div>';
   }
 
@@ -494,19 +501,18 @@ window.__BlockRenderers = (function() {
 
   function renderResult(block, ctx) {
     var pct = ctx.percentage || 0;
-    var grade = _calcGrade(pct);
     var state = window.__EngineInternal && window.__EngineInternal.state;
-    var rewardKey = state && state.lessonId ? 'lesson:' + state.lessonId : '';
-    var rewardExists = rewardKey && typeof ML !== 'undefined' && !!(ML.get('rewards', {})[rewardKey]);
-    var xpEarned = ctx.repeatMode || rewardExists ? 0 : (block.xp || 50);
     var timeStr = _formatTime(ctx.timeSpent || 0);
+    var correct = Math.max(0, Number(ctx.correctAnswers) || 0);
+    var total = Math.max(correct, Number(ctx.totalQuestions) || 0);
+    var steps = state ? state.totalBlocks : ctx.total;
 
     return H.wrap(
       '<div class="text-center py-8">' +
         '<div class="lesson-finish-mark" aria-hidden="true">◆</div>' +
         '<h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-2">\u0423\u0440\u043E\u043A \u0437\u0430\u0432\u0435\u0440\u0448\u0451\u043D!</h2>' +
         '<p class="text-lg text-slate-500 mb-8">' + (block.description || '\u041E\u0442\u043B\u0438\u0447\u043D\u0430\u044F \u0440\u0430\u0431\u043E\u0442\u0430!') + '</p>' +
-        _renderStatsGrid(pct, xpEarned, timeStr, grade) +
+        _renderStatsGrid(pct, correct, total, timeStr, steps) +
         _renderMistakesWarning(ctx.mistakes) +
         '<div class="flex justify-center">' + _renderNextLessonLink(block.nextLesson) + '</div>' +
       '</div>'
@@ -580,11 +586,12 @@ window.__BlockRenderers = (function() {
       if (task.type === 'quiz') {
         document.querySelectorAll('input[name="challenge_q_' + index + '_' + taskIndex + '"]').forEach(function(input) {
           input.disabled = true;
+          input.setAttribute('aria-disabled', 'true');
+          input.setAttribute('aria-checked', input.checked ? 'true' : 'false');
           var label = input.closest('label');
           if (!label) return;
           label.classList.remove('is-correct', 'is-incorrect');
-          if (Number(input.value) === Number(task.answer)) label.classList.add('is-correct');
-          if (input.checked && Number(input.value) !== Number(task.answer)) label.classList.add('is-incorrect');
+          if (input.checked) label.classList.add(Number(input.value) === Number(task.answer) ? 'is-correct' : 'is-incorrect');
         });
       } else if (task.type === 'input') {
         var field = document.querySelector('[data-challenge-input="' + taskIndex + '"]');
@@ -615,20 +622,34 @@ window.__BlockRenderers = (function() {
   }
 
   function _selectOption(el) {
+    if (!el || !el.name || el.disabled) return;
     _selected[el.name] = el.value;
     var radios = document.querySelectorAll('input[name="' + el.name + '"]');
     radios.forEach(function(radio) {
+      var selected = radio === el;
+      radio.checked = selected;
+      radio.setAttribute('aria-checked', selected ? 'true' : 'false');
       var label = radio.closest('label');
       if (label) {
-        if (radio === el) {
-          label.classList.add('is-selected');
-          label.classList.add('border-blue-600', 'bg-blue-50');
-        } else {
-          label.classList.remove('is-selected');
-          label.classList.remove('border-blue-600', 'bg-blue-50');
-        }
+        label.classList.toggle('is-selected', selected);
+        label.classList.remove('is-correct', 'is-incorrect', 'border-blue-600', 'bg-blue-50');
       }
     });
+    var parts = el.name.split('_');
+    var blockIndex = parts[0] === 'challenge' ? Number(parts[2]) : Number(parts[1]);
+    if (Number.isInteger(blockIndex) && typeof LessonEngine !== 'undefined' && LessonEngine.getInteractionState) {
+      var record = LessonEngine.getInteractionState(blockIndex) || {};
+      record.choiceDrafts = record.choiceDrafts || {};
+      record.choiceDrafts[el.name] = el.value;
+      LessonEngine.setInteractionState(blockIndex, record);
+    }
+  }
+
+  function _keySelectOption(event, el) {
+    if (!event || event.key !== 'Enter' || !el || el.disabled) return;
+    event.preventDefault();
+    el.checked = true;
+    _selectOption(el);
   }
 
   function _submitQuiz(name, correctAnswer, explanation, points) {
@@ -696,18 +717,21 @@ window.__BlockRenderers = (function() {
   }
 
   function _getSelected(name) {
-    return _selected[name] || null;
+    var checked = document.querySelector('input[name="' + name + '"]:checked');
+    if (checked) return checked.value;
+    return Object.prototype.hasOwnProperty.call(_selected, name) ? _selected[name] : null;
   }
 
   function _markOptionResult(name, selected, correctAnswer) {
     document.querySelectorAll('input[name="' + name + '"]').forEach(function(radio) {
       radio.disabled = true;
+      radio.setAttribute('aria-disabled', 'true');
+      radio.setAttribute('aria-checked', radio.checked ? 'true' : 'false');
       var label = radio.closest('label');
       if (!label) return;
       label.classList.remove('is-correct', 'is-incorrect');
-      if (parseInt(radio.value) === parseInt(correctAnswer)) label.classList.add('is-correct');
-      if (parseInt(radio.value) === parseInt(selected) && parseInt(selected) !== parseInt(correctAnswer)) {
-        label.classList.add('is-incorrect');
+      if (parseInt(radio.value) === parseInt(selected)) {
+        label.classList.add(parseInt(selected) === parseInt(correctAnswer) ? 'is-correct' : 'is-incorrect');
       }
     });
   }
@@ -824,6 +848,7 @@ window.__BlockRenderers = (function() {
     renderReflection: renderReflection,
     renderResult: renderResult,
     _selectOption: _selectOption,
+    _keySelectOption: _keySelectOption,
     _getSelected: _getSelected,
     _checkInput: _checkInput,
     _updateSandbox: _updateSandbox,

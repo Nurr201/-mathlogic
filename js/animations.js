@@ -161,20 +161,6 @@ const ANIME = (function() {
     document.body.dataset.mlPageTransitions = '1';
     document.body.classList.add('page-enter');
 
-    document.querySelectorAll('a[href]:not([target="_blank"]):not([href^="#"]):not([href^="http"]):not([href^="mailto"])').forEach(a => {
-      const href = a.getAttribute('href');
-      if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('javascript')) return;
-      if (a.dataset.noTransition) return;
-
-      a.addEventListener('click', function(e) {
-        e.preventDefault();
-        const target = this.href;
-        document.body.classList.remove('page-enter');
-        document.body.classList.add('page-leave');
-        setTimeout(() => { window.location.href = target; }, 250);
-      });
-    });
-
     window.addEventListener('pageshow', () => {
       document.body.classList.remove('page-leave');
       document.body.classList.add('page-enter');
@@ -212,55 +198,6 @@ const ANIME = (function() {
         el.style.width = target + '%';
       });
     });
-  }
-
-  /* ======================
-     CONFETTI BURST (light)
-     ====================== */
-  function confetti(originX, originY) {
-    originX = originX || window.innerWidth / 2;
-    originY = originY || window.innerHeight / 2;
-    const colors = ['#3B82F6', '#8B5CF6', '#EC4899', '#10B981', '#F59E0B', '#EF4444'];
-    for (let i = 0; i < 24; i++) {
-      const particle = document.createElement('div');
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      const size = Math.random() * 6 + 4;
-      const angle = Math.random() * Math.PI * 2;
-      const velocity = Math.random() * 120 + 80;
-      const tx = Math.cos(angle) * velocity;
-      const ty = Math.sin(angle) * velocity - 60;
-
-      particle.style.cssText = `
-        position: fixed;
-        left: ${originX}px;
-        top: ${originY}px;
-        width: ${size}px;
-        height: ${size}px;
-        background: ${color};
-        border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
-        pointer-events: none;
-        z-index: 9999;
-        opacity: 1;
-        transition: all ${0.6 + Math.random() * 0.4}s cubic-bezier(0.16, 1, 0.3, 1);
-      `;
-
-      document.body.appendChild(particle);
-      requestAnimationFrame(() => {
-        particle.style.transform = `translate(${tx}px, ${ty}px) rotate(${Math.random() * 360}deg)`;
-        particle.style.opacity = '0';
-      });
-      setTimeout(() => particle.remove(), 1200);
-    }
-  }
-
-  /* ======================
-     ACHIEVEMENT UNLOCK
-     ====================== */
-  function unlockAchievement(element) {
-    if (!element) return;
-    element.classList.add('achv-unlock');
-    const rect = element.getBoundingClientRect();
-    confetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
   }
 
   /* ======================
@@ -346,8 +283,6 @@ const ANIME = (function() {
     initPageTransitions,
     initStagger,
     animateBars,
-    confetti,
-    unlockAchievement,
     switchTabAnimated,
     openModal,
     closeModal,

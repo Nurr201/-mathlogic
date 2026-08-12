@@ -3,130 +3,92 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard — MathLogic</title>
+  <title>Сегодня — MathLogic</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Onest:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap"></noscript>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/components.css">
-  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/editorial.css">
 </head>
-<body class="axis-app axis-dashboard-page">
-  <aside class="dashboard-rail">
-    <a class="axis-brand" href="index.html" aria-label="MathLogic">
-      <span class="axis-brand-mark"><i></i><i></i></span><span>MathLogic</span>
-    </a>
-
-    <nav class="dashboard-nav" aria-label="Основная навигация">
-      <a href="dashboard.html" aria-current="page"><span class="nav-glyph">◇</span><span data-copy="navLearning">Обучение</span></a>
-      <a href="#learning-route"><span class="nav-glyph">＋</span><span data-copy="navPractice">Практика</span></a>
-      <a href="profile.html"><span class="nav-glyph">△</span><span data-copy="navAchievements">Достижения</span></a>
-      <a href="profile.html"><span class="nav-glyph">○</span><span data-copy="navProfile">Профиль</span></a>
-      <a href="settings.html"><span class="nav-glyph">□</span><span data-copy="navSettings">Настройки</span></a>
-    </nav>
-
-    <div class="dashboard-rail-subjects">
-      <div class="axis-eyebrow" data-copy="subjects">Предметы</div>
-      <div id="rail-subjects"></div>
-    </div>
-
-    <div class="dashboard-rail-footer">
-      <div class="rail-streak"><span class="gold-diamond">◆</span><strong class="mono" id="rail-streak">0</strong><span data-copy="days">дней подряд</span></div>
-      <div class="rail-controls">
-        <div class="axis-segment" role="group" aria-label="Язык">
-          <button type="button" data-lang="ru">РУС</button>
-          <button type="button" data-lang="kk">ҚАЗ</button>
-        </div>
-        <div class="axis-segment" role="group" aria-label="Тема">
-          <button type="button" data-theme-choice="light" aria-label="Светлая тема">○</button>
-          <button type="button" data-theme-choice="dark" aria-label="Тёмная тема">●</button>
-        </div>
+<body class="v7-app v7-dashboard">
+  <header class="v7-nav">
+    <div class="v7-nav-inner">
+      <a class="v7-brand" href="index.html"><span class="v7-mark"></span><span>MathLogic</span></a>
+      <nav class="v7-links" aria-label="Основная навигация">
+        <a href="dashboard.html" aria-current="page" data-copy-ru="Сегодня" data-copy-kk="Бүгін">Сегодня</a>
+        <a href="program.html" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a>
+        <a href="profile.html" data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</a>
+      </nav>
+      <div class="v7-nav-actions">
+        <button class="v7-tool v7-mono" type="button" data-lang="ru">RU</button>
+        <button class="v7-tool v7-mono" type="button" data-lang="kk">ҚАЗ</button>
+        <button class="v7-tool" type="button" data-theme-choice="light" aria-label="Светлая тема">○</button>
+        <button class="v7-tool" type="button" data-theme-choice="dark" aria-label="Тёмная тема">●</button>
+        <a class="v7-avatar" href="settings.html" id="dashboard-avatar" aria-label="Настройки">М</a>
       </div>
     </div>
-  </aside>
+  </header>
 
-  <main class="dashboard-main">
-    <div class="dashboard-loading" id="dashboard-loading" aria-live="polite">
-      <span class="axis-skeleton axis-skeleton-kicker"></span>
-      <span class="axis-skeleton axis-skeleton-title"></span>
-      <span class="axis-skeleton axis-skeleton-line"></span>
-    </div>
-
-    <section class="dashboard-error" id="dashboard-error" hidden role="alert">
-      <span class="lesson-error-mark" aria-hidden="true">!</span>
-      <h1 id="dashboard-error-title">Не удалось загрузить Dashboard</h1>
-      <p id="dashboard-error-text"></p>
-      <button class="axis-button axis-button-ink" id="dashboard-retry" type="button">Повторить</button>
-    </section>
+  <main class="v7-wrap v7-page">
+    <div id="dashboard-loading" aria-live="polite"><span class="v7-eyebrow" data-copy-ru="Загрузка учебного пути…" data-copy-kk="Оқу бағыты жүктелуде…">Загрузка учебного пути…</span></div>
+    <section class="v7-empty" id="dashboard-error" hidden role="alert"><h1 id="dashboard-error-title">Не удалось загрузить Dashboard</h1><p id="dashboard-error-text"></p><button class="v7-button" id="dashboard-retry" type="button">Повторить</button></section>
 
     <div id="dashboard-content" hidden>
-      <header class="dashboard-topbar">
-        <div>
-          <h1 id="dashboard-greeting">Привет</h1>
-          <p id="dashboard-context"></p>
-        </div>
-        <div class="dashboard-top-actions">
-          <span class="axis-chip axis-chip-gold"><span aria-hidden="true">◆</span><b class="mono" id="top-xp">0</b> XP</span>
-          <span class="axis-chip"><span aria-hidden="true">◇</span><b class="mono" id="top-streak">0</b></span>
-          <a class="dashboard-avatar" href="profile.html" id="dashboard-avatar" aria-label="Профиль">М</a>
-        </div>
+      <header class="v7-topline">
+        <div><span class="v7-eyebrow" data-copy-ru="Сегодня" data-copy-kk="Бүгін">Сегодня</span><h1 id="dashboard-greeting">Следующий шаг</h1></div>
+        <p id="dashboard-context"></p>
       </header>
 
-      <section class="dashboard-hero" id="dashboard-hero" aria-labelledby="hero-title">
-        <div class="dashboard-hero-copy">
-          <div class="hero-kicker mono"><span data-copy="nextLesson">Следующий урок</span><span id="hero-path"></span></div>
-          <h2 id="hero-title">—</h2>
-          <p id="hero-description"></p>
-          <div class="hero-meta mono">
-            <span id="hero-duration">—</span><span id="hero-reward">— XP</span><span id="hero-steps">—</span>
+      <div class="v7-dashgrid">
+        <section class="v7-next" id="dashboard-hero" aria-labelledby="hero-title">
+          <div>
+            <div class="hero-kicker"><span data-copy="nextLesson">Следующий урок</span><span id="hero-path"></span></div>
+            <h2 id="hero-title">—</h2>
+            <p class="v7-desc" id="hero-description"></p>
+            <div class="hero-meta v7-mono"><span id="hero-duration">—</span><span id="hero-status">—</span><span id="hero-steps">—</span></div>
           </div>
-          <div class="hero-actions">
-            <a class="axis-button axis-button-gold" id="hero-primary" href="dashboard.html"><span class="hero-play-icon" aria-hidden="true">▶</span><span data-copy="continue">Продолжить урок</span></a>
-            <a class="axis-button axis-button-ghost" id="hero-secondary" href="dashboard.html" hidden><span data-copy="repeatPrevious">Повторить прошлый</span></a>
+          <div>
+            <div class="hero-axis" aria-label="Путь доступных уроков"><div class="hero-axis-line"><span id="hero-axis-fill"></span></div><div class="hero-axis-nodes" id="hero-axis-nodes"></div><p class="v7-mono" id="hero-axis-caption"></p></div>
+            <div class="v7-actions"><a class="v7-button" id="hero-primary" href="dashboard.html"><span data-copy="continue">Продолжить</span></a></div>
           </div>
-        </div>
-        <div class="hero-axis" aria-label="Прогресс доступных уроков">
-          <div class="hero-axis-line"><span id="hero-axis-fill"></span></div>
-          <div class="hero-axis-nodes" id="hero-axis-nodes"></div>
-          <p class="mono" id="hero-axis-caption"></p>
-        </div>
-      </section>
+        </section>
 
-      <section class="dashboard-empty" id="dashboard-empty" hidden>
-        <h2 data-copy="allDone">Весь доступный контент завершён</h2>
-        <p data-copy="allDoneText">Можно повторить пройденный урок или вернуться позже.</p>
-      </section>
+        <aside class="v7-entry-panel">
+          <span class="v7-eyebrow" data-copy-ru="Точки входа" data-copy-kk="Кіру нүктелері">Точки входа</span>
+          <div class="v7-side-list">
+            <a id="quick-review" href="dashboard.html" hidden><span><b data-copy-ru="Короткое повторение" data-copy-kk="Қысқа қайталау">Короткое повторение</b><small id="quick-review-title"></small></span><span>→</span></a>
+            <a href="program.html"><span><b data-copy-ru="Открыть программу" data-copy-kk="Бағдарламаны ашу">Открыть программу</b><small data-copy-ru="Карта направлений и тем" data-copy-kk="Бағыттар мен тақырыптар картасы">Карта направлений и тем</small></span><span>→</span></a>
+            <a href="profile.html"><span><b data-copy-ru="Вернуться к журналу" data-copy-kk="Журналға оралу">Вернуться к журналу</b><small data-copy-ru="Последние реальные занятия" data-copy-kk="Соңғы нақты сабақтар">Последние реальные занятия</small></span><span>→</span></a>
+          </div>
+        </aside>
+      </div>
 
-      <section class="dashboard-stats" aria-label="Статистика">
-        <div><span class="axis-eyebrow" data-copy="level">Уровень</span><strong class="mono" id="stat-level">1</strong><small id="stat-level-copy"></small><div class="axis-track"><span id="stat-level-fill"></span></div></div>
-        <div><span class="axis-eyebrow">XP</span><strong class="mono" id="stat-xp">0</strong><small id="stat-xp-copy"></small><div class="axis-track gold"><span id="stat-xp-fill"></span></div></div>
-        <div><span class="axis-eyebrow" data-copy="streak">Серия</span><strong class="mono" id="stat-streak">0</strong><small data-copy="learningDays">учебных дней</small><div class="axis-track gold"><span id="stat-streak-fill"></span></div></div>
-        <div><span class="axis-eyebrow" data-copy="course">Курс</span><strong class="mono" id="stat-course">0%</strong><small id="stat-course-copy"></small><div class="axis-track"><span id="stat-course-fill"></span></div></div>
-      </section>
+      <section class="v7-empty" id="dashboard-empty" hidden></section>
 
-      <section class="dashboard-subject-section" aria-labelledby="subjects-title">
-        <div class="dashboard-section-heading"><h2 id="subjects-title" data-copy="subjects">Предметы</h2><p data-copy="subjectHint">Выбери предмет — маршрут ниже обновится</p></div>
-        <div class="dashboard-subject-strip" id="subject-strip" role="group" aria-label="Предметы"></div>
-      </section>
-
-      <section class="dashboard-route-section" id="learning-route" aria-labelledby="route-title">
-        <div class="dashboard-section-heading"><h2 id="route-title">Маршрут</h2><p class="mono" id="route-count"></p></div>
-        <div id="route-modules"></div>
+      <section class="v7-current-path" id="current-path">
+        <div class="v7-topline"><div><span class="v7-eyebrow" data-copy-ru="Текущий путь" data-copy-kk="Ағымдағы бағыт">Текущий путь</span><h2 id="current-path-title">Ближайшие шаги</h2></div><p id="current-path-context"></p></div>
+        <ol class="v7-current-path-list" id="current-path-points"></ol>
+        <div class="v7-current-path-actions"><a class="v7-button ghost" id="current-path-link" href="program.html?subject=algebra" data-copy-ru="Посмотреть весь путь" data-copy-kk="Толық бағытты көру">Посмотреть весь путь</a></div>
       </section>
     </div>
   </main>
 
-  <nav class="dashboard-mobile-tabs" aria-label="Мобильная навигация">
-    <a href="dashboard.html" aria-current="page"><span>◇</span><small data-copy="navLearning">Обучение</small></a>
-    <a href="#learning-route"><span>＋</span><small data-copy="navPractice">Практика</small></a>
-    <a href="profile.html"><span>△</span><small data-copy="navAchievements">Награды</small></a>
-    <a href="profile.html"><span>○</span><small data-copy="navProfile">Профиль</small></a>
+  <nav class="v7-mobile-nav" aria-label="Мобильная навигация">
+    <a href="dashboard.html" aria-current="page" data-copy-ru="Сегодня" data-copy-kk="Бүгін">Сегодня</a>
+    <a href="program.html" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a>
+    <a href="profile.html" data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</a>
+    <a href="settings.html" data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</a>
   </nav>
+
+  <script src="data/curriculum.js"></script>
   <script src="js/data.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/i18n.js"></script>
-  <script src="js/xp.js"></script>
+  <script src="js/events.js"></script>
   <script src="js/learning.js"></script>
+  <script src="js/site.js"></script>
   <script src="js/dashboard.js"></script>
 </body>
 </html>

@@ -1,710 +1,79 @@
-<!DOCTYPE html>
-<html lang="kk">
+<!doctype html>
+<html lang="ru" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Профиль — math·logic</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          blue: { 50: '#EEF2FF', 100: '#E0E7FF', 200: '#C7D2FE', 300: '#A5B4FC', 400: '#818CF8', 500: '#6366F1', 600: '#4F46E5', 700: '#4338CA', 800: '#3730A3', 900: '#312E81' },
-          indigo: { 50: '#EEF2FF', 100: '#E0E7FF', 200: '#C7D2FE', 300: '#A5B4FC', 400: '#818CF8', 500: '#6366F1', 600: '#4F46E5', 700: '#4338CA' },
-          purple: { 50: '#F5F3FF', 100: '#EDE9FE', 200: '#DDD6FE', 300: '#C4B5FD', 400: '#A78BFA', 500: '#8B5CF6', 600: '#7C3AED', 700: '#6D28D9' },
-          emerald: { 50: '#F0FDF4', 100: '#D1FAE5', 200: '#A7F3D0', 300: '#6EE7B7', 400: '#34D399', 500: '#10B981', 600: '#059669' },
-          amber: { 50: '#FFFBEB', 100: '#FEF3C7', 200: '#FDE68A' },
-          rose: { 500: '#F43F5E' },
-          orange: { 50: '#FFF7ED', 100: '#FFEDD5', 200: '#FED7AA', 500: '#F97316', 600: '#EA580C' },
-          cyan: { 50: '#ECFEFF', 100: '#CFFAFE', 600: '#0891B2' },
-        },
-        fontFamily: {
-          head: ['Rubik', 'sans-serif'],
-        },
-        borderRadius: {
-          '2xl': '16px',
-          '3xl': '20px',
-        },
-      }
-    }
-  }
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/animations.css">
-  <link rel="stylesheet" href="css/components.css">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Учебный журнал — MathLogic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap"></noscript>
+  <link rel="stylesheet" href="css/styles.css"><link rel="stylesheet" href="css/components.css"><link rel="stylesheet" href="css/editorial.css"><link rel="stylesheet" href="css/animations.css">
 </head>
-<body class="min-h-screen relative overflow-x-hidden page-enter">
+<body class="v7-app v7-profile-page">
+  <header class="v7-nav"><div class="v7-nav-inner">
+    <a class="v7-brand" href="index.html"><span class="v7-mark"></span><span>MathLogic</span></a>
+    <nav class="v7-links"><a href="dashboard.html" data-copy-ru="Сегодня" data-copy-kk="Бүгін">Сегодня</a><a href="program.html" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a><a href="profile.html" aria-current="page" data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</a></nav>
+    <div class="v7-nav-actions"><div class="v7-segment"><button type="button" data-language-choice="ru">RU</button><button type="button" data-language-choice="kk">ҚАЗ</button></div><button class="v7-tool" type="button" data-theme-toggle>◐</button><a class="v7-button ghost" href="settings.html" data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</a></div>
+  </div></header>
 
-  <!-- АМБИЕНТНЫЙ ФОН -->
-  <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
-    <div class="absolute top-[-8%] left-[-3%] w-[550px] h-[550px] bg-blue-200/40 rounded-full blur-[130px] animate-float"></div>
-    <div class="absolute top-[20%] right-[-8%] w-[480px] h-[480px] bg-purple-100/50 rounded-full blur-[120px] animate-float" style="animation-delay: -2s"></div>
-    <div class="absolute bottom-[-5%] left-[15%] w-[400px] h-[400px] bg-emerald-100/40 rounded-full blur-[100px] animate-float" style="animation-delay: -1s"></div>
-    <div class="absolute top-[50%] left-[40%] w-[300px] h-[300px] bg-amber-100/30 rounded-full blur-[90px]"></div>
-    <div class="absolute top-[-2%] right-[20%] w-[200px] h-[200px] bg-pink-100/30 rounded-full blur-[80px]"></div>
-  </div>
+  <main class="v7-wrap v7-page">
+    <section class="v7-profile-hero" id="profile-overview">
+      <div class="v7-profile-id"><div class="v7-big-avatar" id="profile-avatar">М</div><div><span class="v7-eyebrow" data-copy-ru="Учебный журнал" data-copy-kk="Оқу журналы">Учебный журнал</span><h1 id="profile-name">Пользователь</h1><p id="profile-username">@user</p></div></div>
+      <a class="v7-button ghost" href="settings.html" data-copy-ru="Изменить профиль" data-copy-kk="Профильді өзгерту">Изменить профиль</a>
+    </section>
 
-  <!-- HEADER -->
-  <header class="fixed top-0 left-0 w-full z-40 bg-white/70 backdrop-blur-md border-b border-slate-200/50 shadow-xs">
-    <div class="h-1 w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-600/15">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-          </svg>
+    <section class="v7-facts" aria-label="Фактические учебные данные">
+      <article class="v7-fact"><span class="v7-eyebrow" data-copy-ru="Пройдено уроков" data-copy-kk="Аяқталған сабақ">Пройдено уроков</span><strong id="metric-completed">0</strong><small id="metric-completed-note">—</small></article>
+      <article class="v7-fact"><span class="v7-eyebrow" data-copy-ru="В процессе" data-copy-kk="Жалғасуда">В процессе</span><strong id="metric-active">0</strong><small id="metric-active-note">—</small></article>
+      <article class="v7-fact"><span class="v7-eyebrow" data-copy-ru="Учебных дней" data-copy-kk="Оқу күні">Учебных дней</span><strong id="metric-days">0</strong><small id="metric-days-note">—</small></article>
+      <article class="v7-fact"><span class="v7-eyebrow" data-copy-ru="Доступно" data-copy-kk="Қолжетімді">Доступно</span><strong id="metric-available">0</strong><small id="metric-available-note">—</small></article>
+    </section>
+    <span hidden id="profile-completed">0</span><span hidden id="profile-active">0</span><span hidden id="profile-last-date">—</span>
+
+    <section class="v7-activity" aria-labelledby="activity-title">
+      <div class="v7-activity-heading">
+        <div class="v7-section-head">
+          <span class="v7-eyebrow" data-copy-ru="Учебная история" data-copy-kk="Оқу тарихы">Учебная история</span>
+          <h2 id="activity-title" data-copy-ru="Активность" data-copy-kk="Белсенділік">Активность</h2>
+          <p data-copy-ru="Последние 12 месяцев" data-copy-kk="Соңғы 12 ай">Последние 12 месяцев</p>
         </div>
-        <span class="font-head font-extrabold text-xl text-slate-900 tracking-tight">
-          math<span class="text-blue-600">·</span>logic
-        </span>
-      </a>
-      <a href="dashboard.html" class="text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors px-3 py-2 rounded-xl hover:bg-slate-100">
-        <svg class="w-5 h-5 inline-block mr-1.5 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-        </svg>
-        Артқа
-      </a>
-    </div>
-  </header>
-
-  <!-- HERO PROFILE -->
-  <section class="max-w-4xl mx-auto px-4 sm:px-6 pt-28 pb-20">
-    <div class="glass-card-strong rounded-3xl p-6 sm:p-10 md:p-12 shadow-xl shadow-slate-900/5 animate-scale-in">
-      
-      <div class="flex flex-col md:flex-row md:items-center gap-8 md:gap-12">
-
-        <!-- АВАТАР -->
-        <div class="flex-shrink-0 flex flex-col items-center md:items-start gap-3">
-          <div class="relative animate-slide-up">
-            <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 p-[3px] avatar-ring animate-pulse-glow">
-              <div class="w-full h-full rounded-full bg-white overflow-hidden flex items-center justify-center">
-                <svg class="w-16 h-16 sm:w-20 sm:h-20 text-blue-600/80" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                </svg>
-              </div>
-            </div>
-            <div class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-emerald-500 border-[3px] border-white flex items-center justify-center shadow-lg shadow-emerald-500/30">
-              <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-              </svg>
-            </div>
-          </div>
+        <p class="v7-activity-summary" id="activity-summary"></p>
+      </div>
+      <div class="v7-activity-scroll" id="activity-scroll" aria-label="Учебная активность за последние 12 месяцев">
+        <div class="v7-activity-chart" id="activity-chart"></div>
+      </div>
+      <div class="v7-activity-footer">
+        <div class="v7-activity-empty" id="activity-empty" hidden>
+          <p data-copy-ru="Здесь появятся дни, когда вы действительно занимались математикой." data-copy-kk="Мұнда математикамен шынымен айналысқан күндеріңіз көрінеді.">Здесь появятся дни, когда вы действительно занимались математикой.</p>
+          <a href="program.html" data-copy-ru="Открыть программу" data-copy-kk="Бағдарламаны ашу">Открыть программу</a>
         </div>
-
-        <!-- ИНФО -->
-        <div class="flex-1 min-w-0 space-y-5">
-
-          <!-- ИМЯ + USERNAME -->
-          <div class="animate-slide-up delay-100">
-            <div class="flex items-center flex-wrap gap-3">
-              <h1 id="profile-name" class="font-head font-extrabold text-3xl sm:text-4xl text-slate-900 tracking-tight">
-                Пользователь
-              </h1>
-              <span id="profile-level" class="level-badge">Lv. 1</span>
-            </div>
-            <div class="flex items-center gap-2 mt-2">
-              <span class="username-dot"></span>
-              <span id="profile-username" class="text-base font-semibold text-slate-400 font-mono tracking-tight">
-                @user
-              </span>
-            </div>
-          </div>
-
-          <!-- СТАТИСТИКА -->
-          <div class="animate-slide-up delay-200">
-            <div class="flex flex-wrap items-center gap-3">
-
-              <span class="stat-badge">
-                <svg class="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                <span id="profile-xp" class="text-slate-700">0 XP</span>
-              </span>
-
-              <span class="stat-badge">
-                <span style="font-size: 1.1rem; line-height: 1;">🔥</span>
-                <span id="profile-streak" class="text-slate-700">Streak 0 күн</span>
-              </span>
-
-              <span class="stat-badge">
-                <svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                </svg>
-                <span id="profile-last-active" class="text-slate-700">—</span>
-              </span>
-
-            </div>
-          </div>
-
-          <!-- XP BAR -->
-          <div class="animate-slide-up delay-300">
-            <div class="flex items-center justify-between text-xs font-bold font-mono mb-1.5">
-              <span id="profile-xp-bar-text" class="text-slate-500">0 / 0 XP</span>
-              <span id="profile-next-level" class="text-blue-600">Lv. 2</span>
-            </div>
-            <div class="xp-bar-track">
-              <div id="profile-xp-bar-fill" class="xp-bar-fill" style="width: 0%;"></div>
-            </div>
-          </div>
-
-          <!-- КНОПКИ -->
-          <div class="flex flex-wrap items-center gap-3 animate-slide-up delay-400">
-            <button onclick="NAV.goToSettings()" class="btn text-sm font-semibold px-6 py-3 rounded-2xl gap-2 shadow-lg shadow-blue-600/20 hover:shadow-xl hover:shadow-blue-600/25 transition-all duration-300 ripple">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-              </svg>
-              Редактировать профиль
-            </button>
-            <button onclick="navigator.clipboard.writeText(window.location.href).then(()=>UI.showToast('Ссылка скопирована!','success')).catch(()=>UI.showToast('Не удалось скопировать','error'))" class="px-6 py-3 rounded-2xl text-sm font-bold text-slate-600 bg-slate-100/80 hover:bg-slate-200/80 border border-slate-200/60 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
-              </svg>
-              Поделиться
-            </button>
-          </div>
-
+        <div class="v7-activity-legend" aria-label="Шкала активности">
+          <span data-copy-ru="Меньше" data-copy-kk="Аз">Меньше</span>
+          <i data-level="0"></i><i data-level="1"></i><i data-level="2"></i><i data-level="3"></i><i data-level="4"></i>
+          <span data-copy-ru="Больше" data-copy-kk="Көп">Больше</span>
         </div>
       </div>
-    </div>
-  </section>
+      <div class="v7-activity-tooltip" id="activity-tooltip" role="tooltip" hidden></div>
+    </section>
 
-  <!-- СТАТИСТИКА -->
-  <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
-    <div class="flex items-center gap-3 mb-8 animate-slide-up">
-      <div class="w-1 h-6 rounded-full bg-gradient-to-b from-blue-500 to-purple-500"></div>
-      <h2 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">
-        Ваша статистика
-      </h2>
-      <span class="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full font-mono">8 Показателей</span>
-    </div>
+    <section class="v7-journal-grid">
+      <article class="v7-panel">
+        <div class="v7-section-head"><span class="v7-eyebrow" id="history-eyebrow">Хронология</span><h2 id="history-title">История обучения</h2><p id="history-subtitle">Последние действия и изменения</p></div>
+        <span class="v7-pill" id="history-count-pill" hidden><b class="v7-mono" id="history-count">0</b><span id="history-count-label">учебных событий</span></span>
+        <div class="v7-learning-history" id="profile-history" aria-live="polite"></div>
+      </article>
+      <aside class="v7-continue">
+        <div><span class="v7-eyebrow" data-copy-ru="Продолжить" data-copy-kk="Жалғастыру">Продолжить</span><h2 id="next-title">—</h2><p id="next-description">—</p><div class="axis-track"><span id="next-progress"></span></div><div class="hero-meta v7-mono"><span id="next-duration">—</span><span id="next-state">—</span></div></div>
+        <a class="v7-button" id="next-link" href="dashboard.html" data-copy-ru="Открыть урок" data-copy-kk="Сабақты ашу">Открыть урок</a>
+      </aside>
+    </section>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="stats-grid"></div>
-  </section>
+    <section>
+      <div class="v7-section-head"><span class="v7-eyebrow" data-copy-ru="Темы" data-copy-kk="Тақырыптар">Темы</span><h2 data-copy-ru="Темы в процессе" data-copy-kk="Жалғасып жатқан тақырыптар">Темы в процессе</h2><p data-copy-ru="Список строится только по сохранённым урокам." data-copy-kk="Тізім тек сақталған сабақтар бойынша құрылады.">Список строится только по сохранённым урокам.</p></div>
+      <div class="product-topic-list" id="profile-topics"></div>
+    </section>
+  </main>
 
-  <!-- ОБЩИЙ ПРОГРЕСС КУРСА -->
-  <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
-    <div class="flex items-center gap-3 mb-8 animate-slide-up">
-      <div class="w-1 h-6 rounded-full bg-gradient-to-b from-purple-500 to-pink-500"></div>
-      <h2 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">
-        Общий прогресс курса
-      </h2>
-      <span class="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full font-mono">4 Предмета</span>
-    </div>
-
-    <div class="glass-card-strong rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl shadow-slate-900/5 animate-scale-in" id="progress-card">
-      
-      <!-- ВЕРХ: КРУГ + ИНФО -->
-      <div class="flex flex-col lg:flex-row items-center gap-8 lg:gap-14 mb-8">
-
-        <!-- КРУГОВОЙ ИНДИКАТОР -->
-        <div class="flex-shrink-0 relative animate-slide-up" id="circle-progress-wrap">
-          <svg class="circular-chart" viewBox="0 0 170 170">
-            <circle class="bg-circle" cx="85" cy="85" r="70"/>
-            <circle class="glow-circle" id="progress-glow" cx="85" cy="85" r="70" stroke="url(#progressGrad)"/>
-            <circle class="progress-circle" id="progress-ring" cx="85" cy="85" r="70" stroke="url(#progressGrad)"/>
-            <defs>
-              <linearGradient id="progressGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#4F46E5"/>
-                <stop offset="50%" stop-color="#8B5CF6"/>
-                <stop offset="100%" stop-color="#EC4899"/>
-              </linearGradient>
-            </defs>
-          </svg>
-          <div class="absolute inset-0 flex flex-col items-center justify-center">
-            <span class="font-head font-extrabold text-4xl text-slate-900 tracking-tight count-up" id="progress-pct-display" data-target="0" data-suffix="%" data-duration="1500">0%</span>
-            <span class="text-xs font-bold text-slate-400 mt-0.5">пройдено</span>
-          </div>
-        </div>
-
-        <!-- ИНФО СПРАВА -->
-        <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-5 w-full animate-slide-up delay-200">
-          <div class="bg-white/60 rounded-2xl p-5 border border-slate-200/60 hover:border-slate-300/80 transition-all hover:bg-white/80">
-            <div class="flex items-center gap-2.5 mb-2">
-              <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                </svg>
-              </div>
-              <span class="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider">Общий прогресс</span>
-            </div>
-            <span class="font-head font-extrabold text-3xl text-slate-900 tracking-tight count-up" id="overall-progress-pct-val" data-target="0" data-suffix="%" data-duration="1200">0%</span>
-          </div>
-
-          <div class="bg-white/60 rounded-2xl p-5 border border-slate-200/60 hover:border-slate-300/80 transition-all hover:bg-white/80">
-            <div class="flex items-center gap-2.5 mb-2">
-              <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-              </div>
-              <span class="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider">Осталось уроков</span>
-            </div>
-            <span class="font-head font-extrabold text-3xl text-slate-900 tracking-tight count-up" id="remaining-lessons-val" data-target="0" data-duration="1000">0</span>
-          </div>
-
-          <div class="bg-white/60 rounded-2xl p-5 border border-slate-200/60 hover:border-slate-300/80 transition-all hover:bg-white/80">
-            <div class="flex items-center gap-2.5 mb-2">
-              <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
-                </svg>
-              </div>
-              <span class="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider">Осталось XP</span>
-            </div>
-            <span class="font-head font-extrabold text-3xl text-slate-900 tracking-tight count-up" id="remaining-xp-val" data-target="0" data-suffix="" data-duration="1200">0</span>
-          </div>
-
-          <div class="bg-white/60 rounded-2xl p-5 border border-slate-200/60 hover:border-slate-300/80 transition-all hover:bg-white/80">
-            <div class="flex items-center gap-2.5 mb-2">
-              <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                </svg>
-              </div>
-              <span class="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider">Следующая цель</span>
-            </div>
-            <span class="font-head font-bold text-base text-slate-900 tracking-tight" id="next-goal">Геометрия — Площади фигур</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- HORIZONTAL PROGRESS BAR -->
-      <div class="mb-6 animate-slide-up delay-300">
-        <div class="flex items-center justify-between text-xs font-bold font-mono mb-2.5">
-          <span class="text-slate-500">Прогресс курса</span>
-          <span class="text-blue-600" id="main-bar-label">0%</span>
-        </div>
-          <div class="main-progress-track shadow-inner">
-            <div class="main-progress-fill" id="main-progress-fill" data-progress="0"></div>
-          </div>
-      </div>
-
-      <!-- СРАВНЕНИЕ -->
-      <div class="flex justify-center mb-8 animate-slide-up delay-350">
-        <span class="comparison-badge text-slate-400">
-          <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-          </svg>
-          Сравнение недоступно — нет данных других учеников
-        </span>
-      </div>
-
-      <!-- МИНИ-СТАТИСТИКА ПО ПРЕДМЕТАМ -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 animate-slide-up delay-400" id="subject-mini-stats">
-      </div>
-
-    </div>
-  </section>
-
-  <!-- 🔥 ЕЖЕДНЕВНАЯ СЕРИЯ -->
-  <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
-    <div class="flex items-center gap-3 mb-8 animate-slide-up">
-      <div class="w-1 h-6 rounded-full bg-gradient-to-b from-orange-500 to-red-500"></div>
-      <h2 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">
-        Ежедневная серия
-      </h2>
-      <span class="text-xs font-bold text-orange-500 bg-orange-50 px-3 py-1 rounded-full font-mono">🔥 Streak</span>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
-
-      <!-- БОЛЬШАЯ КАРТОЧКА СЕРИИ -->
-      <div class="lg:col-span-2 glass-card-strong rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-900/5 animate-scale-in flex flex-col items-center justify-center text-center flame-glow">
-        <div class="text-7xl sm:text-8xl mb-4 flame-icon">🔥</div>
-        <div class="font-head font-extrabold text-5xl sm:text-6xl text-slate-900 tracking-tight count-up" id="streak-current" data-target="0" data-duration="1000">0</div>
-        <div class="text-sm font-bold text-slate-400 mt-1 mb-6">дней подряд</div>
-
-        <div class="flex gap-6 sm:gap-10">
-          <div>
-            <div class="font-head font-extrabold text-2xl text-slate-900" id="streak-best">0</div>
-            <div class="text-xs font-bold text-slate-400">Лучший рекорд</div>
-          </div>
-          <div class="w-px bg-slate-200"></div>
-          <div>
-            <div class="font-head font-extrabold text-2xl text-slate-900" id="streak-total">0</div>
-            <div class="text-xs font-bold text-slate-400">Всего дней</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- КАЛЕНДАРЬ + НАГРАДА -->
-      <div class="lg:col-span-3 flex flex-col gap-5">
-
-        <!-- КАЛЕНДАРЬ -->
-        <div class="glass-card-strong rounded-3xl p-5 sm:p-6 shadow-xl shadow-slate-900/5 animate-scale-in delay-100">
-          <div class="flex items-center justify-between mb-4">
-            <span class="text-sm font-bold font-head text-slate-700">Активность за 30 дней</span>
-            <div class="flex items-center gap-2 text-xs font-bold text-slate-400">
-              <span>Меньше</span>
-              <div class="flex gap-1">
-                <div class="w-3.5 h-3.5 rounded-sm cal-day level-0"></div>
-                <div class="w-3.5 h-3.5 rounded-sm cal-day level-1"></div>
-                <div class="w-3.5 h-3.5 rounded-sm cal-day level-2"></div>
-                <div class="w-3.5 h-3.5 rounded-sm cal-day level-3"></div>
-              </div>
-              <span>Больше</span>
-            </div>
-          </div>
-          <div class="cal-grid" id="cal-grid"></div>
-        </div>
-
-        <!-- НАГРАДА -->
-        <div class="reward-card rounded-2xl p-5 sm:p-6 animate-scale-in delay-200">
-          <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-400 to-rose-500 flex items-center justify-center text-2xl shadow-lg shadow-orange-500/20">
-              🎯
-            </div>
-            <div>
-              <div class="text-sm font-bold text-slate-400">Следующая награда</div>
-              <div class="font-head font-extrabold text-lg sm:text-xl text-slate-900 mt-0.5" id="next-reward">
-                До награды «30 дней подряд» осталось 13 дней
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- МОТИВАЦИЯ -->
-        <div class="bg-white/60 border border-slate-200/60 rounded-2xl p-5 animate-scale-in delay-300">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-100 flex items-center justify-center text-lg">
-              💪
-            </div>
-            <div>
-              <div class="font-head font-bold text-base text-slate-900">Зайди завтра и сохрани серию</div>
-              <div class="text-xs font-semibold text-slate-400 mt-0.5">Каждый день без пропуска приближает к новой награде</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ПОСЛЕДНЯЯ АКТИВНОСТЬ -->
-  <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
-    <div class="flex items-center gap-3 mb-8 animate-slide-up">
-      <div class="w-1 h-6 rounded-full bg-gradient-to-b from-emerald-500 to-cyan-500"></div>
-      <h2 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">
-        Последняя активность
-      </h2>
-      <span class="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full font-mono">7 Действий</span>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
-
-      <!-- TIMELINE -->
-      <div class="lg:col-span-3 glass-card-strong rounded-3xl p-6 sm:p-7 shadow-xl shadow-slate-900/5 animate-scale-in">
-        <div class="flex items-center gap-2.5 mb-6">
-          <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-          </div>
-          <span class="font-head font-bold text-base text-slate-800">Хронология</span>
-        </div>
-        <div class="relative" id="timeline-container">
-          <div class="timeline-line"></div>
-        </div>
-      </div>
-
-      <!-- ПРОДОЛЖИТЬ + СЛЕДУЮЩИЙ -->
-      <div class="lg:col-span-2 flex flex-col gap-5">
-
-        <!-- ПРОДОЛЖИТЬ ОБУЧЕНИЕ -->
-        <div class="continue-card rounded-3xl p-6 sm:p-7 shadow-xl shadow-slate-900/5 animate-scale-in delay-150">
-          <div class="flex items-center gap-2.5 mb-5">
-            <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-            </div>
-            <span class="font-head font-bold text-base text-slate-800">Продолжить обучение</span>
-          </div>
-
-          <div class="mb-4" id="continue-lesson-wrap">
-            <div class="font-head font-extrabold text-xl text-slate-900 tracking-tight" id="continue-lesson-title">Нет данных</div>
-            <div class="text-xs font-bold text-slate-400 mt-1" id="continue-lesson-meta">—</div>
-          </div>
-
-          <div class="mb-4">
-            <div class="flex items-center justify-between text-xs font-bold font-mono mb-1.5">
-              <span class="text-slate-500">Прогресс урока</span>
-              <span class="text-blue-600" id="continue-progress-label">0%</span>
-            </div>
-            <div class="xp-bar-track">
-              <div class="xp-bar-fill" id="continue-progress-fill" data-progress="0" style="width: 0%;"></div>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-3 text-xs font-bold text-slate-400 mb-5">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <span>Осталось ~<span id="continue-time">—</span> минут</span>
-          </div>
-
-          <button onclick="window.location.href='lesson.html'" class="continue-btn w-full py-3.5 rounded-2xl text-white font-head font-bold text-sm shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2 ripple">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
-            </svg>
-            Продолжить
-          </button>
-
-          <div class="text-center mt-3">
-            <span class="text-[11px] font-semibold text-slate-400">Лучше сделать сегодня, чем откладывать на завтра</span>
-          </div>
-        </div>
-
-        <!-- СЛЕДУЮЩИЙ УРОК -->
-        <div class="bg-white/60 border border-slate-200/60 rounded-3xl p-6 sm:p-7 animate-scale-in delay-200 hover:border-slate-300/80 transition-all hover:bg-white/80 shadow-sm">
-          <div class="flex items-center gap-2.5 mb-4">
-            <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-              </svg>
-            </div>
-            <span class="font-head font-bold text-base text-slate-800">Следующий урок</span>
-          </div>
-
-          <div class="mb-3" id="next-lesson-wrap">
-            <div class="font-head font-extrabold text-lg text-slate-900 tracking-tight" id="next-lesson-title">Нет данных</div>
-            <div class="text-xs font-bold text-slate-400 mt-1" id="next-lesson-desc">—</div>
-          </div>
-
-          <div class="flex items-center gap-3 flex-wrap">
-            <span class="difficulty-badge bg-slate-100 text-slate-500 border border-slate-200">—</span>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ДОСТИЖЕНИЯ -->
-  <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
-    <div class="flex items-center gap-3 mb-8 animate-slide-up">
-      <div class="w-1 h-6 rounded-full bg-gradient-to-b from-amber-500 to-rose-500"></div>
-      <h2 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">
-        Достижения
-      </h2>
-      <span class="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full font-mono" id="achv-total-label">Наград</span>
-    </div>
-
-    <!-- СТАТИСТИКА ДОСТИЖЕНИЙ -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8 animate-slide-up delay-100" id="achv-stats"></div>
-
-    <!-- ФИЛЬТРЫ -->
-    <div class="flex flex-wrap gap-2 mb-7 animate-slide-up delay-150" id="achv-filters">
-      <button class="achv-filter-btn active" data-filter="all" onclick="filterAchv('all')">Все</button>
-      <button class="achv-filter-btn" data-filter="unlocked" onclick="filterAchv('unlocked')">Полученные</button>
-      <button class="achv-filter-btn" data-filter="in-progress" onclick="filterAchv('in-progress')">В процессе</button>
-      <button class="achv-filter-btn" data-filter="locked" onclick="filterAchv('locked')">Заблокированные</button>
-    </div>
-
-    <!-- СЕТКА -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="achv-grid"></div>
-  </section>
-
-  <!-- ЦЕЛИ И СЛЕДУЮЩИЙ УРОВЕНЬ -->
-  <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
-    <div class="flex items-center gap-3 mb-8 animate-slide-up">
-      <div class="w-1 h-6 rounded-full bg-gradient-to-b from-blue-500 to-emerald-500"></div>
-      <h2 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">
-        Цели и следующий уровень
-      </h2>
-      <span class="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full font-mono">Level Up</span>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
-
-      <!-- ЛЕВАЯ КОЛОНКА: УРОВЕНЬ + ЦЕЛИ -->
-      <div class="lg:col-span-3 flex flex-col gap-5">
-
-        <!-- КАРТОЧКА УРОВНЯ -->
-        <div class="glass-card-strong rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-900/5 animate-scale-in">
-          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8">
-            <div class="flex items-center gap-4">
-              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-head font-extrabold text-2xl shadow-lg shadow-blue-600/20" id="current-level-display">1</div>
-              <div>
-                <div class="text-xs font-bold text-slate-400">Текущий уровень</div>
-                <div class="font-head font-extrabold text-lg text-slate-900">Уровень <span id="current-level-label">1</span></div>
-              </div>
-            </div>
-            <div class="hidden sm:block text-slate-300 text-2xl font-head font-extrabold">→</div>
-            <div class="flex items-center gap-4">
-              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-rose-500 flex items-center justify-center text-white font-head font-extrabold text-2xl shadow-lg shadow-amber-500/20 opacity-70" id="next-level-display">2</div>
-              <div>
-                <div class="text-xs font-bold text-slate-400">Следующий</div>
-                <div class="font-head font-extrabold text-lg text-slate-900">Уровень <span id="next-level-label">2</span></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-6">
-            <div class="flex items-center justify-between text-xs font-bold font-mono mb-2">
-              <span class="text-slate-500" id="xp-progress-label">700 / 2 000 XP</span>
-              <span class="text-blue-600" id="level-progress-pct">0%</span>
-            </div>
-            <div class="xp-bar-track h-3">
-              <div class="xp-bar-fill" id="level-progress-bar" data-progress="0" style="width: 0%;"></div>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-2 mt-4 text-xs font-bold text-slate-400">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-            </svg>
-            <span id="xp-remaining-text">Осталось 1 300 XP до уровня 13</span>
-          </div>
-        </div>
-
-        <!-- БЛИЖАЙШИЕ ЦЕЛИ -->
-        <div class="glass-card-strong rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-900/5 animate-scale-in delay-100">
-          <div class="flex items-center gap-2.5 mb-5">
-            <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-            </div>
-            <span class="font-head font-bold text-base text-slate-800">Ближайшие цели</span>
-          </div>
-          <div class="space-y-4" id="goals-container"></div>
-        </div>
-      </div>
-
-      <!-- ПРАВАЯ КОЛОНКА: СЕГОДНЯ + МОТИВАЦИЯ + НАГРАДА -->
-      <div class="lg:col-span-2 flex flex-col gap-5">
-
-        <!-- СЕГОДНЯШНЯЯ ЦЕЛЬ -->
-        <div class="glass-card-strong rounded-3xl p-6 sm:p-7 shadow-xl shadow-slate-900/5 animate-scale-in delay-150">
-          <div class="flex items-center gap-2.5 mb-5">
-            <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-            </div>
-            <span class="font-head font-bold text-base text-slate-800">Сегодняшняя цель</span>
-            <span class="text-xs font-bold font-mono text-emerald-600 ml-auto" id="today-progress-label">0%</span>
-          </div>
-
-          <div id="today-tasks" class="space-y-3 mb-5"></div>
-
-          <div class="xp-bar-track">
-            <div class="xp-bar-fill" id="today-progress-bar" style="width: 0%;"></div>
-          </div>
-        </div>
-
-        <!-- МОТИВАЦИЯ -->
-        <div class="bg-gradient-to-br from-blue-50/80 to-purple-50/80 border border-blue-100/60 rounded-3xl p-6 sm:p-7 animate-scale-in delay-200">
-          <div class="flex items-start gap-4">
-            <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-xl shadow-md shrink-0">💪</div>
-            <div>
-              <div class="font-head font-bold text-base text-slate-900">Почти у цели!</div>
-              <div class="text-sm font-semibold text-slate-500 mt-1 leading-relaxed" id="motivation-text">
-                До следующего уровня осталось совсем немного! Заверши ещё один урок и приблизься к новой награде.
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- НАГРАДА СЛЕДУЮЩЕГО УРОВНЯ -->
-        <div class="bg-white/60 border border-slate-200/60 rounded-3xl p-6 sm:p-7 animate-scale-in delay-250 hover:border-slate-300/80 transition-all hover:bg-white/80 shadow-sm">
-          <div class="flex items-center gap-2.5 mb-4">
-            <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
-              </svg>
-            </div>
-            <span class="font-head font-bold text-base text-slate-800">Награда уровня 13</span>
-          </div>
-          <div class="space-y-2.5" id="reward-preview"></div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- АНАЛИТИКА ОБУЧЕНИЯ -->
-  <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
-    <div class="flex items-center gap-3 mb-6 animate-slide-up">
-      <div class="w-1 h-6 rounded-full bg-gradient-to-b from-cyan-500 to-blue-500"></div>
-      <h2 class="font-head font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">
-        Аналитика обучения
-      </h2>
-    </div>
-
-    <!-- ПЕРИОД -->
-    <div class="flex flex-wrap gap-2 mb-7 animate-slide-up delay-100" id="period-filters">
-      <button class="period-btn" data-period="7" onclick="filterPeriod(7)">7 дней</button>
-      <button class="period-btn active" data-period="30" onclick="filterPeriod(30)">30 дней</button>
-      <button class="period-btn" data-period="90" onclick="filterPeriod(90)">3 месяца</button>
-      <button class="period-btn" data-period="all" onclick="filterPeriod('all')">Всё время</button>
-    </div>
-
-    <!-- ГРАФИКИ -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
-      <div class="chart-card animate-scale-in">
-        <div class="flex items-center gap-2 mb-3">
-          <div class="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
-            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-          </div>
-          <span class="text-sm font-bold text-slate-700">Получено XP</span>
-        </div>
-        <div class="chart-wrap">
-          <canvas id="xpChart"></canvas>
-        </div>
-      </div>
-      <div class="chart-card animate-scale-in delay-100">
-        <div class="flex items-center gap-2 mb-3">
-          <div class="w-7 h-7 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
-            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-          </div>
-          <span class="text-sm font-bold text-slate-700">Прогресс по предметам</span>
-        </div>
-        <div class="chart-wrap flex justify-center">
-          <canvas id="subjectsChart"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- ВЫВОДЫ -->
-    <div class="glass-card-strong rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-900/5 animate-scale-in delay-400">
-      <div class="flex items-center gap-2.5 mb-5">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-xs">💡</div>
-        <span class="font-head font-bold text-base text-slate-800">Аналитические выводы</span>
-      </div>
-      <div class="grid grid-cols-3 gap-3" id="insights-grid"></div>
-    </div>
-  </section>
-
-  <!-- ФУТЕР-НАВИГАЦИЯ -->
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 pb-24">
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up">
-      <button onclick="NAV.goToSettings()" class="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-2xl bg-white border border-slate-200/80 text-slate-700 font-head font-bold text-sm shadow-sm hover:border-slate-300 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-        Настройки
-      </button>
-      <button onclick="NAV.logout()" class="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-2xl border-2 border-red-200 bg-white text-red-500 font-head font-bold text-sm hover:bg-red-50 hover:border-red-300 hover:-translate-y-0.5 transition-all duration-300">
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-        Выйти из аккаунта
-      </button>
-    </div>
-  </div>
-
-  <script src="js/storage.js"></script>
-  <script src="js/events.js"></script>
-  <script src="js/xp.js"></script>
-  <script src="js/data.js"></script>
-  <script src="js/learning.js"></script>
-  <script src="js/ui.js"></script>
-  <script src="js/navigation.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/animations.js"></script>
-  <script src="js/achievements.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/profile.js"></script>
+  <nav class="v7-mobile-nav"><a href="dashboard.html" data-copy-ru="Сегодня" data-copy-kk="Бүгін">Сегодня</a><a href="program.html" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a><a href="profile.html" aria-current="page" data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</a><a href="settings.html" data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</a></nav>
+  <script src="js/storage.js"></script><script src="data/curriculum.js"></script><script src="js/data.js"></script><script src="js/i18n.js"></script><script src="js/learning.js"></script><script src="js/animations.js"></script><script src="js/site.js"></script><script src="js/profile.js"></script>
 </body>
 </html>

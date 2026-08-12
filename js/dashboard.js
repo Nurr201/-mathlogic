@@ -11,6 +11,7 @@
   };
 
   function t(key) { return I18N.t('dashboard.' + key, state.lang); }
+  function copy(ru, kk) { return state.lang === 'kk' ? kk : ru; }
   function esc(value) {
     return String(value === undefined || value === null ? '' : value)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -22,13 +23,45 @@
   function lessonTitle(lesson) { return localized(lesson, 'title'); }
   function lessonDescription(lesson) { return localized(lesson, 'description'); }
 
+  function registryLessons(subjectKey) {
+    const registry = Learning.getRegistry();
+    return Object.keys(registry).sort(function(a, b) {
+      return (registry[a].order || 0) - (registry[b].order || 0);
+    }).map(function(id) {
+      return Learning.getLesson(id);
+    }).filter(function(lesson) {
+      return lesson && (!subjectKey || lesson.subjectKey === subjectKey);
+    });
+  }
+
   function setText(id, value) {
     const node = document.getElementById(id);
     if (node) node.textContent = value;
   }
 
+  function formatToday() {
+    const now = new Date();
+    if (state.lang !== 'kk') {
+      return new Intl.DateTimeFormat('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' }).format(now);
+    }
+    const weekdays = ['жексенбі', 'дүйсенбі', 'сейсенбі', 'сәрсенбі', 'бейсенбі', 'жұма', 'сенбі'];
+    const months = ['қаңтар', 'ақпан', 'наурыз', 'сәуір', 'мамыр', 'маусым', 'шілде', 'тамыз', 'қыркүйек', 'қазан', 'қараша', 'желтоқсан'];
+    return weekdays[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()];
+  }
+
+  function availableLabel(count) {
+    if (state.lang === 'kk') return count + ' қолжетімді сабақ';
+    const mod10 = count % 10;
+    const mod100 = count % 100;
+    const noun = mod10 === 1 && mod100 !== 11 ? 'доступный урок'
+      : mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14) ? 'доступных урока'
+      : 'доступных уроков';
+    return count + ' ' + noun;
+  }
+
   function applyCopy() {
     document.documentElement.lang = state.lang;
+    if (window.MathLogicSite) MathLogicSite.applyCopy();
     document.querySelectorAll('[data-copy]').forEach(function(node) {
       node.textContent = t(node.dataset.copy);
     });
@@ -39,54 +72,13 @@
 
   function renderTop() {
     const user = ML.getUser() || {};
-    const xp = XP.getLevelProgress();
-    const subjects = Learning.getSubjects();
-    const available = Object.keys(Learning.getRegistry()).map(function(id) { return Learning.getLesson(id); })
-      .filter(function(lesson) { return lesson && (lesson.status === 'available' || lesson.status === 'current'); }).length;
+    const lessons = Object.keys(Learning.getRegistry()).map(function(id) { return Learning.getLesson(id); }).filter(Boolean);
+    const available = lessons.filter(function(lesson) { return lesson.status === 'available' || lesson.status === 'current'; }).length;
     const name = user.name || user.username || '';
     setText('dashboard-greeting', t('greeting') + (name ? ', ' + name.split(' ')[0] : ''));
-    const date = new Intl.DateTimeFormat(state.lang === 'ru' ? 'ru-RU' : 'kk-KZ', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
-    setText('dashboard-context', date.charAt(0).toUpperCase() + date.slice(1) + ' · ' + available + ' ' + t('availableCount'));
-    setText('top-xp', xp.xp);
-    setText('top-streak', user.streak || 0);
-    setText('rail-streak', user.streak || 0);
+    const date = formatToday();
+    setText('dashboard-context', date.charAt(0).toUpperCase() + date.slice(1) + ' · ' + availableLabel(available));
     setText('dashboard-avatar', (name || t('profile')).charAt(0).toUpperCase());
-
-    setText('stat-level', xp.level);
-    setText('stat-level-copy', xp.remaining + ' XP ' + t('remaining'));
-    document.getElementById('stat-level-fill').style.width = pct(xp.progress) + '%';
-    setText('stat-xp', xp.xp);
-    setText('stat-xp-copy', xp.levelXp + ' / ' + xp.levelSpan + ' XP');
-    document.getElementById('stat-xp-fill').style.width = pct(xp.progress) + '%';
-    setText('stat-streak', user.streak || 0);
-    document.getElementById('stat-streak-fill').style.width = pct((user.streak || 0) / 7 * 100) + '%';
-    const overall = Learning.getOverallProgress();
-    const completed = subjects.reduce(function(sum, item) { return sum + item.completedLessons; }, 0);
-    const total = subjects.reduce(function(sum, item) { return sum + item.totalLessons; }, 0);
-    setText('stat-course', overall + '%');
-    setText('stat-course-copy', completed + ' / ' + total + ' ' + t('lessons'));
-    document.getElementById('stat-course-fill').style.width = pct(overall) + '%';
-  }
-
-  function renderSubjects() {
-    const subjects = Learning.getSubjects();
-    const rail = document.getElementById('rail-subjects');
-    const strip = document.getElementById('subject-strip');
-    rail.innerHTML = subjects.map(function(subject) {
-      return '<button type="button" class="rail-subject' + (state.currentSubject === subject.key ? ' active' : '') + '" data-subject="' + esc(subject.key) + '" style="--subject-color:' + esc(subject.mainColor) + '">' +
-        '<span class="rail-subject-icon" aria-hidden="true">' + subject.icon + '</span><span>' + esc(subjectName(subject)) + '</span><b class="mono">' + subject.progress + '%</b></button>';
-    }).join('');
-    strip.innerHTML = subjects.map(function(subject) {
-      return '<button type="button" class="subject-segment' + (state.currentSubject === subject.key ? ' active' : '') + '" data-subject="' + esc(subject.key) + '" style="--subject-color:' + esc(subject.mainColor) + '">' +
-        '<span class="subject-segment-icon" aria-hidden="true">' + subject.icon + '</span><span><strong>' + esc(subjectName(subject)) + '</strong><small>' + subject.completedLessons + '/' + subject.totalLessons + ' ' + t('passed') + '</small></span><b class="mono">' + subject.progress + '%</b></button>';
-    }).join('');
-    document.querySelectorAll('[data-subject]').forEach(function(button) {
-      button.addEventListener('click', function() {
-        state.currentSubject = button.dataset.subject;
-        renderSubjects();
-        renderRoute();
-      });
-    });
   }
 
   function renderHero() {
@@ -94,11 +86,19 @@
     const last = Learning.getLastCompletedLesson();
     const hero = document.getElementById('dashboard-hero');
     const empty = document.getElementById('dashboard-empty');
+    const quickReview = document.getElementById('quick-review');
+    quickReview.hidden = !last;
+    if (last) {
+      quickReview.href = last.route;
+      setText('quick-review-title', lessonTitle(last));
+    }
     if (!next) {
       hero.hidden = true;
       empty.hidden = false;
       if (last) {
         empty.innerHTML = '<h2>' + esc(t('allDone')) + '</h2><p>' + esc(t('allDoneText')) + '</p><a class="axis-button axis-button-ink" href="' + esc(last.route) + '">' + esc(t('repeatPrevious')) + ' →</a>';
+      } else {
+        empty.innerHTML = '<h2>' + esc(copy('Следующий урок пока не определён', 'Келесі сабақ әзірге анықталған жоқ')) + '</h2><p>' + esc(copy('Откройте программу и выберите доступную тему.', 'Бағдарламаны ашып, қолжетімді тақырыпты таңдаңыз.')) + '</p><a class="v7-button ghost" href="program.html">' + esc(copy('Открыть программу', 'Бағдарламаны ашу')) + '</a>';
       }
       return;
     }
@@ -109,20 +109,14 @@
     setText('hero-title', lessonTitle(next));
     setText('hero-description', lessonDescription(next));
     setText('hero-duration', next.duration ? next.duration + ' ' + t('minutes') : t('interactive'));
-    setText('hero-reward', '+' + (next.xp || 0) + ' XP');
+    setText('hero-status', statusText(next.status));
     const completedBlocks = next.session && Array.isArray(next.session.completedBlocks) ? next.session.completedBlocks.length : 0;
     setText('hero-steps', completedBlocks ? completedBlocks + ' ' + t('saved') : t('interactive'));
     const primary = document.getElementById('hero-primary');
     primary.href = next.route;
     primary.querySelector('[data-copy]').dataset.copy = next.status === 'current' ? 'continue' : 'start';
     primary.querySelector('[data-copy]').textContent = next.status === 'current' ? t('continue') : t('start');
-    const secondary = document.getElementById('hero-secondary');
-    secondary.hidden = !last || last.id === next.id;
-    if (!secondary.hidden) secondary.href = last.route;
-
-    const registry = Learning.getRegistry();
-    const real = Object.keys(registry).sort(function(a, b) { return (registry[a].order || 0) - (registry[b].order || 0); })
-      .map(function(id) { return Learning.getLesson(id); }).filter(Boolean);
+    const real = registryLessons();
     const done = real.filter(function(item) { return item.status === 'completed'; }).length;
     document.getElementById('hero-axis-fill').style.width = (real.length > 1 ? pct(done / (real.length - 1) * 100) : pct(done * 100)) + '%';
     document.getElementById('hero-axis-nodes').innerHTML = real.map(function(item, index) {
@@ -133,38 +127,44 @@
   }
 
   function statusText(status) { return t(status) || status; }
-  function lessonMeta(lesson) {
-    if (lesson.status === 'completed') return (lesson.result && lesson.result.percentage !== undefined ? lesson.result.percentage + '%' : t('completed'));
-    if (lesson.status === 'current') {
-      const count = lesson.session && Array.isArray(lesson.session.completedBlocks) ? lesson.session.completedBlocks.length : 0;
-      return count ? count + ' ' + t('saved') : t('current');
-    }
-    if (lesson.status === 'comingSoon' && lesson.releaseDate) {
-      return new Intl.DateTimeFormat(state.lang === 'ru' ? 'ru-RU' : 'kk-KZ', { day: 'numeric', month: 'short' }).format(new Date(lesson.releaseDate));
-    }
-    if (lesson.status === 'locked') return localized(lesson, 'unlockReason') || t('noContent');
-    return lesson.duration ? lesson.duration + ' ' + t('minutes') + ' · +' + lesson.xp + ' XP' : statusText(lesson.status);
+
+  function currentPathStatus(lesson, focusId) {
+    if (lesson.status === 'completed') return t('completed');
+    if (lesson.id === focusId && lesson.status === 'current') return t('current');
+    if (lesson.id === focusId) return copy('Следующий', 'Келесі');
+    return statusText(lesson.status);
   }
 
-  function renderRoute() {
-    const topics = Learning.getTopics(state.currentSubject);
+  function renderCurrentPath() {
+    const next = Learning.getNextLesson();
+    const last = Learning.getLastCompletedLesson();
+    const focus = next || last;
+    if (focus && focus.subjectKey) state.currentSubject = focus.subjectKey;
+
     const subject = Learning.getSubject(state.currentSubject);
-    setText('route-title', t('route') + (subject ? ' · ' + subjectName(subject) : ''));
-    const total = topics.reduce(function(sum, topic) { return sum + topic.totalLessons; }, 0);
-    const completed = topics.reduce(function(sum, topic) { return sum + topic.completedLessons; }, 0);
-    setText('route-count', completed + ' / ' + total + ' ' + t('passed'));
-    document.getElementById('route-modules').innerHTML = topics.map(function(topic, index) {
-      const rows = topic.lessons.map(function(lesson) {
-        const canOpen = lesson.status === 'available' || lesson.status === 'current' || lesson.status === 'completed';
-        const action = lesson.status === 'completed' ? t('repeat') : lesson.status === 'current' ? t('continue') : t('open');
-        const icon = lesson.status === 'completed' ? '✓' : lesson.status === 'current' ? '◆' : lesson.status === 'available' ? '○' : lesson.status === 'comingSoon' ? '◌' : '—';
-        const description = lessonDescription(lesson);
-        return '<li class="route-lesson status-' + esc(lesson.status) + '">' +
-          '<span class="route-node mono" aria-hidden="true">' + icon + '</span><div class="route-lesson-copy"><strong>' + esc(lessonTitle(lesson)) + '</strong><span class="route-lesson-description">' + esc(description) + '</span><small class="route-lesson-meta">' + esc(lessonMeta(lesson)) + '</small></div>' +
-          '<span class="route-status mono">' + esc(statusText(lesson.status)) + '</span>' +
-          (canOpen ? '<a class="route-action" href="' + esc(lesson.route) + '" aria-label="' + esc(action + ': ' + lessonTitle(lesson)) + '">' + esc(action) + ' →</a>' : '<span class="route-action disabled" aria-hidden="true">—</span>') + '</li>';
-      }).join('');
-      return '<article class="route-module"><header><span class="route-module-number mono">' + String(index + 1).padStart(2, '0') + '</span><div><span class="axis-eyebrow">' + esc(localized(topic, 'level') || '') + '</span><h3>' + esc(localized(topic, 'title')) + '</h3></div><b class="mono">' + topic.progress + '%</b></header><ol>' + rows + '</ol></article>';
+    const lessons = registryLessons(state.currentSubject);
+    const focusId = focus ? focus.id : '';
+    let anchor = lessons.findIndex(function(lesson) { return lesson.id === focusId; });
+    if (anchor < 0) anchor = 0;
+    const limit = 5;
+    const start = Math.max(0, Math.min(anchor - 2, Math.max(0, lessons.length - limit)));
+    const points = lessons.slice(start, start + limit);
+
+    setText('current-path-title', copy('Ближайшие шаги', 'Жақын қадамдар'));
+    setText('current-path-context', subject ? subjectName(subject) : copy('Текущий предмет', 'Ағымдағы пән'));
+    const pathLink = document.getElementById('current-path-link');
+    pathLink.href = 'program.html?subject=' + encodeURIComponent(state.currentSubject);
+
+    const root = document.getElementById('current-path-points');
+    if (!points.length) {
+      root.innerHTML = '<li class="v7-current-path-empty">' + esc(copy('В этом направлении пока нет опубликованных уроков.', 'Бұл бағытта әзірге жарияланған сабақ жоқ.')) + '</li>';
+      return;
+    }
+    root.innerHTML = points.map(function(lesson) {
+      const isFocus = lesson.id === focusId && lesson.status !== 'completed';
+      const className = lesson.status === 'completed' ? ' is-completed' : isFocus ? ' is-current' : ' is-next';
+      const marker = lesson.status === 'completed' ? '✓' : isFocus ? '●' : '○';
+      return '<li class="v7-current-path-item' + className + '"><span class="v7-current-path-node" aria-hidden="true">' + marker + '</span><strong>' + esc(lessonTitle(lesson)) + '</strong><small>' + esc(currentPathStatus(lesson, focusId)) + '</small></li>';
     }).join('');
   }
 
@@ -182,9 +182,8 @@
     applyCopy();
     applyTheme();
     renderTop();
-    renderSubjects();
     renderHero();
-    renderRoute();
+    renderCurrentPath();
   }
 
   function renderSafely() {
@@ -219,7 +218,6 @@
       renderSafely();
     });
   });
-  document.addEventListener('xp:update', renderSafely);
   document.addEventListener('progress:update', renderSafely);
   window.addEventListener('storage', function(event) { if (event.key === 'mathlogic_data') renderSafely(); });
   document.getElementById('dashboard-retry').addEventListener('click', renderSafely);

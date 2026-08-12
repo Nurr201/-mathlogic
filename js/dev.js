@@ -1,13 +1,28 @@
 (function() {
-  var isDev = window.location.hostname === 'localhost' ||
-              window.location.hostname === '127.0.0.1' ||
-              window.DEV === true;
+  var isDev = window.DEV === true ||
+              new URLSearchParams(window.location.search).get('debug') === '1';
   if (!isDev) return;
 
   var btn = 'display:block;width:100%;padding:8px 12px;margin:4px 0;' +
     'border:1px solid #cbd5e1;border-radius:8px;background:#f8fafc;' +
     'color:#0f172a;font-size:13px;font-weight:600;cursor:pointer;' +
     'text-align:left;font-family:system-ui,sans-serif;';
+
+  function currentLessonId() {
+    var state = window.__EngineInternal && window.__EngineInternal.state;
+    return state && state.lessonId ? state.lessonId : null;
+  }
+
+  function resetCurrentLesson() {
+    var id = currentLessonId();
+    if (!id || typeof Learning === 'undefined' || !Learning.resetLesson) return false;
+    Learning.resetLesson(id);
+    if (window.location && typeof window.location.reload === 'function') window.location.reload();
+    return true;
+  }
+
+  ML.dev = ML.dev || {};
+  ML.dev.resetCurrentLesson = resetCurrentLesson;
 
   function init() {
     if (document.getElementById('ml-dev-panel')) return;
@@ -24,10 +39,7 @@
       '<div id="ml-dev-body" style="display:none;padding:8px;' +
       'background:white;border:1px solid #e2e8f0;border-radius:0 0 8px 8px;' +
       'margin-top:2px;">' +
-      '<button onclick="Learning.resetLesson(' +
-      '(window.__EngineInternal&&window.__EngineInternal.state' +
-      '?window.__EngineInternal.state.lessonId:null)' +
-      ');location.reload()" style="' + btn + '">' +
+      '<button onclick="ML.dev.resetCurrentLesson()" style="' + btn + '">' +
       '\u0421\u0431\u0440\u043E\u0441\u0438\u0442\u044C \u0442\u0435\u043A\u0443\u0449\u0438\u0439 \u0443\u0440\u043E\u043A' +
       '</button>' +
       '<button onclick="Learning.resetAll();location.reload()" style="' + btn + '">' +
