@@ -65,6 +65,7 @@ mathlogic/
 ├── css/                  # Shared and page-specific styles
 ├── docs/                 # Architecture and lesson authoring documentation
 ├── tests/                # Integrity, smoke, and interaction tests
+├── index.html            # Interactive public landing page
 ├── dashboard.html
 ├── program.html
 ├── lesson.html
