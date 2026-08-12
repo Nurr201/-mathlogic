@@ -115,7 +115,7 @@ function testDashboardShell() {
   const scripts = Array.from(html.matchAll(/<script\s+src="([^"]+)"\s*><\/script>/g), function(match) { return match[1].split('?')[0]; });
   assert.deepEqual(scripts, [
     'data/curriculum.js', 'js/data.js', 'js/storage.js', 'js/i18n.js',
-    'js/events.js', 'js/learning.js', 'js/site.js', 'js/dashboard.js',
+    'js/events.js', 'js/learning.js', 'js/dashboard-data.js', 'js/site.js', 'js/dashboard.js',
   ]);
   assert.equal((html.match(/js\/dashboard\.js/g) || []).length, 1);
   assert.equal(/<style\b/i.test(html), false);
@@ -141,15 +141,23 @@ function testDashboard() {
   app.document.body.classList.add('axis-app');
   app.document.getElementById('dashboard-content').hidden = true;
   app.document.getElementById('dashboard-error').hidden = true;
-  load(app, CORE.concat(['js/site.js', 'js/dashboard.js']));
+  load(app, CORE.concat(['js/dashboard-data.js', 'js/site.js', 'js/dashboard.js']));
   assert.equal(app.document.getElementById('dashboard-content').hidden, false);
   assert.equal(app.document.getElementById('dashboard-error').hidden, true);
   assert.equal(app.document.getElementById('hero-primary').href, 'lesson.html?id=algebra.linear-equations.equivalent-transformations');
-  const currentPath = app.document.getElementById('current-path-points').innerHTML;
-  assert.ok(currentPath.includes('v7-current-path-item'));
-  assert.ok((currentPath.match(/v7-current-path-item/g) || []).length <= 5);
-  assert.equal(currentPath.includes('route-module'), false);
-  assert.equal(app.document.getElementById('current-path-link').href, 'program.html?subject=algebra');
+  const currentTopic = app.document.getElementById('current-topic-points').innerHTML;
+  assert.ok(currentTopic.includes('v7-current-topic-item'));
+  assert.ok((currentTopic.match(/v7-current-topic-item/g) || []).length <= 6);
+  assert.equal(currentTopic.includes('route-module'), false);
+  assert.equal(app.document.getElementById('current-topic-link').href, 'program.html?subject=algebra');
+}
+
+function testDashboardResponsiveContract() {
+  const css = fs.readFileSync(path.join(ROOT, 'css/editorial.css'), 'utf8');
+  assert.ok(css.includes('.v7-dashboard-context { display:grid; grid-template-columns:minmax(0,1.55fr) minmax(250px,.8fr);'), 'desktop dashboard keeps an editorial two-column context');
+  assert.ok(css.includes('.v7-dashboard-context { display:block; margin-top:48px; }'), 'mobile dashboard stacks context without horizontal scrolling');
+  assert.ok(css.includes('.v7-recent { margin-top:46px; padding-top:34px; padding-left:0; border-top:1px solid var(--v7-ink); border-left:0; }'), 'mobile recent activity becomes a separated lower section');
+  assert.ok(css.includes('.v7-current-topic-item > div { min-width:0; }'), 'long lesson titles can shrink within a topic row');
 }
 
 function testProgramCurriculum() {
@@ -1151,6 +1159,10 @@ function testProfileLearningHistory() {
   assert.ok(history.includes('Вчера'));
   assert.ok(history.includes('Урок начат'));
   assert.ok(history.includes('Очень длинное название удалённого урока'));
+  assert.equal((history.match(/v7-history-event/g) || []).length, 10);
+  assert.ok(history.includes('id="history-more"'));
+  app.document.getElementById('history-more').click();
+  history = app.document.getElementById('profile-history').innerHTML;
   assert.equal((history.match(/v7-history-event/g) || []).length, 20);
   assert.ok(history.includes('id="history-more"'));
   app.document.getElementById('history-more').click();
@@ -1873,6 +1885,7 @@ function testGeometryDiagramRenderer() {
 testDashboardShell();
 testLocalMathEditorDependency();
 testDashboard();
+testDashboardResponsiveContract();
 testProgramCurriculum();
 testNavigationResponsivenessContract();
 testLesson('algebra.vieta.intro', 'Виет теоремасы');

@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/editorial.css">
+  <link rel="stylesheet" href="css/app-shell.css">
 </head>
 <body class="v7-app v7-dashboard">
   <header class="v7-nav">
@@ -26,7 +27,9 @@
         <button class="v7-tool v7-mono" type="button" data-lang="kk">ҚАЗ</button>
         <button class="v7-tool" type="button" data-theme-choice="light" aria-label="Светлая тема">○</button>
         <button class="v7-tool" type="button" data-theme-choice="dark" aria-label="Тёмная тема">●</button>
-        <a class="v7-avatar" href="settings.html" id="dashboard-avatar" aria-label="Настройки">М</a>
+        <a class="v8-settings-link" href="settings.html" data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</a>
+        <a class="v7-avatar" href="profile.html" id="dashboard-avatar" aria-label="Профиль">М</a>
+        <button class="v8-logout" type="button" data-app-logout data-copy-ru="Выйти" data-copy-kk="Шығу">Выйти</button>
       </div>
     </div>
   </header>
@@ -36,41 +39,55 @@
     <section class="v7-empty" id="dashboard-error" hidden role="alert"><h1 id="dashboard-error-title">Не удалось загрузить Dashboard</h1><p id="dashboard-error-text"></p><button class="v7-button" id="dashboard-retry" type="button">Повторить</button></section>
 
     <div id="dashboard-content" hidden>
-      <header class="v7-topline">
-        <div><span class="v7-eyebrow" data-copy-ru="Сегодня" data-copy-kk="Бүгін">Сегодня</span><h1 id="dashboard-greeting">Следующий шаг</h1></div>
-        <p id="dashboard-context"></p>
+      <header class="v7-dashboard-intro">
+        <div><span class="v7-eyebrow" data-copy-ru="Сегодня" data-copy-kk="Бүгін">Сегодня</span><h1 id="dashboard-greeting">Добрый день</h1></div>
+        <time id="dashboard-date"></time>
+        <svg class="v8-intro-math" viewBox="0 0 420 150" aria-hidden="true"><path d="M18 128 112 22l92 106H18ZM112 22v106M100 128h24"/><path d="M252 118h142M273 132V18M273 79l92-48"/><circle cx="273" cy="79" r="4"/><text x="286" y="72">P(0; b)</text></svg>
       </header>
 
-      <div class="v7-dashgrid">
-        <section class="v7-next" id="dashboard-hero" aria-labelledby="hero-title">
-          <div>
-            <div class="hero-kicker"><span data-copy="nextLesson">Следующий урок</span><span id="hero-path"></span></div>
-            <h2 id="hero-title">—</h2>
-            <p class="v7-desc" id="hero-description"></p>
-            <div class="hero-meta v7-mono"><span id="hero-duration">—</span><span id="hero-status">—</span><span id="hero-steps">—</span></div>
+      <section class="v7-dashboard-continue" id="dashboard-hero" aria-labelledby="hero-title">
+        <svg class="v7-dashboard-geometry" viewBox="0 0 180 180" fill="none" aria-hidden="true"><path d="M31 141 91 29l62 112H31Z"/><path d="m91 29 20 112M54 98h79"/><circle cx="91" cy="29" r="3"/></svg>
+        <div class="v7-dashboard-continue-copy">
+          <div class="v7-dashboard-kicker"><span id="hero-label">Следующий урок</span><span id="hero-path"></span></div>
+          <h2 id="hero-title">—</h2>
+          <p id="hero-description"></p>
+        </div>
+        <div class="v7-dashboard-continue-footer">
+          <div class="v7-dashboard-progress" id="hero-progress-wrap" hidden>
+            <div class="v7-dashboard-progress-line" id="hero-progress"><span id="hero-progress-fill"></span></div>
+            <span class="v7-mono" id="hero-progress-label"></span>
           </div>
-          <div>
-            <div class="hero-axis" aria-label="Путь доступных уроков"><div class="hero-axis-line"><span id="hero-axis-fill"></span></div><div class="hero-axis-nodes" id="hero-axis-nodes"></div><p class="v7-mono" id="hero-axis-caption"></p></div>
-            <div class="v7-actions"><a class="v7-button" id="hero-primary" href="dashboard.html"><span data-copy="continue">Продолжить</span></a></div>
-          </div>
-        </section>
+          <a class="v7-button" id="hero-primary" href="dashboard.html"><span id="hero-primary-label">Начать</span><span aria-hidden="true">→</span></a>
+        </div>
+      </section>
 
-        <aside class="v7-entry-panel">
-          <span class="v7-eyebrow" data-copy-ru="Точки входа" data-copy-kk="Кіру нүктелері">Точки входа</span>
-          <div class="v7-side-list">
-            <a id="quick-review" href="dashboard.html" hidden><span><b data-copy-ru="Короткое повторение" data-copy-kk="Қысқа қайталау">Короткое повторение</b><small id="quick-review-title"></small></span><span>→</span></a>
-            <a href="program.html"><span><b data-copy-ru="Открыть программу" data-copy-kk="Бағдарламаны ашу">Открыть программу</b><small data-copy-ru="Карта направлений и тем" data-copy-kk="Бағыттар мен тақырыптар картасы">Карта направлений и тем</small></span><span>→</span></a>
-            <a href="profile.html"><span><b data-copy-ru="Вернуться к журналу" data-copy-kk="Журналға оралу">Вернуться к журналу</b><small data-copy-ru="Последние реальные занятия" data-copy-kk="Соңғы нақты сабақтар">Последние реальные занятия</small></span><span>→</span></a>
-          </div>
+      <section class="v8-data-strip" aria-label="Учебная статистика">
+        <article><span data-copy-ru="Пройдено уроков" data-copy-kk="Аяқталған сабақ">Пройдено уроков</span><strong id="dashboard-completed">0</strong></article>
+        <article><span data-copy-ru="В процессе" data-copy-kk="Жалғасуда">В процессе</span><strong id="dashboard-active">0</strong></article>
+        <article><span data-copy-ru="Учебных дней" data-copy-kk="Оқу күні">Учебных дней</span><strong id="dashboard-days">0</strong></article>
+        <article><span data-copy-ru="Доступно" data-copy-kk="Қолжетімді">Доступно</span><strong id="dashboard-available">0</strong><small data-copy-ru="уроков" data-copy-kk="сабақ">уроков</small></article>
+      </section>
+
+      <section class="v7-dashboard-complete" id="dashboard-empty" hidden></section>
+
+      <section class="v7-dashboard-context" id="dashboard-learning-context">
+        <article class="v7-current-topic" id="current-topic">
+          <header class="v7-dashboard-section-head"><span class="v7-eyebrow" data-copy-ru="Текущая тема" data-copy-kk="Ағымдағы тақырып">Текущая тема</span><h2 id="current-topic-title">—</h2><p id="current-topic-subject"></p></header>
+          <ol class="v7-current-topic-list" id="current-topic-points"></ol>
+          <a class="v7-dashboard-text-link" id="current-topic-link" href="program.html"><span data-copy-ru="Открыть в программе" data-copy-kk="Бағдарламадан ашу">Открыть в программе</span> <span aria-hidden="true">→</span></a>
+        </article>
+        <aside class="v7-recent" id="recent-activity" aria-labelledby="recent-title">
+          <header class="v7-dashboard-section-head"><span class="v7-eyebrow" data-copy-ru="Недавно" data-copy-kk="Жақында">Недавно</span><h2 id="recent-title" data-copy-ru="Последние занятия" data-copy-kk="Соңғы сабақтар">Последние занятия</h2></header>
+          <ol class="v7-recent-list" id="recent-points"></ol>
+          <a class="v7-dashboard-text-link" id="recent-link" href="profile.html"><span data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</span> <span aria-hidden="true">→</span></a>
         </aside>
-      </div>
+      </section>
 
-      <section class="v7-empty" id="dashboard-empty" hidden></section>
-
-      <section class="v7-current-path" id="current-path">
-        <div class="v7-topline"><div><span class="v7-eyebrow" data-copy-ru="Текущий путь" data-copy-kk="Ағымдағы бағыт">Текущий путь</span><h2 id="current-path-title">Ближайшие шаги</h2></div><p id="current-path-context"></p></div>
-        <ol class="v7-current-path-list" id="current-path-points"></ol>
-        <div class="v7-current-path-actions"><a class="v7-button ghost" id="current-path-link" href="program.html?subject=algebra" data-copy-ru="Посмотреть весь путь" data-copy-kk="Толық бағытты көру">Посмотреть весь путь</a></div>
+      <section class="v8-subjects" aria-labelledby="dashboard-subjects-title">
+        <header class="v8-section-heading"><span class="v7-eyebrow" data-copy-ru="Предметы" data-copy-kk="Пәндер">Предметы</span><h2 id="dashboard-subjects-title" data-copy-ru="Продолжить по предмету" data-copy-kk="Пән бойынша жалғастыру">Продолжить по предмету</h2><p data-copy-ru="Выберите предмет, чтобы увидеть реальные доступные темы." data-copy-kk="Нақты қолжетімді тақырыптарды көру үшін пәнді таңдаңыз.">Выберите предмет, чтобы увидеть реальные доступные темы.</p></header>
+        <div class="v8-subject-grid" id="dashboard-subject-grid" role="tablist" aria-label="Предметы"></div>
+        <div class="v8-topic-grid" id="dashboard-topic-grid" aria-live="polite"></div>
+        <a class="v7-dashboard-text-link v8-program-link" id="dashboard-subject-program" href="program.html"><span data-copy-ru="Вся программа предмета" data-copy-kk="Пәннің толық бағдарламасы">Вся программа предмета</span> <span aria-hidden="true">→</span></a>
       </section>
     </div>
   </main>
@@ -80,6 +97,7 @@
     <a href="program.html" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a>
     <a href="profile.html" data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</a>
     <a href="settings.html" data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</a>
+    <button type="button" data-app-logout data-copy-ru="Выйти" data-copy-kk="Шығу">Выйти</button>
   </nav>
 
   <script src="data/curriculum.js"></script>
@@ -88,7 +106,8 @@
   <script src="js/i18n.js"></script>
   <script src="js/events.js"></script>
   <script src="js/learning.js"></script>
+  <script src="js/dashboard-data.js"></script>
   <script src="js/site.js"></script>
-  <script src="js/dashboard.js"></script>
+  <script src="js/dashboard.js?v=9"></script>
 </body>
 </html>

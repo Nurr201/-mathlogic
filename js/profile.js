@@ -1,7 +1,8 @@
 (function() {
   'use strict';
 
-  var historyVisible = 20;
+  var historyVisible = 10;
+  var achievementsExpanded = false;
 
   function lang() { return ML.getLang(); }
   function copy(ru, kk) { return lang() === 'kk' ? kk : ru; }
@@ -34,6 +35,7 @@
         });
         items.push({
           id: topic.id,
+          subjectKey: subject.key,
           title: realLesson ? localize(realLesson, 'title') : localize(topic, 'title'),
           subject: I18N.t('subjects.' + subject.key, lang()) || localize(subject, 'name') || subject.name,
           status: completed ? 'completed' : current ? 'current' : topic.completedLessons > 0 ? 'current' : 'planned',
@@ -103,6 +105,14 @@
     var mod100 = count % 100;
     var noun = mod10 === 1 && mod100 !== 11 ? 'учебный день' : mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14) ? 'учебных дня' : 'учебных дней';
     return count + ' ' + noun + ' за последний год';
+  }
+
+  function streakDays(count) {
+    if (lang() === 'kk') return 'күн';
+    var mod10 = count % 10;
+    var mod100 = count % 100;
+    return mod10 === 1 && mod100 !== 11 ? 'день'
+      : mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14) ? 'дня' : 'дней';
   }
 
   function activityLabel(entry) {
@@ -201,6 +211,7 @@
     setText('profile-name', name);
     setText('profile-avatar', name.charAt(0).toUpperCase());
     setText('profile-username', user.username || '@user');
+    setText('profile-member-since', formatDate(user.createdAt, false));
     setText('profile-completed', data.completed);
     setText('profile-active', data.active);
     setText('profile-last-date', formatDate(lastDate, true));
@@ -210,8 +221,9 @@
     setText('metric-active-note', data.active ? copy('есть сохранённый шаг', 'сақталған қадам бар') : copy('нет начатых уроков', 'басталған сабақ жоқ'));
     setText('metric-days', data.dates.length);
     setText('metric-days-note', data.dates.length ? copy('последнее: ', 'соңғысы: ') + formatDate(data.dates[data.dates.length - 1], true) : copy('занятий пока нет', 'әзірге сабақ жоқ'));
-    setText('metric-available', data.available);
-    setText('metric-available-note', copy('можно открыть сейчас', 'қазір ашуға болады'));
+    var streak = Math.max(0, Number(user.streak) || 0);
+    setText('metric-streak', streak);
+    setText('metric-streak-note', streakDays(streak));
   }
 
   function renderHistory() {
@@ -248,7 +260,7 @@
       ? '<button class="v7-history-more" id="history-more" type="button">' + escapeHtml(I18N.t('history.showMore', lang())) + '</button>'
       : '');
     var more = document.getElementById('history-more');
-    if (more) more.addEventListener('click', function() { historyVisible += 20; renderHistory(); });
+    if (more) more.addEventListener('click', function() { historyVisible += 10; renderHistory(); });
   }
 
   function localDateKey(value) {
@@ -353,8 +365,58 @@
     }
     root.innerHTML = recent.map(function(topic) {
       var status = topic.status === 'completed' ? copy('изучено', 'меңгерілді') : copy('в процессе', 'жалғасуда');
-      return '<article class="product-topic-card" style="border-top:2px solid ' + escapeHtml(topic.color) + '"><span class="axis-eyebrow">' + escapeHtml(status) + '</span><strong>' + escapeHtml(topic.title) + '</strong><small>' + escapeHtml(topic.subject) + ' · ' + topic.completedLessons + ' / ' + topic.totalLessons + ' ' + escapeHtml(copy('уроков', 'сабақ')) + '</small><div class="axis-track" style="margin-top:16px"><span style="width:' + clamp(topic.progress) + '%;background:' + escapeHtml(topic.color) + '"></span></div></article>';
+      return '<article class="product-topic-card is-' + escapeHtml(topic.subjectKey) + '"><span class="axis-eyebrow">' + escapeHtml(status) + '</span><strong>' + escapeHtml(topic.title) + '</strong><small>' + escapeHtml(topic.subject) + ' · ' + topic.completedLessons + ' / ' + topic.totalLessons + ' ' + escapeHtml(copy('уроков', 'сабақ')) + '</small><div class="axis-track" style="margin-top:16px"><span style="width:' + clamp(topic.progress) + '%"></span></div></article>';
     }).join('');
+  }
+
+  function achievementTitle(item) {
+    var id = typeof item === 'string' ? item : item && item.id || '';
+    var stored = typeof item === 'object' && item
+      ? (lang() === 'kk' ? item.titleKk || item.title : item.titleRu || item.title)
+      : '';
+    if (stored && !/[_-]/.test(stored)) return stored;
+    var labels = {
+      first_lesson: ['Первый урок', 'Бірінші сабақ'],
+      five_lessons: ['5 уроков', '5 сабақ'],
+      ten_lessons: ['10 уроков', '10 сабақ'],
+      twenty_five_lessons: ['25 уроков', '25 сабақ'],
+      fifty_lessons: ['50 уроков', '50 сабақ'],
+      hundred_lessons: ['100 уроков', '100 сабақ'],
+      perfect_score: ['Без ошибок', 'Қатесіз'],
+      first_try: ['С первой попытки', 'Бірінші әрекеттен'],
+      first_week: ['Первая учебная неделя', 'Бірінші оқу аптасы'],
+      week_streak: ['Неделя занятий', 'Бір апта оқу'],
+      month_streak: ['Месяц занятий', 'Бір ай оқу'],
+      algebra_master: ['Алгебра освоена', 'Алгебра меңгерілді'],
+      geometry_master: ['Геометрия освоена', 'Геометрия меңгерілді']
+    };
+    if (labels[id]) return labels[id][lang() === 'kk' ? 1 : 0];
+    var readable = String(id || stored || '').replace(/[_-]+/g, ' ').trim();
+    return readable ? readable.charAt(0).toUpperCase() + readable.slice(1) : copy('Достижение', 'Жетістік');
+  }
+
+  function renderAchievements() {
+    var section = document.getElementById('profile-achievements');
+    var root = document.getElementById('profile-achievement-grid');
+    var toggle = document.getElementById('profile-achievements-toggle');
+    var achievements = ML.get('achievements', []);
+    if (!Array.isArray(achievements) || !achievements.length) {
+      section.hidden = true;
+      root.innerHTML = '';
+      toggle.hidden = true;
+      return;
+    }
+    section.hidden = false;
+    var marks = ['Σ', 'Δ', 'α', '∫'];
+    var visible = achievementsExpanded ? achievements : achievements.slice(0, 8);
+    root.innerHTML = visible.map(function(item, index) {
+      var date = typeof item === 'object' ? item.unlockedAt || item.earnedAt || item.date : null;
+      return '<article class="v8-achievement is-unlocked"><span aria-hidden="true">' + marks[index % marks.length] + '</span><div><strong>' + escapeHtml(achievementTitle(item)) + '</strong><small>' + escapeHtml(date ? formatDate(date, true) : copy('Получено', 'Алынды')) + '</small></div></article>';
+    }).join('');
+    toggle.hidden = achievements.length <= 8;
+    toggle.textContent = achievementsExpanded
+      ? copy('Свернуть', 'Жию')
+      : copy('Все достижения', 'Барлық жетістіктер') + ' (' + achievements.length + ')';
   }
 
   function render() {
@@ -368,6 +430,7 @@
     renderHistory();
     renderNext();
     renderTopics();
+    renderAchievements();
   }
 
   function init() {
@@ -386,6 +449,16 @@
         ML.setSetting('theme', document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
         applyTheme();
       });
+    });
+    document.querySelectorAll('[data-app-logout]').forEach(function(button) {
+      button.addEventListener('click', function() {
+        ML.clearUser();
+        window.location.href = 'login.html';
+      });
+    });
+    document.getElementById('profile-achievements-toggle').addEventListener('click', function() {
+      achievementsExpanded = !achievementsExpanded;
+      renderAchievements();
     });
     render();
     if (typeof ANIME !== 'undefined' && ANIME.initPageTransitions) ANIME.initPageTransitions();

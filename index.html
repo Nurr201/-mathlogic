@@ -3,95 +3,256 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MathLogic — математика с пониманием</title>
+  <meta name="description" content="MathLogic — алгебра и геометрия с понятными объяснениями, задачами и интерактивными чертежами.">
+  <title>MathLogic — математика с объяснениями и практикой</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap"></noscript>
   <link rel="stylesheet" href="css/editorial.css">
-  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/landing.css">
 </head>
-<body class="v7-app v7-landing-page">
-  <header class="v7-nav">
-    <div class="v7-nav-inner">
-      <a class="v7-brand" href="index.html"><span class="v7-mark"></span><span>MathLogic</span></a>
-      <nav class="v7-links" aria-label="Основная навигация">
-        <a href="#method" data-copy-ru="Метод" data-copy-kk="Әдіс">Метод</a>
-        <a href="program.html" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a>
+<body class="v7-app ml-home">
+  <div class="ml-atmosphere" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+  <header class="ml-home-nav">
+    <div class="ml-home-nav__inner">
+      <a class="ml-home-brand" href="#top" aria-label="MathLogic — на главную">
+        <svg aria-hidden="true" viewBox="0 0 30 30"><path d="M4 24 14.8 5 26 24Z"/><circle cx="15" cy="15" r="2.3"/></svg>
+        <span>MathLogic</span>
+      </a>
+      <nav class="ml-home-links" aria-label="Основная навигация">
+        <a href="#features" data-copy-ru="Возможности" data-copy-kk="Мүмкіндіктер">Возможности</a>
+        <a href="#program" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a>
         <a href="#about" data-copy-ru="О проекте" data-copy-kk="Жоба туралы">О проекте</a>
       </nav>
-      <div class="v7-nav-actions">
-        <a class="v7-button ghost" id="home-account" href="login.html" data-copy-ru="Войти" data-copy-kk="Кіру">Войти</a>
+      <div class="ml-home-actions">
+        <div class="ml-lang-switch" aria-label="Выбор языка">
+          <button type="button" data-lang="ru" aria-pressed="true">RU</button><span aria-hidden="true">/</span><button type="button" data-lang="kk" aria-pressed="false">KK</button>
+        </div>
+        <a class="ml-home-start" id="home-account" href="program.html" data-copy-ru="Начать" data-copy-kk="Бастау">Начать</a>
       </div>
     </div>
   </header>
 
-  <main class="v7-wrap">
-    <section class="v7-landing-hero v7-reveal">
-      <div>
-        <span class="v7-eyebrow" data-copy-ru="Платформа для изучения математики" data-copy-kk="Математиканы оқуға арналған платформа">Платформа для изучения математики</span>
-        <h1 data-copy-ru="Разобраться в теме и увидеть, как она связана с другими." data-copy-kk="Тақырыпты түсініп, оның басқа тақырыптармен байланысын көру.">Разобраться в теме и увидеть, как она связана с другими.</h1>
-        <p class="v7-lede" data-copy-ru="В MathLogic есть подробные уроки, карта тем, практика и журнал обучения. Вы выбираете направление, читаете объяснение и возвращаетесь к нему, когда нужно." data-copy-kk="MathLogic ішінде толық сабақтар, тақырыптар картасы, жаттығу және оқу журналы бар. Бағытты таңдап, түсіндірмені оқып, қажет кезде оған қайта ораласыз.">В MathLogic есть подробные уроки, карта тем, практика и журнал обучения. Вы выбираете направление, читаете объяснение и возвращаетесь к нему, когда нужно.</p>
-        <div class="v7-actions">
-          <a class="v7-button primary" id="home-primary" href="lesson.html?id=algebra.exponents.basics" data-copy-ru="Начать с урока" data-copy-kk="Сабақтан бастау">Начать с урока</a>
-          <a class="v7-button ghost" href="program.html" data-copy-ru="Посмотреть разделы" data-copy-kk="Бөлімдерді көру">Посмотреть разделы</a>
-        </div>
-        <div class="v7-domains" aria-label="Направления программы">
-          <a class="v7-domain" href="program.html?subject=algebra" data-copy-ru="Алгебра" data-copy-kk="Алгебра">Алгебра</a>
-          <a class="v7-domain" href="program.html?subject=geometry" data-copy-ru="Геометрия" data-copy-kk="Геометрия">Геометрия</a>
-          <a class="v7-domain" href="program.html?subject=algebra" data-copy-ru="Функции" data-copy-kk="Функциялар">Функции</a>
-          <a class="v7-domain" href="program.html?subject=logic" data-copy-ru="Логика" data-copy-kk="Логика">Логика</a>
-          <a class="v7-domain" href="program.html?subject=logic" data-copy-ru="Вероятность" data-copy-kk="Ықтималдық">Вероятность</a>
-          <a class="v7-domain" href="program.html" data-copy-ru="Подготовка к ЕНТ" data-copy-kk="ҰБТ-ға дайындық">Подготовка к ЕНТ</a>
-        </div>
+  <main id="top">
+    <section class="ml-hero ml-shell" aria-labelledby="hero-title">
+      <svg class="ml-hero-decor" viewBox="0 0 1320 720" preserveAspectRatio="none" aria-hidden="true"><circle cx="1160" cy="72" r="138"/><path d="M-40 640 238 418l170 222M1020 620a152 152 0 0 1 210-138M545 70V650M470 584H1290"/><text x="1090" y="120">x² + y² = r²</text><text x="460" y="610">0</text></svg>
+      <div class="ml-hero__copy ml-reveal">
+        <p class="ml-kicker" data-copy-ru="Алгебра · Геометрия · Логика" data-copy-kk="Алгебра · Геометрия · Логика">Алгебра · Геометрия · Логика</p>
+        <h1 id="hero-title" data-copy-ru="Математика с понятными объяснениями и практикой." data-copy-kk="Түсінікті түсіндірмелер мен практикаға негізделген математика.">Математика с понятными объяснениями и практикой.</h1>
+        <p class="ml-hero__lede" data-copy-ru="Алгебра и геометрия: теория, задачи и интерактивные чертежи в одном месте." data-copy-kk="Алгебра және геометрия: теория, есептер мен интерактивті сызбалар бір жерде.">Алгебра и геометрия: теория, задачи и интерактивные чертежи в одном месте.</p>
+        <a class="ml-arrow-link" id="home-primary" href="program.html" data-copy-ru="Перейти к программе →" data-copy-kk="Бағдарламаға өту →">Перейти к программе →</a>
+        <div class="ml-hero-proof" aria-hidden="true"><span>ΔABC</span><span>B <output data-proof-b>(320; 82)</output></span><span>S = <output data-proof-area>—</output></span><span>Σ∠ = 180°</span></div>
       </div>
 
-      <article class="v7-product-board" aria-label="Что есть внутри MathLogic">
-        <span class="v7-eyebrow" data-copy-ru="Что есть внутри" data-copy-kk="Ішінде не бар">Что есть внутри</span>
-        <h2 data-copy-ru="Объяснения, темы и место для продолжения" data-copy-kk="Түсіндірмелер, тақырыптар және жалғастыратын орын">Объяснения, темы и место для продолжения</h2>
-        <p data-copy-ru="Каждая тема собрана в последовательный урок. После создания локального профиля сохраняются текущий урок и учебная история." data-copy-kk="Әр тақырып бірізді сабаққа жинақталған. Жергілікті профиль жасалғаннан кейін ағымдағы сабақ пен оқу тарихы сақталады.">Каждая тема собрана в последовательный урок. После создания локального профиля сохраняются текущий урок и учебная история.</p>
-        <div class="v7-board-grid">
-          <section class="v7-board-panel">
-            <h3 data-copy-ru="Как проходит обучение" data-copy-kk="Оқу қалай өтеді">Как проходит обучение</h3>
-            <p data-copy-ru="Читаем объяснение, разбираем пример, проверяем себя и применяем идею." data-copy-kk="Түсіндірмені оқимыз, мысалды талдаймыз, өзімізді тексеріп, идеяны қолданамыз.">Читаем объяснение, разбираем пример, проверяем себя и применяем идею.</p>
-            <div class="v7-path"><span data-copy-ru="Объяснение" data-copy-kk="Түсіндіру">Объяснение</span><i>→</i><span data-copy-ru="Пример" data-copy-kk="Мысал">Пример</span><i>→</i><span data-copy-ru="Практика" data-copy-kk="Жаттығу">Практика</span></div>
-          </section>
-          <section class="v7-board-panel">
-            <h3 data-copy-ru="Что можно открыть" data-copy-kk="Нені ашуға болады">Что можно открыть</h3>
-            <p data-copy-ru="Направления и темы собраны по содержательным связям." data-copy-kk="Бағыттар мен тақырыптар мазмұндық байланыстар бойынша жиналған.">Направления и темы собраны по содержательным связям.</p>
-            <div class="v7-path"><span data-copy-ru="Алгебра" data-copy-kk="Алгебра">Алгебра</span><span data-copy-ru="Функции" data-copy-kk="Функциялар">Функции</span><span data-copy-ru="Геометрия" data-copy-kk="Геометрия">Геометрия</span></div>
-          </section>
+      <div class="ml-hero-demo ml-reveal" data-geometry="hero">
+        <div class="ml-demo-meta">
+          <span data-copy-ru="Исследование" data-copy-kk="Зерттеу">Исследование</span>
+          <span data-copy-ru="Сумма углов" data-copy-kk="Бұрыштар қосындысы">Сумма углов</span>
         </div>
-        <div class="v7-actions"><a class="v7-button primary" href="lesson.html?id=algebra.exponents.basics" data-copy-ru="Открыть урок" data-copy-kk="Сабақты ашу">Открыть урок</a><span class="v7-eyebrow" data-copy-ru="без регистрации · реальный урок" data-copy-kk="тіркелусіз · нақты сабақ">без регистрации · реальный урок</span></div>
-      </article>
+        <svg class="ml-geometry" viewBox="0 0 680 500" role="group" aria-label="Интерактивный треугольник. Перемещайте вершины мышью или стрелками клавиатуры.">
+          <defs><pattern id="hero-grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40"/></pattern></defs>
+          <rect class="ml-grid" width="680" height="500" fill="url(#hero-grid)"/>
+          <g class="ml-construction" aria-hidden="true"><path d="M52 405H632"/><path class="is-dashed" data-hero-altitude d="M320 82V405"/><path data-hero-right-angle d="M308 405h12v-12"/><text x="522" y="96">Σ∠ = 180°</text><text data-hero-coordinate x="332" y="126">B(320; 82)</text></g>
+          <polygon class="ml-triangle" data-part="polygon"/>
+          <g class="ml-side-labels" data-part="side-labels" aria-hidden="true"></g>
+          <g data-part="angles"></g>
+          <g data-part="vertices"></g>
+        </svg>
+        <div class="ml-measures" aria-live="polite">
+          <span>∠A <output data-measure="A">—</output></span>
+          <span>∠B <output data-measure="B">—</output></span>
+          <span>∠C <output data-measure="C">—</output></span>
+          <span class="ml-measures__sum">Σ <output data-measure="sum">180°</output></span>
+        </div>
+        <p class="ml-demo-hint"><span aria-hidden="true">↖</span> <span data-copy-ru="Потяни вершину B" data-copy-kk="B төбесін жылжыт">Потяни вершину B</span></p>
+      </div>
     </section>
 
-    <section class="v7-band" id="method">
-      <div class="v7-two">
-        <div><span class="v7-eyebrow" data-copy-ru="Как устроен MathLogic" data-copy-kk="MathLogic қалай құрылған">Как устроен MathLogic</span><h2 data-copy-ru="Всё нужное для спокойного изучения темы" data-copy-kk="Тақырыпты асықпай оқуға қажет нәрсенің бәрі">Всё нужное для спокойного изучения темы</h2></div>
-        <div>
-          <p class="v7-copy" data-copy-ru="Уроки объясняют идею подробно, программа помогает выбрать следующую тему, а журнал хранит реальные завершённые и начатые занятия." data-copy-kk="Сабақтар идеяны толық түсіндіреді, бағдарлама келесі тақырыпты таңдауға көмектеседі, ал журнал нақты аяқталған және басталған сабақтарды сақтайды.">Уроки объясняют идею подробно, программа помогает выбрать следующую тему, а журнал хранит реальные завершённые и начатые занятия.</p>
-          <div class="v7-method">
-            <div><span class="v7-eyebrow" data-copy-ru="Уроки" data-copy-kk="Сабақтар">Уроки</span><h3 data-copy-ru="Читайте и разбирайте" data-copy-kk="Оқып, талдаңыз">Читайте и разбирайте</h3><p data-copy-ru="Текст, примеры и вопросы по ходу объяснения." data-copy-kk="Түсіндіру барысындағы мәтін, мысалдар және сұрақтар.">Текст, примеры и вопросы по ходу объяснения.</p></div>
-            <div><span class="v7-eyebrow" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</span><h3 data-copy-ru="Выбирайте направление" data-copy-kk="Бағытты таңдаңыз">Выбирайте направление</h3><p data-copy-ru="Темы собраны по содержательным связям." data-copy-kk="Тақырыптар мазмұндық байланыстар бойынша жиналған.">Темы собраны по содержательным связям.</p></div>
-            <div><span class="v7-eyebrow" data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</span><h3 data-copy-ru="Возвращайтесь к урокам" data-copy-kk="Сабақтарға оралыңыз">Возвращайтесь к урокам</h3><p data-copy-ru="Последние занятия и сохранённый прогресс." data-copy-kk="Соңғы сабақтар мен сақталған оқу барысы.">Последние занятия и сохранённый прогресс.</p></div>
+    <section class="ml-method ml-shell ml-section" id="features" aria-labelledby="method-title">
+      <header class="ml-section-head ml-reveal">
+        <p class="ml-kicker" data-copy-ru="Как устроено обучение" data-copy-kk="Оқу қалай құрылған">Как устроено обучение</p>
+        <h2 id="method-title" data-copy-ru="Одна тема — три действия" data-copy-kk="Бір тақырып — үш әрекет">Одна тема — три действия</h2>
+      </header>
+      <div class="ml-method__row">
+        <article class="ml-method-step ml-reveal" tabindex="0" data-method-motion="geometry">
+          <svg viewBox="0 0 128 88" aria-hidden="true"><path d="M10 72 61 12l56 60Z"/><path d="M29 72a22 22 0 0 1 11-19"/><path class="ml-mini-reveal" d="M61 12v60M53 72h16"/><circle class="ml-mini-move" cx="61" cy="12" r="4"/></svg>
+          <span>01</span><h3 data-copy-ru="Разобраться" data-copy-kk="Түсіну">Разобраться</h3>
+          <p data-copy-ru="Короткое объяснение новой темы." data-copy-kk="Жаңа тақырыптың қысқа түсіндірмесі.">Короткое объяснение новой темы.</p><small aria-hidden="true">∠A ↔ 36°</small>
+        </article>
+        <article class="ml-method-step ml-reveal" tabindex="0" data-method-motion="relation">
+          <svg viewBox="0 0 128 88" aria-hidden="true"><circle cx="46" cy="45" r="31"/><path d="M46 14v62M15 45h62M82 17l31 57"/><path class="ml-mini-reveal" d="M46 45 82 17"/><text class="ml-mini-reveal" x="73" y="43">42°</text></svg>
+          <span>02</span><h3 data-copy-ru="Проверить" data-copy-kk="Тексеру">Проверить</h3>
+          <p data-copy-ru="Посмотреть правило на примерах и схемах." data-copy-kk="Ережені мысалдар мен сызбалардан көру.">Посмотреть правило на примерах и схемах.</p><small aria-hidden="true">r ⟂ t · 42°</small>
+        </article>
+        <article class="ml-method-step ml-reveal" tabindex="0" data-method-motion="practice">
+          <svg viewBox="0 0 128 88" aria-hidden="true"><path d="M10 69h108M24 80V10M18 18l6-8 6 8M110 63l8 6-8 6"/><path d="m24 69 68-47"/><circle class="ml-mini-move" cx="65" cy="41" r="5"/><path class="ml-mini-reveal" d="M65 41v28M24 41h41"/><text class="ml-mini-reveal" x="72" y="36">(4; 3)</text></svg>
+          <span>03</span><h3 data-copy-ru="Решить" data-copy-kk="Шешу">Решить</h3>
+          <p data-copy-ru="Закрепить тему задачами." data-copy-kk="Тақырыпты есептермен бекіту.">Закрепить тему задачами.</p><small aria-hidden="true">P(4; 3) → y = x − 1</small>
+        </article>
+      </div>
+    </section>
+
+    <section class="ml-geometry-section ml-section" aria-labelledby="geometry-title">
+      <div class="ml-shell ml-showcase-grid">
+        <div class="ml-explorer ml-reveal" data-geometry="explorer">
+          <div class="ml-explorer__top">
+            <div><span class="ml-kicker" data-copy-ru="Треугольник ABC" data-copy-kk="ABC үшбұрышы">Треугольник ABC</span><strong data-copy-ru="Меняй форму — наблюдай свойства" data-copy-kk="Пішінді өзгерт — қасиеттерді бақыла">Меняй форму — наблюдай свойства</strong></div>
+            <div class="ml-explorer-actions"><span class="ml-explorer-verified" data-copy-ru="✓ Σ∠ проверена" data-copy-kk="✓ Σ∠ тексерілді">✓ Σ∠ проверена</span><button type="button" data-reset-geometry data-copy-ru="Сбросить" data-copy-kk="Қалпына келтіру">Сбросить</button></div>
+          </div>
+          <svg class="ml-geometry" viewBox="0 0 760 520" role="group" aria-label="Интерактивное исследование треугольника">
+            <defs><pattern id="explorer-grid" width="38" height="38" patternUnits="userSpaceOnUse"><path d="M38 0H0V38"/></pattern></defs>
+            <rect class="ml-grid" width="760" height="520" fill="url(#explorer-grid)"/>
+            <polygon class="ml-triangle" data-part="polygon"/>
+            <g data-part="angles"></g><g data-part="vertices"></g>
+          </svg>
+          <div class="ml-explorer__readout" aria-live="polite">
+            <div><span data-copy-ru="Углы" data-copy-kk="Бұрыштар">Углы</span><output data-readout="angles">—</output></div>
+            <div><span data-copy-ru="Стороны" data-copy-kk="Қабырғалар">Стороны</span><output data-readout="sides">—</output></div>
+            <div><span data-copy-ru="Тип" data-copy-kk="Түрі">Тип</span><output data-readout="type">—</output></div>
           </div>
         </div>
+        <div class="ml-showcase-copy ml-reveal">
+          <p class="ml-kicker" data-copy-ru="Интерактивная геометрия" data-copy-kk="Интерактивті геометрия">Интерактивная геометрия</p>
+          <h2 id="geometry-title" data-copy-ru="Работай с чертежом" data-copy-kk="Сызбамен жұмыс істе">Работай с чертежом</h2>
+          <p data-copy-ru="Перемещай точки, сравнивай углы и стороны и проверяй свойства фигур." data-copy-kk="Нүктелерді жылжытып, бұрыштар мен қабырғаларды салыстыр және фигуралардың қасиеттерін тексер.">Перемещай точки, сравнивай углы и стороны и проверяй свойства фигур.</p>
+          <a class="ml-arrow-link" href="lesson.html?id=geometry.triangle-angle-sum" data-copy-ru="Открыть урок →" data-copy-kk="Сабақты ашу →">Открыть урок →</a>
+        </div>
       </div>
     </section>
 
-    <section class="v7-band" id="about">
-      <div class="v7-two">
-        <div><span class="v7-eyebrow" data-copy-ru="Локальный профиль" data-copy-kk="Жергілікті профиль">Локальный профиль</span><h2 data-copy-ru="Продолжайте с того же места" data-copy-kk="Сол жерден жалғастырыңыз">Продолжайте с того же места</h2></div>
-        <div><p class="v7-copy" data-copy-ru="MathLogic пока хранит профиль и учебные данные только в этом браузере. Серверной синхронизации нет — мы говорим об этом прямо." data-copy-kk="MathLogic әзірге профиль мен оқу деректерін тек осы браузерде сақтайды. Серверлік синхрондау жоқ — бұл туралы ашық айтамыз.">MathLogic пока хранит профиль и учебные данные только в этом браузере. Серверной синхронизации нет — мы говорим об этом прямо.</p><div class="v7-actions"><a class="v7-button primary" href="register.html" data-copy-ru="Создать профиль" data-copy-kk="Профиль жасау">Создать профиль</a><a class="v7-button text" href="login.html" data-copy-ru="Уже есть профиль" data-copy-kk="Профиль бар">Уже есть профиль</a></div></div>
+    <section class="ml-lesson ml-shell ml-section" aria-labelledby="lesson-title">
+      <div class="ml-lesson__copy ml-reveal">
+        <p class="ml-kicker" data-copy-ru="Lesson flow" data-copy-kk="Сабақ барысы">Lesson flow</p>
+        <h2 id="lesson-title" data-copy-ru="От объяснения к задаче" data-copy-kk="Түсіндіруден есепке дейін">От объяснения к задаче</h2>
+        <p data-copy-ru="Каждый этап продолжает предыдущий: сначала идея, затем исследование и самостоятельный ответ." data-copy-kk="Әр кезең алдыңғысын жалғастырады: алдымен идея, кейін зерттеу және өз жауабың.">Каждый этап продолжает предыдущий: сначала идея, затем исследование и самостоятельный ответ.</p>
+        <div class="ml-flow-tabs" role="tablist" aria-label="Этапы урока">
+          <button type="button" role="tab" aria-selected="true" data-flow="explain" data-copy-ru="Объяснение" data-copy-kk="Түсіндіру">Объяснение</button>
+          <button type="button" role="tab" aria-selected="false" data-flow="example" data-copy-ru="Исследование" data-copy-kk="Зерттеу">Исследование</button>
+          <button type="button" role="tab" aria-selected="false" data-flow="practice" data-copy-ru="Практика" data-copy-kk="Жаттығу">Практика</button>
+          <button type="button" role="tab" aria-selected="false" data-flow="review" data-copy-ru="Разбор" data-copy-kk="Талдау">Разбор</button>
+        </div>
+      </div>
+      <div class="ml-lesson-preview ml-reveal" aria-live="polite">
+        <div class="ml-preview-progress"><span data-flow-progress></span><small data-flow-count>1 / 4</small></div>
+        <div data-flow-panel></div>
+      </div>
+    </section>
+
+    <section class="ml-equation-statement" aria-labelledby="statement-title">
+      <div class="ml-equation-statement__construction" aria-hidden="true">
+        <svg viewBox="0 0 1440 620" preserveAspectRatio="xMidYMid slice">
+          <path class="ml-statement-plane" d="M1030 0H1440V620H1135L920 378Z"/>
+          <path class="ml-statement-triangle" d="M-90 570 424 42 928 570Z"/>
+          <path class="ml-statement-projection" d="M424 42V570M408 570h32"/>
+          <path class="ml-statement-arc" d="M-24 570a76 76 0 0 1 24-54M853 570a76 76 0 0 0-26-56M386 82a54 54 0 0 1 75 1"/>
+          <g class="ml-statement-labels"><text x="438" y="118">h</text><text x="66" y="514">α₁</text><text x="798" y="512">α₂</text><text x="397" y="118">α₃</text><text x="1070" y="104">Σ = 180°</text></g>
+        </svg>
+      </div>
+      <div class="ml-equation-statement__inner ml-reveal">
+        <p class="ml-kicker" data-copy-ru="Инвариант" data-copy-kk="Инвариант">Инвариант</p>
+        <h2 id="statement-title" aria-label="Сумма углов равна 180 градусам"><span>∑ α</span><b>= 180°</b></h2>
+        <p data-copy-ru="Меняй форму треугольника — сумма внутренних углов остаётся неизменной." data-copy-kk="Үшбұрыштың пішінін өзгерт — ішкі бұрыштарының қосындысы өзгермейді.">Меняй форму треугольника — сумма внутренних углов остаётся неизменной.</p>
+      </div>
+    </section>
+
+    <section class="ml-function ml-section" aria-labelledby="function-title" data-function-demo>
+      <div class="ml-shell ml-function__grid">
+        <div class="ml-function__controls ml-reveal">
+          <p class="ml-kicker" data-copy-ru="Измени одно значение" data-copy-kk="Бір мәнді өзгерт">Измени одно значение</p>
+          <h2 id="function-title"><span>y = </span><output data-function-equation>1x + 0</output></h2>
+          <div class="ml-function-values" aria-label="Параметры линейной функции">
+            <div><span>a =</span><button type="button" data-function-control="a" data-delta="-1" aria-label="Уменьшить a">−</button><output data-function-value="a">1</output><button type="button" data-function-control="a" data-delta="1" aria-label="Увеличить a">+</button></div>
+            <div><span>b =</span><button type="button" data-function-control="b" data-delta="-1" aria-label="Уменьшить b">−</button><output data-function-value="b">0</output><button type="button" data-function-control="b" data-delta="1" aria-label="Увеличить b">+</button></div>
+          </div>
+          <div class="ml-function-readout" aria-live="polite"><span>slope <output data-function-slope-value>1</output></span><span>intersection <output data-function-intersection-value>0</output></span></div>
+          <p class="ml-function__note" data-copy-ru="Наклон задаёт a, пересечение с осью y — значение b." data-copy-kk="Көлбеуді a, ал y осімен қиылысуды b мәні анықтайды.">Наклон задаёт a, пересечение с осью y — значение b.</p>
+        </div>
+        <div class="ml-function-graph ml-reveal">
+          <div class="ml-demo-meta"><span data-copy-ru="Линейная функция" data-copy-kk="Сызықтық функция">Линейная функция</span><span data-function-state>Δy / Δx = 1</span></div>
+          <svg viewBox="0 0 680 420" role="img" aria-label="Интерактивный график линейной функции">
+            <defs><pattern id="function-grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40"/></pattern></defs>
+            <rect width="680" height="420" fill="url(#function-grid)"/>
+            <g class="ml-function-axes"><path d="M40 210H650M340 28V394"/><text x="638" y="198">x</text><text x="352" y="40">y</text><text x="350" y="228">0</text></g>
+            <path class="ml-function-line" data-function-line/>
+            <g class="ml-function-slope" data-function-slope><path/><text>Δy</text><text>Δx</text></g>
+            <g class="ml-function-intercept"><circle data-function-intercept r="5"/><text data-function-intercept-label>b = 0</text></g>
+            <g class="ml-function-handle" data-function-handle="intercept" role="button" tabindex="0" aria-label="Переместить пересечение с осью y"><circle r="18"/><circle r="6"/><text x="10" y="-10">b</text></g>
+            <g class="ml-function-handle" data-function-handle="slope" role="button" tabindex="0" aria-label="Изменить наклон прямой"><circle r="18"/><circle r="6"/><text x="10" y="-10">a</text></g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="ml-program ml-section" id="program" aria-labelledby="program-title">
+      <div class="ml-shell">
+        <header class="ml-program__header ml-reveal">
+          <div><p class="ml-kicker" data-copy-ru="Реальные темы MathLogic" data-copy-kk="MathLogic нақты тақырыптары">Реальные темы MathLogic</p><h2 id="program-title" data-copy-ru="Программа обучения" data-copy-kk="Оқу бағдарламасы">Программа обучения</h2></div>
+          <a class="ml-arrow-link" href="program.html" data-copy-ru="Посмотреть программу →" data-copy-kk="Бағдарламаны көру →">Посмотреть программу →</a>
+        </header>
+        <div class="ml-program-browser ml-reveal">
+          <div class="ml-program-tabs" role="tablist" aria-label="Предмет программы">
+            <button type="button" role="tab" aria-selected="true" data-subject="algebra" data-copy-ru="Алгебра" data-copy-kk="Алгебра">Алгебра</button>
+            <button type="button" role="tab" aria-selected="false" data-subject="geometry" data-copy-ru="Геометрия" data-copy-kk="Геометрия">Геометрия</button>
+          </div>
+          <div class="ml-program-list" data-program-list aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ml-reasoning ml-shell ml-section" id="about" aria-labelledby="reasoning-title">
+      <div class="ml-reasoning-demo ml-reveal">
+        <svg viewBox="0 0 680 430" role="img" aria-label="Треугольник с включаемыми математическими отметками">
+          <path class="ml-reasoning-triangle" d="M115 348 324 64 582 348Z"/>
+          <g class="ml-mark ml-mark--sides"><path d="m208 219 15 10M467 218l-15 11"/></g>
+          <g class="ml-mark ml-mark--angles"><path d="M302 94a36 36 0 0 1 45 1M551 348a32 32 0 0 0-19-26"/></g>
+          <g class="ml-mark ml-mark--right"><path d="M307 87 324 104 342 85"/></g>
+          <g class="ml-reasoning-labels"><text x="102" y="380">B</text><text x="318" y="44">A</text><text x="590" y="380">C</text></g>
+        </svg>
+        <div class="ml-condition-controls" aria-label="Условия задачи">
+          <button type="button" aria-pressed="false" data-condition="sides"><span></span><b data-copy-ru="AB = AC" data-copy-kk="AB = AC">AB = AC</b></button>
+          <button type="button" aria-pressed="false" data-condition="angles"><span></span><b data-copy-ru="∠A = ∠C" data-copy-kk="∠A = ∠C">∠A = ∠C</b></button>
+          <button type="button" aria-pressed="false" data-condition="right"><span></span><b data-copy-ru="AB ⟂ AC" data-copy-kk="AB ⟂ AC">AB ⟂ AC</b></button>
+        </div>
+        <p class="ml-condition-result" data-condition-result data-copy-ru="Пока задан только треугольник." data-copy-kk="Әзірге тек үшбұрыш берілген.">Пока задан только треугольник.</p>
+      </div>
+      <div class="ml-reasoning__copy ml-reveal">
+        <p class="ml-kicker" data-copy-ru="Математическое рассуждение" data-copy-kk="Математикалық пайымдау">Математическое рассуждение</p>
+        <h2 id="reasoning-title" data-copy-ru="Условие важнее внешнего вида чертежа" data-copy-kk="Шарт сызбаның сыртқы түрінен маңызды">Условие важнее внешнего вида чертежа</h2>
+        <p data-copy-ru="Отметки на рисунке показывают, какие свойства действительно заданы: равные стороны, углы, перпендикулярность и другие условия." data-copy-kk="Суреттегі белгілер қандай қасиеттер нақты берілгенін көрсетеді: тең қабырғалар, бұрыштар, перпендикулярлық және басқа шарттар.">Отметки на рисунке показывают, какие свойства действительно заданы: равные стороны, углы, перпендикулярность и другие условия.</p>
+      </div>
+    </section>
+
+    <section class="ml-final" aria-labelledby="final-title">
+      <div class="ml-final__math" aria-hidden="true">
+        <svg viewBox="0 0 1440 600" preserveAspectRatio="xMidYMid slice"><circle class="ml-final__green" cx="1170" cy="162" r="122"/><circle class="ml-final__green-point" cx="1170" cy="162" r="7"/><path d="M-40 505 450 86l310 416M76 383h620M862 482l216-315 326 280M1020 386a92 92 0 0 1 63-76"/><path class="ml-final__fine" d="M0 92h1440M240 0v600M960 0v600"/></svg>
+      </div>
+      <div class="ml-final__copy ml-reveal">
+        <p class="ml-kicker">MathLogic</p>
+        <h2 id="final-title" data-copy-ru="Начать с первой темы" data-copy-kk="Алғашқы тақырыптан бастау">Начать с первой темы</h2>
+        <p data-copy-ru="Выбери раздел и продолжай обучение в своём темпе." data-copy-kk="Бөлімді таңдап, өз қарқыныңмен оқуды жалғастыр.">Выбери раздел и продолжай обучение в своём темпе.</p>
+        <a class="ml-final__button" href="program.html" data-copy-ru="Открыть программу →" data-copy-kk="Бағдарламаны ашу →">Открыть программу →</a>
       </div>
     </section>
   </main>
 
+  <footer class="ml-footer">
+    <div class="ml-shell">
+      <a class="ml-home-brand" href="#top">MathLogic</a>
+      <nav aria-label="Навигация в подвале">
+        <a href="program.html" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a>
+        <a href="dashboard.html" data-copy-ru="Сегодня" data-copy-kk="Бүгін">Сегодня</a>
+        <a href="profile.html" data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</a>
+        <a href="#about" data-copy-ru="О проекте" data-copy-kk="Жоба туралы">О проекте</a>
+      </nav>
+      <div class="ml-footer__langs"><button type="button" data-lang="ru">RU</button><span>/</span><button type="button" data-lang="kk">KK</button></div>
+    </div>
+  </footer>
+
   <script src="js/storage.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/site.js"></script>
-  <script src="js/animations.js"></script>
+  <script src="data/curriculum.js"></script>
   <script src="js/home.js"></script>
 </body>
 </html>

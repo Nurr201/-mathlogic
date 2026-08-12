@@ -126,6 +126,9 @@
     document.querySelector('[data-language-toggle]').onclick = function() { ML.setLang(lang() === 'kk' ? 'ru' : 'kk'); location.reload(); };
     document.querySelector('[data-theme-toggle]').onclick = function() { ML.setSetting('theme', document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); ML.applySettings(); };
     var user = ML.getUser() || {}; document.getElementById('program-avatar').textContent = (user.name || user.username || 'М').charAt(0).toUpperCase();
+    document.querySelectorAll('[data-app-logout]').forEach(function(button) {
+      button.onclick = function() { ML.clearUser(); location.href = 'login.html'; };
+    });
     renderTabs(); renderNow(); renderContent();
   }
 
