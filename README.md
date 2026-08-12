@@ -6,7 +6,7 @@ MathLogic is a local-first mathematics learning application for Russian- and Kaz
 
 ## Overview
 
-MathLogic covers a grades 7–9 curriculum and turns published topics into guided, resumable lessons. Students can browse the programme, work through mathematical and visual exercises, and review their progress from the dashboard and learning journal.
+MathLogic covers a curriculum for grades 7–9 and turns published topics into guided, resumable lessons. Students can browse the programme, work through mathematical and visual exercises, and review their progress from the dashboard and learning journal.
 
 The application has no backend: profiles, lesson sessions, results, and settings are stored in the browser.
 
@@ -16,6 +16,7 @@ The application has no backend: profiles, lesson sessions, results, and settings
 - Config-driven interactive lessons with explanations, guided practice, hints, and feedback
 - Mathematical response input powered by a vendored MathLive build
 - Interactive linear graphs, equation steps, and SVG geometry activities
+- Interactive landing demos for triangle geometry, linear functions, and lesson flow
 - Resumable lesson sessions, progress tracking, recent activity, and learning history
 - Dashboard, full programme view, local profile, and settings
 - Russian and Kazakh interface and lesson content
@@ -28,13 +29,15 @@ Curriculum metadata is kept separate from runnable lesson content. The learning 
 ```mermaid
 flowchart LR
     Curriculum["Curriculum metadata"] --> Learning["Learning domain API"]
-    Registry["Lesson registry + asset manifest"] --> Learning
+    Registry["Published lesson registry"] --> Learning
     Learning --> Pages["Dashboard / Program / Profile"]
-    Registry --> Loader["Lazy lesson loader"]
+    Manifest["Lesson asset manifest"] --> Loader["Lazy lesson loader"]
+    Learning --> Loader
     Loader --> Engine["Lesson Engine"]
     Engine --> Blocks["Block renderers"]
     Storage["ML storage / localStorage"] <--> Learning
     Storage <--> Engine
+    Engine --> Events["Application events"]
     Learning --> Events["Application events"]
     Events --> Pages
 ```
@@ -60,6 +63,8 @@ mathlogic/
 │   ├── learning.js       # Learning-domain API
 │   ├── storage.js        # Browser persistence and migrations
 │   ├── lesson-loader.js  # Route-aware asset loading
+│   ├── home.js           # Interactive landing-page demos
+│   ├── dashboard-data.js # Dashboard learning-context view model
 │   ├── lesson-engine/    # Lesson runtime and state
 │   └── lesson-blocks/    # Interactive lesson primitives
 ├── css/                  # Shared and page-specific styles
