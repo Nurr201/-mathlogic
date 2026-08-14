@@ -361,7 +361,7 @@ window.LESSON_LINEAR_EQUATIONS = {
       title: { ru: 'Проверьте найденный корень', kk: 'Табылған түбірді тексеріңіз' },
       expression: '5x + 4 = 34,  x = 6',
       question: { ru: 'Запишите подстановку как верное числовое равенство.', kk: 'Орнына қоюды дұрыс санды теңдік түрінде жазыңыз.' },
-      answer: { kind: 'expression', expected: '5*6+4=34', accepted: ['5(6)+4=34'], validation: 'normalized' },
+      answer: { kind: 'expression', expected: '5*6+4=34', accepted: ['5(6)+4=34'], accepted: ['5·6+4=34'], validation: 'normalized' },
       keyboard: { groups: ['numbers', 'operators'] },
       compact: true,
       typingHelp: false,
@@ -401,7 +401,7 @@ window.LESSON_LINEAR_EQUATIONS = {
       initial: 'x + 7 = 19',
       keyboard: { groups: ['numbers', 'variables', 'operators'], variables: ['x'] },
       steps: [{
-        prompt: { ru: 'Запишите корень без выбора готового действия.', kk: 'Дайын әрекетті таңдамай, түбірді жазыңыз.' },
+        prompt: { ru: 'Решите уравнение и запишите найденный корень.', kk: 'Теңдеуді шешіп, табылған түбірді жазыңыз.' },
         operationLabel: { ru: '−7 с обеих сторон', kk: 'екі жағынан да −7' },
         result: 'x = 12',
         answer: { kind: 'expression', expected: 'x=12', accepted: [], validation: 'normalized' },
