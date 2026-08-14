@@ -30,7 +30,8 @@ vm.runInContext(read('data/curriculum.js'), registryContext, { filename: 'data/c
 vm.runInContext(read('js/data.js'), registryContext, { filename: 'js/data.js' });
 const registryIds = vm.runInContext('Object.keys(LESSON_REGISTRY)', registryContext);
 
-assert.equal(staticScripts.length, 9, 'lesson shell should stay small');
+assert.equal(staticScripts.length, 10, 'lesson shell should stay small with the shared navigation runtime');
+assert.ok(staticScripts.includes('js/site.js'));
 assert.ok(staticScripts.includes('data/lesson-assets.js'));
 assert.ok(staticScripts.includes('js/lesson-loader.js'));
 assert.equal(staticScripts.some(function(src) { return /data\/lessons\//.test(src); }), false);

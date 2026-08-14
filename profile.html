@@ -2,30 +2,26 @@
 <html lang="ru" data-theme="light">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Учебный журнал — MathLogic</title>
+  <title>Учебный журнал — GEOMAT</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap"></noscript>
-  <link rel="stylesheet" href="css/styles.css"><link rel="stylesheet" href="css/components.css"><link rel="stylesheet" href="css/editorial.css"><link rel="stylesheet" href="css/animations.css"><link rel="stylesheet" href="css/app-shell.css?v=10">
+  <link rel="stylesheet" href="css/styles.css"><link rel="stylesheet" href="css/components.css"><link rel="stylesheet" href="css/editorial.css"><link rel="stylesheet" href="css/animations.css"><link rel="stylesheet" href="css/app-shell.css?v=12">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
 </head>
 <body class="v7-app v7-profile-page">
-  <header class="v7-nav"><div class="v7-nav-inner">
-    <a class="v7-brand" href="index.html"><span class="v7-mark"></span><span>MathLogic</span></a>
-    <nav class="v7-links"><a href="dashboard.html" data-copy-ru="Сегодня" data-copy-kk="Бүгін">Сегодня</a><a href="program.html" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a><a href="profile.html" aria-current="page" data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</a></nav>
-    <div class="v7-nav-actions"><div class="v7-segment"><button type="button" data-language-choice="ru">RU</button><button type="button" data-language-choice="kk">ҚАЗ</button></div><button class="v7-tool" type="button" data-theme-toggle aria-label="Переключить тему">◐</button><a class="v8-settings-link" href="settings.html" data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</a><button class="v8-logout" type="button" data-app-logout data-copy-ru="Выйти" data-copy-kk="Шығу">Выйти</button></div>
-  </div></header>
+  <header class="v7-nav" data-app-shell data-active-page="profile"></header>
 
   <main class="v7-wrap v7-page">
     <section class="v7-profile-hero" id="profile-overview">
-      <div class="v7-profile-id"><div class="v7-big-avatar" id="profile-avatar">М</div><div><span class="v7-eyebrow" data-copy-ru="Учебный журнал" data-copy-kk="Оқу журналы">Учебный журнал</span><h1 id="profile-name">Пользователь</h1><p id="profile-username">@user</p><p class="v8-member-since"><span data-copy-ru="В MathLogic с" data-copy-kk="MathLogic жүйесінде">В MathLogic с</span> <time id="profile-member-since">—</time></p></div></div>
+      <div class="v7-profile-id"><div class="v7-big-avatar" id="profile-avatar">М</div><div class="v7-profile-identity"><h1 id="profile-name">Пользователь</h1><p id="profile-username" hidden></p><p class="v8-member-since" id="profile-member-block" hidden><span data-copy-ru="В GEOMAT с" data-copy-kk="GEOMAT-та">В GEOMAT с</span> <time id="profile-member-since"></time></p></div></div>
       <a class="v7-button ghost" href="settings.html" data-copy-ru="Изменить профиль" data-copy-kk="Профильді өзгерту">Изменить профиль</a>
     </section>
 
     <section class="v7-facts" aria-label="Фактические учебные данные">
-      <article class="v7-fact"><span class="v7-eyebrow" data-copy-ru="Пройдено уроков" data-copy-kk="Аяқталған сабақ">Пройдено уроков</span><strong id="metric-completed">0</strong><small id="metric-completed-note">—</small></article>
-      <article class="v7-fact"><span class="v7-eyebrow" data-copy-ru="В процессе" data-copy-kk="Жалғасуда">В процессе</span><strong id="metric-active">0</strong><small id="metric-active-note">—</small></article>
-      <article class="v7-fact"><span class="v7-eyebrow" data-copy-ru="Учебных дней" data-copy-kk="Оқу күні">Учебных дней</span><strong id="metric-days">0</strong><small id="metric-days-note">—</small></article>
-      <article class="v7-fact v8-streak-fact"><span class="v7-eyebrow" data-copy-ru="Серия" data-copy-kk="Серия">Серия</span><strong id="metric-streak">0</strong><small id="metric-streak-note">дней</small></article>
+      <article class="v7-fact"><span class="v7-eyebrow" data-copy-ru="Пройдено" data-copy-kk="Аяқталған">Пройдено</span><strong class="v7-number" id="metric-completed">0</strong><small id="metric-completed-note">уроков</small></article>
+      <article class="v7-fact"><span class="v7-eyebrow" data-copy-ru="Учебных дней" data-copy-kk="Оқу күндері">Учебных дней</span><strong class="v7-number" id="metric-days">0</strong><small id="metric-days-note">дней с занятиями</small></article>
+      <article class="v7-fact v8-streak-fact"><span class="v7-eyebrow" data-copy-ru="Серия" data-copy-kk="Қатар">Серия</span><strong class="v7-number" id="metric-streak">0</strong><small id="metric-streak-note">дней подряд</small></article>
     </section>
     <span hidden id="profile-completed">0</span><span hidden id="profile-active">0</span><span hidden id="profile-last-date">—</span>
 
@@ -79,7 +75,6 @@
     </section>
   </main>
 
-  <nav class="v7-mobile-nav"><a href="dashboard.html" data-copy-ru="Сегодня" data-copy-kk="Бүгін">Сегодня</a><a href="program.html" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a><a href="profile.html" aria-current="page" data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</a><a href="settings.html" data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</a><button type="button" data-app-logout data-copy-ru="Выйти" data-copy-kk="Шығу">Выйти</button></nav>
-  <script src="js/storage.js"></script><script src="data/curriculum.js"></script><script src="js/data.js"></script><script src="js/i18n.js"></script><script src="js/learning.js"></script><script src="js/animations.js"></script><script src="js/site.js"></script><script src="js/profile.js?v=9"></script>
+  <script src="js/storage.js?v=3"></script><script src="data/curriculum.js"></script><script src="js/data.js"></script><script src="js/i18n.js"></script><script src="js/learning.js"></script><script src="js/animations.js"></script><script src="js/site.js?v=2"></script><script src="js/profile.js?v=10"></script>
 </body>
 </html>

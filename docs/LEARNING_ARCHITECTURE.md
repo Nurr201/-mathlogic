@@ -1,4 +1,4 @@
-# MathLogic Learning Architecture
+# Geomat Learning Architecture
 
 This document describes the current product model. The source of truth is the
 implementation, primarily `data/curriculum.js`, `js/learning.js`,
@@ -107,7 +107,7 @@ study activity and a Learning History event, then clears the in-progress
 session. Completion is idempotent; repeating a completed lesson does not add a
 second completion or activity event.
 
-Historical XP/streak/reward fields remain only for storage compatibility.
+Historical XP/streak/reward fields remain only for storage compatibility. The displayed current streak is derived from the canonical local-calendar dates in `activity.dates`.
 Current learning completion does not award XP or achievements.
 
 ## Lesson loading and performance

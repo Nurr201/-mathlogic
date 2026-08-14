@@ -1,12 +1,12 @@
-# MathLogic
+# GEOMAT
 
-MathLogic is a local-first mathematics learning application for Russian- and Kazakh-speaking school students. It brings structured Algebra and Geometry lessons, interactive practice, and progress tracking into a static browser application.
+Geomat is a local-first mathematics learning application for Russian- and Kazakh-speaking school students. It brings structured Algebra and Geometry lessons, interactive practice, and progress tracking into a static browser application.
 
-[Live Demo](https://mathlogic-seven.vercel.app) · [Repository](https://github.com/Nurr201/-mathlogic)
+[Live Demo](https://geomat.vercel.app) · [Repository](https://github.com/Nurr201/geomat)
 
 ## Overview
 
-MathLogic covers a curriculum for grades 7–9 and turns published topics into guided, resumable lessons. Students can browse the programme, work through mathematical and visual exercises, and review their progress from the dashboard and learning journal.
+Geomat covers a curriculum for grades 7–9 and turns published topics into guided, resumable lessons. Students can browse the programme, work through mathematical and visual exercises, and review their progress from the dashboard and learning journal.
 
 The application has no backend: profiles, lesson sessions, results, and settings are stored in the browser.
 
@@ -57,7 +57,7 @@ HTML5 · CSS3 · Vanilla JavaScript · [MathLive](https://mathlive.io/) · SVG �
 ## Project Structure
 
 ```text
-mathlogic/
+geomat/
 ├── data/                 # Curriculum metadata and lesson configurations
 ├── js/
 │   ├── learning.js       # Learning-domain API
@@ -80,8 +80,8 @@ mathlogic/
 ## Getting Started
 
 ```sh
-git clone https://github.com/Nurr201/-mathlogic.git
-cd -mathlogic
+git clone https://github.com/Nurr201/geomat.git
+cd geomat
 python3 -m http.server 8000
 ```
 

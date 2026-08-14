@@ -8,5 +8,5 @@
 
 Only the browser UMD bundle and required math fonts are vendored. Optional
 sounds, server-side rendering, types and the Compute Engine are intentionally
-excluded. MathLogic does not use MathLive as a CAS; it is the visual editor and
+excluded. Geomat does not use MathLive as a CAS; it is the visual editor and
 cursor/structure primitive only.

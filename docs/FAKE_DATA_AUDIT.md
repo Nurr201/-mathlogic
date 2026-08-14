@@ -18,7 +18,7 @@ For the full learning model, see [`LEARNING_ARCHITECTURE.md`](LEARNING_ARCHITECT
 
 ## Intentionally not represented as earned product data
 
-- Current completion does not grant XP, streaks, rewards or achievements.
+- Current completion does not grant XP, rewards or achievements. The current streak is derived from canonical `activity.dates`; legacy persisted streak counters are not mutated.
   Historical fields remain only for storage compatibility.
 - Program does not invent release dates or routes for planned lessons.
 - Planned lesson metadata is not evidence that a lesson config or direct route

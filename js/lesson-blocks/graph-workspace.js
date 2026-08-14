@@ -32,6 +32,9 @@ window.GraphWorkspaceBlock = (function() {
   function finite(value) { return typeof value === 'number' && isFinite(value); }
   function clean(value) { return Math.abs(value) < 1e-9 ? 0 : Math.round(value * 1000) / 1000; }
   function clamp(value, min, max) { return Math.min(max, Math.max(min, value)); }
+  function pointIsSelected(record, index) {
+    return record.selectedPoint !== null && record.selectedPoint !== undefined && Number(record.selectedPoint) === index;
+  }
   function formatNumber(value) {
     value = clean(Number(value));
     return String(value).replace('-', '−');
@@ -80,12 +83,29 @@ window.GraphWorkspaceBlock = (function() {
     return candidates.length >= 2 ? [candidates[0], candidates[1]] : [];
   }
 
+  function functionValue(fn, x) {
+    if (fn.type === 'quadratic') return Number(fn.a) * x * x;
+    if (fn.type === 'cubic') return Number(fn.a) * x * x * x;
+    if (fn.type === 'reciprocal') return Math.abs(x) < 1e-9 ? null : Number(fn.k) / x;
+    return Number(fn.k) * x + Number(fn.b);
+  }
+
   function formulaText(fn) {
+    if (fn.type === 'quadratic') return 'y = ' + (clean(fn.a) === 1 ? '' : clean(fn.a) === -1 ? '−' : formatNumber(fn.a)) + 'x²';
+    if (fn.type === 'cubic') return 'y = ' + (clean(fn.a) === 1 ? '' : clean(fn.a) === -1 ? '−' : formatNumber(fn.a)) + 'x³';
+    if (fn.type === 'reciprocal') return 'y = ' + (clean(fn.k) === 1 ? '1' : clean(fn.k) === -1 ? '−1' : formatNumber(fn.k)) + '/x';
     var k = clean(fn.k);
     var b = clean(fn.b);
     var xTerm = k === 0 ? '' : k === 1 ? 'x' : k === -1 ? '−x' : formatNumber(k) + 'x';
     var bTerm = b === 0 ? '' : (b > 0 && xTerm ? ' + ' : b < 0 && xTerm ? ' − ' : b < 0 ? '−' : '') + formatNumber(Math.abs(b));
     return 'y = ' + (xTerm || (bTerm ? '' : '0')) + bTerm;
+  }
+
+  function formulaLatex(fn) {
+    if (fn.type === 'quadratic') return 'y=' + (clean(fn.a) === 1 ? '' : clean(fn.a) === -1 ? '-' : clean(fn.a)) + 'x^2';
+    if (fn.type === 'cubic') return 'y=' + (clean(fn.a) === 1 ? '' : clean(fn.a) === -1 ? '-' : clean(fn.a)) + 'x^3';
+    if (fn.type === 'reciprocal') return 'y=\\frac{' + (clean(fn.k) === 1 ? '1' : clean(fn.k)) + '}{x}';
+    return '';
   }
 
   function emptyTableRow() {
@@ -135,7 +155,8 @@ window.GraphWorkspaceBlock = (function() {
   }
 
   function activeFunction(block, record, previewValue) {
-    var fn = { type: 'linear', k: block.function ? Number(block.function.k) : 0, b: block.function ? Number(block.function.b) : 0 };
+    var source = block.function || {};
+    var fn = { type: source.type || 'linear', k: Number(source.k || 0), b: Number(source.b || 0), a: Number(source.a === undefined ? 1 : source.a), label: source.label || '', formulaMath: source.formulaMath || '', color: source.color || '' };
     if (block.mode === 'parameter' && block.parameter) {
       var value = finite(previewValue) ? previewValue : Number(record.parameterValue);
       fn[block.parameter.name] = value;
@@ -143,11 +164,17 @@ window.GraphWorkspaceBlock = (function() {
     return fn;
   }
 
+  function functionsFor(block, record) {
+    if (Array.isArray(block.functions) && block.functions.length) return block.functions.map(function(fn) { return { type: fn.type || 'linear', k: Number(fn.k || 0), b: Number(fn.b || 0), a: Number(fn.a === undefined ? 1 : fn.a), label: fn.label || '', formulaMath: fn.formulaMath || '', color: fn.color || '' }; });
+    return block.function ? [activeFunction(block, record)] : [];
+  }
+
   function pointsFor(block, record, fn) {
     var points = (block.plotPoints || []).map(function(point) { return { x: point.x, y: point.y, label: point.label || '', kind: 'given' }; });
     if (block.mode === 'parameter') {
       (block.referenceX || [-2, 0, 2]).forEach(function(x, index) {
-        points.push({ x: x, y: clean(fn.k * x + fn.b), kind: 'reference', rowIndex: index });
+        var y = functionValue(fn, x);
+        if (y !== null && finite(y)) points.push({ x: x, y: clean(y), kind: 'reference', rowIndex: index });
       });
     }
     return points;
@@ -207,35 +234,66 @@ window.GraphWorkspaceBlock = (function() {
     var screen = transform.mathToScreen(point.x, point.y);
     var state = point.kind === 'candidate' ? ' is-candidate' : point.kind === 'correct' ? ' is-correct' : '';
     if (selected) state += ' is-selected';
-    var label = copy('Точка', 'Нүкте') + ' (' + formatNumber(point.x) + ', ' + formatNumber(point.y) + ')';
+    var pointName = point.label ? ' ' + point.label : '';
+    var label = copy('Точка', 'Нүкте') + pointName + ' (' + formatNumber(point.x) + ', ' + formatNumber(point.y) + ')';
     return '<g class="graph-point' + state + '" tabindex="0" role="button" aria-label="' + escapeHtml(label) + '" data-point-index="' + index + '" onclick="event.stopPropagation();GraphWorkspaceBlock.selectPoint(' + blockIndex + ',' + index + ')" onkeydown="GraphWorkspaceBlock.keySelectPoint(event,' + blockIndex + ',' + index + ')">' +
       '<circle class="graph-point-hit" cx="' + screen.x + '" cy="' + screen.y + '" r="16"></circle>' +
       '<circle class="graph-point-dot" cx="' + screen.x + '" cy="' + screen.y + '" r="6" data-reference-x="' + escapeHtml(point.x) + '"></circle>' +
+      (point.label ? '<text class="graph-point-label" x="' + (screen.x + 11) + '" y="' + (screen.y - 11) + '">' + escapeHtml(point.label) + '</text>' : '') +
       '</g>';
   }
 
-  function functionLineHtml(block, fn, index) {
-    var segment = block.function ? lineSegment(block.viewport, fn.k, fn.b) : [];
+  function functionLineHtml(block, fn, index, lineIndex) {
+    var palette = ['#4f46e5', '#0f766e', '#b45309', '#be123c'];
+    var color = fn.color || palette[lineIndex || 0];
+    if (fn.type !== 'linear') {
+      var curveTransform = createTransform(block.viewport, WIDTH, HEIGHT, PADDING);
+      var path = '';
+      var drawing = false;
+      for (var sample = 0; sample <= 220; sample += 1) {
+        var x = block.viewport.xMin + (block.viewport.xMax - block.viewport.xMin) * sample / 220;
+        var y = functionValue(fn, x);
+        var visible = y !== null && finite(y) && y >= block.viewport.yMin - .25 && y <= block.viewport.yMax + .25;
+        if (!visible) { drawing = false; continue; }
+        var point = curveTransform.mathToScreen(x, y);
+        path += (drawing ? ' L ' : 'M ') + point.x.toFixed(2) + ' ' + point.y.toFixed(2);
+        drawing = true;
+      }
+      return path ? '<path id="graph-function-line-' + index + '-' + (lineIndex || 0) + '" class="graph-function-line graph-function-line-' + (lineIndex || 0) + '" style="stroke:' + escapeHtml(color) + '" d="' + path + '"></path>' : '';
+    }
+    var segment = (block.function || block.functions) ? lineSegment(block.viewport, fn.k, fn.b) : [];
     if (segment.length !== 2) return '';
     var transform = createTransform(block.viewport, WIDTH, HEIGHT, PADDING);
     var start = transform.mathToScreen(segment[0].x, segment[0].y);
     var end = transform.mathToScreen(segment[1].x, segment[1].y);
-    return '<line id="graph-function-line-' + index + '" class="graph-function-line" x1="' + start.x + '" y1="' + start.y + '" x2="' + end.x + '" y2="' + end.y + '"></line>';
+    return '<line id="graph-function-line-' + index + '-' + (lineIndex || 0) + '" class="graph-function-line graph-function-line-' + (lineIndex || 0) + '" style="stroke:' + escapeHtml(color) + '" x1="' + start.x + '" y1="' + start.y + '" x2="' + end.x + '" y2="' + end.y + '"></line>';
+  }
+
+  function formulasHtml(block, record, index) {
+    var fns = functionsFor(block, record);
+    if (!fns.length) return '';
+    return '<div id="graph-formula-' + index + '" class="graph-formula graph-formula-list" aria-live="polite">' + fns.map(function(fn, lineIndex) {
+      var palette = ['#4f46e5', '#0f766e', '#b45309', '#be123c'];
+      var label = fn.label || formulaText(fn);
+      var latex = block.mode === 'parameter' ? formulaLatex(fn) : (fn.formulaMath || formulaLatex(fn));
+      return '<span><i style="background:' + escapeHtml(fn.color || palette[lineIndex]) + '"></i>' + (latex && H.mathMarkup ? H.mathMarkup(latex, label, false) : escapeHtml(label)) + '</span>';
+    }).join('') + '</div>';
   }
 
   function svgHtml(block, record, index) {
     var viewport = block.viewport;
     var transform = createTransform(viewport, WIDTH, HEIGHT, PADDING);
     var fn = activeFunction(block, record);
+    var allFunctions = functionsFor(block, record);
     var points = pointsFor(block, record, fn);
     var dynamicPoints = dynamicPointsFor(block, record);
     var lineVisible = block.showLine || (block.revealLine && (record.currentRow >= (block.rows || []).length || record.completed));
-    var line = lineVisible ? functionLineHtml(block, fn, index) : '';
-    var pointMarkup = points.map(function(point, pointIndex) { return pointHtml(point, transform, pointIndex, index, Number(record.selectedPoint) === pointIndex); }).join('');
-    var dynamicPointMarkup = dynamicPoints.map(function(point, pointIndex) { return pointHtml(point, transform, pointIndex, index, Number(record.selectedPoint) === pointIndex); }).join('');
+    var line = lineVisible ? allFunctions.map(function(item, lineIndex) { return functionLineHtml(block, item, index, lineIndex); }).join('') : '';
+    var pointMarkup = points.map(function(point, pointIndex) { return pointHtml(point, transform, pointIndex, index, pointIsSelected(record, pointIndex)); }).join('');
+    var dynamicPointMarkup = dynamicPoints.map(function(point, pointIndex) { return pointHtml(point, transform, pointIndex, index, pointIsSelected(record, pointIndex)); }).join('');
     var clickable = block.mode === 'place-point' && !record.completed ? ' onclick="GraphWorkspaceBlock.placeFromPointer(event,' + index + ')"' : '';
     var description = copy('Координатная плоскость.', 'Координаталық жазықтық.') + ' ' +
-      (block.function ? formulaText(fn) + '. ' : '') +
+      (allFunctions.length ? allFunctions.map(formulaText).join('; ') + '. ' : '') +
       ((points.length || dynamicPoints.length) ? copy('Отмечены точки: ', 'Белгіленген нүктелер: ') + points.concat(dynamicPoints).map(function(point) { return '(' + formatNumber(point.x) + ', ' + formatNumber(point.y) + ')'; }).join(', ') + '.' : copy('Точек пока нет.', 'Әзірше нүктелер жоқ.'));
     return '<div class="graph-canvas-shell"><svg id="graph-svg-' + index + '" class="graph-svg" viewBox="0 0 ' + WIDTH + ' ' + HEIGHT + '" role="img" aria-labelledby="graph-title-' + index + ' graph-description-' + index + '"' + clickable + '>' +
       '<title id="graph-title-' + index + '">' + escapeHtml(block.title) + '</title><desc id="graph-description-' + index + '">' + escapeHtml(description) + '</desc>' +
@@ -279,7 +337,7 @@ window.GraphWorkspaceBlock = (function() {
       var rowRecord = record.table[rowIndex];
       var active = rowIndex === record.currentRow && !record.completed;
       var value = rowRecord.completed ? formatNumber(row.y) : (rowRecord.draftLatex || '');
-      return '<tr class="' + (active ? 'is-current ' : '') + (Number(record.selectedPoint) === rowIndex ? 'is-linked' : '') + '"><th scope="row">' + formatNumber(row.x) + '</th><td>' +
+      return '<tr class="' + (active ? 'is-current ' : '') + (pointIsSelected(record, rowIndex) ? 'is-linked' : '') + '"><th scope="row">' + formatNumber(row.x) + '</th><td>' +
         (rowRecord.completed ? '<button type="button" class="graph-table-value" onclick="GraphWorkspaceBlock.selectPoint(' + index + ',' + rowIndex + ')" aria-label="' + escapeHtml(copy('Показать точку ', 'Нүктені көрсету ') + '(' + row.x + ', ' + row.y + ')') + '">' + formatNumber(row.y) + '</button>' :
           active ? '<math-field id="graph-table-field-' + index + '-' + rowIndex + '" class="graph-table-field" math-virtual-keyboard-policy="auto" aria-label="' + escapeHtml(copy('Значение y при x равно ', 'x мәні берілгендегі y мәні ') + row.x) + '">' + escapeHtml(value) + '</math-field>' : '<span aria-hidden="true">—</span>') + '</td></tr>';
     }).join('');
@@ -297,13 +355,16 @@ window.GraphWorkspaceBlock = (function() {
     var parameter = block.parameter;
     var value = Number(record.parameterValue);
     var required = block.requiredValues || [];
+    var slider = Array.isArray(parameter.values) && parameter.values.length
+      ? '<span class="graph-parameter-discrete" aria-label="' + escapeHtml(copy('Доступны только заданные значения', 'Тек берілген мәндер қолжетімді')) + '">' + parameter.values.map(formatNumber).join(' · ') + '</span>'
+      : '<input id="graph-parameter-' + index + '" type="range" min="' + parameter.min + '" max="' + parameter.max + '" step="' + parameter.step + '" value="' + value + '" aria-label="' + escapeHtml(parameter.label || copy('Коэффициент', 'Коэффициент')) + '" oninput="GraphWorkspaceBlock.previewParameter(this,' + index + ')" onchange="GraphWorkspaceBlock.commitParameter(this,' + index + ')">';
     var checklist = required.map(function(requiredValue) {
       var visited = record.visitedParameters.some(function(item) { return Math.abs(item - requiredValue) < 1e-9; });
       return '<li class="' + (visited ? 'is-visited' : '') + '"><span aria-hidden="true">' + (visited ? '✓' : '○') + '</span>' + parameter.name + ' = ' + formatNumber(requiredValue) + '</li>';
     }).join('');
     return '<div class="graph-parameter-panel"><p>' + (block.task || '') + '</p><div class="graph-parameter-value"><span>' + parameter.name + ' =</span><output id="graph-parameter-output-' + index + '">' + formatNumber(value) + '</output></div>' +
       '<div class="graph-parameter-controls"><button type="button" onclick="GraphWorkspaceBlock.stepParameter(' + index + ',-1)" aria-label="' + escapeHtml(copy('Уменьшить ', 'Кеміту ') + parameter.name) + '">−</button>' +
-      '<input id="graph-parameter-' + index + '" type="range" min="' + parameter.min + '" max="' + parameter.max + '" step="' + parameter.step + '" value="' + value + '" aria-label="' + escapeHtml(parameter.label || copy('Коэффициент', 'Коэффициент')) + '" oninput="GraphWorkspaceBlock.previewParameter(this,' + index + ')" onchange="GraphWorkspaceBlock.commitParameter(this,' + index + ')">' +
+      slider +
       '<button type="button" onclick="GraphWorkspaceBlock.stepParameter(' + index + ',1)" aria-label="' + escapeHtml(copy('Увеличить ', 'Арттыру ') + parameter.name) + '">+</button></div>' +
       (checklist ? '<ul class="graph-parameter-checklist" aria-label="' + escapeHtml(copy('Значения для исследования', 'Зерттелетін мәндер')) + '">' + checklist + '</ul>' : '') + '</div>';
   }
@@ -315,7 +376,7 @@ window.GraphWorkspaceBlock = (function() {
     if (!ready) return '<p class="graph-follow-up-gate">' + (followUp.gateText || copy('Сначала исследуйте отмеченные значения параметра.', 'Алдымен параметрдің белгіленген мәндерін зерттеңіз.')) + '</p>';
     var name = 'graph-follow-up-' + index;
     var options = followUp.options.map(function(option, optionIndex) {
-      var selected = Number(record.followUpSelected) === optionIndex;
+      var selected = record.followUpSelected !== null && record.followUpSelected !== undefined && Number(record.followUpSelected) === optionIndex;
       var resultClass = selected && record.lastStatus === 'incorrect' ? ' is-incorrect' : '';
       return '<label class="lesson-option graph-choice' + (selected ? ' is-selected' : '') + resultClass + '"><input type="radio" name="' + name + '" value="' + optionIndex + '" ' + (selected ? 'checked aria-checked="true"' : 'aria-checked="false"') + ' onchange="GraphWorkspaceBlock.selectFollowUp(this,' + index + ')" onkeydown="GraphWorkspaceBlock.keySelectFollowUp(event,this,' + index + ')"><span class="lesson-option-dot" aria-hidden="true"></span><span>' + option.text + '</span></label>';
     }).join('');
@@ -325,7 +386,7 @@ window.GraphWorkspaceBlock = (function() {
   function render(block, ctx) {
     var record = recordFor(block, ctx);
     var fn = activeFunction(block, record);
-    var formula = block.function ? '<div class="graph-formula" aria-live="polite"><span id="graph-formula-' + ctx.index + '">' + formulaText(fn) + '</span></div>' : '';
+    var formula = formulasHtml(block, record, ctx.index);
     var content = '<div class="graph-representations">' +
       (block.mode === 'value-table' ? tableHtml(block, record, ctx.index) : '') +
       '<div class="graph-visual-column">' + formula + svgHtml(block, record, ctx.index) + '</div></div>' +
@@ -372,7 +433,7 @@ window.GraphWorkspaceBlock = (function() {
     if (!layer) return;
     var transform = createTransform(block.viewport, WIDTH, HEIGHT, PADDING);
     layer.innerHTML = dynamicPointsFor(block, record).map(function(point, pointIndex) {
-      return pointHtml(point, transform, pointIndex, index, Number(record.selectedPoint) === pointIndex);
+      return pointHtml(point, transform, pointIndex, index, pointIsSelected(record, pointIndex));
     }).join('');
   }
 
@@ -386,9 +447,10 @@ window.GraphWorkspaceBlock = (function() {
   function updateGraphDescription(block, record, index, previewValue) {
     var svg = document.getElementById('graph-svg-' + index);
     var fn = activeFunction(block, record, previewValue);
+    var allFunctions = functionsFor(block, record);
     var points = pointsFor(block, record, fn).concat(dynamicPointsFor(block, record));
     var description = copy('Координатная плоскость.', 'Координаталық жазықтық.') + ' ' +
-      (block.function ? formulaText(fn) + '. ' : '') +
+      (allFunctions.length ? allFunctions.map(formulaText).join('; ') + '. ' : '') +
       (points.length ? copy('Отмечены точки: ', 'Белгіленген нүктелер: ') + points.map(function(point) { return '(' + formatNumber(point.x) + ', ' + formatNumber(point.y) + ')'; }).join(', ') + '.' : copy('Точек пока нет.', 'Әзірше нүктелер жоқ.'));
     var descriptionNode = document.getElementById('graph-description-' + index);
     var stateNode = svg && svg.parentNode && svg.parentNode.querySelector ? svg.parentNode.querySelector('.graph-text-state') : null;
@@ -553,7 +615,7 @@ window.GraphWorkspaceBlock = (function() {
     var record = ensureRecord(block, LessonEngine.getInteractionState(index));
     var field = tableField(index, rowIndex);
     var answer = MathInput.fieldValue(field);
-    var validation = MathInput.validate(answer, { kind: 'expression', expected: String(block.rows[rowIndex].y), accepted: [], validation: 'normalized' });
+    var validation = MathInput.validate(answer, { kind: 'expression', expected: String(block.rows[rowIndex].y), accepted: block.rows[rowIndex].accepted || [], validation: 'normalized' });
     record.table[rowIndex].draftLatex = answer;
     record.table[rowIndex].lastAnswer = answer;
     if (['empty', 'incomplete', 'invalid'].indexOf(validation.status) > -1) {
@@ -675,28 +737,12 @@ window.GraphWorkspaceBlock = (function() {
     var record = block ? ensureRecord(block, LessonEngine.getInteractionState(index)) : null;
     if (!block || !record) return;
     var value = Number(input.value);
-    var fn = activeFunction(block, record, value);
     var output = document.getElementById('graph-parameter-output-' + index);
-    var formula = document.getElementById('graph-formula-' + index);
     if (output) output.textContent = formatNumber(value);
-    if (formula) formula.textContent = formulaText(fn);
-    var segment = lineSegment(block.viewport, fn.k, fn.b);
-    var line = document.getElementById('graph-function-line-' + index);
-    if (line && segment.length === 2) {
-      var transform = createTransform(block.viewport, WIDTH, HEIGHT, PADDING);
-      var start = transform.mathToScreen(segment[0].x, segment[0].y);
-      var end = transform.mathToScreen(segment[1].x, segment[1].y);
-      line.setAttribute('x1', start.x); line.setAttribute('y1', start.y); line.setAttribute('x2', end.x); line.setAttribute('y2', end.y);
-      var svg = document.getElementById('graph-svg-' + index);
-      if (svg && svg.querySelectorAll) Array.prototype.forEach.call(svg.querySelectorAll('[data-reference-x]'), function(pointNode) {
-        var x = Number(pointNode.getAttribute('data-reference-x'));
-        var position = transform.mathToScreen(x, fn.k * x + fn.b);
-        pointNode.setAttribute('cx', position.x);
-        pointNode.setAttribute('cy', position.y);
-        var hit = pointNode.parentNode && pointNode.parentNode.querySelector ? pointNode.parentNode.querySelector('.graph-point-hit') : null;
-        if (hit) { hit.setAttribute('cx', position.x); hit.setAttribute('cy', position.y); }
-      });
-    }
+    var formula = document.getElementById('graph-formula-' + index);
+    if (formula && block.function) formula.outerHTML = formulasHtml({ functions: [activeFunction(block, record, value)] }, record, index);
+    updateLine(block, record, index, value);
+    updateGraphDescription(block, record, index, value);
   }
 
   function commitParameter(input, index) {
@@ -704,6 +750,7 @@ window.GraphWorkspaceBlock = (function() {
     if (!block || block.type !== 'graph-workspace' || block.mode !== 'parameter') return;
     var record = ensureRecord(block, LessonEngine.getInteractionState(index));
     var value = clamp(Number(input.value), block.parameter.min, block.parameter.max);
+    if (Array.isArray(block.parameter.values) && block.parameter.values.length) value = block.parameter.values.reduce(function(best, candidate) { return Math.abs(candidate - value) < Math.abs(best - value) ? candidate : best; }, block.parameter.values[0]);
     record.parameterValue = clean(value);
     if (!record.visitedParameters.some(function(item) { return Math.abs(item - value) < 1e-9; })) record.visitedParameters.push(clean(value));
     record.lastStatus = ''; record.lastFeedback = '';
@@ -726,7 +773,12 @@ window.GraphWorkspaceBlock = (function() {
     var block = currentBlock(index);
     if (!block || !block.parameter) return;
     var record = ensureRecord(block, LessonEngine.getInteractionState(index));
-    var next = clamp(Number(record.parameterValue) + direction * block.parameter.step, block.parameter.min, block.parameter.max);
+    var next;
+    if (Array.isArray(block.parameter.values) && block.parameter.values.length) {
+      var values = block.parameter.values;
+      var current = values.indexOf(Number(record.parameterValue));
+      next = values[clamp((current < 0 ? 0 : current) + direction, 0, values.length - 1)];
+    } else next = clamp(Number(record.parameterValue) + direction * block.parameter.step, block.parameter.min, block.parameter.max);
     commitParameter({ value: String(clean(next)) }, index);
   }
 

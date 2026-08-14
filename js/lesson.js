@@ -124,13 +124,15 @@
     document.documentElement.lang = language();
     var keys = {
       'lesson.back': 'back', 'lesson.route': 'route', 'lesson.progress': 'progress',
-      'lesson.remaining': 'remaining', 'lesson.tip': 'tip', 'lesson.tipText': 'tipText'
+      'lesson.tip': 'tip', 'lesson.tipText': 'tipText'
     };
     Object.keys(keys).forEach(function(attr) {
       document.querySelectorAll('[data-i18n="' + attr + '"]').forEach(function(el) {
         el.textContent = text(keys[attr]);
       });
     });
+    document.getElementById('lesson-route-rail').setAttribute('aria-label', text('routeAria'));
+    document.getElementById('lesson-progress-rail').setAttribute('aria-label', text('progressAria'));
   }
 
   function requestedLessonId() {
@@ -164,7 +166,10 @@
     if (resultBlock) {
       resultBlock.xp = 0;
       var nextId = Learning.getNextLessonId(meta.id);
-      var next = nextId ? Learning.getRegistryEntry(nextId) : null;
+      var nextLesson = nextId ? Learning.getLesson(nextId) : null;
+      var next = nextLesson && nextLesson.hasContent && nextLesson.status !== 'completed' && nextLesson.status !== 'locked' && nextLesson.status !== 'comingSoon'
+        ? Learning.getRegistryEntry(nextId)
+        : null;
       resultBlock.nextLesson = next
         ? { title: localized(next, 'title'), link: next.route }
         : null;
@@ -230,19 +235,14 @@
   function renderProgress(state) {
     var total = Math.max(1, state.totalBlocks);
     var done = state.completedBlocks.length;
+    var currentBlock = activeConfig && activeConfig.blocks ? activeConfig.blocks[state.currentIndex] : null;
+    if (currentBlock && (currentBlock.completesLesson === true || currentBlock.type === 'result' || currentBlock.type === 'lesson-summary')) done = total;
     var pct = Math.min(100, Math.round(done / total * 100));
     document.getElementById('lesson-progress-value').textContent = pct + '%';
     document.getElementById('lesson-progress-fill').style.width = pct + '%';
     document.getElementById('lesson-progress-copy').textContent = done + ' / ' + total + ' ' + text('steps');
     document.getElementById('lesson-step-meta').textContent = (state.currentIndex + 1) + ' / ' + total + ' ' + text('steps');
 
-    var checklist = document.getElementById('lesson-checklist');
-    checklist.innerHTML = stages().map(function(stage) {
-      var completed = stage.indices.every(function(index) { return state.completedBlocks.indexOf(index) > -1; });
-      var current = stage.indices.indexOf(state.currentIndex) > -1;
-      return '<div class="lesson-check ' + (completed ? 'is-completed' : current ? 'is-current' : '') + '">' +
-        '<span>' + (completed ? '✓' : current ? '◆' : '◇') + '</span><span>' + stage.label + '</span></div>';
-    }).join('');
   }
 
   function updateEngineUI() {
@@ -337,7 +337,7 @@
     var title = localized(meta, 'title');
     var description = localized(meta, 'description');
     var subjectTitle = I18N.t('subjects.' + meta.subjectId, language()) || meta.subjectId;
-    document.title = title + ' — MathLogic';
+    document.title = title + ' — GEOMAT';
     document.getElementById('lesson-title').textContent = title;
     document.getElementById('lesson-description').textContent = description;
     document.getElementById('lesson-duration').textContent = meta.duration + ' ' + text('minutes');
@@ -347,10 +347,24 @@
   }
 
   function bindTheme() {
-    document.getElementById('lesson-theme').addEventListener('click', function() {
+    var button = document.getElementById('lesson-theme');
+    if (!button) return;
+    button.setAttribute('aria-label', language() === 'kk' ? 'Тақырыпты ауыстыру' : 'Переключить тему');
+    button.addEventListener('click', function() {
       var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
       ML.setSetting('theme', next);
       ML.applySettings();
+    });
+  }
+
+  function bindLanguage() {
+    var button = document.getElementById('lesson-language');
+    if (!button) return;
+    button.textContent = language() === 'kk' ? 'ҚАЗ' : 'RU';
+    button.setAttribute('aria-label', language() === 'kk' ? 'Тілді ауыстыру' : 'Сменить язык');
+    button.addEventListener('click', function() {
+      ML.setLang(language() === 'kk' ? 'ru' : 'kk');
+      window.location.reload();
     });
   }
 
@@ -367,6 +381,7 @@
     ML.applySettings();
     setShellCopy();
     bindTheme();
+    bindLanguage();
 
     var id = requestedLessonId();
     var meta = Learning.getRegistryEntry(id);

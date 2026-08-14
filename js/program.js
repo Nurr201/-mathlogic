@@ -23,7 +23,7 @@
     if (lesson.status === 'current') return [copy('Продолжить','Жалғастыру'), 'current'];
     if (lesson.status === 'available') return [copy('Доступен','Қолжетімді'), 'available'];
     if (!lesson.hasContent) return [copy('Готовится','Дайындалуда'), 'planned'];
-    if (lesson.status === 'locked') return [copy('Сначала нужна предыдущая тема','Алдымен алдыңғы тақырып қажет'), 'locked'];
+    if (lesson.status === 'locked') return [copy('Недоступен','Құлыптаулы'), 'locked'];
     return [copy('Готовится','Дайындалуда'), 'planned'];
   }
   function actionLabel(lesson) {
@@ -40,26 +40,21 @@
       ? '<a class="v7-program-prerequisite" href="' + esc(previous.route) + '">' + esc(label) + '</a>'
       : '<span class="v7-program-prerequisite">' + esc(label) + '</span>';
   }
-  function lessonRow(lesson) {
+  function lessonRow(lesson, index) {
     var state = status(lesson);
     var hasRoute = lesson.hasContent && lesson.route;
     var canContinue = ['available','current','completed'].indexOf(lesson.status) > -1 && hasRoute;
-    var duration = lesson.duration && hasRoute ? ' · ' + lesson.duration + ' ' + copy('мин','мин') : '';
-    var action = canContinue ? '<a class="v7-program-lesson-action" href="' + esc(lesson.route) + '">' + esc(actionLabel(lesson)) + '</a>' : '';
+    var action = canContinue && lesson.status !== 'completed' ? '<a class="v7-program-lesson-action" href="' + esc(lesson.route) + '">' + esc(actionLabel(lesson)) + '</a>' : '';
     var title = hasRoute
       ? '<a class="v7-program-lesson-title" href="' + esc(lesson.route) + '">' + esc(local(lesson, 'title')) + '</a>'
       : '<span class="v7-program-lesson-title">' + esc(local(lesson, 'title')) + '</span>';
-    return '<article class="v7-program-lesson is-' + state[1] + '" data-lesson-id="' + esc(lesson.id) + '"><div class="v7-program-lesson-copy"><div class="v7-program-lesson-top"><strong>' + title + '</strong><span>' + esc(state[0]) + esc(duration) + '</span></div>' + prerequisite(lesson) + '</div>' + action + '</article>';
-  }
-  function topicCount(count) {
-    var ruWord = count % 10 === 1 && count % 100 !== 11 ? 'урок' : (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14) ? 'урока' : 'уроков');
-    return copy(count + ' ' + ruWord, count + ' сабақ');
+    var stateMark = lesson.status === 'completed' ? '✓' : (lesson.status === 'current' ? '→' : (lesson.status === 'locked' ? '×' : '○'));
+    var stateText = lesson.status === 'completed' || !action ? '<span class="v7-program-lesson-state">' + esc(state[0]) + '</span>' : '';
+    return '<article class="v7-program-lesson is-' + state[1] + '" data-lesson-id="' + esc(lesson.id) + '"><span class="v7-program-lesson-marker" aria-hidden="true">' + stateMark + '</span><div class="v7-program-lesson-copy"><span class="v7-program-lesson-index">' + esc(copy('Урок ', 'Сабақ ') + (index + 1)) + '</span><strong>' + title + '</strong>' + prerequisite(lesson) + '</div><div class="v7-program-lesson-meta">' + stateText + action + '</div></article>';
   }
   function topicProgress(lessons) {
-    var published = lessons.filter(function(lesson) { return lesson.hasContent; });
-    var completed = published.filter(function(lesson) { return lesson.status === 'completed'; }).length;
-    if (!published.length) return topicCount(lessons.length);
-    return completed + ' / ' + published.length + ' ' + copy('пройдено', 'аяқталды');
+    var completed = lessons.filter(function(lesson) { return lesson.status === 'completed'; }).length;
+    return completed + ' / ' + lessons.length + ' ' + copy('пройдено', 'аяқталды');
   }
   function topicLabel(index) {
     return copy('ТЕМА ', 'ТАҚЫРЫП ') + String(index + 1).padStart(2, '0');
@@ -72,16 +67,9 @@
   function topicsFor(module) {
     return module.topicIds.map(curriculumTopic).filter(Boolean);
   }
-  function moduleProgress(topics) {
-    var lessons = topics.reduce(function(result, topic) { return result.concat(lessonsForTopic(topic)); }, []);
-    var published = lessons.filter(function(lesson) { return lesson.hasContent; });
-    var completed = published.filter(function(lesson) { return lesson.status === 'completed'; }).length;
-    if (!published.length) return copy('Уроки готовятся','Сабақтар дайындалуда');
-    return completed ? completed + ' / ' + published.length + ' ' + copy('пройдено','аяқталды') : published.length + ' ' + copy('доступно сейчас','қазір қолжетімді');
-  }
   function moduleView(module) {
     var topics = topicsFor(module);
-    return '<section class="v7-program-large-module"><header><div><h2>' + esc(local(module, 'title')) + '</h2><p>' + esc(local(module, 'description')) + '</p></div><small>' + esc(moduleProgress(topics)) + '</small></header><div class="v7-program-topics">' + topics.map(topicView).join('') + '</div></section>';
+    return '<section class="v7-program-large-module"><header><div><span class="v7-program-module-eyebrow">' + esc(copy('РАЗДЕЛ', 'БӨЛІМ')) + '</span><h2>' + esc(local(module, 'title')) + '</h2><p>' + esc(local(module, 'description')) + '</p></div></header><div class="v7-program-topics">' + topics.map(topicView).join('') + '</div></section>';
   }
   function currentLesson() {
     var lessons = Learning.getLessons(activeSubject);
@@ -122,13 +110,6 @@
   function init() {
     ML.applySettings(); MathLogicSite.applyCopy();
     document.documentElement.lang = lang();
-    document.querySelector('[data-language-toggle]').textContent = lang() === 'kk' ? 'ҚАЗ' : 'RU';
-    document.querySelector('[data-language-toggle]').onclick = function() { ML.setLang(lang() === 'kk' ? 'ru' : 'kk'); location.reload(); };
-    document.querySelector('[data-theme-toggle]').onclick = function() { ML.setSetting('theme', document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); ML.applySettings(); };
-    var user = ML.getUser() || {}; document.getElementById('program-avatar').textContent = (user.name || user.username || 'М').charAt(0).toUpperCase();
-    document.querySelectorAll('[data-app-logout]').forEach(function(button) {
-      button.onclick = function() { ML.clearUser(); location.href = 'login.html'; };
-    });
     renderTabs(); renderNow(); renderContent();
   }
 

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">GEOMAT mark concept B</title>
+  <desc id="desc">An orthogonal mathematical construction built from two nested corners.</desc>
+  <rect width="64" height="64" rx="14" fill="#18243a"/>
+  <path d="M19 16v31h31" fill="none" stroke="#f3f3ef" stroke-width="5" stroke-linecap="square" stroke-linejoin="miter"/>
+  <path d="M29 25v12h12" fill="none" stroke="#c96a32" stroke-width="4" stroke-linecap="square" stroke-linejoin="miter"/>
+</svg>

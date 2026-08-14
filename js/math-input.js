@@ -1,4 +1,4 @@
-/* MathLogic math-entry primitive.
+/* Geomat math-entry primitive.
    MathLive owns visual editing. This module owns safe syntax analysis,
    normalized validation and contextual keyboard configuration. It is not a CAS. */
 window.MathInput = (function() {
@@ -330,7 +330,7 @@ window.MathInput = (function() {
       { label: '[hide-keyboard]', tooltip: text('hideKeyboard', 'Hide keyboard') },
     ]);
     rows.push(structures);
-    return { label: 'MathLogic', tooltip: text('keyboard', 'Math keyboard'), rows: rows };
+    return { label: 'GEOMAT', tooltip: text('keyboard', 'Math keyboard'), rows: rows };
   }
 
   function configureMathLive() {

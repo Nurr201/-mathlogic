@@ -1,0 +1,468 @@
+/* Geomat Lesson UI v3 — presentation only; engine and lesson schemas stay unchanged. */
+body.v7-lesson {
+  --v7-bg:var(--axis-canvas);
+  --v7-paper:var(--axis-surface);
+  --v7-soft:var(--axis-sunken);
+  --v7-ink:var(--axis-text);
+  --v7-muted:var(--axis-text-2);
+  --v7-quiet:var(--axis-text-3);
+  --v7-line:var(--axis-line);
+  --v7-indigo:var(--axis-text);
+  --v7-indigo-wash:color-mix(in srgb,var(--axis-text) 7%,var(--axis-surface));
+  --v7-green:var(--axis-logic);
+  --v7-green-wash:var(--axis-logic-wash);
+  --v7-red:var(--axis-danger);
+  --v7-red-wash:var(--axis-danger-wash);
+  --v7-dark:var(--axis-ink);
+  background:
+    linear-gradient(90deg,color-mix(in srgb,var(--axis-line) 22%,transparent) 1px,transparent 1px) 0 0/72px 72px,
+    var(--axis-canvas);
+}
+.v7-lesson :focus-visible { outline-color:var(--axis-text); }
+
+/* Focused application header */
+.v7-lesson .lesson-topbar {
+  top:62px;
+  z-index:55;
+  height:46px;
+  min-height:46px;
+  padding-inline:clamp(16px,2.4vw,34px);
+  color:var(--axis-on-ink);
+  background:var(--axis-ink);
+  border-color:color-mix(in srgb,var(--axis-on-ink-2) 20%,transparent);
+  backdrop-filter:none;
+}
+.v7-lesson .axis-back { color:var(--axis-on-ink-2); }
+.v7-lesson .axis-back:hover { color:var(--axis-on-ink); }
+.v7-lesson .lesson-top-context { color:var(--axis-on-ink-2); }
+.v7-lesson .lesson-top-actions .v7-pill,
+.v7-lesson .lesson-top-actions .axis-icon-button {
+  color:var(--axis-on-ink-2);
+  background:transparent;
+  border-color:color-mix(in srgb,var(--axis-on-ink-2) 34%,transparent);
+}
+.v7-lesson .lesson-top-actions .axis-icon-button:hover { color:var(--axis-on-ink); border-color:var(--axis-on-ink-2); }
+.v7-lesson .lesson-language { width:auto; min-width:42px; padding-inline:8px; font:600 9px "DM Mono",monospace; letter-spacing:.06em; }
+
+/* Three calm regions; side rails keep natural height. */
+.v7-lesson .lesson-layout {
+  width:min(calc(100% - 40px),1420px);
+  grid-template-columns:minmax(180px,210px) minmax(0,900px) minmax(220px,250px);
+  grid-template-areas:"route content context";
+  justify-content:center;
+  align-items:start;
+}
+.v7-lesson .lesson-route-rail {
+  grid-area:route;
+  top:108px;
+  height:auto;
+  max-height:calc(100vh - 108px);
+  padding:38px 24px 38px 0;
+  overflow:auto;
+}
+.v7-lesson .lesson-column { grid-area:content; padding:52px clamp(30px,3.6vw,54px) 96px; }
+.v7-lesson .lesson-progress-rail {
+  grid-area:context;
+  top:84px;
+  height:auto;
+  padding:38px 0 32px 24px;
+}
+.v7-lesson .lesson-heading { padding-bottom:34px; }
+.v7-lesson .lesson-heading h1 {
+  max-width:17ch;
+  margin-top:13px;
+  font:500 clamp(36px,3.5vw,50px)/1.02 "Newsreader",Georgia,serif;
+  letter-spacing:-.035em;
+}
+.v7-lesson .lesson-heading > p { max-width:60ch; margin-top:18px; font:16px/1.62 "DM Sans",sans-serif; }
+.v7-lesson #lesson-active.is-compact-heading .lesson-heading { padding-bottom:18px; }
+.v7-lesson #lesson-active.is-compact-heading .lesson-heading h1 { font-size:clamp(27px,2.5vw,34px); }
+.v7-lesson .lesson-meta { margin-top:19px; }
+
+/* Route and progress use teal/ink construction marks instead of game markers. */
+.v7-lesson .lesson-route-step { grid-template-columns:15px 24px minmax(0,1fr); align-items:start; padding-bottom:22px; font-size:12px; }
+.v7-lesson .lesson-route-step > span:last-child { min-width:0; line-height:1.4; overflow-wrap:anywhere; }
+.v7-lesson .lesson-route-node { width:13px; height:13px; border-radius:0; transform:rotate(45deg); }
+.v7-lesson .lesson-route-step.is-completed .lesson-route-node { border-color:var(--axis-logic); background:var(--axis-logic); }
+.v7-lesson .lesson-route-step.is-current .lesson-route-node { border-color:var(--axis-text); background:var(--axis-text); box-shadow:0 0 0 4px color-mix(in srgb,var(--axis-text) 10%,transparent); }
+.v7-lesson .lesson-route-step.is-current { color:var(--axis-text); }
+.v7-lesson .lesson-route-step:not(:disabled):hover { color:var(--axis-text); }
+.v7-lesson .lesson-progress-value { margin:10px 0 8px; font:500 25px "Newsreader",serif; }
+.v7-lesson .axis-track { height:2px; border-radius:0; }
+.v7-lesson .axis-track span { background:var(--axis-logic); }
+.v7-lesson .lesson-progress-copy { margin:9px 0 24px; font:500 10px "DM Mono",monospace; text-transform:uppercase; }
+.v7-lesson .lesson-tip { margin-top:24px; padding:14px 0; border:0; border-top:1px solid var(--axis-line); border-radius:0; background:transparent; }
+
+/* Notebook-like shared block language. */
+.v7-lesson .lesson-engine-content > div { border-bottom:0; }
+.v7-lesson .lesson-engine-content .lesson-block { padding:34px 0 6px !important; }
+.v7-lesson .lesson-block > .text-center.py-12 { padding-block:28px; text-align:left; }
+.v7-lesson .lesson-block > .text-center.py-12 > .text-7xl { margin-bottom:10px; font-size:42px; }
+.v7-lesson .lesson-block > .text-center.py-12 > h1 { max-width:20ch; font:500 clamp(31px,3.2vw,42px)/1.08 "Newsreader",Georgia,serif; }
+.v7-lesson .lesson-block > .text-center.py-12 > p { max-width:56ch; margin-inline:0; }
+.v7-lesson .lesson-block-progress { margin-bottom:26px; }
+.v7-lesson .lesson-block-progress > div { height:2px; border-radius:0; background:var(--axis-line) !important; }
+.v7-lesson .lesson-block-progress > div > div { border-radius:0; background:var(--axis-logic) !important; }
+.v7-lesson .lesson-block-progress > span { color:var(--axis-text-3) !important; font-size:9px; font-weight:500; }
+.v7-lesson .lesson-block-label {
+  margin-bottom:16px;
+  padding:0;
+  color:var(--axis-text-3) !important;
+  background:transparent !important;
+  border:0 !important;
+  border-radius:0 !important;
+  font:600 10px/1.3 "DM Mono",monospace;
+  letter-spacing:.12em;
+}
+.v7-lesson .lesson-engine-content h2 { max-width:24ch; font-size:clamp(29px,3vw,38px) !important; }
+.v7-lesson .lesson-engine-content p,
+.v7-lesson .lesson-engine-content li { color:var(--axis-text-2) !important; font-family:"DM Sans",sans-serif !important; font-size:15.5px; line-height:1.65 !important; }
+.v7-lesson .lesson-engine-content .text-lg { font-size:16px; }
+.v7-lesson .lesson-engine-content .lesson-formula,
+.v7-lesson .lesson-engine-content .lesson-rule-box,
+.v7-lesson .lesson-engine-content .worked-expression,
+.v7-lesson .lesson-engine-content .guided-expression {
+  margin:27px 0;
+  padding:25px 20px !important;
+  color:var(--axis-text) !important;
+  background:var(--axis-surface) !important;
+  border:1px solid var(--axis-line) !important;
+  border-block-color:var(--axis-line-strong) !important;
+  border-radius:0 !important;
+  font-family:"Newsreader",Georgia,serif !important;
+  box-shadow:none !important;
+}
+.v7-lesson .lesson-rule-box > span { color:var(--axis-text-3); }
+.v7-lesson .lesson-primary-action,
+.v7-lesson .guided-submit-button,
+.v7-lesson .lesson-continue-button,
+.v7-lesson .lesson-engine-content button[class*="bg-slate-900"],
+.v7-lesson .lesson-engine-content button[class*="bg-blue-600"] {
+  min-height:44px;
+  padding:10px 20px !important;
+  border-radius:7px !important;
+  background:var(--axis-ink) !important;
+  color:var(--axis-on-ink) !important;
+  font-size:14px !important;
+  font-weight:650;
+}
+.v7-lesson .lesson-primary-action svg { width:18px; height:18px; }
+
+/* Interaction hierarchy: mathematical object before restrained answer rows. */
+.v7-lesson .guided-practice .geometry-diagram { margin:18px 0 27px; }
+.v7-lesson .guided-question { margin:25px 0 14px; font:500 23px/1.32 "Newsreader",serif !important; }
+.v7-lesson .guided-fieldset { gap:7px; padding:0; border:0; }
+.v7-lesson .lesson-option,
+.v7-lesson .guided-option {
+  min-height:50px;
+  padding:13px 15px;
+  border-radius:6px !important;
+  background:transparent !important;
+}
+.v7-lesson .lesson-option:hover:not(.is-selected):not(.is-correct):not(.is-incorrect):not(:has(input:disabled)) { background:var(--axis-surface) !important; border-color:var(--axis-line-strong) !important; }
+.v7-lesson .lesson-option.is-selected { background:color-mix(in srgb,var(--axis-logic) 5%,var(--axis-surface)) !important; border-color:var(--axis-logic) !important; }
+.v7-lesson .lesson-option.is-correct { background:var(--axis-logic-wash) !important; border-color:var(--axis-logic) !important; }
+.v7-lesson .lesson-option.is-incorrect { background:var(--axis-danger-wash) !important; border-color:color-mix(in srgb,var(--axis-danger) 58%,var(--axis-line)) !important; }
+.v7-lesson .guided-option input,
+.v7-lesson .lesson-option input { accent-color:var(--axis-text); }
+.v7-lesson .lesson-engine-content input:not([type="radio"]):not([type="range"]):focus-visible {
+  outline:1px solid var(--axis-logic);
+  outline-offset:1px;
+  border-color:var(--axis-logic) !important;
+  box-shadow:none !important;
+}
+.v7-lesson .lesson-option:has(input:focus-visible),
+.v7-lesson .guided-option:has(input:focus-visible) {
+  outline:0;
+  border-color:var(--axis-logic) !important;
+  background:color-mix(in srgb,var(--axis-logic) 5%,var(--axis-surface)) !important;
+}
+.v7-lesson .guided-input-label input:focus-visible,
+.v7-lesson .graph-coordinate-entry input:focus-visible,
+.v7-lesson .graph-table-field:focus-visible,
+.v7-lesson .graph-table-value:focus-visible,
+.v7-lesson .graph-parameter-controls input:focus-visible {
+  outline:1px solid var(--axis-logic);
+  outline-offset:1px;
+  border-color:var(--axis-logic) !important;
+  box-shadow:none;
+}
+.v7-lesson .math-response-equation:focus-within {
+  border-color:var(--axis-logic) !important;
+  background:color-mix(in srgb,var(--axis-logic) 4%,var(--axis-surface));
+  box-shadow:none;
+}
+.v7-lesson .math-response-field:focus-visible { outline:0; }
+.v7-lesson .math-response-angle-field:focus-visible {
+  outline:1px solid var(--axis-logic);
+  outline-offset:1px;
+  border-color:var(--axis-logic) !important;
+}
+.v7-lesson .math-response-equation.is-invalid,
+.v7-lesson .math-response-equation.is-incomplete {
+  border-style:solid;
+  border-color:var(--axis-danger) !important;
+  background:var(--axis-danger-wash);
+}
+.v7-lesson .guided-feedback,
+.v7-lesson .math-response-feedback,
+.v7-lesson .lesson-feedback {
+  padding:15px 17px;
+  border-width:0 0 0 3px;
+  border-radius:0 !important;
+}
+.v7-lesson .guided-feedback.is-correct,
+.v7-lesson .math-response-feedback.is-correct,
+.v7-lesson .lesson-feedback.is-correct { border-color:var(--axis-logic); background:var(--axis-logic-wash); }
+.v7-lesson .guided-feedback.is-incorrect,
+.v7-lesson .math-response-feedback.is-incorrect,
+.v7-lesson .lesson-feedback.is-incorrect { border-color:var(--axis-danger); background:var(--axis-danger-wash); }
+.v7-lesson .math-response-feedback.is-empty,
+.v7-lesson .math-response-feedback.is-incomplete,
+.v7-lesson .math-response-feedback.is-invalid {
+  border-color:var(--axis-text);
+  background:var(--v7-indigo-wash);
+}
+.v7-lesson .guided-feedback strong,
+.v7-lesson .math-response-feedback strong,
+.v7-lesson .lesson-feedback strong { color:var(--axis-text); font-family:"DM Sans",sans-serif; font-size:14px; }
+.v7-lesson .guided-feedback p,
+.v7-lesson .math-response-feedback p,
+.v7-lesson .lesson-feedback div { color:var(--axis-text) !important; font-family:"DM Sans",sans-serif !important; }
+.v7-lesson .guided-attempts { color:var(--axis-text-3); letter-spacing:.08em; }
+.v7-lesson .guided-hint-button { color:var(--axis-text-2); background:transparent; border-color:var(--axis-line-strong); }
+.v7-lesson .guided-hints ol {
+  padding:2px 14px;
+  border:0;
+  border-left:3px solid var(--axis-text);
+  background:var(--v7-indigo-wash);
+}
+.v7-lesson .graph-point:focus-visible .graph-point-hit,
+.v7-lesson .geometry-vertex:focus-visible .geometry-vertex-hit { stroke:var(--axis-logic); }
+
+/* Static and interactive geometry share the same construction palette. */
+.v7-lesson .geometry-diagram,
+.v7-lesson .geometry-canvas-shell,
+.v7-lesson .graph-canvas-shell {
+  border-radius:0;
+  background-color:var(--axis-surface);
+  background-image:
+    linear-gradient(var(--axis-line) 1px,transparent 1px),
+    linear-gradient(90deg,var(--axis-line) 1px,transparent 1px);
+  background-size:28px 28px;
+}
+.v7-lesson .geometry-diagram { max-width:720px; border-color:var(--axis-line-strong); }
+.v7-lesson .geometry-diagram figcaption { color:var(--axis-text-2); background:color-mix(in srgb,var(--axis-surface) 94%,transparent); }
+.v7-lesson .geometry-diagram-edge,
+.v7-lesson .geometry-diagram-polygon { stroke:var(--axis-text); }
+.v7-lesson .geometry-diagram-polygon { fill:color-mix(in srgb,var(--axis-text) 3%,transparent); }
+.v7-lesson .geometry-diagram-edge.is-highlighted,
+.v7-lesson .geometry-diagram-polygon.is-highlighted,
+.v7-lesson .geometry-diagram-angle,
+.v7-lesson .geometry-diagram-angle.is-highlighted { stroke:var(--v7-indigo); }
+.v7-lesson .geometry-diagram-edge.is-muted { stroke:var(--axis-line-strong); }
+.v7-lesson .geometry-diagram-point,
+.v7-lesson .geometry-diagram-arrow { fill:var(--axis-text); }
+.v7-lesson .geometry-diagram-label { fill:var(--axis-text); font-family:"DM Mono",monospace; }
+.v7-lesson .geometry-diagram-label.is-highlighted { fill:var(--v7-indigo); }
+.v7-lesson .geometry-diagram-mark,
+.v7-lesson .geometry-diagram-parallel-mark,
+.v7-lesson .geometry-diagram-right-angle { stroke:var(--axis-logic); }
+.v7-lesson .geometry-diagram-highlight { fill:var(--axis-logic-wash); }
+.v7-lesson .geometry-canvas-shell { border-color:var(--axis-line-strong); }
+.v7-lesson .geometry-triangle { fill:color-mix(in srgb,var(--axis-text) 4%,transparent); stroke:var(--axis-text); }
+.v7-lesson .geometry-angle-arc,
+.v7-lesson .geometry-angle-b,
+.v7-lesson .geometry-angle-c { stroke:var(--v7-indigo); }
+.v7-lesson .geometry-vertex-dot { fill:var(--axis-surface); stroke:var(--v7-indigo); }
+.v7-lesson .geometry-vertex.is-draggable .geometry-vertex-dot { fill:var(--axis-logic-wash); }
+.v7-lesson .geometry-measurements { border-radius:0; }
+.v7-lesson .geometry-measurements .geometry-sum { background:var(--axis-logic-wash); }
+.v7-lesson .geometry-exploration,
+.v7-lesson .geometry-task,
+.v7-lesson .geometry-proof-panel,
+.v7-lesson .geometry-follow-up { border-radius:0; background:var(--axis-surface); }
+
+/* Summary remains educational evidence, never an XP celebration. */
+.v7-lesson .lesson-summary-capabilities,
+.v7-lesson .lesson-evidence-grid { border-radius:0; }
+.v7-lesson .lesson-summary-capabilities { border-width:1px 0; background:transparent; }
+.v7-lesson .lesson-evidence-grid > div { background:var(--axis-surface); }
+.v7-lesson .lesson-evidence-grid dd { font-size:20px; line-height:1.25; }
+.v7-lesson .lesson-summary-actions { display:flex; flex-wrap:wrap; gap:10px; }
+
+/* Legacy result blocks resolve into the same restrained editorial system. */
+.v7-lesson .lesson-result {
+  width:min(100%,720px);
+  margin:0 auto;
+  padding:32px 0 18px;
+}
+.v7-lesson .lesson-result-kicker,
+.v7-lesson .lesson-result-note-label {
+  margin:0 0 10px;
+  color:var(--v7-indigo);
+  font:650 11px/1.2 "DM Mono",monospace;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+.v7-lesson .lesson-result h2 {
+  max-width:620px;
+  margin:0;
+  color:var(--axis-text);
+  font:560 clamp(38px,5.2vw,58px)/.98 "Newsreader",Georgia,serif;
+  letter-spacing:-.035em;
+}
+.v7-lesson .lesson-result-description {
+  max-width:590px;
+  margin:18px 0 0;
+  color:var(--axis-text-2);
+  font-size:16px;
+  line-height:1.65;
+}
+.v7-lesson .lesson-result-metrics {
+  display:grid;
+  grid-template-columns:repeat(var(--result-metric-count),minmax(0,1fr));
+  margin:36px 0 0;
+  padding:20px 0;
+  border-block:1px solid var(--axis-line-strong);
+}
+.v7-lesson .lesson-result-metric {
+  min-width:0;
+  padding:0 19px;
+  border-left:1px solid var(--axis-line);
+}
+.v7-lesson .lesson-result-metric:first-child { padding-left:0; border-left:0; }
+.v7-lesson .lesson-result-metric:last-child { padding-right:0; }
+.v7-lesson .lesson-result-metric dt {
+  margin:0 0 7px;
+  color:var(--axis-text-3);
+  font:600 10px/1.2 "DM Mono",monospace;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+.v7-lesson .lesson-result-metric dd {
+  margin:0;
+  color:var(--axis-text);
+  font:570 clamp(23px,3vw,30px)/1 "Newsreader",Georgia,serif;
+  white-space:nowrap;
+}
+.v7-lesson .lesson-result-note {
+  position:relative;
+  margin:30px 0 0;
+  padding:4px 0 0 18px;
+  border-left:2px solid var(--axis-line-strong);
+}
+.v7-lesson .lesson-result-note.is-positive { border-color:var(--axis-logic); }
+.v7-lesson .lesson-result-note.is-review { border-color:var(--axis-danger); }
+.v7-lesson .lesson-result-note h3 {
+  margin:0;
+  color:var(--axis-text);
+  font:570 22px/1.2 "Newsreader",Georgia,serif;
+}
+.v7-lesson .lesson-result-note > p:last-child {
+  margin:6px 0 0;
+  color:var(--axis-text-2);
+  font-size:14px;
+  line-height:1.55;
+}
+.v7-lesson .lesson-result-actions { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:34px 0 0; }
+.v7-lesson .lesson-result-primary {
+  display:inline-flex;
+  min-height:44px;
+  align-items:center;
+  gap:12px;
+  padding:10px 19px;
+  border-radius:7px;
+  background:var(--axis-ink);
+  color:var(--axis-on-ink);
+  font-size:14px;
+  font-weight:650;
+  text-decoration:none;
+}
+.v7-lesson .lesson-result-primary:hover { background:color-mix(in srgb,var(--axis-ink) 86%,white); }
+.v7-lesson .lesson-result-secondary {
+  display:inline-flex;
+  min-height:44px;
+  align-items:center;
+  padding:9px 15px;
+  border:1px solid var(--axis-line-strong);
+  border-radius:7px;
+  color:var(--axis-text);
+  font-size:14px;
+  font-weight:650;
+  text-decoration:none;
+}
+.v7-lesson .lesson-result-secondary:hover { border-color:var(--axis-text); }
+
+/* Tablet: route stays left; context becomes a compact row below the lesson. */
+@media (max-width:1199px) {
+  .v7-lesson .lesson-layout {
+    grid-template-columns:180px minmax(0,800px);
+    grid-template-areas:"route content" ". context";
+  }
+  .v7-lesson .lesson-progress-rail {
+    display:grid;
+    position:static;
+    grid-template-columns:110px minmax(150px,1fr);
+    gap:18px 24px;
+    align-items:start;
+    margin:0 36px 70px;
+    padding:22px 0 0;
+    border:0;
+    border-top:1px solid var(--axis-line);
+  }
+  .v7-lesson .lesson-progress-rail > .axis-eyebrow { grid-column:1; }
+  .v7-lesson .lesson-progress-value { grid-column:1; margin-top:0; }
+  .v7-lesson .lesson-progress-rail > .axis-track,
+  .v7-lesson .lesson-progress-copy { grid-column:2; }
+  .v7-lesson .lesson-tip { grid-column:1 / -1; }
+}
+
+/* Mobile: a compact horizontal stage strip, one content column, usable math. */
+@media (max-width:900px) {
+  .v7-lesson .lesson-layout { display:grid; width:calc(100% - 32px); grid-template-columns:minmax(0,800px); grid-template-areas:"route" "content" "context"; }
+  .v7-lesson .lesson-route-rail { position:static; max-height:none; padding:16px 0 13px; border:0; border-bottom:1px solid var(--axis-line); overflow:hidden; }
+  .v7-lesson .lesson-route-rail > .axis-eyebrow { display:none; }
+  .v7-lesson .lesson-route { display:flex; flex-direction:row; gap:0; margin:0; overflow-x:auto; scrollbar-width:none; }
+  .v7-lesson .lesson-route::-webkit-scrollbar { display:none; }
+  .v7-lesson .lesson-route::before { display:none; }
+  .v7-lesson .lesson-route-step { flex:0 0 auto; width:auto; min-height:36px; grid-template-columns:13px auto; gap:7px; padding:4px 16px 4px 0; }
+  .v7-lesson .lesson-route-step > span:last-child { max-width:20ch; }
+  .v7-lesson .lesson-route-step::before,
+  .v7-lesson .lesson-route-step .mono { display:none; }
+  .v7-lesson .lesson-column { width:100%; padding:34px 0 70px; }
+  .v7-lesson .lesson-progress-rail { margin:0 0 56px; }
+}
+
+@media (max-width:700px) {
+  .v7-lesson .lesson-topbar { top:60px; grid-template-columns:minmax(0,1fr) auto; }
+  .v7-lesson .lesson-top-context,
+  .v7-lesson .lesson-top-actions .v7-pill { display:none; }
+  .v7-lesson .lesson-heading h1 { font-size:clamp(35px,10.8vw,46px); }
+  .v7-lesson .lesson-heading > p { font-size:15px; }
+  .v7-lesson .lesson-progress-rail { display:grid; grid-template-columns:70px minmax(0,1fr); gap:10px 16px; }
+  .v7-lesson .lesson-progress-rail > .axis-eyebrow,
+  .v7-lesson .lesson-progress-value { grid-column:1; }
+  .v7-lesson .lesson-progress-rail > .axis-track,
+  .v7-lesson .lesson-progress-copy { grid-column:2; }
+  .v7-lesson .lesson-tip { grid-column:1 / -1; grid-row:auto; }
+  .v7-lesson .lesson-block-progress { margin-bottom:22px; }
+  .v7-lesson .lesson-engine-content .lesson-block { padding-top:30px !important; }
+  .v7-lesson .geometry-diagram { margin-inline:0; }
+  .v7-lesson .lesson-primary-action,
+  .v7-lesson .guided-submit-button,
+  .v7-lesson .lesson-continue-button { min-height:48px; }
+  .v7-lesson .lesson-result { padding-top:22px; }
+  .v7-lesson .lesson-result-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); padding:0; }
+  .v7-lesson .lesson-result-metric { padding:16px 13px; border-top:1px solid var(--axis-line); }
+  .v7-lesson .lesson-result-metric:nth-child(-n+2) { border-top:0; }
+  .v7-lesson .lesson-result-metric:nth-child(odd) { padding-left:0; border-left:0; }
+  .v7-lesson .lesson-result-metric:nth-child(even) { padding-right:0; }
+  .v7-lesson .lesson-result-metric:last-child:nth-child(odd) { grid-column:1 / -1; padding-right:0; }
+  .v7-lesson .lesson-result-primary { width:100%; min-height:48px; justify-content:center; }
+  .v7-lesson .lesson-result-secondary { width:100%; min-height:46px; justify-content:center; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .v7-lesson *, .v7-lesson *::before, .v7-lesson *::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; }
+}

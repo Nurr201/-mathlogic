@@ -225,11 +225,11 @@ window.DecisionExperiment = (function() {
   function feedbackHtml(record, block) {
     if (!record) return '';
     if (record.completed) {
-      return '<div class="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800" role="status">' +
+      return '<div class="lesson-feedback is-correct mb-6" role="status">' +
         '<strong class="block mb-1">✓</strong><span>' + escapeHtml(block.successFeedback || '') + '</span></div>';
     }
     if (!record.lastFeedback) return '';
-    return '<div class="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-amber-900" role="alert">' +
+    return '<div class="lesson-feedback is-incorrect mb-6" role="alert">' +
       '<strong class="mb-1 block font-extrabold">↻</strong><span>' + escapeHtml(record.lastFeedback) + '</span></div>';
   }
 

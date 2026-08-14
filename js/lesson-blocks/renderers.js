@@ -53,7 +53,7 @@ window.__BlockRenderers = (function() {
         (block.subtitle ? '<p class="text-xl text-slate-500 mt-4 font-medium max-w-xl mx-auto">' + block.subtitle + '</p>' : '') +
         teaserHtml +
         '<div class="mt-10">' +
-          H.btnPrimary('\u041D\u0430\u0447\u0430\u0442\u044C', 'LessonEngine.next()') +
+          H.btnPrimary(_copy('Начать', 'Бастау'), 'LessonEngine.next()') +
         '</div>' +
       '</div>'
     );
@@ -160,7 +160,8 @@ window.__BlockRenderers = (function() {
     return '<div class="my-8 p-8 bg-white rounded-[24px] border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] relative overflow-hidden">' +
       '<div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 to-sky-400"></div>' +
       '<span class="text-blue-600 text-xs font-extrabold uppercase tracking-widest block mb-3">' + (block.formulaLabel || _copy('Формула', 'Формула')) + '</span>' +
-      '<div class="font-mono text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">' + block.formula + '</div>' +
+      '<div class="font-mono text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">' +
+        (block.formulaMath ? H.mathMarkup(block.formulaMath, block.formula, true) : block.formula) + '</div>' +
       '</div>';
   }
 
@@ -467,55 +468,89 @@ window.__BlockRenderers = (function() {
      RESULT
      ------------------------------------------ */
 
+  function _resultText(key) {
+    return window.I18N && I18N.t ? I18N.t('lesson.result.' + key) : key;
+  }
+
+  function _validResultNumber(value) {
+    if (value === undefined || value === null || value === '') return null;
+    var number = Number(value);
+    return isFinite(number) && number >= 0 ? number : null;
+  }
+
   function _formatTime(seconds) {
-    if (seconds >= 60) {
-      return Math.floor(seconds / 60) + '\u00A0\u043C\u0438\u043D ' + (seconds % 60) + '\u00A0\u0441\u0435\u043A';
+    seconds = _validResultNumber(seconds);
+    if (seconds === null) return '';
+    seconds = Math.floor(seconds);
+    var minutes = Math.floor(seconds / 60);
+    var remainder = seconds % 60;
+    if (minutes > 0) {
+      return minutes + '\u00A0' + _resultText('minutes') + (remainder ? ' ' + remainder + '\u00A0' + _resultText('seconds') : '');
     }
-    return seconds + '\u00A0\u0441\u0435\u043A';
+    return seconds + '\u00A0' + _resultText('seconds');
   }
 
-  function _renderNextLessonLink(nextLesson) {
-    if (nextLesson) {
-      return '<a href="' + (nextLesson.link || '#') + '" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg py-4 px-10 rounded-2xl shadow-[0_8px_20px_rgba(79,70,229,0.25)] transition-all hover:-translate-y-0.5">' +
-        '\u0421\u043B\u0435\u0434\u0443\u044E\u0449\u0438\u0439 \u0443\u0440\u043E\u043A: ' + nextLesson.title +
-        ' <svg class="w-5 h-5 inline ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>' +
-        '</a>';
+  function _renderResultMetric(label, value) {
+    if (value === '' || value === undefined || value === null) return '';
+    return '<div class="lesson-result-metric"><dt>' + label + '</dt><dd>' + value + '</dd></div>';
+  }
+
+  function _renderResultMetrics(ctx) {
+    var correct = _validResultNumber(ctx.correctAnswers);
+    var total = _validResultNumber(ctx.totalQuestions);
+    var percentage = _validResultNumber(ctx.percentage);
+    var mistakes = _validResultNumber(ctx.mistakes);
+    var time = _formatTime(ctx.timeSpent);
+    var metrics = [];
+
+    if (total !== null && total > 0 && correct !== null) {
+      correct = Math.min(Math.floor(correct), Math.floor(total));
+      total = Math.floor(total);
+      percentage = Math.round(correct / total * 100);
+      metrics.push(_renderResultMetric(_resultText('score'), percentage + '%'));
+      metrics.push(_renderResultMetric(_resultText('tasks'), correct + ' / ' + total));
+    } else if (percentage !== null) {
+      metrics.push(_renderResultMetric(_resultText('score'), Math.min(100, Math.round(percentage)) + '%'));
     }
-    return '<a href="dashboard.html" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg py-4 px-10 rounded-2xl shadow-[0_8px_20px_rgba(79,70,229,0.25)] transition-all hover:-translate-y-0.5">\u0411\u0430\u049B\u044B\u043B\u0430\u0443 \u0442\u0430\u049B\u0442\u0430\u0441\u044B\u043D\u0430 \u049B\u0430\u0439\u0442\u0443 \u2192</a>';
+    if (time) metrics.push(_renderResultMetric(_resultText('time'), time));
+    if (mistakes !== null) metrics.push(_renderResultMetric(_resultText('mistakes'), Math.floor(mistakes)));
+
+    if (!metrics.length) return '';
+    return '<dl class="lesson-result-metrics" style="--result-metric-count:' + metrics.length + '">' + metrics.join('') + '</dl>';
   }
 
-  function _renderStatsGrid(pct, correct, total, timeStr, steps) {
-    return '<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-lg mx-auto mb-8">' +
-      '<div class="bg-blue-50 rounded-2xl p-4 border border-blue-100"><div class="text-2xl font-black text-blue-700">' + pct + '%</div><div class="text-xs font-bold text-blue-500 mt-1">' + _copy('\u0420\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442', '\u041D\u04D9\u0442\u0438\u0436\u0435') + '</div></div>' +
-      '<div class="bg-amber-50 rounded-2xl p-4 border border-amber-100"><div class="text-2xl font-black text-amber-700">' + correct + ' / ' + total + '</div><div class="text-xs font-bold text-amber-500 mt-1">' + _copy('\u0417\u0430\u0434\u0430\u0447\u0438', '\u0422\u0430\u043F\u0441\u044B\u0440\u043C\u0430\u043B\u0430\u0440') + '</div></div>' +
-      '<div class="bg-emerald-50 rounded-2xl p-4 border border-emerald-100"><div class="text-2xl font-black text-emerald-700">' + timeStr + '</div><div class="text-xs font-bold text-emerald-500 mt-1">' + _copy('\u0412\u0440\u0435\u043C\u044F', '\u0423\u0430\u049B\u044B\u0442') + '</div></div>' +
-      '<div class="bg-purple-50 rounded-2xl p-4 border border-purple-100"><div class="text-2xl font-black text-purple-700">' + steps + '</div><div class="text-xs font-bold text-purple-500 mt-1">' + _copy('\u0428\u0430\u0433\u043E\u0432', '\u049A\u0430\u0434\u0430\u043C') + '</div></div>' +
-      '</div>';
+  function _renderResultNote(mistakes) {
+    mistakes = _validResultNumber(mistakes);
+    if (mistakes === null) return '';
+    var positive = mistakes === 0;
+    return '<section class="lesson-result-note ' + (positive ? 'is-positive' : 'is-review') + '">' +
+      '<p class="lesson-result-note-label">' + _resultText('review') + '</p>' +
+      '<h3>' + _resultText(positive ? 'noMistakesTitle' : 'mistakesTitle') + '</h3>' +
+      '<p>' + _resultText(positive ? 'noMistakesBody' : 'mistakesBody') + '</p>' +
+      '</section>';
   }
 
-  function _renderMistakesWarning(mistakes) {
-    if (mistakes <= 0) return '';
-    return '<div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-8 max-w-md mx-auto">' +
-      '<p class="text-sm font-semibold text-amber-800">\u0411\u044B\u043B\u043E \u0434\u043E\u043F\u0443\u0449\u0435\u043D\u043E ' + mistakes + ' \u043E\u0448\u0438\u0431\u043E\u043A. \u041F\u043E\u043F\u0440\u043E\u0431\u0443\u0439\u0442\u0435 \u043F\u043E\u0432\u0442\u043E\u0440\u0438\u0442\u044C \u0434\u043B\u044F \u043B\u0443\u0447\u0448\u0435\u0433\u043E \u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442\u0430!</p></div>';
+  function _renderResultActions(nextLesson) {
+    var hasNext = nextLesson && nextLesson.link && nextLesson.title;
+    var route = '<a href="dashboard.html" class="' + (hasNext ? 'lesson-result-secondary' : 'lesson-result-primary') + '">' +
+      _resultText('route') + (hasNext ? '' : ' <span aria-hidden="true">\u2192</span>') + '</a>';
+    if (!hasNext) return '<div class="lesson-result-actions">' + route + '</div>';
+    return '<div class="lesson-result-actions">' +
+      '<a href="' + _escapeAttr(nextLesson.link) + '" class="lesson-result-primary" aria-label="' +
+        _escapeAttr(_resultText('nextLesson') + ': ' + nextLesson.title) + '">' + _resultText('nextLesson') + ' <span aria-hidden="true">\u2192</span></a>' +
+      route + '</div>';
   }
 
   function renderResult(block, ctx) {
-    var pct = ctx.percentage || 0;
-    var state = window.__EngineInternal && window.__EngineInternal.state;
-    var timeStr = _formatTime(ctx.timeSpent || 0);
-    var correct = Math.max(0, Number(ctx.correctAnswers) || 0);
-    var total = Math.max(correct, Number(ctx.totalQuestions) || 0);
-    var steps = state ? state.totalBlocks : ctx.total;
-
     return H.wrap(
-      '<div class="text-center py-8">' +
-        '<div class="lesson-finish-mark" aria-hidden="true">◆</div>' +
-        '<h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-2">\u0423\u0440\u043E\u043A \u0437\u0430\u0432\u0435\u0440\u0448\u0451\u043D!</h2>' +
-        '<p class="text-lg text-slate-500 mb-8">' + (block.description || '\u041E\u0442\u043B\u0438\u0447\u043D\u0430\u044F \u0440\u0430\u0431\u043E\u0442\u0430!') + '</p>' +
-        _renderStatsGrid(pct, correct, total, timeStr, steps) +
-        _renderMistakesWarning(ctx.mistakes) +
-        '<div class="flex justify-center">' + _renderNextLessonLink(block.nextLesson) + '</div>' +
-      '</div>'
+      '<section class="lesson-result">' +
+        '<p class="lesson-result-kicker">' + _resultText('label') + '</p>' +
+        '<h2>' + _resultText('title') + '</h2>' +
+        '<p class="lesson-result-description">' + _resultText('description') + '</p>' +
+        _renderResultMetrics(ctx) +
+        _renderResultNote(ctx.mistakes) +
+        _renderResultActions(block.nextLesson) +
+      '</section>'
     );
   }
 

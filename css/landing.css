@@ -38,8 +38,8 @@ body.ml-home { background: var(--ml-home-bg); color: var(--ml-home-ink); }
 .ml-home-nav__inner { width: min(calc(100% - var(--ml-home-gutter) * 2), var(--ml-home-shell)); min-height: 64px; margin: auto; display: flex; align-items: center; gap: 48px; }
 .ml-home-brand { display: inline-flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; letter-spacing: -.025em; }
 .ml-home-brand svg { width: 25px; height: 25px; overflow: visible; }
-.ml-home-brand svg path { fill: none; stroke: currentColor; stroke-width: 1.7; }
-.ml-home-brand svg circle { fill: var(--ml-home-blue); }
+.ml-home-brand svg path { fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: square; stroke-linejoin: miter; }
+.ml-home-brand svg .ml-home-brand__accent { stroke: var(--ml-home-blue); stroke-width: 2; }
 .ml-home-links { display: flex; align-items: center; gap: 24px; }
 .ml-home-links a { color: #555b62; font-size: 13px; font-weight: 500; }
 .ml-home-links a:hover { color: var(--ml-home-ink); }
@@ -270,12 +270,16 @@ html[lang="kk"] .ml-hero h1 { max-width: none; font-size: clamp(50px, 3.9vw, 58p
 .ml-final__copy > p:not(.ml-kicker) { margin-top: 26px; color: #b5bac8; font-size: 17px; }
 .ml-final .ml-final__button { display: inline-flex; min-height: 48px; align-items: center; margin-top: 30px; padding: 0 20px; background: white; color: var(--ml-home-ink); font-size: 13px; font-weight: 600; }
 
-.ml-footer { padding-block: 32px; background: var(--ml-home-dark); color: #c3c6d0; border-top: 1px solid #30333e; }
-.ml-footer .ml-shell { display: flex; align-items: center; gap: 55px; }
-.ml-footer nav { display: flex; gap: 28px; font-size: 12px; }
+.ml-footer { padding-block:44px 26px; background:var(--ml-home-dark); color:#c3c6d0; border-top:1px solid #30333e; }
+.ml-footer .ml-footer__shell { display:grid; grid-template-columns:minmax(220px,1fr) auto auto; align-items:start; gap:34px 55px; }
+.ml-footer__brand p { max-width:34ch; margin-top:12px; color:#888e9e; font-size:12px; line-height:1.55; }
+.ml-footer nav { display:flex; flex-wrap:wrap; gap:12px 28px; max-width:510px; font-size:12px; }
 .ml-footer nav a:hover { color: white; }
-.ml-footer__langs { margin-left: auto; color: #888e9e; }
+.ml-footer__langs { color:#888e9e; }
 .ml-footer__langs button[aria-pressed="true"] { color: white; }
+.ml-footer__bottom { grid-column:1/-1; display:flex; justify-content:space-between; gap:24px; padding-top:22px; border-top:1px solid #30333e; color:#73798a; font:500 10px/1.4 "DM Sans",sans-serif; letter-spacing:.04em; }
+.ml-footer__bottom a { color:#aeb3c0; }
+.ml-footer__bottom a:hover { color:white; }
 
 .ml-reveal { opacity: 0; transform: translateY(16px); transition: opacity .55s ease, transform .55s cubic-bezier(.2,.75,.25,1); }
 .ml-reveal.is-visible { opacity: 1; transform: none; }
@@ -685,6 +689,8 @@ html[lang="kk"] .ml-hero h1 { max-width: none; font-size: clamp(50px, 3.9vw, 58p
   .ml-method__row { padding: 0; }
   .ml-function__grid { padding: 0; }
   .ml-function-graph svg { min-height: 0; }
+  .ml-footer .ml-footer__shell { grid-template-columns:1fr auto; }
+  .ml-footer nav { grid-column:1/-1; }
 }
 
 @media (max-width: 520px) {
@@ -742,9 +748,10 @@ html[lang="kk"] .ml-hero h1 { max-width: none; font-size: clamp(50px, 3.9vw, 58p
   .ml-final { min-height: 510px; }
   .ml-final__copy { padding-inline: 18px; }
   .ml-final__copy h2 { font-size: clamp(54px, 17vw, 76px); }
-  .ml-footer .ml-shell { align-items: flex-start; flex-wrap: wrap; gap: 25px 35px; }
-  .ml-footer nav { order: 3; width: 100%; justify-content: space-between; gap: 10px; }
-  .ml-footer__langs { margin-left: auto; }
+  .ml-footer .ml-footer__shell { grid-template-columns:1fr; gap:25px; }
+  .ml-footer nav { width:100%; display:grid; grid-template-columns:1fr 1fr; justify-content:start; gap:10px 18px; }
+  .ml-footer__langs { justify-self:start; }
+  .ml-footer__bottom { flex-direction:column; gap:8px; }
   .ml-hero { width: calc(100% - 24px); margin-top: 12px; padding: 32px 20px; gap: 34px; border-radius: 18px; }
   .ml-hero-demo { width: 100%; margin: 0; padding: 0; }
   .ml-hero-proof { grid-template-columns: 1fr 1fr; row-gap: 10px; }

@@ -55,10 +55,22 @@ window.MathResponseBlock = (function() {
     return !!(block && block.answer && (block.answer.kind === 'numeric-angle' || block.answer.validation === 'numeric-angle'));
   }
 
+  function isNumericAnswer(block) {
+    return !!(block && block.inputMode === 'numeric');
+  }
+
   function usesStandaloneAnswer(block, numericAngle) {
     if (!block || !block.expression || numericAngle) return false;
     var visibleExpression = String(block.expression).replace(/<[^>]*>/g, '').replace(/\s+/g, '');
     return visibleExpression.length > 18;
+  }
+
+  function mappingPairs(block) {
+    if (!isNumericAnswer(block) || typeof block.expression !== 'string') return null;
+    var pairs = block.expression.split(',').map(function(pair) { return pair.trim(); }).filter(Boolean);
+    if (pairs.length < 2 || !pairs.slice(0, -1).every(function(pair) { return /^.+→.+$/.test(pair) && pair.indexOf('?') === -1; })) return null;
+    var answerMatch = pairs[pairs.length - 1].match(/^(.+→)\s*\?$/);
+    return answerMatch ? { pairs: pairs.slice(0, -1), prefix: answerMatch[1].trim() } : null;
   }
 
   function numericInputHtml(block, index, value, disabled) {
@@ -82,14 +94,17 @@ window.MathResponseBlock = (function() {
     return '';
   }
 
-  function feedbackHtml(record, index) {
+  function feedbackHtml(block, record, index) {
     if (!record.lastStatus || !record.lastFeedback) {
       return '<div id="math-response-feedback-' + index + '" class="math-response-feedback-slot" aria-live="polite"></div>';
     }
     var status = record.lastStatus;
     var role = status === 'incorrect' ? 'alert' : 'status';
+    var feedback = ['empty', 'incomplete', 'invalid'].indexOf(status) > -1
+      ? syntaxFeedback(status, block)
+      : record.lastFeedback;
     return '<div id="math-response-feedback-' + index + '" class="math-response-feedback is-' + status + '" role="' + role + '" aria-live="polite" tabindex="-1">' +
-      '<strong>' + escapeHtml(feedbackTitle(status)) + '</strong><p>' + record.lastFeedback + '</p></div>';
+      '<strong>' + escapeHtml(feedbackTitle(status)) + '</strong><p>' + feedback + '</p></div>';
   }
 
   function hintsHtml(block, record, index) {
@@ -117,8 +132,22 @@ window.MathResponseBlock = (function() {
       : '<button type="button" class="guided-submit-button" onclick="MathResponseBlock.submit(' + ctx.index + ')">' + escapeHtml(record.lastStatus === 'incorrect' ? text('checkAgain', 'Check again') : text('check', 'Check')) + '</button>';
     var numericAngle = isNumericAngle(block);
     var standaloneAnswer = usesStandaloneAnswer(block, numericAngle);
-    var expressionHtml = block.expression
-      ? '<span class="' + (standaloneAnswer ? 'math-response-problem-expression' : 'math-response-given') + '" role="math" aria-label="' + escapeHtml(block.expression) + '">' + block.expression + '</span>'
+    var mappedPairs = !standaloneAnswer && !numericAngle ? mappingPairs(block) : null;
+    var renderedExpression = !standaloneAnswer && typeof block.expression === 'string'
+      ? block.expression.replace(/\?\s*$/, '')
+      : block.expression;
+    var expressionHtml = renderedExpression
+      ? '<span class="' + (standaloneAnswer ? 'math-response-problem-expression' : 'math-response-given') + '" role="math" aria-label="' + escapeHtml(renderedExpression) + '">' +
+        (block.expressionMath ? H.mathMarkup(block.expressionMath, renderedExpression, true) : renderedExpression) + '</span>'
+      : '';
+    var answerHtml = numericAngle
+      ? numericInputHtml(block, ctx.index, value, disabled)
+      : '<math-field id="' + fieldId(ctx.index) + '" class="math-response-field" smart-fence math-virtual-keyboard-policy="auto"' +
+        (disabled ? ' read-only disabled' : '') + ' aria-describedby="math-response-feedback-' + ctx.index + '">' + escapeHtml(value) + '</math-field>';
+    var mappingPairsHtml = mappedPairs
+      ? '<div class="math-response-mapping-pairs" role="math" aria-label="' + escapeHtml(block.expression.replace(/,/g, ';')) + '">' +
+          mappedPairs.pairs.map(function(pair) { return '<span class="math-response-mapping-pair">' + escapeHtml(pair) + '</span>'; }).join('') +
+          '<span class="math-response-mapping-pair is-answer"><span>' + escapeHtml(mappedPairs.prefix) + '</span>' + answerHtml + '</span></div>'
       : '';
     return H.wrap(
       '<div class="py-6 math-response-block' + (block.compact ? ' is-compact' : '') + '">' + H.progress(ctx.index, ctx.total) +
@@ -128,16 +157,12 @@ window.MathResponseBlock = (function() {
         '<h3 class="guided-question">' + block.question + '</h3>' +
         (standaloneAnswer ? expressionHtml : '') +
         '<label class="math-response-label" for="' + fieldId(ctx.index) + '"><span>' + escapeHtml(block.inputLabel || text('answer', 'Answer')) + '</span></label>' +
-        '<div class="math-response-equation ' + (standaloneAnswer ? 'is-standalone-answer' : 'is-inline-expression') + (block.compact ? ' is-compact' : '') + (numericAngle ? ' is-numeric-angle' : '') + statusClass + '">' +
-          (!standaloneAnswer ? expressionHtml : '') +
-          (numericAngle
-            ? numericInputHtml(block, ctx.index, value, disabled)
-            : '<math-field id="' + fieldId(ctx.index) + '" class="math-response-field" smart-fence math-virtual-keyboard-policy="auto"' +
-              (disabled ? ' read-only disabled' : '') + ' aria-describedby="math-response-feedback-' + ctx.index + '">' + escapeHtml(value) + '</math-field>') +
+        '<div class="math-response-equation ' + (standaloneAnswer ? 'is-standalone-answer' : 'is-inline-expression') + (mappedPairs ? ' is-mapping-pairs' : '') + (block.compact ? ' is-compact' : '') + (numericAngle ? ' is-numeric-angle' : '') + statusClass + '">' +
+          (mappedPairs ? mappingPairsHtml : (!standaloneAnswer ? expressionHtml : '') + answerHtml) +
         '</div>' +
         (!disabled ? '<div class="math-response-tools"><button type="button" onclick="MathResponseBlock.clear(' + ctx.index + ')">' + escapeHtml(text('clear', 'Clear')) + '</button>' +
           (block.typingHelp === false ? '' : '<span>' + escapeHtml(text('typingHelp', 'Use ^ for a power and / for a fraction')) + '</span>') + '</div>' : '') +
-        hintsHtml(block, record, ctx.index) + feedbackHtml(record, ctx.index) +
+        hintsHtml(block, record, ctx.index) + feedbackHtml(block, record, ctx.index) +
         '<div class="guided-actions">' + (record.attemptCount ? '<span class="guided-attempts">' + escapeHtml(text('attempts', 'Attempts')) + ': ' + record.attemptCount + '</span>' : '') + action + '</div>' +
       '</div>'
     );
@@ -253,6 +278,9 @@ window.MathResponseBlock = (function() {
       if (status === 'empty') return text('angleEmptyFeedback', 'Enter the number of degrees before checking.');
       if (status === 'incomplete') return text('angleIncompleteFeedback', 'Finish writing the number of degrees.');
       return text('angleInvalidFeedback', 'Enter one number for the angle, for example 67.');
+    }
+    if (isNumericAnswer(block) && status !== 'empty') {
+      return text('numberInvalidFeedback', 'Enter one number.');
     }
     if (status === 'empty') return text('emptyFeedback', 'Write an answer before checking it.');
     if (status === 'incomplete') return text('incompleteFeedback', 'The expression is not finished. Complete the exponent, fraction or parentheses.');

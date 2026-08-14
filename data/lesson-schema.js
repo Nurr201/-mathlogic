@@ -30,7 +30,7 @@ window.LESSON_SCHEMA = (function() {
     goal: ['id', 'type', 'icon', 'title', 'text'],
     warmup: ['id', 'type', 'title', 'question', 'options', 'answer', 'points'],
     anchor: ['id', 'type', 'visual', 'title', 'problem', 'question'],
-    theory: ['id', 'type', 'title', 'content', 'formula', 'formulaLabel', 'examples'],
+    theory: ['id', 'type', 'title', 'content', 'formula', 'formulaMath', 'formulaLabel', 'examples'],
     quiz: ['id', 'type', 'question', 'equation', 'options', 'answer', 'explanation', 'hint', 'points'],
     input: ['id', 'type', 'question', 'equation', 'fields', 'answer', 'explanation', 'points', 'unordered'],
     mistake: ['id', 'type', 'title', 'problem', 'wrongSolution', 'correctSolution', 'explanation'],
@@ -39,11 +39,11 @@ window.LESSON_SCHEMA = (function() {
     reflection: ['id', 'type', 'title', 'questions'],
     result: ['id', 'type', 'description', 'xp', 'nextLesson'],
     'factor-model': ['id', 'type', 'title', 'badgeLabel', 'intro', 'operation', 'base', 'leftCount', 'rightCount', 'result', 'ariaLabel', 'explanation'],
-    'worked-example': ['id', 'type', 'title', 'badgeLabel', 'intro', 'expression', 'steps', 'result', 'formula', 'formulaLabel', 'conditions', 'takeaway'],
-    'guided-practice': ['id', 'type', 'title', 'badgeLabel', 'prompt', 'expression', 'diagram', 'question', 'responseType', 'options', 'answer', 'acceptedAnswers', 'inputLabel', 'placeholder', 'hints', 'successFeedback', 'feedback', 'answerFeedback', 'role', 'points'],
-    'math-response': ['id', 'type', 'title', 'badgeLabel', 'prompt', 'expression', 'question', 'inputLabel', 'answer', 'numericInput', 'keyboard', 'misconceptions', 'hints', 'successFeedback', 'feedback', 'role', 'points', 'compact', 'typingHelp'],
+    'worked-example': ['id', 'type', 'title', 'badgeLabel', 'intro', 'expression', 'expressionMath', 'steps', 'result', 'resultMath', 'formula', 'formulaMath', 'formulaLabel', 'conditions', 'takeaway'],
+    'guided-practice': ['id', 'type', 'title', 'badgeLabel', 'prompt', 'expression', 'expressionMath', 'diagram', 'question', 'responseType', 'options', 'answer', 'acceptedAnswers', 'inputLabel', 'inputPrefixMath', 'inputMode', 'placeholder', 'hints', 'successFeedback', 'feedback', 'answerFeedback', 'role', 'points'],
+    'math-response': ['id', 'type', 'title', 'badgeLabel', 'prompt', 'expression', 'expressionMath', 'question', 'inputLabel', 'answer', 'numericInput', 'keyboard', 'misconceptions', 'hints', 'successFeedback', 'feedback', 'role', 'points', 'compact', 'typingHelp'],
     'equation-step': ['id', 'type', 'title', 'badgeLabel', 'intro', 'initial', 'historyLabel', 'balanceModel', 'steps', 'keyboard', 'successTitle', 'successFeedback', 'role', 'points'],
-    'graph-workspace': ['id', 'type', 'title', 'badgeLabel', 'intro', 'mode', 'viewport', 'function', 'plotPoints', 'referenceX', 'target', 'tolerance', 'rows', 'keyboard', 'showLine', 'revealLine', 'lineLabel', 'parameter', 'requiredValues', 'targetParameter', 'task', 'followUp', 'hints', 'successFeedback', 'feedback', 'misconceptions', 'role', 'points', 'uiLabels'],
+    'graph-workspace': ['id', 'type', 'title', 'badgeLabel', 'intro', 'mode', 'viewport', 'function', 'functions', 'plotPoints', 'referenceX', 'target', 'tolerance', 'rows', 'keyboard', 'showLine', 'revealLine', 'lineLabel', 'parameter', 'requiredValues', 'targetParameter', 'task', 'followUp', 'hints', 'successFeedback', 'feedback', 'misconceptions', 'role', 'points', 'uiLabels'],
     'geometry-workspace': ['id', 'type', 'title', 'badgeLabel', 'intro', 'mode', 'viewport', 'vertices', 'draggableVertices', 'constraints', 'keyboardStep', 'showMeasurements', 'showSum', 'task', 'requiredMoves', 'requiredCategories', 'categoryLabels', 'explorationGate', 'followUp', 'hints', 'successFeedback', 'feedback', 'role', 'points', 'auxiliaryAt', 'proofSteps'],
     'lesson-summary': ['id', 'type', 'title', 'description', 'capabilities', 'resultLabels', 'uiLabels', 'completesLesson', 'nextLesson'],
   };
@@ -200,12 +200,17 @@ window.LESSON_SCHEMA = (function() {
       if (viewport.gridStep !== undefined && (!_isFiniteNumber(viewport.gridStep) || viewport.gridStep <= 0)) errors.push(prefix + ' viewport.gridStep must be positive');
       if (viewport.labelStep !== undefined && (!_isFiniteNumber(viewport.labelStep) || viewport.labelStep <= 0)) errors.push(prefix + ' viewport.labelStep must be positive');
     }
-    if (block.function !== undefined) {
-      if (!block.function || block.function.type !== 'linear') errors.push(prefix + ' function.type must be "linear"');
-      else {
-        if (!_isFiniteNumber(block.function.k)) errors.push(prefix + ' function.k must be a finite number');
-        if (!_isFiniteNumber(block.function.b)) errors.push(prefix + ' function.b must be a finite number');
-      }
+    function checkFunction(fn, fnPrefix) {
+      var types = ['linear', 'quadratic', 'cubic', 'reciprocal'];
+      if (!fn || types.indexOf(fn.type) === -1) { errors.push(fnPrefix + ' type must be linear, quadratic, cubic, or reciprocal'); return; }
+      if (fn.type === 'linear' && (!_isFiniteNumber(fn.k) || !_isFiniteNumber(fn.b))) errors.push(fnPrefix + ' linear function requires finite k and b');
+      if ((fn.type === 'quadratic' || fn.type === 'cubic') && !_isFiniteNumber(fn.a)) errors.push(fnPrefix + ' requires a finite coefficient a');
+      if (fn.type === 'reciprocal' && !_isFiniteNumber(fn.k)) errors.push(fnPrefix + ' reciprocal function requires a finite coefficient k');
+    }
+    if (block.function !== undefined) checkFunction(block.function, prefix + '.function');
+    if (block.functions !== undefined) {
+      if (!Array.isArray(block.functions) || block.functions.length < 2) errors.push(prefix + ' functions requires at least two linear functions');
+      else block.functions.forEach(function(fn, index) { checkFunction(fn, prefix + '.functions[' + index + ']'); });
     }
     function checkPoint(point, pointPrefix) {
       if (!point || !_isFiniteNumber(point.x) || !_isFiniteNumber(point.y)) errors.push(pointPrefix + ' requires finite x and y');
@@ -225,7 +230,7 @@ window.LESSON_SCHEMA = (function() {
     }
     if (block.mode === 'parameter') {
       var parameter = block.parameter;
-      if (!parameter || ['k', 'b'].indexOf(parameter.name) === -1) errors.push(prefix + ' parameter.name must be k or b');
+      if (!parameter || ['k', 'b', 'a'].indexOf(parameter.name) === -1) errors.push(prefix + ' parameter.name must be k, b, or a');
       else {
         ['min', 'max', 'step', 'initial'].forEach(function(key) {
           if (!_isFiniteNumber(parameter[key])) errors.push(prefix + '.parameter.' + key + ' must be a finite number');
@@ -234,6 +239,7 @@ window.LESSON_SCHEMA = (function() {
         if (_isFiniteNumber(parameter.step) && parameter.step <= 0) errors.push(prefix + ' parameter.step must be positive');
       }
       if (block.requiredValues !== undefined && (!Array.isArray(block.requiredValues) || block.requiredValues.some(function(value) { return !_isFiniteNumber(value); }))) errors.push(prefix + ' requiredValues must contain finite numbers');
+      if (parameter && parameter.values !== undefined && (!Array.isArray(parameter.values) || parameter.values.length < 2 || parameter.values.some(function(value) { return !_isFiniteNumber(value); }))) errors.push(prefix + '.parameter.values must contain at least two finite numbers');
     }
     if (block.followUp !== undefined) {
       if (!block.followUp || !Array.isArray(block.followUp.options) || block.followUp.options.length < 2) errors.push(prefix + ' followUp requires at least two options');

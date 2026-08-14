@@ -40,20 +40,26 @@
   function renderProfile() {
     var user = ML.getUser() || {};
     var name = user.name || copy('Пользователь', 'Пайдаланушы');
+    var username = user.username || '';
     document.getElementById('settings-name').value = user.name || '';
-    document.getElementById('settings-username').value = user.username || '';
+    document.getElementById('settings-username').value = username;
     document.getElementById('settings-avatar').textContent = name.charAt(0).toUpperCase();
+    document.getElementById('settings-profile-name').textContent = name;
+    var usernamePreview = document.getElementById('settings-profile-username');
+    usernamePreview.textContent = username;
+    usernamePreview.hidden = !username;
     var navAvatar = document.getElementById('settings-avatar-nav');
     if (navAvatar) navAvatar.textContent = name.charAt(0).toUpperCase();
   }
 
   function renderProgressSummary() {
     var total = Object.keys(Learning.getRegistry()).length;
-    var completed = Object.keys(ML.getCompletedLessons()).length;
+    var completedLessons = ML.getCompletedLessons();
+    var completed = Object.keys(completedLessons).length;
     var sessions = ML.get('lesson.sessions', {}) || {};
     var active = Object.keys(sessions).filter(function(id) {
       var session = sessions[id];
-      return session && Array.isArray(session.completedBlocks) && session.completedBlocks.length > 0;
+      return !completedLessons[id] && session && Array.isArray(session.completedBlocks) && session.completedBlocks.length > 0;
     }).length;
     document.getElementById('progress-summary').textContent = completed + ' / ' + total + ' ' + copy('уроков завершено', 'сабақ аяқталды') + ' · ' + active + ' ' + copy('в процессе', 'жалғасуда');
   }
@@ -91,7 +97,7 @@
     var url = URL.createObjectURL(blob);
     var link = document.createElement('a');
     link.href = url;
-    link.download = 'mathlogic-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+    link.download = 'geomat-backup-' + new Date().toISOString().slice(0, 10) + '.json';
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -117,8 +123,12 @@
   function initNavigation() {
     document.querySelectorAll('[data-settings-link]').forEach(function(link) {
       link.addEventListener('click', function() {
-        document.querySelectorAll('[data-settings-link]').forEach(function(item) { item.classList.remove('active'); });
+        document.querySelectorAll('[data-settings-link]').forEach(function(item) {
+          item.classList.remove('active');
+          item.removeAttribute('aria-current');
+        });
         link.classList.add('active');
+        link.setAttribute('aria-current', 'true');
       });
     });
   }
@@ -153,8 +163,20 @@
     document.getElementById('settings-name').addEventListener('input', function() {
       var value = this.value.trim();
       document.getElementById('settings-avatar').textContent = (value || copy('П', 'П')).charAt(0).toUpperCase();
+      document.getElementById('settings-profile-name').textContent = value || copy('Пользователь', 'Пайдаланушы');
       var navAvatar = document.getElementById('settings-avatar-nav');
       if (navAvatar) navAvatar.textContent = (value || copy('П', 'П')).charAt(0).toUpperCase();
+    });
+    document.getElementById('settings-username').addEventListener('input', function() {
+      var preview = document.getElementById('settings-profile-username');
+      preview.textContent = this.value.trim();
+      preview.hidden = !preview.textContent;
+    });
+    document.querySelectorAll('[data-app-logout]').forEach(function(button) {
+      button.addEventListener('click', function() {
+        ML.clearUser();
+        window.location.href = 'login.html';
+      });
     });
     initNavigation();
     render();

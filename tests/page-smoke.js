@@ -107,7 +107,7 @@ const LESSON = [
   'js/lesson-blocks/geometry-diagram.js', 'js/lesson-blocks/guided.js',
   'js/math-input.js', 'js/lesson-blocks/math-response.js', 'js/lesson-blocks/equation-step.js', 'js/lesson-blocks/graph-workspace.js', 'js/lesson-blocks/geometry-workspace.js',
   'data/lessons/geometry-g03-transversal.js', 'data/lessons/geometry-g03-criteria.js', 'data/lessons/geometry-g03-properties.js', 'data/lessons/geometry-g03-triangle-relations.js', 'data/lessons/geometry-g03-right-triangles.js',
-  'data/lesson-schema.js', 'data/lessons/fractions.js', 'data/lessons/percent.js', 'data/lessons/proportions.js', 'data/lessons/parts-mixtures.js', 'data/lessons/model.js', 'data/lessons/practice.js', 'data/lessons/natural-exponent-meaning.js', 'data/lessons/exponents.js', 'data/lessons/power-rules.js', 'data/lessons/zero-negative-exponents.js', 'data/lessons/standard-form.js', 'data/lessons/monomials-standard-form.js', 'data/lessons/polynomials-add-subtract.js', 'data/lessons/monomial-polynomial-multiplication.js', 'data/lessons/square-sum-difference.js', 'data/lessons/difference-squares.js', 'data/lessons/cube-identities.js', 'data/lessons/factorization.js', 'data/lessons/polynomial-transformations-practice.js', 'data/lessons/linear-equations.js', 'data/lessons/linear-functions.js', 'data/lessons/triangle-angle-sum.js', 'data/lessons/geometry-figures-axioms.js', 'data/lessons/geometry-equal-figures.js', 'data/lessons/geometry-proof-methods.js', 'data/lessons/geometry-angles-perpendicular.js', 'data/lessons/geometry-initial-practice.js', 'data/lessons/geometry-triangle-types.js', 'data/lessons/geometry-triangle-elements.js', 'data/lessons/geometry-triangle-congruence-1.js', 'data/lessons/geometry-triangle-congruence-2.js', 'data/lessons/geometry-triangle-isosceles.js', 'data/lessons/geometry-triangle-equilateral.js', 'data/lessons/geometry-triangle-congruence-practice.js', 'js/lesson.js',
+  'data/lesson-schema.js', 'data/lessons/fractions.js', 'data/lessons/percent.js', 'data/lessons/proportions.js', 'data/lessons/parts-mixtures.js', 'data/lessons/model.js', 'data/lessons/practice.js', 'data/lessons/natural-exponent-meaning.js', 'data/lessons/exponents.js', 'data/lessons/power-rules.js', 'data/lessons/zero-negative-exponents.js', 'data/lessons/standard-form.js', 'data/lessons/monomials-standard-form.js', 'data/lessons/polynomials-add-subtract.js', 'data/lessons/monomial-polynomial-multiplication.js', 'data/lessons/square-sum-difference.js', 'data/lessons/difference-squares.js', 'data/lessons/cube-identities.js', 'data/lessons/factorization.js', 'data/lessons/polynomial-transformations-practice.js', 'data/lessons/algebraic-fraction-property.js', 'data/lessons/algebraic-fraction-domain.js', 'data/lessons/algebraic-fraction-common-denominator.js', 'data/lessons/algebraic-fraction-add-subtract.js', 'data/lessons/algebraic-fraction-multiply-divide.js', 'data/lessons/algebraic-fraction-transformations.js', 'data/lessons/linear-equations.js', 'data/lessons/function-meaning.js', 'data/lessons/coordinate-plane.js', 'data/lessons/linear-functions.js', 'data/lessons/triangle-angle-sum.js', 'data/lessons/geometry-figures-axioms.js', 'data/lessons/geometry-equal-figures.js', 'data/lessons/geometry-proof-methods.js', 'data/lessons/geometry-angles-perpendicular.js', 'data/lessons/geometry-initial-practice.js', 'data/lessons/geometry-triangle-types.js', 'data/lessons/geometry-triangle-elements.js', 'data/lessons/geometry-triangle-congruence-1.js', 'data/lessons/geometry-triangle-congruence-2.js', 'data/lessons/geometry-triangle-isosceles.js', 'data/lessons/geometry-triangle-equilateral.js', 'data/lessons/geometry-triangle-congruence-practice.js', 'js/lesson.js',
 ];
 
 function testDashboardShell() {
@@ -126,7 +126,7 @@ function testLocalMathEditorDependency() {
   const html = fs.readFileSync(path.join(ROOT, 'lesson.html'), 'utf8');
   const assets = fs.readFileSync(path.join(ROOT, 'data/lesson-assets.js'), 'utf8');
   const license = fs.readFileSync(path.join(ROOT, 'vendor/mathlive/LICENSE.txt'), 'utf8');
-  const manifest = fs.readFileSync(path.join(ROOT, 'vendor/mathlive/README.mathlogic.md'), 'utf8');
+  const manifest = fs.readFileSync(path.join(ROOT, 'vendor/mathlive/README.geomat.md'), 'utf8');
   assert.equal(html.includes('vendor/mathlive/mathlive.min.js'), false);
   assert.ok(assets.includes('vendor/mathlive/mathlive.min.js') === false);
   assert.ok(fs.readFileSync(path.join(ROOT, 'js/lesson-loader.js'), 'utf8').includes('vendor/mathlive/mathlive.min.js'));
@@ -162,8 +162,8 @@ function testDashboardResponsiveContract() {
 
 function testProgramCurriculum() {
   const programCss = fs.readFileSync(path.join(ROOT, 'css/editorial.css'), 'utf8');
-  assert.ok(programCss.includes('.v7-program-topics { column-count:3;'), 'desktop topics use independent columns');
-  assert.ok(programCss.includes('.v7-program-topics { column-count:2;'), 'tablet topics use two compact columns');
+  assert.ok(programCss.includes('.v7-program-topics { column-count:3;'), 'desktop topics use three independent-height columns');
+  assert.ok(programCss.includes('.v7-program-topics { column-count:2;'), 'tablet topics use two independent-height columns');
   assert.ok(programCss.includes('.v7-program-topics { column-count:1;'), 'mobile topics stack in one column');
   function lessonMarkup(html, id) {
     const idStart = html.indexOf('data-lesson-id="' + id + '"');
@@ -197,6 +197,7 @@ function testProgramCurriculum() {
   assert.equal(algebraContent.includes('aria-expanded'), false, 'Program has no accordion state');
   assert.equal(algebraContent.includes('data-program-module'), false, 'Program has no collapsible module control');
   assert.ok(algebraContent.includes('data-topic-id="ALG-02.powers"'), 'Program renders canonical topic groups');
+  assert.ok(algebraContent.includes('РАЗДЕЛ'), 'each large module has an explicit section label');
   assert.ok(algebraContent.includes('ТЕМА 01'), 'each topic has a distinct RU eyebrow');
   assert.ok(algebraContent.includes('Степени</h3>'), 'a topic has its own heading');
   assert.ok(algebra.document.getElementById('program-now').innerHTML.includes('Линейные уравнения'));
@@ -226,13 +227,13 @@ function testProgramCurriculum() {
     const row = lessonMarkup(algebraContent, id);
     assert.ok(row.includes('<a class="v7-program-lesson-title" href="lesson.html?id=' + id + '">'), 'every published polynomial lesson has a canonical title link');
     assert.equal(row.includes('Готовится'), false, 'published polynomial lessons do not look planned');
-    assert.ok(row.includes(' мин'), 'published polynomial lessons show duration');
+    assert.equal(row.includes(' мин'), false, 'published polynomial lessons do not show duration');
   });
   assert.ok(algebraContent.includes('data-topic-id="ALG-03.monomials-polynomials"'));
   assert.ok(algebraContent.includes('data-topic-id="ALG-03.identities"'));
   const availableExponentBeforePrerequisite = lessonMarkup(algebraContent, 'algebra.exponents.basics');
   assert.ok(availableExponentBeforePrerequisite.includes('<a class="v7-program-lesson-title" href="lesson.html?id=algebra.exponents.basics">'), 'an implemented lesson remains directly openable before its prerequisite is complete');
-  assert.ok(availableExponentBeforePrerequisite.includes('Доступен · 20 мин'), 'implemented lessons are available before their prerequisite is complete');
+  assert.ok(availableExponentBeforePrerequisite.includes('Открыть'), 'implemented lessons are directly openable before their prerequisite is complete');
   const currentEquation = lessonMarkup(algebraContent, 'algebra.linear-equations.equivalent-transformations');
   assert.ok(currentEquation.includes('<a class="v7-program-lesson-title" href="lesson.html?id=algebra.linear-equations.equivalent-transformations">'));
   assert.ok(currentEquation.includes('Линейные уравнения'));
@@ -242,10 +243,10 @@ function testProgramCurriculum() {
   ['algebra.g7.alg-01.fractions', 'algebra.g7.alg-01.percent', 'algebra.g7.alg-01.proportions', 'algebra.g7.alg-01.parts-mixtures', 'algebra.g7.alg-01.model', 'algebra.g7.alg-01.practice'].forEach(function(id) {
     const row = lessonMarkup(algebraContent, id);
     assert.ok(row.includes('<a class="v7-program-lesson-title" href="lesson.html?id=' + id + '">'), 'implemented ALG-01 lesson has a canonical title link');
-    assert.ok(row.includes('Доступен · 18 мин'), 'implemented ALG-01 lesson is directly openable without a prerequisite lock');
+    assert.ok(row.includes('Открыть'), 'implemented ALG-01 lesson is directly openable without a prerequisite lock');
   });
-  assert.ok(algebraContent.includes('4 урока'), 'topic counter describes lessons in that topic');
   assert.ok(algebraContent.includes('0 / 4 пройдено'), 'published topic progress is factual before completion');
+  assert.equal(algebraContent.includes(' мин'), false, 'Program does not display estimated lesson duration');
   assert.equal(displayedAlgebraIds.length, vm.runInContext("Learning.getLessons('algebra').length", algebra.context), 'planned lessons remain visible in the learning path');
 
   vm.runInContext("ML.completeLesson('algebra.g7.alg-02.meaning',{percentage:100});MathLogicProgram.selectSubject('algebra')", algebra.context);
@@ -288,7 +289,7 @@ function testProgramCurriculum() {
   assert.ok(kk.document.getElementById('program-content').innerHTML.includes('Үшбұрыш бұрыштарының қосындысы'));
   assert.ok(kk.document.getElementById('program-content').innerHTML.includes('ТАҚЫРЫП 01'));
   assert.ok(lessonMarkup(kk.document.getElementById('program-content').innerHTML, 'geometry.triangle-angle-sum').includes('<a class="v7-program-lesson-title" href="lesson.html?id=geometry.triangle-angle-sum">Үшбұрыш бұрыштарының қосындысы</a>'));
-  assert.ok(kk.document.getElementById('program-content').innerHTML.includes('сабақ'));
+  assert.ok(kk.document.getElementById('program-content').innerHTML.includes('Сабақ '));
   assert.ok(kk.document.getElementById('program-now').innerHTML.includes('Келесі сабақ'));
 
   vm.runInContext("ML.setLessonSession('algebra.linear-functions.graph',{completedBlocks:[0],currentIndex:1});MathLogicProgram.selectSubject('algebra')", algebra.context);
@@ -304,6 +305,7 @@ function testProgramCurriculum() {
   assert.equal(html.includes('program-grades'), false);
   assert.ok(css.includes('.v7-program-large-module'));
   assert.equal(css.includes('.v7-program-lesson.is-current {'), false, 'a resumable lesson row stays visually neutral');
+  assert.ok(css.includes('.v7-program-topic { display:inline-block; width:100%; min-width:0; box-sizing:border-box; margin:0 0 12px; break-inside:avoid;'));
   assert.ok(css.includes('.v7-program-topics { column-count:3;'));
   assert.ok(css.includes('@media (max-width:1199px)'));
   assert.ok(css.includes('@media (max-width:760px)'));
@@ -318,8 +320,10 @@ function testProgramCurriculum() {
 function testNavigationResponsivenessContract() {
   const animations = fs.readFileSync(path.join(ROOT, 'js/animations.js'), 'utf8');
   const css = fs.readFileSync(path.join(ROOT, 'css/editorial.css'), 'utf8');
+  const settings = fs.readFileSync(path.join(ROOT, 'js/settings.js'), 'utf8');
   assert.equal(/setTimeout\([^\n]*location\.href/.test(animations), false, 'page transitions do not delay native navigation');
   assert.equal(animations.includes("a.addEventListener('click'"), false, 'page transitions do not intercept ordinary links');
+  assert.ok(settings.includes('return !completedLessons[id] && session && Array.isArray(session.completedBlocks)'), 'completed lesson snapshots are not counted as active settings progress');
   assert.ok(css.includes('.v7-button:active:not(:disabled)'));
   assert.ok(css.includes('.v7-links a:active'));
   assert.ok(css.includes('.v7-lesson .lesson-engine-content button:not(:disabled):active'));
@@ -380,6 +384,80 @@ function testBilingualLessonContent() {
   assert.equal(vm.runInContext("__EngineInternal.state.lesson.meta.routeStages[1].label", ru.context), 'Умножение');
 }
 
+function testSharedResultRenderer() {
+  const kk = testLesson('algebra.vieta.intro', 'Виет теоремасы', { math_logic_lang: 'kk' });
+  assert.equal(vm.runInContext('__EngineInternal.state.totalBlocks', kk.context), undefined, 'private state does not expose totalBlocks');
+  const kkHtml = vm.runInContext("LessonBlocks.render('result',{nextLesson:{link:'lesson.html?id=algebra.vieta.practice',title:'Виет теоремасы: практика'}},{percentage:99,correctAnswers:3,totalQuestions:4,timeSpent:82,mistakes:1})", kk.context);
+  assert.ok(kkHtml.includes('Сабақ аяқталды'));
+  assert.ok(kkHtml.includes('Нәтижелер сақталды'));
+  assert.ok(kkHtml.includes('<dd>75%</dd>'), 'percentage is derived from assessed correct and total counts');
+  assert.ok(kkHtml.includes('<dd>3 / 4</dd>'));
+  assert.ok(kkHtml.includes('<dd>1\u00a0мин 22\u00a0сек</dd>'));
+  assert.ok(kkHtml.includes('Келесі сабақ'));
+  assert.ok(kkHtml.includes('lesson.html?id=algebra.vieta.practice'));
+  assert.ok(kkHtml.includes('lesson-result-primary'));
+  assert.ok(kkHtml.includes('lesson-result-secondary'));
+  assert.ok(kkHtml.includes('Маршрутқа оралу'));
+  assert.equal(/undefined|null|NaN/.test(kkHtml), false);
+  assert.equal(/bg-(blue|amber|emerald|purple)-50/.test(kkHtml), false, 'legacy result tile colors are absent');
+
+  const ru = testLesson('algebra.vieta.intro', 'Теорема Виета', { math_logic_lang: 'ru' });
+  const ruHtml = vm.runInContext("LessonBlocks.render('result',{}, {percentage:100,correctAnswers:6,totalQuestions:6,timeSpent:0,mistakes:0})", ru.context);
+  assert.ok(ruHtml.includes('Урок завершён'));
+  assert.ok(ruHtml.includes('Результаты сохранены'));
+  assert.ok(ruHtml.includes('Без ошибок'));
+  assert.ok(ruHtml.includes('<dd>0\u00a0сек</dd>'));
+  assert.ok(ruHtml.includes('href=\"dashboard.html\"'));
+  assert.ok(ruHtml.includes('К маршруту'));
+  assert.equal(ruHtml.includes('lesson-result-secondary'), false, 'route becomes the primary action when no next lesson exists');
+  assert.equal(ruHtml.includes('Сабақ аяқталды'), false);
+
+  const partialHtml = vm.runInContext("LessonBlocks.render('result',{}, {percentage:60,correctAnswers:null,totalQuestions:null,timeSpent:undefined,mistakes:undefined})", ru.context);
+  assert.ok(partialHtml.includes('<dd>60%</dd>'));
+  assert.equal((partialHtml.match(/lesson-result-metric\"/g) || []).length, 1, 'missing metrics are omitted instead of fabricated');
+  assert.equal(partialHtml.includes('lesson-result-note'), false);
+  assert.equal(/undefined|null|NaN/.test(partialHtml), false);
+}
+
+function testSharedLessonPolishContracts() {
+  const shell = fs.readFileSync(path.join(ROOT, 'lesson.html'), 'utf8');
+  assert.ok(shell.includes('id="lesson-route-rail"'), 'lesson shell must expose the left route rail mount used during initialization');
+  const controller = fs.readFileSync(path.join(ROOT, 'js/lesson.js'), 'utf8');
+  const styles = fs.readFileSync(path.join(ROOT, 'css/lesson-v3.css'), 'utf8');
+  const guidedSource = fs.readFileSync(path.join(ROOT, 'js/lesson-blocks/guided.js'), 'utf8');
+  assert.equal(shell.includes('lesson-checklist'), false, 'right rail does not duplicate the canonical route');
+  assert.equal(shell.includes('lesson-remaining'), false);
+  assert.equal(controller.includes("getElementById('lesson-checklist')"), false);
+  assert.ok(styles.includes('minmax(0,900px)'), 'desktop workspace receives the approved moderate width increase');
+  assert.ok(styles.includes('.math-response-equation.is-invalid'));
+  assert.ok(styles.includes('border-style:solid'));
+  assert.ok(styles.includes('border-color:var(--axis-logic) !important'));
+  assert.equal(guidedSource.includes('Исправлено после feedback'), false);
+
+  const ru = testLesson('algebra.exponents.basics', 'Умножение и деление степеней с одинаковым основанием', { math_logic_lang: 'ru' });
+  assert.ok(vm.runInContext("__EngineInternal.state.lesson.blocks.find(function(block){return block.type==='lesson-summary';}).nextLesson.link.indexOf('lesson.html?id=')===0", ru.context), 'controller supplies a registry-backed available next lesson');
+  assert.ok(vm.runInContext("__BlockHelpers.progress(13,14).includes('width:100%')", ru.context), 'the final shared block progress is 100%');
+  const ruSummary = vm.runInContext("LessonBlocks.render('lesson-summary',{title:'Готово',description:'Итог',capabilities:['Навык'],nextLesson:{title:'Степени',link:'lesson.html?id=next.lesson'}},{index:9,total:10,timeSpent:125,evidence:{assessed:11,independentlySolved:6,hintsUsed:2,repairedAfterFeedback:1}})", ru.context);
+  assert.ok(ruSummary.includes('Без подсказки'));
+  assert.ok(ruSummary.includes('6 из 11 заданий'));
+  assert.ok(ruSummary.includes('Исправлено после проверки'));
+  assert.ok(ruSummary.includes('Следующий урок →'));
+  assert.ok(ruSummary.includes('href="lesson.html?id=next.lesson"'));
+  assert.ok(ruSummary.includes('axis-button-outline'));
+  assert.equal(/undefined|null|NaN|feedback/.test(ruSummary), false);
+
+  const kk = testLesson('algebra.exponents.basics', 'Негіздері бірдей дәрежелерді көбейту және бөлу', { math_logic_lang: 'kk' });
+  assert.equal(kk.document.getElementById('lesson-route-rail').getAttribute('aria-label'), 'Сабақ кезеңдері');
+  assert.equal(kk.document.getElementById('lesson-progress-rail').getAttribute('aria-label'), 'Сабақ барысы');
+  const kkSummary = vm.runInContext("LessonBlocks.render('lesson-summary',{title:'Дайын',description:'Қорытынды',capabilities:['Дағды']},{index:9,total:10,timeSpent:125,evidence:{assessed:11,independentlySolved:6,hintsUsed:2,repairedAfterFeedback:1}})", kk.context);
+  assert.ok(kkSummary.includes('Нұсқаусыз орындалған тапсырмалар'));
+  assert.ok(kkSummary.includes('6 / 11 тапсырма'));
+  assert.ok(kkSummary.includes('Тексеруден кейін түзетілді'));
+  assert.ok(kkSummary.includes('Маршрутқа оралу'));
+  assert.equal(kkSummary.includes('Следующий урок'), false);
+  assert.equal(/undefined|null|NaN|feedback/.test(kkSummary), false);
+}
+
 function testUnknownLesson() {
   const app = environment('?id=unknown.lesson');
   app.document.body.classList.add('axis-app');
@@ -419,9 +497,9 @@ function testPublishedLessonDirectAccessPolicy() {
   planned.document.getElementById('lesson-active').hidden = true;
   planned.document.getElementById('lesson-error').hidden = true;
   load(planned, CORE.concat(LESSON));
-  assert.equal(vm.runInContext("Learning.getLessonStatus('algebra.g7.alg-04.property')", planned.context), 'locked');
-  assert.equal(planned.document.getElementById('lesson-error').hidden, false);
-  assert.equal(planned.document.getElementById('lesson-active').hidden, true);
+  assert.equal(vm.runInContext("Learning.getLessonStatus('algebra.g7.alg-04.property')", planned.context), 'available');
+  assert.equal(planned.document.getElementById('lesson-error').hidden, true);
+  assert.equal(planned.document.getElementById('lesson-active').hidden, false);
 }
 
 function testCompletionBridge() {
@@ -735,6 +813,42 @@ function testNaturalExponentStudentPaths() {
   assert.equal(vm.runInContext('LessonEngine.getInteractionState(' + responseIndex + ').completed', resumed.context), true);
 }
 
+function testAlgebraicFractionPropertyLesson() {
+  const kk = testLesson('algebra.g7.alg-04.property', 'Бөлшектің негізгі қасиеті және қысқарту');
+  assert.equal(vm.runInContext('__EngineInternal.state.blocks.length', kk.context), 24);
+  assert.equal(vm.runInContext('__EngineInternal.state.lesson.meta.routeStages.length', kk.context), 5);
+  assert.equal(vm.runInContext('__EngineInternal.state.lesson.meta.routeStages[2].label', kk.context), 'Ортақ көбейткіш');
+  assert.equal(vm.runInContext("__EngineInternal.state.blocks.some(function(block){return block.id==='final-nothing-cancels'&&block.answer===0;})", kk.context), true);
+
+  const started = testLesson('algebra.g7.alg-04.property', 'Основное свойство и сокращение дроби', { math_logic_lang: 'ru' });
+  advanceReferenceLessonTo(started, 'factor-versus-term');
+  const index = vm.runInContext('__EngineInternal.state.currentIndex', started.context);
+  const block = vm.runInContext('__EngineInternal.getCurrentBlock()', started.context);
+  selectGuidedAnswer(started, index, block, 0);
+  vm.runInContext('GuidedLessonBlocks.submit(' + index + ');GuidedLessonBlocks.showHint(' + index + ')', started.context);
+  assert.equal(vm.runInContext('LessonEngine.getInteractionState(' + index + ').completed', started.context), false);
+  assert.equal(vm.runInContext("LessonEngine.getInteractionState(" + index + ").misconceptionCodes[0]", started.context), 'cancels-across-addition');
+  assert.ok(vm.runInContext('LessonEngine.getInteractionState(' + index + ').lastFeedback', started.context).includes('слагаемое'));
+  assert.equal(vm.runInContext('LessonEngine.getInteractionState(' + index + ').hintCount', started.context), 1);
+
+  const resumed = environment('?id=algebra.g7.alg-04.property', { mathlogic_data: started.storage.getItem('mathlogic_data'), math_logic_lang: 'ru' });
+  resumed.document.body.classList.add('axis-app');
+  resumed.document.getElementById('lesson-active').hidden = true;
+  resumed.document.getElementById('lesson-error').hidden = true;
+  load(resumed, CORE.concat(LESSON));
+  assert.equal(vm.runInContext('__EngineInternal.state.currentIndex', resumed.context), index);
+  assert.equal(vm.runInContext('LessonEngine.getInteractionState(' + index + ').hintCount', resumed.context), 1);
+  const resumedBlock = vm.runInContext('__EngineInternal.getCurrentBlock()', resumed.context);
+  selectGuidedAnswer(resumed, index, resumedBlock, resumedBlock.answer);
+  vm.runInContext('GuidedLessonBlocks.submit(' + index + ');GuidedLessonBlocks.complete(' + index + ')', resumed.context);
+  finishReferencePath(resumed);
+  assert.equal(vm.runInContext('__EngineInternal.state.finished', resumed.context), true);
+  assert.equal(vm.runInContext("Learning.getLessonStatus('algebra.g7.alg-04.property')", resumed.context), 'completed');
+  assert.equal(vm.runInContext("ML.getLearningHistory({types:['LESSON_COMPLETED'],lessonId:'algebra.g7.alg-04.property'}).length", resumed.context), 1);
+  assert.equal(vm.runInContext("ML.getLessonSession('algebra.g7.alg-04.property').completedSnapshot", resumed.context), true);
+  assert.equal(vm.runInContext('LessonEngine.finish()', resumed.context), false);
+}
+
 function testReferenceStudentPaths() {
   const pathA = freshReferenceLesson();
   finishReferencePath(pathA);
@@ -742,7 +856,7 @@ function testReferenceStudentPaths() {
   assert.equal(vm.runInContext('LessonEngine.getState().evidence.independentlySolved', pathA.context), 15);
   assert.equal(vm.runInContext('LessonEngine.getState().evidence.hintsUsed', pathA.context), 0);
   assert.equal(vm.runInContext('LessonEngine.getState().evidence.transferCompleted', pathA.context), 1);
-  assert.ok(pathA.document.getElementById('main-content').innerHTML.includes('15 / 15'));
+  assert.ok(pathA.document.getElementById('main-content').innerHTML.includes('15 / 15 тапсырма'));
 
   const pathB = freshReferenceLesson();
   let multiplicationErrorMade = false;
@@ -822,15 +936,29 @@ function testLessonResponsiveSmoke() {
 
   const layout = freshReferenceLesson();
   const shortInline = vm.runInContext("LessonBlocks.render('math-response',{id:'short-inline',type:'math-response',question:'Multiply',expression:'b · b⁵ =',acceptedAnswers:['b^6']},{index:4,total:10,interactionState:null,savedResult:null})", layout.context);
+  const functionInline = vm.runInContext("LessonBlocks.render('math-response',{id:'function-inline',type:'math-response',question:'Continue',expression:'1 → 3, 2 → 5, 3 → 7, 4 → ?',inputMode:'numeric',answer:{kind:'expression',expected:'9',validation:'normalized'},compact:true},{index:5,total:10,interactionState:null,savedResult:null})", layout.context);
+  const numericError = vm.runInContext("LessonBlocks.render('math-response',{id:'numeric-error',type:'math-response',question:'Continue',expression:'4 → ?',inputMode:'numeric',answer:{kind:'expression',expected:'9',validation:'normalized'}},{index:6,total:10,interactionState:{lastStatus:'invalid',lastFeedback:'legacy expression feedback'},savedResult:null})", layout.context);
+  const expressionError = vm.runInContext("LessonBlocks.render('math-response',{id:'expression-error',type:'math-response',question:'Simplify',expression:'x + 2',answer:{kind:'expression',expected:'x+2',validation:'normalized'}},{index:7,total:10,interactionState:{lastStatus:'invalid',lastFeedback:'legacy expression feedback'},savedResult:null})", layout.context);
   const longStandalone = vm.runInContext("LessonBlocks.render('math-response',{id:'long-polynomial',type:'math-response',question:'Simplify',expression:'(−2x² + 3x − 5) − (x² − 4x + 2)',acceptedAnswers:['-3x^2+7x-7'],compact:true},{index:5,total:10,interactionState:null,savedResult:null})", layout.context);
   assert.ok(shortInline.includes('math-response-equation is-inline-expression'));
   assert.ok(shortInline.includes('<span class="math-response-given"'));
+  assert.ok(functionInline.includes('math-response-equation is-inline-expression'));
+  assert.ok(functionInline.includes('math-response-equation is-inline-expression is-mapping-pairs'));
+  assert.equal(/math-response-mapping-pair[^>]*>[^<,]+,/.test(functionInline), false, 'mapping pairs do not use decimal-like comma separators');
+  assert.ok(functionInline.includes('<span class="math-response-mapping-pair">1 → 3</span>'));
+  assert.ok(functionInline.includes('<span class="math-response-mapping-pair is-answer"><span>4 →</span><math-field'));
+  assert.ok(numericError.includes('Бір сан енгізіңіз.'));
+  assert.equal(numericError.includes('legacy expression feedback'), false);
+  assert.ok(expressionError.includes('Амал таңбалары мен жақшаларды тексеріңіз.'));
   assert.equal(/<math-field[^>]*>[\s\S]*b · b⁵ =/.test(shortInline), false);
   assert.ok(longStandalone.includes('math-response-problem-expression'));
   assert.ok(longStandalone.includes('math-response-equation is-standalone-answer'));
   assert.equal(longStandalone.includes('<span class="math-response-given"'), false);
   assert.equal(/<math-field[^>]*>[\s\S]*−2x²/.test(longStandalone), false);
   assert.ok(css.includes('.math-response-equation.is-standalone-answer'));
+  assert.match(css, /\.math-response-equation\.is-inline-expression\s*\{[^}]*flex-wrap:wrap/);
+  assert.match(css, /\.math-response-given\s*\{[^}]*min-width:0[^}]*flex:1 1 240px[^}]*overflow-x:auto/);
+  assert.match(css, /\.math-response-equation\.is-inline-expression \.math-response-field\s*\{[^}]*min-width:min\(96px,100%\)[^}]*max-width:140px/);
 }
 
 function testMathResponseKeyboardAndLocale() {
@@ -1405,6 +1533,7 @@ function testEquationResponsiveAndKeyboardSmoke() {
   assert.ok(css.includes('.equation-history-state.is-new'));
   assert.ok(css.includes('@media (prefers-reduced-motion:reduce)'));
   assert.ok(css.includes('.math-response-equation.is-compact'));
+  assert.ok(css.includes('.math-response-given { flex-basis:auto;'));
   assert.ok(css.includes('#lesson-active.is-compact-heading'));
   assert.equal(html.includes('js/lesson-blocks/equation-step.js'), false);
   assert.ok(assets.includes('js/lesson-blocks/equation-step.js'));
@@ -1657,6 +1786,38 @@ function testGraphResponsiveAndStaticSmoke() {
   assert.ok(assets.includes('data/lessons/linear-functions.js'));
 }
 
+function testFunctionRepresentationsTopicLessons() {
+  const meaningKk = testLesson('algebra.g7.alg-05.function-meaning', 'Функция және оны беру тәсілдері');
+  assert.equal(vm.runInContext('__EngineInternal.state.blocks.length', meaningKk.context), 18);
+  assert.equal(vm.runInContext("__EngineInternal.state.blocks.find(function(block){return block.id==='discover-rule';}).inputMode", meaningKk.context), 'numeric');
+  assert.equal(vm.runInContext('__EngineInternal.state.lesson.meta.routeStages[2].label', meaningKk.context), 'Көрсетілімдер');
+  assert.equal(vm.runInContext("__EngineInternal.state.blocks.some(function(block){return block.id==='not-function-mapping'&&block.options[0].text.indexOf('екі түрлі шығысы')>-1;})", meaningKk.context), true);
+
+  vm.runInContext("LessonEngine.setInteractionState(1,{blockId:'discover-rule',attemptCount:0,hintCount:0,syntaxIssueCount:0,attempts:[],inputIssues:[],misconceptionCodes:[],completed:false,draftLatex:'',lastAnswer:'',lastStatus:'empty',lastFeedback:'Сначала запишите ответ, затем проверяйте.'});__EngineInternal.state.currentIndex=1;LessonEngine.render()", meaningKk.context);
+  assert.ok(meaningKk.document.getElementById('main-content').innerHTML.includes('Тексермес бұрын жауапты жазыңыз.'));
+  assert.equal(meaningKk.document.getElementById('main-content').innerHTML.includes('Сначала запишите ответ'), false);
+
+  const meaningRu = testLesson('algebra.g7.alg-05.function-meaning', 'Функция и способы её задания', { math_logic_lang: 'ru' });
+  const numericErrorRu = vm.runInContext("LessonBlocks.render('math-response',__EngineInternal.state.blocks.find(function(block){return block.id==='discover-rule';}),{index:1,total:18,interactionState:{lastStatus:'invalid',lastFeedback:'legacy expression feedback'},savedResult:null})", meaningRu.context);
+  assert.ok(numericErrorRu.includes('Введите одно число.'));
+  assert.equal(numericErrorRu.includes('Проверьте знаки действий и скобки.'), false);
+  finishFunctionLesson(meaningRu);
+  assert.equal(vm.runInContext("Learning.getLessonStatus('algebra.g7.alg-05.function-meaning')", meaningRu.context), 'completed');
+  assert.equal(vm.runInContext("ML.getLearningHistory({types:['LESSON_COMPLETED'],lessonId:'algebra.g7.alg-05.function-meaning'}).length", meaningRu.context), 1);
+
+  const coordinateKk = testLesson('algebra.g7.alg-05.coordinate-plane', 'Координаталық жазықтық және нүктелер');
+  assert.equal(vm.runInContext('__EngineInternal.state.blocks.length', coordinateKk.context), 18);
+  assert.equal(vm.runInContext("__EngineInternal.state.blocks.filter(function(block){return block.type==='graph-workspace';}).length", coordinateKk.context), 8);
+  assert.equal(vm.runInContext("__EngineInternal.state.blocks.some(function(block){return block.type==='graph-workspace'&&(block.showLine||block.revealLine);})", coordinateKk.context), false, 'coordinate lesson must stop before line construction');
+  assert.equal(vm.runInContext("__EngineInternal.state.blocks.find(function(block){return block.id==='read-labelled-point';}).plotPoints[0].label", coordinateKk.context), 'A');
+
+  const coordinateRu = testLesson('algebra.g7.alg-05.coordinate-plane', 'Координатная плоскость и точки', { math_logic_lang: 'ru' });
+  finishFunctionLesson(coordinateRu);
+  assert.equal(vm.runInContext("Learning.getLessonStatus('algebra.g7.alg-05.coordinate-plane')", coordinateRu.context), 'completed');
+  assert.equal(vm.runInContext("ML.getLearningHistory({types:['LESSON_COMPLETED'],lessonId:'algebra.g7.alg-05.coordinate-plane'}).length", coordinateRu.context), 1);
+  assert.ok(coordinateRu.document.getElementById('main-content').innerHTML.includes('Теперь зависимость можно не только записать'));
+}
+
 function freshGeometryLesson(lang) {
   const storage = { math_logic_lang: lang || 'ru' };
   return testLesson(
@@ -1901,11 +2062,14 @@ testLesson('geometry.g7.geo-03.properties', 'Параллель түзулерд
 testLesson('geometry.g7.geo-03.triangle-relations', 'Сыртқы бұрыш және үшбұрыш теңсіздігі');
 testLesson('geometry.g7.geo-03.right-triangles', 'Тікбұрышты үшбұрыштар және проекциялар');
 testBilingualLessonContent();
+testSharedResultRenderer();
+testSharedLessonPolishContracts();
 testUnknownLesson();
 testPublishedLessonDirectAccessPolicy();
 testCompletionBridge();
 testReferenceStudentPaths();
 testNaturalExponentStudentPaths();
+testAlgebraicFractionPropertyLesson();
 testMonomialsPolynomialsStudentPaths();
 testProductionTheoryStateVisibility();
 testPolynomialsFeedbackLocaleAfterResume();
@@ -1932,6 +2096,7 @@ testGraphTableResumeAndRefresh();
 testGraphParameterResumeAndRefresh();
 testFunctionLessonCompletionAndDedupe();
 testGraphResponsiveAndStaticSmoke();
+testFunctionRepresentationsTopicLessons();
 testGeometryLessonArchitectureAndLocale();
 testGeometryMisconceptionHintAndRepair();
 testGeometryResumeAndCompletionDedupe();

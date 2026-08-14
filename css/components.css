@@ -17,11 +17,9 @@
   text-transform: uppercase;
 }
 .axis-brand { display:flex; align-items:center; gap:10px; font-size:17px; font-weight:750; }
-.axis-brand-mark { position:relative; width:23px; height:24px; display:inline-block; }
-.axis-brand-mark::before { content:""; position:absolute; left:10px; top:1px; bottom:1px; width:2px; background:var(--axis-text); }
-.axis-brand-mark i { position:absolute; left:6px; width:10px; height:10px; border:2px solid var(--axis-text); background:var(--axis-canvas); }
-.axis-brand-mark i:first-child { top:0; }
-.axis-brand-mark i:last-child { bottom:0; background:var(--axis-gold); border-color:var(--axis-gold); }
+.axis-brand-mark { position:relative; width:23px; height:24px; display:inline-block; box-sizing:border-box; border-left:2px solid currentColor; border-bottom:2px solid currentColor; }
+.axis-brand-mark::before { content:""; position:absolute; left:7px; bottom:6px; width:9px; height:9px; box-sizing:border-box; border-left:2px solid var(--axis-gold); border-bottom:2px solid var(--axis-gold); }
+.axis-brand-mark i { display:none; }
 .axis-chip { display:inline-flex; align-items:center; gap:7px; min-height:34px; padding:0 12px; border:1px solid var(--axis-line); border-radius:8px; font-size:12px; }
 .axis-chip-gold { color:var(--axis-gold-deep); background:var(--axis-gold-wash); border-color:color-mix(in srgb, var(--axis-gold) 65%, var(--axis-line)); }
 .axis-icon-button { display:grid; place-items:center; width:36px; height:36px; border:1px solid var(--axis-line); border-radius:8px; background:var(--axis-surface); cursor:pointer; }

@@ -1,6 +1,6 @@
-# MathLogic Lesson Authoring Guide
+# Geomat Lesson Authoring Guide
 
-Use this guide to add a production lesson inside the existing MathLogic
+Use this guide to add a production lesson inside the existing Geomat
 architecture. Do not start by designing a new engine.
 
 ## 1. Start with the canonical lesson
@@ -11,7 +11,7 @@ architecture. Do not start by designing a new engine.
    exclusions.
 3. Read the immediately previous and next lessons so that the Topic is a
    sequence, not repeated independent files.
-4. Do targeted research in MathLogic Sources for this Topic only. Use it for
+4. Do targeted research in Geomat Sources for this Topic only. Use it for
    scope, sequence, misconceptions and verified RU/KK terminology—not copied
    textbook prose.
 5. Write a short content spec: new meaning, why it works, worked example if

@@ -52,7 +52,9 @@ const ML = (function() {
       lastLesson: '',
       createdAt: null,
       loggedIn: false,
-      goals: [],
+      authVersion: null,
+      passwordSalt: '',
+      passwordHash: '',
       age: null,
     },
     progress: {
@@ -660,6 +662,37 @@ const ML = (function() {
     return result;
   }
 
+  function getCurrentStreak(referenceDate) {
+    let reference;
+    if (typeof referenceDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(referenceDate)) {
+      reference = localDateFromKey(referenceDate);
+    } else {
+      reference = referenceDate === undefined ? new Date() : new Date(referenceDate);
+    }
+    if (!reference || isNaN(reference.getTime())) return 0;
+
+    const activity = get('activity', DEFAULTS.activity) || DEFAULTS.activity;
+    const activeDates = {};
+    (Array.isArray(activity.dates) ? activity.dates : []).forEach(function(value) {
+      const date = localDateFromKey(normalizeDateKey(value));
+      if (date) activeDates[localDateKey(date)] = true;
+    });
+
+    const today = new Date(reference.getFullYear(), reference.getMonth(), reference.getDate(), 12);
+    const yesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1, 12);
+    let cursor;
+    if (activeDates[localDateKey(today)]) cursor = today;
+    else if (activeDates[localDateKey(yesterday)]) cursor = yesterday;
+    else return 0;
+
+    let streak = 0;
+    while (activeDates[localDateKey(cursor)]) {
+      streak += 1;
+      cursor.setDate(cursor.getDate() - 1);
+    }
+    return streak;
+  }
+
   function recordLearningActivity(seconds, timestamp) {
     update(function(data) {
       const date = new Date(timestamp || Date.now());
@@ -812,6 +845,7 @@ const ML = (function() {
     getActivityByDate: getActivityByDate,
     getActivityRange: getActivityRange,
     getActivityIntensity: getActivityIntensity,
+    getCurrentStreak: getCurrentStreak,
     addLearningEvent: addLearningEvent,
     getLearningHistory: getLearningHistory,
     updateLastVisit: updateLastVisit,

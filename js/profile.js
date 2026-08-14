@@ -68,6 +68,9 @@
     if (!value) return '—';
     var date = typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) ? new Date(value + 'T12:00:00') : new Date(value);
     if (Number.isNaN(date.getTime())) return '—';
+    if (lang() === 'kk') {
+      return date.getDate() + ' ' + activityMonth(date, short) + (short ? '' : ' ' + date.getFullYear() + ' ж.');
+    }
     return new Intl.DateTimeFormat(lang() === 'kk' ? 'kk-KZ' : 'ru-RU', short ? { day:'numeric', month:'short' } : { day:'numeric', month:'long', year:'numeric' }).format(date);
   }
 
@@ -113,6 +116,19 @@
     var mod100 = count % 100;
     return mod10 === 1 && mod100 !== 11 ? 'день'
       : mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14) ? 'дня' : 'дней';
+  }
+
+  function completedLessons(count) {
+    if (lang() === 'kk') return 'сабақ';
+    var mod10 = count % 10;
+    var mod100 = count % 100;
+    return mod10 === 1 && mod100 !== 11 ? 'урок'
+      : mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14) ? 'урока' : 'уроков';
+  }
+
+  function studyDaysNote(count) {
+    if (lang() === 'kk') return 'сабақ болған күн';
+    return streakDays(count) + ' с занятиями';
   }
 
   function activityLabel(entry) {
@@ -210,20 +226,25 @@
     var lastDate = records.length ? records[0].record.completedAt : (data.dates.length ? data.dates[data.dates.length - 1] : null);
     setText('profile-name', name);
     setText('profile-avatar', name.charAt(0).toUpperCase());
-    setText('profile-username', user.username || '@user');
-    setText('profile-member-since', formatDate(user.createdAt, false));
+    var username = document.getElementById('profile-username');
+    if (username) {
+      username.textContent = user.username || '';
+      username.hidden = !user.username;
+    }
+    var memberDate = formatDate(user.createdAt, false);
+    var memberBlock = document.getElementById('profile-member-block');
+    setText('profile-member-since', memberDate === '—' ? '' : memberDate);
+    if (memberBlock) memberBlock.hidden = memberDate === '—';
     setText('profile-completed', data.completed);
     setText('profile-active', data.active);
     setText('profile-last-date', formatDate(lastDate, true));
     setText('metric-completed', data.completed);
-    setText('metric-completed-note', data.completed + ' / ' + data.all.length + ' ' + copy('зарегистрированных уроков', 'тіркелген сабақ'));
-    setText('metric-active', data.active);
-    setText('metric-active-note', data.active ? copy('есть сохранённый шаг', 'сақталған қадам бар') : copy('нет начатых уроков', 'басталған сабақ жоқ'));
+    setText('metric-completed-note', completedLessons(data.completed));
     setText('metric-days', data.dates.length);
-    setText('metric-days-note', data.dates.length ? copy('последнее: ', 'соңғысы: ') + formatDate(data.dates[data.dates.length - 1], true) : copy('занятий пока нет', 'әзірге сабақ жоқ'));
-    var streak = Math.max(0, Number(user.streak) || 0);
+    setText('metric-days-note', studyDaysNote(data.dates.length));
+    var streak = ML.getCurrentStreak();
     setText('metric-streak', streak);
-    setText('metric-streak-note', streakDays(streak));
+    setText('metric-streak-note', streakDays(streak) + ' ' + copy('подряд', 'қатарынан'));
   }
 
   function renderHistory() {

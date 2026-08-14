@@ -540,10 +540,10 @@
   function syncLanguageControls() {
     document.querySelectorAll('[data-lang]').forEach(function(button) { button.setAttribute('aria-pressed', String(button.dataset.lang === lang())); });
     document.documentElement.lang = lang();
-    var title = copy('MathLogic — математика с объяснениями и практикой', 'MathLogic — түсіндірулер мен практикаға негізделген математика');
+    var title = copy('GEOMAT — математика с объяснениями и практикой', 'GEOMAT — түсіндірулер мен практикаға негізделген математика');
     document.title = title;
     var meta = document.querySelector('meta[name="description"]');
-    if (meta) meta.content = copy('MathLogic — алгебра и геометрия с понятными объяснениями, задачами и интерактивными чертежами.', 'MathLogic — түсінікті түсіндірулері, есептері және интерактивті сызбалары бар алгебра мен геометрия.');
+    if (meta) meta.content = copy('GEOMAT — алгебра и геометрия с понятными объяснениями, задачами и интерактивными чертежами.', 'GEOMAT — түсінікті түсіндірулері, есептері және интерактивті сызбалары бар алгебра мен геометрия.');
     document.querySelectorAll('[data-function-control]').forEach(function(button) {
       var direction = Number(button.dataset.delta) > 0 ? copy('Увеличить ', 'Үлкейту ') : copy('Уменьшить ', 'Кішірейту ');
       button.setAttribute('aria-label', direction + button.dataset.functionControl);

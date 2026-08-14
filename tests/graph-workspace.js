@@ -103,6 +103,12 @@ function testCoordinateTransformAndLine() {
   const restored = transform.screenToMath(screen.x, screen.y);
   assert.ok(Math.abs(restored.x - 2) < 1e-9);
   assert.ok(Math.abs(restored.y + 3) < 1e-9);
+  [[-4, -4], [0, 0], [4, 4]].forEach(function(pair) {
+    const edgeScreen = transform.mathToScreen(pair[0], pair[1]);
+    const edgeRestored = transform.screenToMath(edgeScreen.x, edgeScreen.y);
+    assert.ok(Math.abs(edgeRestored.x - pair[0]) < 1e-9);
+    assert.ok(Math.abs(edgeRestored.y - pair[1]) < 1e-9);
+  });
   assert.deepEqual(Array.from(graph.lineSegment(viewport(), -1, 0), function(point) { return [point.x, point.y]; }), [[-4, 4], [4, -4]]);
   assert.equal(graph.formulaText({ k: -1, b: 0 }), 'y = −x');
   assert.equal(graph.formulaText({ k: 2, b: -2 }), 'y = 2x − 2');
@@ -184,6 +190,44 @@ function testFunctionValueBecomesPoint() {
   assert.ok(html.includes('Точка (0, 1)'));
 }
 
+function testMultipleLinesAndLegend() {
+  const app = createApp('ru');
+  const block = {
+    id: 'two-lines', type: 'graph-workspace', mode: 'inspect', title: 'Две прямые', viewport: viewport(), showLine: true,
+    functions: [{ type: 'linear', k: 2, b: 1, label: 'y = 2x + 1' }, { type: 'linear', k: -1, b: 4, label: 'y = −x + 4' }],
+  };
+  const html = app.context.GraphWorkspaceBlock.render(block, { index: 0, total: 1, interactionState: null, savedResult: null });
+  assert.ok(html.includes('graph-function-line-0-0'));
+  assert.ok(html.includes('graph-function-line-0-1'));
+  assert.ok(html.includes('y = 2x + 1'));
+  assert.ok(html.includes('y = −x + 4'));
+}
+
+function testNonlinearCurvesAndGap() {
+  const app = createApp('ru');
+  const graph = app.context.GraphWorkspaceBlock;
+  const quadratic = { id: 'quadratic', type: 'graph-workspace', mode: 'inspect', title: 'Квадрат', viewport: viewport(), function: { type: 'quadratic', a: 1 }, showLine: true };
+  const reciprocal = { id: 'reciprocal', type: 'graph-workspace', mode: 'inspect', title: 'Дробь', viewport: viewport(), function: { type: 'reciprocal', k: 1 }, showLine: true };
+  const quadraticHtml = graph.render(quadratic, { index: 0, total: 1, interactionState: null, savedResult: null });
+  const reciprocalHtml = graph.render(reciprocal, { index: 1, total: 1, interactionState: null, savedResult: null });
+  assert.ok(quadraticHtml.includes('<path id="graph-function-line-0-0"'));
+  assert.ok(reciprocalHtml.includes('<path id="graph-function-line-1-0"'));
+  assert.equal(reciprocalHtml.includes('<line id="graph-function-line-1-0"'), false, 'reciprocal graph must use a sampled curve rather than a straight line');
+}
+
+function testFractionTableAnswers() {
+  const app = createApp('ru');
+  const block = {
+    id: 'fraction-table', type: 'graph-workspace', mode: 'value-table', title: 'Дробь', viewport: viewport(),
+    function: { type: 'reciprocal', k: 1 }, rows: [{ x: 2, y: 0.5, accepted: ['1/2'] }],
+  };
+  app.context.__EngineInternal.state.blocks = [block];
+  app.nodes['graph-table-field-0-0'] = element('graph-table-field-0-0');
+  app.nodes['graph-table-field-0-0'].value = '1/2';
+  app.context.GraphWorkspaceBlock.submitTableValue(0, 0);
+  assert.equal(app.interactionStates[0].table[0].completed, true);
+}
+
 function testParameterStateAndSerialization() {
   const app = createApp('ru');
   const block = {
@@ -223,6 +267,20 @@ function testStaticPlotPointsDoNotConflictWithScore() {
   assert.ok(html.includes('Точка (1, 3)'));
 }
 
+function testInspectStartsWithoutASelectedConclusionAndShowsLabels() {
+  const app = createApp('ru');
+  const block = {
+    id: 'read', type: 'graph-workspace', mode: 'inspect', title: 'Точка A', viewport: viewport(),
+    plotPoints: [{ x: -3, y: 2, label: 'A' }],
+    followUp: { question: 'Координаты?', options: [{ text: '(3,−2)' }, { text: '(−3,2)' }], answer: 1 },
+  };
+  const html = app.context.GraphWorkspaceBlock.render(block, { index: 0, total: 1, interactionState: null, savedResult: null });
+  assert.ok(html.includes('Точка A (−3, 2)'));
+  assert.ok(html.includes('class="graph-point-label"'));
+  assert.equal(html.includes('checked aria-checked="true"'), false);
+  assert.equal(html.includes('is-selected'), false);
+}
+
 function testSchemaRejectsMalformedGraph() {
   const context = { console };
   context.window = context;
@@ -250,8 +308,12 @@ testCoordinateTransformAndLine();
 testPlacementToleranceAndMisconception();
 testKeyboardAlternativeAndLocale();
 testFunctionValueBecomesPoint();
+testMultipleLinesAndLegend();
+testNonlinearCurvesAndGap();
+testFractionTableAnswers();
 testParameterStateAndSerialization();
 testStaticPlotPointsDoNotConflictWithScore();
+testInspectStartsWithoutASelectedConclusionAndShowsLabels();
 testSchemaRejectsMalformedGraph();
 testGraphInteractionsDoNotCallGlobalRender();
 console.log('graph-workspace: ok');

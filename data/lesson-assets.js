@@ -113,6 +113,30 @@ window.MATHLOGIC_LESSON_ASSETS = {
       configGlobal: 'LESSON_POLYNOMIAL_TRANSFORMATIONS_PRACTICE', configScript: 'data/lessons/polynomial-transformations-practice.js',
       primitiveScripts: ['js/lesson-blocks/guided.js','js/math-input.js','js/lesson-blocks/math-response.js'], mathLive: true,
     },
+    'algebra.g7.alg-04.property': {
+      configGlobal: 'LESSON_ALGEBRAIC_FRACTION_PROPERTY', configScript: 'data/lessons/algebraic-fraction-property.js',
+      primitiveScripts: ['js/lesson-blocks/guided.js','js/math-input.js','js/lesson-blocks/math-response.js'], mathLive: true,
+    },
+    'algebra.g7.alg-04.domain': {
+      configGlobal: 'LESSON_ALGEBRAIC_FRACTION_DOMAIN', configScript: 'data/lessons/algebraic-fraction-domain.js',
+      primitiveScripts: ['js/lesson-blocks/guided.js','js/math-input.js','js/lesson-blocks/math-response.js'], mathLive: true,
+    },
+    'algebra.g7.alg-04.common-denominator': {
+      configGlobal: 'LESSON_ALGEBRAIC_FRACTION_COMMON_DENOMINATOR', configScript: 'data/lessons/algebraic-fraction-common-denominator.js',
+      primitiveScripts: ['js/lesson-blocks/guided.js','js/math-input.js','js/lesson-blocks/math-response.js'], mathLive: true,
+    },
+    'algebra.g7.alg-04.add-subtract': {
+      configGlobal: 'LESSON_ALGEBRAIC_FRACTION_ADD_SUBTRACT', configScript: 'data/lessons/algebraic-fraction-add-subtract.js',
+      primitiveScripts: ['js/lesson-blocks/guided.js','js/math-input.js','js/lesson-blocks/math-response.js'], mathLive: true,
+    },
+    'algebra.g7.alg-04.multiply-divide': {
+      configGlobal: 'LESSON_ALGEBRAIC_FRACTION_MULTIPLY_DIVIDE', configScript: 'data/lessons/algebraic-fraction-multiply-divide.js',
+      primitiveScripts: ['js/lesson-blocks/guided.js','js/math-input.js','js/lesson-blocks/math-response.js'], mathLive: true,
+    },
+    'algebra.g7.alg-04.practice': {
+      configGlobal: 'LESSON_ALGEBRAIC_FRACTION_TRANSFORMATIONS', configScript: 'data/lessons/algebraic-fraction-transformations.js',
+      primitiveScripts: ['js/lesson-blocks/guided.js','js/math-input.js','js/lesson-blocks/math-response.js'], mathLive: true,
+    },
     'algebra.linear-equations.equivalent-transformations': {
       configGlobal: 'LESSON_LINEAR_EQUATIONS',
       configScript: 'data/lessons/linear-equations.js',
@@ -124,6 +148,18 @@ window.MATHLOGIC_LESSON_ASSETS = {
       ],
       mathLive: true,
     },
+    'algebra.g7.alg-05.function-meaning': {
+      configGlobal: 'LESSON_FUNCTION_MEANING',
+      configScript: 'data/lessons/function-meaning.js',
+      primitiveScripts: ['js/lesson-blocks/guided.js','js/math-input.js','js/lesson-blocks/math-response.js'],
+      mathLive: true,
+    },
+    'algebra.g7.alg-05.coordinate-plane': {
+      configGlobal: 'LESSON_COORDINATE_PLANE',
+      configScript: 'data/lessons/coordinate-plane.js',
+      primitiveScripts: ['js/lesson-blocks/guided.js','js/math-input.js','js/lesson-blocks/graph-workspace.js'],
+      mathLive: true,
+    },
     'algebra.linear-functions.graph': {
       configGlobal: 'LESSON_LINEAR_FUNCTIONS',
       configScript: 'data/lessons/linear-functions.js',
@@ -133,6 +169,24 @@ window.MATHLOGIC_LESSON_ASSETS = {
         'js/lesson-blocks/math-response.js',
         'js/lesson-blocks/graph-workspace.js',
       ],
+      mathLive: true,
+    },
+    'algebra.g7.alg-05.linear-position': {
+      configGlobal: 'LESSON_LINEAR_GRAPH_POSITIONS',
+      configScript: 'data/lessons/linear-graph-positions.js',
+      primitiveScripts: ['js/lesson-blocks/guided.js','js/math-input.js','js/lesson-blocks/math-response.js','js/lesson-blocks/graph-workspace.js'],
+      mathLive: true,
+    },
+    'algebra.g7.alg-05.systems-graphically': {
+      configGlobal: 'LESSON_LINEAR_SYSTEMS_GRAPHICALLY',
+      configScript: 'data/lessons/linear-systems-graphically.js',
+      primitiveScripts: ['js/lesson-blocks/guided.js','js/math-input.js','js/lesson-blocks/math-response.js','js/lesson-blocks/graph-workspace.js'],
+      mathLive: true,
+    },
+    'algebra.g7.alg-05.other-functions': {
+      configGlobal: 'LESSON_OTHER_FUNCTION_GRAPHS',
+      configScript: 'data/lessons/other-function-graphs.js',
+      primitiveScripts: ['js/lesson-blocks/guided.js','js/math-input.js','js/lesson-blocks/math-response.js','js/lesson-blocks/graph-workspace.js'],
       mathLive: true,
     },
     'algebra.vieta.intro': {

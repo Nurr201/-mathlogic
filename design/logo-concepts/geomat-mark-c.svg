@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">GEOMAT mark concept C</title>
+  <desc id="desc">Three nodes joined by an open right-angle construction.</desc>
+  <rect width="64" height="64" rx="14" fill="#18243a"/>
+  <path d="M20 17v29h27" fill="none" stroke="#f3f3ef" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M20 31h17" fill="none" stroke="#f3f3ef" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="20" cy="17" r="4" fill="#f3f3ef"/>
+  <circle cx="37" cy="31" r="4" fill="#c96a32"/>
+  <circle cx="47" cy="46" r="4" fill="#f3f3ef"/>
+</svg>

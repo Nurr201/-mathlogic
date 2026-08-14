@@ -20,6 +20,21 @@ window.GuidedLessonBlocks = (function() {
       .trim().toLowerCase().replace(/[−–—]/g, '-').replace(/\s+/g, '').replace(',', '.');
   }
 
+  function numericEquivalent(left, right) {
+    function parse(value) {
+      var source = normalise(value);
+      if (/^-?(?:\d+(?:\.\d+)?|\.\d+)(?:\/-?(?:\d+(?:\.\d+)?|\.\d+))?$/.test(source)) {
+        var parts = source.split('/');
+        var numerator = Number(parts[0]);
+        var denominator = parts.length > 1 ? Number(parts[1]) : 1;
+        return denominator ? numerator / denominator : null;
+      }
+      return null;
+    }
+    var a = parse(left); var b = parse(right);
+    return a !== null && b !== null && Math.abs(a - b) < 1e-9;
+  }
+
   function currentBlock(index) {
     var state = window.__EngineInternal && window.__EngineInternal.state;
     return state && state.blocks ? state.blocks[index] : null;
@@ -95,7 +110,7 @@ window.GuidedLessonBlocks = (function() {
     var steps = (block.steps || []).map(function(step, index) {
       return '<li><span class="worked-step-number">' + (index + 1) + '</span><div>' +
         (step.label ? '<strong>' + step.label + '</strong>' : '') +
-        '<span>' + step.text + '</span></div></li>';
+        '<span>' + (step.math ? H.mathMarkup(step.math, step.mathLabel || step.text, true) : step.text) + '</span></div></li>';
     }).join('');
     var conditions = (block.conditions || []).map(function(condition) {
       return '<li>' + condition + '</li>';
@@ -106,11 +121,14 @@ window.GuidedLessonBlocks = (function() {
         '<h2 class="mb-3 text-3xl font-extrabold text-slate-900">' + block.title + '</h2>' +
         (block.intro ? '<p class="mb-6 text-lg leading-relaxed text-slate-600">' + block.intro + '</p>' : '') +
         '<section class="lesson-worked-example" aria-label="' + escapeHtml(block.title) + '">' +
-          (block.expression ? '<div class="worked-expression">' + block.expression + '</div>' : '') +
+          (block.expressionMath ? '<div class="worked-expression">' + H.mathMarkup(block.expressionMath, block.expression, true) + '</div>' :
+            (block.expression ? '<div class="worked-expression">' + block.expression + '</div>' : '')) +
           '<ol class="worked-steps">' + steps + '</ol>' +
-          (block.result ? '<div class="worked-result"><span>' + copy('Результат', 'Нәтиже') + '</span><strong>' + block.result + '</strong></div>' : '') +
+          (block.result ? '<div class="worked-result"><span>' + copy('Результат', 'Нәтиже') + '</span><strong>' +
+            (block.resultMath ? H.mathMarkup(block.resultMath, block.result, true) : block.result) + '</strong></div>' : '') +
         '</section>' +
-        (block.formula ? '<div class="lesson-rule-box"><span>' + (block.formulaLabel || copy('Правило', 'Ереже')) + '</span><strong>' + block.formula + '</strong></div>' : '') +
+        (block.formula ? '<div class="lesson-rule-box"><span>' + (block.formulaLabel || copy('Правило', 'Ереже')) + '</span><strong>' +
+          (block.formulaMath ? H.mathMarkup(block.formulaMath, block.formula, true) : block.formula) + '</strong></div>' : '') +
         (conditions ? '<div class="lesson-conditions"><strong>' + copy('Когда правило применимо', 'Ереже қашан қолданылады') + '</strong><ul>' + conditions + '</ul></div>' : '') +
         (block.takeaway ? '<p class="worked-takeaway">' + block.takeaway + '</p>' : '') +
         '<div class="mt-9 flex justify-end">' + H.btnPrimary(copy('Продолжить', 'Жалғастыру'), 'LessonEngine.next()') + '</div>' +
@@ -149,7 +167,7 @@ window.GuidedLessonBlocks = (function() {
         var resultClass = checkedResult ? (record.completed ? ' is-correct' : ' is-incorrect') : '';
         return '<label class="lesson-option guided-option' + (selected ? ' is-selected' : '') + resultClass + '">' +
           '<input type="radio" name="' + name + '" value="' + index + '" onchange="GuidedLessonBlocks.select(this,' + ctx.index + ')" onkeydown="GuidedLessonBlocks.keySelect(event,this,' + ctx.index + ')" aria-checked="' + (selected ? 'true' : 'false') + '"' + (selected ? ' checked' : '') + (record.completed ? ' disabled' : '') + '>' +
-          '<span>' + option.text + '</span></label>';
+          '<span>' + (option.math ? H.mathMarkup(option.math, option.text, false) : option.text) + '</span></label>';
       }).join('') + '</fieldset>';
   }
 
@@ -181,11 +199,16 @@ window.GuidedLessonBlocks = (function() {
   }
 
   function renderGuidedInput(block, ctx, record) {
+    var hasMathPrefix = !!block.inputPrefixMath;
+    var label = hasMathPrefix
+      ? '<span class="guided-input-math-prefix" aria-hidden="true">' + H.mathMarkup(block.inputPrefixMath, '', true) + '</span>'
+      : (block.inputLabel ? '<span>' + block.inputLabel + '</span>' : '<span class="sr-only">' + escapeHtml(block.question || '') + '</span>');
     return '<label class="guided-input-label" for="guided-input-' + ctx.index + '">' +
-      (block.inputLabel ? '<span>' + block.inputLabel + '</span>' : '<span class="sr-only">' + escapeHtml(block.question || '') + '</span>') +
-      '<input id="guided-input-' + ctx.index + '" type="text" inputmode="text" autocomplete="off" value="' + escapeHtml(record.lastAnswer || '') + '"' +
+      label +
+      '<input id="guided-input-' + ctx.index + '" type="text" inputmode="' + escapeHtml(block.inputMode || 'text') + '" autocomplete="off" value="' + escapeHtml(record.lastAnswer || '') + '"' +
+        (hasMathPrefix ? ' aria-label="' + escapeHtml(block.inputLabel || block.question || '') + '"' : '') +
         (record.completed ? ' disabled' : '') + (record.lastFeedback ? ' aria-describedby="guided-feedback-' + ctx.index + '"' : '') +
-        ' placeholder="' + escapeHtml(block.placeholder || '?') + '"></label>';
+        ' placeholder="' + escapeHtml(block.placeholder || '?') + '"' + (hasMathPrefix ? ' class="guided-input-value"' : '') + '></label>';
   }
 
   function renderHints(block, record) {
@@ -222,7 +245,8 @@ window.GuidedLessonBlocks = (function() {
         H.blockBadge(block.badgeLabel || copy('Проверка понимания', 'Түсінуді тексеру')) +
         (block.title ? '<h2 class="mb-3 text-3xl font-extrabold text-slate-900">' + block.title + '</h2>' : '') +
         (block.prompt ? '<p class="mb-4 text-lg leading-relaxed text-slate-600">' + block.prompt + '</p>' : '') +
-        (block.expression ? '<div class="guided-expression">' + block.expression + '</div>' : '') +
+        (block.expressionMath ? '<div class="guided-expression">' + H.mathMarkup(block.expressionMath, block.expression, true) + '</div>' :
+          (block.expression ? '<div class="guided-expression">' + block.expression + '</div>' : '')) +
         (block.diagram && window.GeometryDiagram ? window.GeometryDiagram.render(block.diagram, ctx.index) : '') +
         '<h3 class="guided-question">' + block.question + '</h3>' +
         response + renderHints(block, record) + renderGuidedFeedback(record, ctx.index) +
@@ -243,7 +267,7 @@ window.GuidedLessonBlocks = (function() {
   function evaluate(block, answer) {
     if (block.responseType === 'input') {
       var accepted = block.acceptedAnswers || (block.answer !== undefined ? [block.answer] : []);
-      return accepted.some(function(value) { return normalise(value) === normalise(answer); });
+      return accepted.some(function(value) { return normalise(value) === normalise(answer) || numericEquivalent(value, answer); });
     }
     return Number(answer) === Number(block.answer);
   }
@@ -255,7 +279,7 @@ window.GuidedLessonBlocks = (function() {
       if (option.feedback) return option.feedback;
     }
     var matches = (block.answerFeedback || []).filter(function(item) {
-      return (item.answers || []).some(function(value) { return normalise(value) === normalise(answer); });
+      return (item.answers || []).some(function(value) { return normalise(value) === normalise(answer) || numericEquivalent(value, answer); });
     });
     return matches.length ? matches[0].feedback : (block.feedback || copy('Вернитесь к смыслу записи и попробуйте ещё раз.', 'Жазбаның мағынасына оралып, қайта көріңіз.'));
   }
@@ -265,7 +289,7 @@ window.GuidedLessonBlocks = (function() {
       return optionData((block.options || [])[Number(answer)]).misconception || '';
     }
     var match = (block.answerFeedback || []).find(function(item) {
-      return (item.answers || []).some(function(value) { return normalise(value) === normalise(answer); });
+      return (item.answers || []).some(function(value) { return normalise(value) === normalise(answer) || numericEquivalent(value, answer); });
     });
     return match ? (match.misconception || '') : '';
   }
@@ -338,31 +362,58 @@ window.GuidedLessonBlocks = (function() {
   }
 
   function formatTime(seconds) {
-    seconds = Math.max(0, Number(seconds) || 0);
-    if (seconds < 60) return seconds + copy(' с', ' с');
-    return Math.floor(seconds / 60) + copy(' мин ', ' мин ') + (seconds % 60) + copy(' с', ' с');
+    if (seconds === undefined || seconds === null || seconds === '' || !isFinite(Number(seconds)) || Number(seconds) < 0) return '';
+    seconds = Math.floor(Number(seconds));
+    if (seconds < 60) return seconds + ' ' + I18N.t('lesson.summary.seconds');
+    return Math.floor(seconds / 60) + ' ' + I18N.t('lesson.summary.minutes') + (seconds % 60 ? ' ' + (seconds % 60) + ' ' + I18N.t('lesson.summary.seconds') : '');
+  }
+
+  function summaryText(key, replacements) {
+    var value = I18N.t('lesson.summary.' + key);
+    Object.keys(replacements || {}).forEach(function(name) {
+      value = value.replace('{' + name + '}', replacements[name]);
+    });
+    return value;
+  }
+
+  function validCount(value) {
+    if (value === undefined || value === null || value === '' || !isFinite(Number(value)) || Number(value) < 0) return null;
+    return Math.floor(Number(value));
+  }
+
+  function summaryActions(nextLesson) {
+    var hasNext = nextLesson && nextLesson.link && nextLesson.title;
+    var route = '<a class="axis-button ' + (hasNext ? 'axis-button-outline' : 'axis-button-ink') + '" href="dashboard.html">' + summaryText('route') + '</a>';
+    if (!hasNext) return route;
+    return '<a class="axis-button axis-button-ink" href="' + escapeHtml(nextLesson.link) + '" aria-label="' +
+      escapeHtml(summaryText('nextLesson') + ': ' + nextLesson.title) + '">' + summaryText('nextLesson') + ' →</a>' + route;
   }
 
   function renderLessonSummary(block, ctx) {
     var evidence = ctx.evidence || {};
     var capabilities = (block.capabilities || []).map(function(item) { return '<li>' + item + '</li>'; }).join('');
     var metrics = '';
-    if (evidence.assessed > 0) {
-      metrics = '<dl class="lesson-evidence-grid">' +
-        '<div><dt>' + copy('Самостоятельно', 'Өздігінен') + '</dt><dd>' + evidence.independentlySolved + ' / ' + evidence.assessed + '</dd></div>' +
-        '<div><dt>' + copy('Подсказки', 'Нұсқаулар') + '</dt><dd>' + evidence.hintsUsed + '</dd></div>' +
-        '<div><dt>' + copy('Исправлено после feedback', 'Кері байланыстан кейін түзетілді') + '</dt><dd>' + evidence.repairedAfterFeedback + '</dd></div>' +
-        '<div><dt>' + copy('Время работы', 'Жұмыс уақыты') + '</dt><dd>' + formatTime(ctx.timeSpent) + '</dd></div>' +
-      '</dl>';
+    var assessed = validCount(evidence.assessed);
+    if (assessed !== null && assessed > 0) {
+      var items = [];
+      var independent = validCount(evidence.independentlySolved);
+      var hints = validCount(evidence.hintsUsed);
+      var repaired = validCount(evidence.repairedAfterFeedback);
+      var time = formatTime(ctx.timeSpent);
+      if (independent !== null) items.push('<div><dt>' + summaryText('withoutHints') + '</dt><dd>' + summaryText('taskRatio', { correct: Math.min(independent, assessed), total: assessed }) + '</dd></div>');
+      if (hints !== null) items.push('<div><dt>' + summaryText('hints') + '</dt><dd>' + hints + '</dd></div>');
+      if (repaired !== null) items.push('<div><dt>' + summaryText('repaired') + '</dt><dd>' + repaired + '</dd></div>');
+      if (time) items.push('<div><dt>' + summaryText('time') + '</dt><dd>' + time + '</dd></div>');
+      if (items.length) metrics = '<dl class="lesson-evidence-grid">' + items.join('') + '</dl>';
     }
     return H.wrap(
       '<div class="py-6 lesson-summary">' + H.progress(ctx.index, ctx.total) +
-        H.blockBadge(copy('Итог урока', 'Сабақ қорытындысы')) +
+        H.blockBadge(summaryText('badge')) +
         '<h2>' + block.title + '</h2>' +
         (block.description ? '<p class="lesson-summary-description">' + block.description + '</p>' : '') +
-        '<section class="lesson-summary-capabilities"><h3>' + copy('Теперь вы можете', 'Енді сіз') + '</h3><ul>' + capabilities + '</ul></section>' +
+        '<section class="lesson-summary-capabilities"><h3>' + summaryText('capabilities') + '</h3><ul>' + capabilities + '</ul></section>' +
         metrics +
-        '<div class="lesson-summary-actions"><a class="axis-button axis-button-ink" href="dashboard.html">' + copy('К маршруту', 'Маршрутқа оралу') + '</a></div>' +
+        '<div class="lesson-summary-actions">' + summaryActions(block.nextLesson) + '</div>' +
       '</div>'
     );
   }

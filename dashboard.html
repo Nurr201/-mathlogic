@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Сегодня — MathLogic</title>
+  <title>Сегодня — GEOMAT</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
@@ -11,28 +11,11 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/editorial.css">
-  <link rel="stylesheet" href="css/app-shell.css">
+  <link rel="stylesheet" href="css/app-shell.css?v=12">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
 </head>
 <body class="v7-app v7-dashboard">
-  <header class="v7-nav">
-    <div class="v7-nav-inner">
-      <a class="v7-brand" href="index.html"><span class="v7-mark"></span><span>MathLogic</span></a>
-      <nav class="v7-links" aria-label="Основная навигация">
-        <a href="dashboard.html" aria-current="page" data-copy-ru="Сегодня" data-copy-kk="Бүгін">Сегодня</a>
-        <a href="program.html" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a>
-        <a href="profile.html" data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</a>
-      </nav>
-      <div class="v7-nav-actions">
-        <button class="v7-tool v7-mono" type="button" data-lang="ru">RU</button>
-        <button class="v7-tool v7-mono" type="button" data-lang="kk">ҚАЗ</button>
-        <button class="v7-tool" type="button" data-theme-choice="light" aria-label="Светлая тема">○</button>
-        <button class="v7-tool" type="button" data-theme-choice="dark" aria-label="Тёмная тема">●</button>
-        <a class="v8-settings-link" href="settings.html" data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</a>
-        <a class="v7-avatar" href="profile.html" id="dashboard-avatar" aria-label="Профиль">М</a>
-        <button class="v8-logout" type="button" data-app-logout data-copy-ru="Выйти" data-copy-kk="Шығу">Выйти</button>
-      </div>
-    </div>
-  </header>
+  <header class="v7-nav" data-app-shell data-active-page="dashboard"></header>
 
   <main class="v7-wrap v7-page">
     <div id="dashboard-loading" aria-live="polite"><span class="v7-eyebrow" data-copy-ru="Загрузка учебного пути…" data-copy-kk="Оқу бағыты жүктелуде…">Загрузка учебного пути…</span></div>
@@ -62,10 +45,10 @@
       </section>
 
       <section class="v8-data-strip" aria-label="Учебная статистика">
-        <article><span data-copy-ru="Пройдено уроков" data-copy-kk="Аяқталған сабақ">Пройдено уроков</span><strong id="dashboard-completed">0</strong></article>
-        <article><span data-copy-ru="В процессе" data-copy-kk="Жалғасуда">В процессе</span><strong id="dashboard-active">0</strong></article>
-        <article><span data-copy-ru="Учебных дней" data-copy-kk="Оқу күні">Учебных дней</span><strong id="dashboard-days">0</strong></article>
-        <article><span data-copy-ru="Доступно" data-copy-kk="Қолжетімді">Доступно</span><strong id="dashboard-available">0</strong><small data-copy-ru="уроков" data-copy-kk="сабақ">уроков</small></article>
+        <article><span data-copy-ru="Пройдено уроков" data-copy-kk="Аяқталған сабақ">Пройдено уроков</span><strong class="v7-number" id="dashboard-completed">0</strong></article>
+        <article><span data-copy-ru="В процессе" data-copy-kk="Жалғасуда">В процессе</span><strong class="v7-number" id="dashboard-active">0</strong></article>
+        <article><span data-copy-ru="Учебных дней" data-copy-kk="Оқу күні">Учебных дней</span><strong class="v7-number" id="dashboard-days">0</strong></article>
+        <article><span data-copy-ru="Доступно" data-copy-kk="Қолжетімді">Доступно</span><strong class="v7-number" id="dashboard-available">0</strong><small data-copy-ru="уроков" data-copy-kk="сабақ">уроков</small></article>
       </section>
 
       <section class="v7-dashboard-complete" id="dashboard-empty" hidden></section>
@@ -92,14 +75,6 @@
     </div>
   </main>
 
-  <nav class="v7-mobile-nav" aria-label="Мобильная навигация">
-    <a href="dashboard.html" aria-current="page" data-copy-ru="Сегодня" data-copy-kk="Бүгін">Сегодня</a>
-    <a href="program.html" data-copy-ru="Программа" data-copy-kk="Бағдарлама">Программа</a>
-    <a href="profile.html" data-copy-ru="Журнал" data-copy-kk="Журнал">Журнал</a>
-    <a href="settings.html" data-copy-ru="Настройки" data-copy-kk="Баптаулар">Настройки</a>
-    <button type="button" data-app-logout data-copy-ru="Выйти" data-copy-kk="Шығу">Выйти</button>
-  </nav>
-
   <script src="data/curriculum.js"></script>
   <script src="js/data.js"></script>
   <script src="js/storage.js"></script>
@@ -107,7 +82,7 @@
   <script src="js/events.js"></script>
   <script src="js/learning.js"></script>
   <script src="js/dashboard-data.js"></script>
-  <script src="js/site.js"></script>
+  <script src="js/site.js?v=2"></script>
   <script src="js/dashboard.js?v=9"></script>
 </body>
 </html>

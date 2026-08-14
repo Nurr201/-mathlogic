@@ -15,7 +15,8 @@ const SOURCES = [
   'data/lessons/monomials-standard-form.js', 'data/lessons/polynomials-add-subtract.js', 'data/lessons/monomial-polynomial-multiplication.js',
   'data/lessons/square-sum-difference.js', 'data/lessons/difference-squares.js', 'data/lessons/cube-identities.js',
   'data/lessons/factorization.js', 'data/lessons/polynomial-transformations-practice.js',
-  'data/lessons/linear-equations.js', 'data/lessons/linear-functions.js', 'data/lessons/triangle-angle-sum.js',
+  'data/lessons/algebraic-fraction-property.js', 'data/lessons/algebraic-fraction-domain.js', 'data/lessons/algebraic-fraction-common-denominator.js', 'data/lessons/algebraic-fraction-add-subtract.js', 'data/lessons/algebraic-fraction-multiply-divide.js', 'data/lessons/algebraic-fraction-transformations.js',
+  'data/lessons/linear-equations.js', 'data/lessons/function-meaning.js', 'data/lessons/coordinate-plane.js', 'data/lessons/linear-functions.js', 'data/lessons/linear-graph-positions.js', 'data/lessons/linear-systems-graphically.js', 'data/lessons/other-function-graphs.js', 'data/lessons/triangle-angle-sum.js',
   'data/lessons/geometry-figures-axioms.js', 'data/lessons/geometry-equal-figures.js', 'data/lessons/geometry-proof-methods.js',
   'data/lessons/geometry-angles-perpendicular.js', 'data/lessons/geometry-initial-practice.js',
   'data/lessons/geometry-triangle-types.js', 'data/lessons/geometry-triangle-elements.js',
@@ -68,7 +69,7 @@ function testCanonicalLifecycle() {
   const app = boot();
   assert.equal(app.run("Learning.getLessonStatus('algebra.g7.alg-02.meaning')"), 'available');
   assert.equal(app.run("Learning.getLessonStatus('algebra.exponents.basics')"), 'available');
-  assert.equal(app.run("Learning.getLessonStatus('algebra.g7.alg-04.property')"), 'locked');
+  assert.equal(app.run("Learning.getLessonStatus('algebra.g7.alg-04.property')"), 'available');
   assert.deepEqual(Array.from(app.run("MATHLOGIC_CURRICULUM.getLesson('algebra.exponents.basics').prerequisites.hard")), ['algebra.g7.alg-02.meaning']);
   app.run("Learning.completeLesson('algebra.g7.alg-02.meaning',{percentage:100,correctAnswers:1,totalQuestions:1})");
   assert.equal(app.run("Learning.getLessonStatus('algebra.exponents.basics')"), 'available');
@@ -94,7 +95,9 @@ function testCanonicalLifecycle() {
 function testRegistryAndConfigs() {
   const app = boot();
   const ids = app.run('Object.keys(LESSON_REGISTRY)');
-  assert.deepEqual(Array.from(ids), ['algebra.g7.alg-01.fractions', 'algebra.g7.alg-01.percent', 'algebra.g7.alg-01.proportions', 'algebra.g7.alg-01.parts-mixtures', 'algebra.g7.alg-01.model', 'algebra.g7.alg-01.practice', 'algebra.g7.alg-02.meaning', 'algebra.exponents.basics', 'algebra.g7.alg-02.power-rules', 'algebra.g7.alg-02.zero-negative', 'algebra.g7.alg-02.standard-form', 'algebra.g7.alg-03.monomials', 'algebra.g7.alg-03.polynomials', 'algebra.g7.alg-03.multiplication', 'algebra.g7.alg-03.square-sum-difference', 'algebra.g7.alg-03.difference-squares', 'algebra.g7.alg-03.cubes', 'algebra.g7.alg-03.factorization', 'algebra.g7.alg-03.practice', 'algebra.linear-equations.equivalent-transformations', 'algebra.linear-functions.graph', 'algebra.vieta.intro', 'geometry.g7.geo-01.figures-axioms', 'geometry.g7.geo-01.equal-figures', 'geometry.g7.geo-01.proof-methods', 'geometry.g7.geo-01.angles-perpendicular', 'geometry.g7.geo-01.practice', 'geometry.g7.geo-02.types', 'geometry.g7.geo-02.elements', 'geometry.g7.geo-02.congruence-1', 'geometry.g7.geo-02.congruence-2', 'geometry.g7.geo-02.isosceles', 'geometry.g7.geo-02.equilateral', 'geometry.g7.geo-02.practice', 'geometry.g7.geo-03.transversal', 'geometry.g7.geo-03.criteria', 'geometry.g7.geo-03.properties', 'geometry.g7.geo-03.triangle-relations', 'geometry.g7.geo-03.right-triangles', 'geometry.triangle-angle-sum']);
+  assert.ok(Array.from(ids).includes('algebra.g7.alg-05.other-functions'));
+  ids.splice(ids.indexOf('algebra.g7.alg-05.other-functions'), 1);
+  assert.deepEqual(Array.from(ids), ['algebra.g7.alg-01.fractions', 'algebra.g7.alg-01.percent', 'algebra.g7.alg-01.proportions', 'algebra.g7.alg-01.parts-mixtures', 'algebra.g7.alg-01.model', 'algebra.g7.alg-01.practice', 'algebra.g7.alg-02.meaning', 'algebra.exponents.basics', 'algebra.g7.alg-02.power-rules', 'algebra.g7.alg-02.zero-negative', 'algebra.g7.alg-02.standard-form', 'algebra.g7.alg-03.monomials', 'algebra.g7.alg-03.polynomials', 'algebra.g7.alg-03.multiplication', 'algebra.g7.alg-03.square-sum-difference', 'algebra.g7.alg-03.difference-squares', 'algebra.g7.alg-03.cubes', 'algebra.g7.alg-03.factorization', 'algebra.g7.alg-03.practice', 'algebra.g7.alg-04.property', 'algebra.g7.alg-04.domain', 'algebra.g7.alg-04.common-denominator', 'algebra.g7.alg-04.add-subtract', 'algebra.g7.alg-04.multiply-divide', 'algebra.g7.alg-04.practice', 'algebra.linear-equations.equivalent-transformations', 'algebra.g7.alg-05.function-meaning', 'algebra.g7.alg-05.coordinate-plane', 'algebra.linear-functions.graph', 'algebra.g7.alg-05.linear-position', 'algebra.g7.alg-05.systems-graphically', 'algebra.vieta.intro', 'geometry.g7.geo-01.figures-axioms', 'geometry.g7.geo-01.equal-figures', 'geometry.g7.geo-01.proof-methods', 'geometry.g7.geo-01.angles-perpendicular', 'geometry.g7.geo-01.practice', 'geometry.g7.geo-02.types', 'geometry.g7.geo-02.elements', 'geometry.g7.geo-02.congruence-1', 'geometry.g7.geo-02.congruence-2', 'geometry.g7.geo-02.isosceles', 'geometry.g7.geo-02.equilateral', 'geometry.g7.geo-02.practice', 'geometry.g7.geo-03.transversal', 'geometry.g7.geo-03.criteria', 'geometry.g7.geo-03.properties', 'geometry.g7.geo-03.triangle-relations', 'geometry.g7.geo-03.right-triangles', 'geometry.triangle-angle-sum']);
   ['LESSON_GEOMETRY_FIGURES_AXIOMS','LESSON_GEOMETRY_EQUAL_FIGURES','LESSON_GEOMETRY_PROOF_METHODS','LESSON_GEOMETRY_ANGLES_PERPENDICULAR','LESSON_GEOMETRY_INITIAL_PRACTICE'].forEach(function(globalName) {
     assert.equal(app.run('LessonValidator.validate(' + globalName + ').valid'), true);
   });
@@ -209,6 +212,10 @@ function testRegistryAndConfigs() {
   assert.equal(app.run("LESSON_LINEAR_FUNCTIONS.blocks.some(function(block){return block.id==='explore_negative_k'&&block.parameter.min<0;})"), true);
   assert.equal(app.run("LESSON_LINEAR_FUNCTIONS.blocks.some(function(block){return block.id==='transfer_table_graph'&&block.role==='transfer';})"), true);
   assert.equal(app.run("LESSON_LINEAR_FUNCTIONS.title.kk"), 'Сызықтық функция және оның графигі');
+  ['LESSON_LINEAR_GRAPH_POSITIONS','LESSON_LINEAR_SYSTEMS_GRAPHICALLY','LESSON_OTHER_FUNCTION_GRAPHS'].forEach(function(globalName) { assert.equal(app.run('LessonValidator.validate(' + globalName + ').valid'), true); });
+  assert.equal(app.run("LESSON_LINEAR_GRAPH_POSITIONS.blocks.length"), 22);
+  assert.equal(app.run("LESSON_LINEAR_SYSTEMS_GRAPHICALLY.blocks.length"), 24);
+  assert.equal(app.run("LESSON_OTHER_FUNCTION_GRAPHS.blocks.length"), 27);
   assert.equal(app.run("LessonValidator.validate(LESSON_TRIANGLE_ANGLE_SUM).valid"), true);
   assert.equal(app.run("LessonValidator.validate(LESSON_TRIANGLE_ANGLE_SUM).warnings.length"), 0);
   assert.equal(app.run("LESSON_TRIANGLE_ANGLE_SUM.blocks.length"), 18);
@@ -235,8 +242,17 @@ function testRecommendedPathContext() {
   assert.equal(app.run("Learning.getNextLesson({subjectKey:'geometry',grade:7}).id"), 'geometry.g7.geo-01.figures-axioms');
   assert.deepEqual(Array.from(app.run("['geometry.g7.geo-01.figures-axioms','geometry.g7.geo-01.equal-figures','geometry.g7.geo-01.proof-methods','geometry.g7.geo-01.angles-perpendicular','geometry.g7.geo-01.practice'].map(function(id){return Learning.getLessonStatus(id);})")), ['available','available','available','available','available'], 'recommended GEO-01 order must not become prerequisite locking');
 
-  app.run("Learning.completeLesson('algebra.g7.alg-01.fractions',{percentage:100});Learning.completeLesson('algebra.g7.alg-01.percent',{percentage:100});Learning.completeLesson('algebra.g7.alg-01.proportions',{percentage:100});Learning.completeLesson('algebra.g7.alg-01.parts-mixtures',{percentage:100});Learning.completeLesson('algebra.g7.alg-01.model',{percentage:100});Learning.completeLesson('algebra.g7.alg-01.practice',{percentage:100});Learning.completeLesson('algebra.g7.alg-02.meaning',{percentage:100});Learning.completeLesson('algebra.linear-equations.equivalent-transformations',{percentage:100});Learning.completeLesson('algebra.exponents.basics',{percentage:100});Learning.completeLesson('algebra.g7.alg-02.power-rules',{percentage:100});Learning.completeLesson('algebra.g7.alg-02.zero-negative',{percentage:100});Learning.completeLesson('algebra.g7.alg-02.standard-form',{percentage:100});Learning.completeLesson('algebra.g7.alg-03.monomials',{percentage:100});Learning.completeLesson('algebra.g7.alg-03.polynomials',{percentage:100});Learning.completeLesson('algebra.g7.alg-03.multiplication',{percentage:100});Learning.completeLesson('algebra.g7.alg-03.square-sum-difference',{percentage:100});Learning.completeLesson('algebra.g7.alg-03.difference-squares',{percentage:100});Learning.completeLesson('algebra.g7.alg-03.cubes',{percentage:100});Learning.completeLesson('algebra.g7.alg-03.factorization',{percentage:100});Learning.completeLesson('algebra.g7.alg-03.practice',{percentage:100});Learning.completeLesson('algebra.linear-functions.graph',{percentage:100})");
+  app.run("Learning.completeLesson('algebra.g7.alg-01.fractions',{percentage:100});Learning.completeLesson('algebra.g7.alg-01.percent',{percentage:100});Learning.completeLesson('algebra.g7.alg-01.proportions',{percentage:100});Learning.completeLesson('algebra.g7.alg-01.parts-mixtures',{percentage:100});Learning.completeLesson('algebra.g7.alg-01.model',{percentage:100});Learning.completeLesson('algebra.g7.alg-01.practice',{percentage:100});Learning.completeLesson('algebra.g7.alg-02.meaning',{percentage:100});Learning.completeLesson('algebra.linear-equations.equivalent-transformations',{percentage:100});Learning.completeLesson('algebra.exponents.basics',{percentage:100});Learning.completeLesson('algebra.g7.alg-02.power-rules',{percentage:100});Learning.completeLesson('algebra.g7.alg-02.zero-negative',{percentage:100});Learning.completeLesson('algebra.g7.alg-02.standard-form',{percentage:100});Learning.completeLesson('algebra.g7.alg-03.monomials',{percentage:100});Learning.completeLesson('algebra.g7.alg-03.polynomials',{percentage:100});Learning.completeLesson('algebra.g7.alg-03.multiplication',{percentage:100});Learning.completeLesson('algebra.g7.alg-03.square-sum-difference',{percentage:100});Learning.completeLesson('algebra.g7.alg-03.difference-squares',{percentage:100});Learning.completeLesson('algebra.g7.alg-03.cubes',{percentage:100});Learning.completeLesson('algebra.g7.alg-03.factorization',{percentage:100});Learning.completeLesson('algebra.g7.alg-03.practice',{percentage:100});Learning.completeLesson('algebra.g7.alg-04.property',{percentage:100});Learning.completeLesson('algebra.g7.alg-04.domain',{percentage:100});Learning.completeLesson('algebra.g7.alg-04.common-denominator',{percentage:100});Learning.completeLesson('algebra.g7.alg-04.add-subtract',{percentage:100});Learning.completeLesson('algebra.g7.alg-04.multiply-divide',{percentage:100});Learning.completeLesson('algebra.g7.alg-04.practice',{percentage:100});Learning.completeLesson('algebra.g7.alg-05.function-meaning',{percentage:100});Learning.completeLesson('algebra.g7.alg-05.coordinate-plane',{percentage:100});Learning.completeLesson('algebra.linear-functions.graph',{percentage:100})");
+  assert.equal(app.run("Learning.getTopicProgress('algebra','ALG-04.common-denominator')"), 100, 'common-denominator topic must show 2/2 after both lessons are complete');
+  assert.equal(app.run("Learning.getTopicProgress('algebra','ALG-04.operations')"), 100, 'operations topic must show 2/2 after both lessons are complete');
+  assert.equal(app.run("Learning.getTopicProgress('algebra','ALG-04.properties-domain')"), 100, 'ALG-04 must show 2/2 after both lessons are complete');
+  assert.equal(app.run("Learning.getNextLesson({subjectKey:'algebra',grade:7}).id"), 'algebra.g7.alg-05.linear-position');
+  app.run("Learning.completeLesson('algebra.g7.alg-05.linear-position',{percentage:100});Learning.completeLesson('algebra.g7.alg-05.systems-graphically',{percentage:100})");
+  assert.equal(app.run("Learning.getNextLesson({subjectKey:'algebra',grade:7}).id"), 'algebra.g7.alg-05.other-functions');
+  app.run("Learning.completeLesson('algebra.g7.alg-05.other-functions',{percentage:100})");
   assert.equal(app.run("Learning.getNextLesson({subjectKey:'algebra',grade:7})"), null, 'next lesson must not jump to another grade');
+  assert.equal(app.run("Learning.getTopicProgress('algebra','ALG-05.linear-relationships')"), 100, 'linear relationships topic must show 2/2 after both lessons are complete');
+  assert.equal(app.run("Learning.getTopicProgress('algebra','ALG-05.other-graphs')"), 100, 'other graphs topic must show 1/1 after its lesson is complete');
   assert.equal(app.run("Learning.getNextLesson({subjectKey:'algebra',grade:8}).id"), 'algebra.vieta.intro');
 }
 
@@ -487,6 +503,47 @@ function testActivityHistory() {
   assert.equal(app.run('ML.getActivityIntensity(1800,true)'), 4);
 }
 
+function testCurrentStreak() {
+  const reference = new Date(2026, 7, 14, 12, 0).getTime();
+  const app = boot();
+  assert.equal(app.run('ML.getCurrentStreak(' + reference + ')'), 0, 'no activity');
+
+  app.run("ML.set('activity.dates',['2026-08-14'])");
+  assert.equal(app.run('ML.getCurrentStreak(' + reference + ')'), 1, 'today');
+
+  app.run("ML.set('activity.dates',['2026-08-14','2026-08-13'])");
+  assert.equal(app.run('ML.getCurrentStreak(' + reference + ')'), 2, 'today and yesterday');
+
+  app.run("ML.set('activity.dates',['2026-08-12','2026-08-14','2026-08-13'])");
+  assert.equal(app.run('ML.getCurrentStreak(' + reference + ')'), 3, 'three consecutive local dates');
+
+  app.run("ML.set('activity.dates',[]);ML.recordLearningActivity(60," + reference + ');ML.recordLearningActivity(120,' + (reference + 3600000) + ')');
+  assert.equal(app.run('ML.getCurrentStreak(' + reference + ')'), 1, 'duplicate activity on one day');
+  assert.equal(app.run("ML.get('activity.dates').length"), 1, 'one canonical date per local day');
+
+  app.run("ML.set('activity.dates',['2026-08-11'])");
+  assert.equal(app.run('ML.getCurrentStreak(' + reference + ')'), 0, 'gap greater than one day');
+
+  app.run("ML.set('activity.dates',['2026-08-13'])");
+  assert.equal(app.run('ML.getCurrentStreak(' + reference + ')'), 1, 'yesterday-only activity remains active');
+
+  app.run("ML.set('activity.dates',['2026-08-13','2026-08-12'])");
+  assert.equal(app.run('ML.getCurrentStreak(' + reference + ')'), 2, 'yesterday-only series remains active');
+}
+
+function testStreakPersistenceAfterReload() {
+  const completedAt = new Date(2026, 7, 14, 21, 30).getTime();
+  const app = boot();
+  app.run("Learning.completeLesson('algebra.exponents.basics',{percentage:100,correctAnswers:5,totalQuestions:5,duration:600,completedAt:" + completedAt + '})');
+  assert.equal(app.run('ML.getCurrentStreak(' + completedAt + ')'), 1);
+  assert.equal(app.run("ML.get('activity.dates').filter(function(date){return date==='2026-08-14';}).length"), 1);
+
+  const reloaded = boot(app.context.localStorage.dump());
+  assert.equal(reloaded.run('ML.getCurrentStreak(' + completedAt + ')'), 1);
+  assert.equal(reloaded.run("Learning.getLessonStatus('algebra.exponents.basics')"), 'completed');
+  assert.equal(reloaded.run("ML.getActivityByDate('2026-08-14').seconds"), 600);
+}
+
 function testLearningHistory() {
   const app = boot();
   assert.equal(app.run('ML.getLearningHistory().length'), 0);
@@ -540,5 +597,7 @@ testSubjectReset();
 testCorruptStorageFallback();
 testCompletionDoesNotMutateLegacyGameFields();
 testActivityHistory();
+testCurrentStreak();
+testStreakPersistenceAfterReload();
 testLearningHistory();
 console.log('core-smoke: ok');

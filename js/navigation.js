@@ -8,7 +8,7 @@ const NAV = (function() {
   function fixLinks() {
     var knownPages = {
       'index.html': 1, 'dashboard.html': 1, 'profile.html': 1,
-      'settings.html': 1, 'login.html': 1, 'onboarding.html': 1,
+      'settings.html': 1, 'login.html': 1,
       'lesson.html': 1, 'topic-1-expressions.html': 1, 'topic.html': 1
     };
 

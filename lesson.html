@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Урок — MathLogic</title>
+  <title>Урок — GEOMAT</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
@@ -12,22 +12,25 @@
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/editorial.css">
+  <link rel="stylesheet" href="css/app-shell.css?v=12">
+  <link rel="stylesheet" href="css/lesson-v3.css">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
 </head>
-<body class="v7-app v7-lesson axis-lesson-page">
+<body class="v7-app v7-lesson axis-app axis-lesson-page">
+  <header class="v7-nav" data-app-shell data-active-page="program"></header>
   <header class="lesson-topbar">
     <a class="axis-back" href="dashboard.html" data-i18n="lesson.back">К маршруту</a>
     <div class="lesson-top-context mono" id="lesson-top-context">ALG / УРОК</div>
     <div class="lesson-top-actions">
       <span class="v7-pill"><b id="lesson-length">0 шагов</b></span>
-      <button class="axis-icon-button" id="lesson-theme" type="button" aria-label="Переключить тему">◐</button>
     </div>
   </header>
 
   <div class="lesson-layout">
-    <aside class="lesson-route-rail" aria-label="Этапы урока">
-      <a class="axis-brand" href="index.html" aria-label="MathLogic">
+    <aside id="lesson-route-rail" class="lesson-route-rail" aria-label="Этапы урока">
+      <a class="axis-brand" href="index.html" aria-label="GEOMAT">
         <span class="axis-brand-mark"><i></i><i></i></span>
-        <span>MathLogic</span>
+        <span>GEOMAT</span>
       </a>
       <div class="axis-eyebrow" data-i18n="lesson.route">Маршрут</div>
       <nav class="lesson-route" id="lesson-route"></nav>
@@ -67,10 +70,6 @@
       <div class="lesson-progress-value mono" id="lesson-progress-value">0%</div>
       <div class="axis-track"><span id="lesson-progress-fill"></span></div>
       <p class="lesson-progress-copy" id="lesson-progress-copy">0 из 0 шагов</p>
-      <div class="lesson-remaining">
-        <h2 data-i18n="lesson.remaining">Что осталось</h2>
-        <div id="lesson-checklist"></div>
-      </div>
       <div class="lesson-tip">
         <span class="axis-eyebrow" data-i18n="lesson.tip">Подсказка</span>
         <p data-i18n="lesson.tipText">Можно выйти: текущий шаг и ответы сохраняются автоматически.</p>
@@ -83,10 +82,12 @@
   <script src="data/curriculum.js"></script>
   <script src="js/data.js"></script>
   <script src="js/storage.js"></script>
+  <script>if (!ML.isLoggedIn()) window.location.href = 'login.html';</script>
   <script src="js/i18n.js"></script>
   <script src="js/events.js"></script>
   <script src="js/learning.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/site.js"></script>
   <script src="data/lesson-assets.js"></script>
   <script src="js/lesson-loader.js"></script>
 </body>
