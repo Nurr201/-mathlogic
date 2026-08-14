@@ -186,7 +186,6 @@
 
   function protectAppRoute() {
     if (typeof ML === 'undefined' || !ML.isLoggedIn || ML.isLoggedIn()) return true;
-    var protectedClasses = ['v7-dashboard', 'v7-program-page', 'v7-profile-page', 'v7-settings-page', 'v7-lesson', 'v7-topic-page'];
     var protectedPage = protectedClasses.some(function(name) { return document.body.classList.contains(name); });
     if (!protectedPage) return true;
     window.location.href = 'login.html';
