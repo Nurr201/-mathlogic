@@ -4,15 +4,15 @@
   --navy-secondary: #223451;
   --teal: #2c6260;
   --teal-dark: #1f4a4a;
-  --streak-teal: #356f6a;
-  --activity-accent: #c96a32;
-  --surface: #f3f3ef;
-  --surface-muted: #e9ece8;
+  --streak-teal: #324028;
+  --activity-accent: hsl(27, 100%, 50%);
+  --surface: #f3f3f3;
+  --surface-muted: #ffffff;
   --text: #111318;
   --text-muted: #70747c;
   --border: rgba(17, 19, 24, .12);
   --v7-bg: var(--surface);
-  --v7-paper: #fff;
+  --v7-paper: #ffffff;
   --v7-soft: var(--surface-muted);
   --v7-ink: var(--ink);
   --v7-muted: var(--text-muted);
@@ -45,8 +45,8 @@ html[data-theme="dark"] {
   --v7-dark: #0d0f13;
 }
 
-.v7-dashboard, .v7-profile-page, .v7-program-page { --v7-layout-current: 1320px; background: var(--v7-bg); }
-.v7-settings-page { --v7-layout-current: 1160px; background: var(--v7-bg); }
+.v7-dashboard, .v7-profile-page, .v7-program-page { --v7-layout-current: 1500px; background: var(--v7-bg); }
+.v7-settings-page { --v7-layout-current: 1250px; background: var(--v7-bg); }
 .v7-dashboard .v7-page, .v7-profile-page .v7-page { padding-block: 46px 96px; }
 
 /* Shared authenticated shell */
