@@ -24,7 +24,7 @@ const ML = (function() {
     theme: 'light',
     accent: '#4F46E5',
     font_size: 'medium',
-    lang: 'kk',
+    lang: 'ru',
     daily_goal: 3,
     reminders: true,
     autosave: true,
